@@ -31,8 +31,25 @@ public class URLConverterFilterPluginTest extends TestCase {
   public void testURLConverterFilterPlugin() {
     Filter urlConverterFilter = new URLConverterFilterPlugin(0);
 
+    assertEquals("<a href=\"http://192.168.1.1/\" target=\"_blank\"" +
+            ">http://192.168.1.1/</a>", urlConverterFilter.doFilter("http://192.168.1.1/"));
+
+    assertEquals("192.168.1.1", urlConverterFilter.doFilter("192.168.1.1"));
+
+    assertEquals("1.1.1.1", urlConverterFilter.doFilter("1.1.1.1"));
+
+    assertEquals("1.1.1.1 " +
+            "<a href=\"http://1.1.1.1\" target=\"_blank\"" +
+            ">http://1.1.1.1</a>", urlConverterFilter.doFilter("1.1.1.1 http://1.1.1.1"));
+
     assertEquals("<a href=\"http://google.com\" target=\"_blank\"" +
                 ">http://google.com</a>", urlConverterFilter.doFilter("http://google.com"));
+
+    assertEquals("<a href=\"http://www.exoplatform.com\" target=\"_blank\"" +
+                ">www.exoplatform.com</a>", urlConverterFilter.doFilter("www.exoplatform.com"));
+
+    assertEquals("<a href=\"http://exoplatform.com\" target=\"_blank\"" +
+            ">exoplatform.com</a>", urlConverterFilter.doFilter("exoplatform.com"));
     
     assertEquals("<a href=\"http://google.com/\" target=\"_blank\"" +
                 ">http://google.com/</a> " +

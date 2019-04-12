@@ -38,31 +38,34 @@ import org.exoplatform.social.common.xmlprocessor.model.Node;
  * {@literal http://abc.com => <a href="http://abc.com" title="http://abc.com">http://abc.com</a>}
  * Moreover, this plugin can trim any link to a fix size when it's too long by specifying the urlMaxLength via init params.
  * the urlMaxLength = url.length() + "...".length(), if urlMaxLength less than 3 the filter will no trim the url for display.
- *   
+ *
  * @author Ly Minh Phuong - http://phuonglm.net
  * @since 1.2.2
  */
 public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
   private int urlMaxLength = -1;
   private static final Log LOG = ExoLogger.getLogger(URLConverterFilterPlugin.class);
-  
+
   private static final Pattern URL_PATTERN = Pattern
-      .compile("(?i)" +
+      .compile("(?i)" +               // path and query
       "(" +
-        "((?:(?:ht|f)tp(?:s?)\\:\\/\\/)?" +                                                       // protolcol
+        "((?:(?:ht|f)tp(?:s?)\\:\\/\\/)" +                                                       // protolcol
         "(?:\\w+:\\w+@)?" +                                                                       // username password
         "(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +  // IPAddress
-        "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))|" +     // IPAddress
-        "(?:(?:[-\\w]+\\.)+(?:com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|asia|cat|coop|int|pro|tel|xxx|[a-z]{2}))))|" + //Domain
+        "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))" +
+        "|((?:(?:ht|f)tp(?:s?)\\:\\/\\/)?" +                                                       // protolcol
+        "(?:\\w+:\\w+@)?" +                                                                       // username password
+        "((?:(?:[-\\w]+\\.)+(?:com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|asia|cat|coop|int|pro|tel|xxx|[a-z]{2}))))|" + //Domain
         "(?:(?:(?:ht|f)tp(?:s?)\\:\\/\\/)(?:\\w+:\\w+@)?(?:[-\\w]+))" +                           // Protocol with hostname
-      ")" +
-      "(?::[\\d]{1,5})?" +                                                                        // port
-      "(?:[\\/|\\?|\\#][^\\s]*)?");                                                               // path and query
+        ")" +
+        "(?::[\\d]{1,5})?" +                                                                        // port
+        "(?:[\\/|\\?|\\#][^\\s]*)?");
+
 
 
   private static final Pattern HAVE_PROTOCOL_PREFIX = Pattern.compile("(?i)^(?:(?:ht|f)tp(?:s?)).*");
   private static final String DEFAULT_PROTOCOL = "http://";
-  
+
   /**
    * Constructor with max length of URL, if {@literal url.length > UrlMaxLength} then the url display will be shorten.
    * @param urlMaxLength
@@ -70,7 +73,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
   public URLConverterFilterPlugin(int urlMaxLength){
     this.urlMaxLength = urlMaxLength;
   }
-  
+
   /**
    * Constructor with InitParams from container, if {@literal url.length > UrlMaxLength} then the url display will be shorten.
    * @param params
@@ -82,7 +85,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
       LOG.warn("an <value-param> 'urlMaxLength' of type int is needed for this component " + getClass());
     }
   }
- 
+
   /**
    * {@inheritDoc}
    */
@@ -101,7 +104,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
   public int getUrlMaxLength() {
     return urlMaxLength;
   }
-  
+
   /**
    * Sets max length of URL, if {@literal url.length > urlMaxLength and urlMaxLength >= 3} then the url display will be shorten.
    * @param urlMaxLength
@@ -125,7 +128,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
         return insertedCount;
       }
     }
-    
+
     for (int i = 0; i < currentChildNode.size(); i++) {
       if(!currentChildNode.get(i).getTitle().equals("a")){
         int insertedCount = nodeFilter(currentChildNode.get(i));
@@ -137,7 +140,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
     }
     return 0;
   }
-  
+
   private int convertNode(Node currentNode){
     String content = StringEscapeUtils.unescapeHtml(currentNode.getContent());
     int insertedCount = 0; // if found for delete the original after parsing
@@ -145,17 +148,17 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
     if(!currentNode.isRootNode()){
       Node currentProccessNode = currentNode;
       Node parrentNode = currentNode.getParentNode();
-      
+
       int lastMatch = 0;
-      
+
       Matcher m = URL_PATTERN.matcher(content);
-      
+
       while (m.find()) {
         String textLink = content.substring(m.start(), m.end());
         String url = textLink;
         int start = m.start();
         int end = m.end();
-        
+
         if((start == 0 || Character.isWhitespace(content.charAt(start-1))) &&
             (end == content.length() || Character.isWhitespace(content.charAt(end)))){
           if(!HAVE_PROTOCOL_PREFIX.matcher(url).matches()){
@@ -165,44 +168,44 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
           if(m.start() > lastMatch){
             Node textNode = new Node();
             textNode.setContent(StringEscapeUtils.escapeHtml(content.substring(lastMatch, m.start())));
-            
+
             parrentNode.insertAfter(currentProccessNode, textNode);
             currentProccessNode = textNode;
             insertedCount++;
           }
-          
+
           // create <a> node
           Node aHrefNode = new Node();
           aHrefNode.setTitle("a");
           aHrefNode.setParentNode(parrentNode); // set parent of <a>
-          
-          // set attribute for <a> 
+
+          // set attribute for <a>
           Attributes aHrefNodeAttributes = new Attributes();
           aHrefNodeAttributes.put("href", url);
           aHrefNodeAttributes.put("target", "_blank");
           aHrefNode.setAttributes(aHrefNodeAttributes);
-          
+
           // Create text node for <a>, text node inside <a> and position is 0
           Node aHrefContentNode = new Node();
           aHrefContentNode.setContent(StringEscapeUtils.escapeHtml(shortenURL(textLink)));
           aHrefContentNode.setParentNode(aHrefNode);
           aHrefNode.addChildNode(aHrefContentNode);
-          
+
           // insert <a> to the child list of parrentNode
           parrentNode.insertAfter(currentProccessNode, aHrefNode);
           currentProccessNode = aHrefNode;
-          
-          lastMatch = m.end(); // update the lastMatch of 
+
+          lastMatch = m.end(); // update the lastMatch of
           insertedCount++;
         }
       }
       if((lastMatch + 1) < content.length()){
         Node textNode = new Node();
         textNode.setContent(StringEscapeUtils.escapeHtml(content.substring(lastMatch, content.length())));
-        
+
         parrentNode.insertAfter(currentProccessNode, textNode);
         currentProccessNode = textNode;
-        insertedCount++;        
+        insertedCount++;
       }
       if(insertedCount > 0){
         parrentNode.getChildNodes().remove(currentNode);
@@ -210,7 +213,7 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
     }
     return insertedCount;
   }
-  
+
   private String shortenURL(String url) {
     if (urlMaxLength < 3 || url.length() < urlMaxLength)
       return url;
