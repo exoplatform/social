@@ -17,16 +17,16 @@
 package org.exoplatform.social.core.space.spi;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.MembershipType;
@@ -142,7 +142,8 @@ public class SpaceServiceTest extends AbstractCoreTest {
     identityStorage.saveIdentity(member2);
     identityStorage.saveIdentity(member3);
 
-    tearDownUserList = new ArrayList<Identity>();
+    StorageUtils.persist();
+
     tearDownUserList.add(demo);
     tearDownUserList.add(tom);
     tearDownUserList.add(raul);
@@ -174,13 +175,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     end();
     begin();
 
-    for (Identity identity : tearDownUserList) {
-      try {
-        identityStorage.deleteIdentity(identity);
-      } catch (IdentityStorageException e) {
-        // It's expected on some identities that could be deleted in tests
-      }
-    }
     for (Space space : tearDownSpaceList) {
       Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
       if (spaceIdentity != null) {
@@ -196,6 +190,18 @@ public class SpaceServiceTest extends AbstractCoreTest {
         // It's expected on some entities that could be deleted in tests
       }
     }
+
+    StorageUtils.persist();
+
+    for (Identity identity : tearDownUserList) {
+      try {
+        identityStorage.deleteIdentity(identity);
+      } catch (IdentityStorageException e) {
+        // It's expected on some identities that could be deleted in tests
+      }
+    }
+
+    StorageUtils.persist();
     super.tearDown();
   }
 
@@ -2357,7 +2363,39 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @since 1.2.0-GA
    */
   public void testActivateApplication() throws Exception {
-    //TODO Complete this
+    startSessionAs("root");
+    String spaceName = "testSpace";
+    String creator = "john";
+    Space space = new Space();
+    space.setDisplayName(spaceName);
+    space.setPrettyName(spaceName);
+    space.setGroupId("/spaces/" + space.getPrettyName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("description of space" + spaceName);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PRIVATE);
+    space.setRegistration(Space.OPEN);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setManagers(new String[]{creator});
+    space.setMembers(new String[]{creator});
+    space = spaceService.createSpace(space, "root");
+    tearDownSpaceList.add(space);
+
+    StorageUtils.persist();
+
+    assertTrue(space.getApp().contains("DashboardPortlet"));
+    spaceService.removeApplication(space, "DashboardPortlet", "Dashboard");
+    assertFalse(space.getApp().contains("DashboardPortlet"));
+    spaceService.activateApplication(space, "DashboardPortlet");
+    assertTrue(space.getApp().contains("DashboardPortlet"));
+
+    NavigationContext navContext = SpaceUtils.getGroupNavigationContext(space.getGroupId());
+    NodeContext<NodeContext<?>> homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(navContext, space.getUrl());
+    boolean found = homeNodeCtx.getNodes().stream()
+            .filter(node -> "dashboard".equals(node.getName()))
+            .findAny()
+            .isPresent();
+    assertTrue(found);
   }
 
   /**

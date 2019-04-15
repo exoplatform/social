@@ -150,7 +150,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       //
       NodeContext<NodeContext<?>> homeNodeCtx = createPageNodeFromApplication(navContext, parentNodeCtx, space, spaceApplicationConfigPlugin.getHomeApplication(), null, true);
       SpaceService spaceService = getSpaceService();
-      
+
 
       spaceApplications = spaceApplicationConfigPlugin.getSpaceApplicationList();
       for (SpaceApplication spaceApplication : spaceApplications) {
@@ -259,6 +259,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
     NavigationContext navContext;
     NodeContext<NodeContext<?>> homeNodeCtx = null;
+
     try {
       navContext = SpaceUtils.getGroupNavigationContext(space.getGroupId());
       homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(navContext, space.getUrl());
@@ -266,10 +267,18 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     } catch (Exception e) {
       LOG.warn("space navigation not found.", e);
       return;
-    }   
-    
-    SpaceApplication spaceApplication = new SpaceApplication();
-    spaceApplication.setPortletName(appId);
+    }
+    SpaceApplication spaceApplication = null;
+    for(SpaceApplication application : getSpaceService().getSpaceApplicationConfigPlugin().getSpaceApplicationList()){
+      if (appId.equals(application.getPortletName()) && !SpaceUtils.isInstalledApp(space, appId)) {
+         spaceApplication = application;
+      }
+    }
+
+    if(spaceApplication == null) {
+      spaceApplication = new SpaceApplication();
+      spaceApplication.setPortletName(appId);
+    }
     createPageNodeFromApplication(navContext, homeNodeCtx, space, spaceApplication, appName, false);
     navService.saveNode(homeNodeCtx, null);
   }
