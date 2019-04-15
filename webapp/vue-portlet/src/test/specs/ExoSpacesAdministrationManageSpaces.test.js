@@ -41,10 +41,8 @@ describe('ExoSpacesAdministrationManageSpaces.test.js', () => {
 
   it('should display 2 spaces in table when 2 spaces in data', () => {
     cmp.vm.spaces = data.spaces;
-    cmp.vm.$nextTick(() => {
-      const spacesTableRows = cmp.findAll('.manageSpaces table tr');
-      expect(spacesTableRows).toHaveLength(3); // header + 2 rows
-    });
+    const spacesTableRows = cmp.findAll('.manageSpaces table tr');
+    expect(spacesTableRows).toHaveLength(3); // header + 2 rows
   });
   
   it('should show confirm message modal when deleting space', () => {

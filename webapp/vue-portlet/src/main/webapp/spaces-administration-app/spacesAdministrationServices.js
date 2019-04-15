@@ -18,11 +18,15 @@ export function deleteSpaceById(id){
     method: 'delete'});
 }
 
-export function getSpaceLinkSetting(spaceDisplayName,groupId){
-  const spaceName = spaceDisplayName.toLowerCase().split(' ').join('_');
-  const groupIdTab = groupId.toLowerCase().split('/');
-  const groupName  = groupIdTab[groupIdTab.length-1];
-  return `${spacesConstants.PORTAL}${spacesConstants.PROFILE_SPACE_LINK}${groupName}/${spaceName}/settings`;
+export function getSpaceLinkSetting(spaceDisplayName, groupId) {
+  if(spaceDisplayName && groupId) {
+    const spaceName = spaceDisplayName.toLowerCase().split(' ').join('_');
+    const groupIdTab = groupId.toLowerCase().split('/');
+    const groupName  = groupIdTab[groupIdTab.length-1];
+    return `${spacesConstants.PORTAL}${spacesConstants.PROFILE_SPACE_LINK}${groupName}/${spaceName}/settings`;
+  } else {
+    return null;
+  }
 }
 
 export function getUserPermissions(userName) {
