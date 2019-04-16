@@ -520,14 +520,6 @@
       }
     },
 
-    loadLikes : function (activity) {
-      var likeBox = $(activity).find('.listLikedBox:first');
-      if(likeBox.length > 0) {
-        likeBox.find('.listLiked:first').find('a').show();
-        likeBox.find('.listLiked:first').find('button.btn').hide();
-        likeBox.attr('data-load', 'false');
-      }
-    },
     displayLikes : function() {
       if(UIActivity.isLoadLike === true) {
         return;

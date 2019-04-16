@@ -155,14 +155,6 @@ var UIActivity = {
       );
     }
   },
-  loadLikes : function (activity) {
-    var likeBox = $(activity).find('.listLikedBox:first');
-    if(likeBox.length > 0) {
-      likeBox.find('.listLiked:first').find('a').show();
-      likeBox.find('.listLiked:first').find('button.btn').hide();
-      likeBox.attr('data-load', 'false');
-    }
-  },
   displayLikes : function() {
     if(UIActivity.isLoadLike === true) {
       return;
@@ -250,13 +242,6 @@ var UIActivity = {
       } else if (jcomment.length > 0) {
         jcomment[0].scrollIntoView(true);
       }
-    }
-  },
-
-  focusToComment : function() {  
-    var comment = $('#commentContainer' + $.getQuery('commentId'));
-    if(comment.length > 0) {
-      comment.addClass('focus')[0].scrollIntoView(true);
     }
   },
 

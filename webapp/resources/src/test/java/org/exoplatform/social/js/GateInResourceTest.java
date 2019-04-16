@@ -20,8 +20,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.google.javascript.jscomp.*;
+import com.google.javascript.jscomp.Compiler;
 import junit.framework.TestCase;
 
 import org.exoplatform.web.application.javascript.Javascript;
@@ -30,13 +34,6 @@ import org.exoplatform.web.application.javascript.ScriptResourceDescriptor;
 import org.gatein.common.io.IOTools;
 import org.gatein.portal.controller.resource.ResourceId;
 import org.gatein.portal.controller.resource.script.Module;
-
-import com.google.javascript.jscomp.CompilationLevel;
-import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.JSError;
-import com.google.javascript.jscomp.JSSourceFile;
-import com.google.javascript.jscomp.Result;
 
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Oct
@@ -106,8 +103,8 @@ public class GateInResourceTest extends TestCase {
     StringWriter code = new StringWriter();
     IOTools.copy(script, code);
     com.google.javascript.jscomp.Compiler compiler = new Compiler();
-    JSSourceFile[] inputs = new JSSourceFile[] { JSSourceFile.fromCode(sourceName, code.toString()) };
-    Result res = compiler.compile(new JSSourceFile[0], inputs, options);
+    SourceFile[] inputs = new SourceFile[] { SourceFile.fromCode(sourceName, code.toString()) };
+    Result res = compiler.compile(new ArrayList(), Arrays.asList(inputs), options);
     StringBuilder msg = new StringBuilder();
     if (res.success == false) {
       msg.append("Handle me gracefully JS errors\n");

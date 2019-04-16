@@ -40,7 +40,6 @@
       createOnBlur: true,
       highlight: false,
       hideSelected: true,
-      create: true,
       openOnFocus: true,
       maxItems: 1,
       sourceProviders: ['exo:social'],

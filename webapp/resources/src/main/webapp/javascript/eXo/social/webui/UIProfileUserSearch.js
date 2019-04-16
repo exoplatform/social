@@ -26,7 +26,6 @@
         $(nameEl).suggester({
           type : 'tag',
           plugins: ['restore_on_backspace'],
-          create: true,
           preload: false,
           addPrecedence: true,
           persist: false,

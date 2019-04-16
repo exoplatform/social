@@ -643,11 +643,9 @@
           e.stopPropagation();
           isInput = true;
           return false;
-        default: {
+        default:
           return true;
-        }
       }
-      return true;
     }
 
     function onInputBoxKeyUp(e) {

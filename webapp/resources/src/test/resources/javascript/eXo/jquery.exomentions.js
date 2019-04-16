@@ -643,7 +643,6 @@
           return true;
         }
       }
-      return true;
     }
 
     function onInputBoxKeyUp(e) {
