@@ -43,7 +43,7 @@ if(activity == null) {
              <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_self');})(event)"><%=activity.getTitle()%></a></div>
        <%  }
          } else {%>
-             <div class="status"><%=activity.getTitle()%></div>
+             <div class="status"><span onclick="event.stopPropagation();"><%=activity.getTitle()%></span></div>
        <%} %>
        </div>
      </div> <!-- #boxContainer-->
