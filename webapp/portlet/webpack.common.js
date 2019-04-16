@@ -6,7 +6,7 @@ let config = {
   // set the entry point of the application
   // can use multiple entry
   entry: {
-    spacesAdministration: './src/main/webapp/spaces-administration-app/main.js',
+    spaceInfos: './src/main/webapp/space-infos-app/main.js'
   },
   module: {
     rules: [

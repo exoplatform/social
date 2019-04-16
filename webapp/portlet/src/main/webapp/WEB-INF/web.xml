@@ -26,6 +26,10 @@
   <!--If define the Portlet Application name MUST end with .par-->
   <display-name>social-portlet</display-name>
 
+  <listener>
+    <listener-class>org.exoplatform.container.web.PortalContainerConfigOwner</listener-class>
+  </listener>
+
   <description>
     eXo Social Portlets
   </description>

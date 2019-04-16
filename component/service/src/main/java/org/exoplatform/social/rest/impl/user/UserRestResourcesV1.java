@@ -17,6 +17,8 @@
 package org.exoplatform.social.rest.impl.user;
 
 import io.swagger.annotations.*;
+import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
@@ -28,6 +30,8 @@ import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.user.UserStateModel;
+import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -41,20 +45,19 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.api.EntityBuilder;
+import org.exoplatform.social.rest.api.ErrorResource;
 import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.api.UserRestResources;
 import org.exoplatform.social.rest.entity.*;
-import org.exoplatform.social.service.rest.PeopleRestService;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -67,19 +70,28 @@ import java.util.List;
 @Api(tags = VersionResources.VERSION_ONE + "/social/users", value = VersionResources.VERSION_ONE + "/social/users", description = "Operations on users with their activities, connections and spaces")
 public class UserRestResourcesV1 implements UserRestResources {
 
+  private static final String ONLINE = "online";
   private UserACL userACL;
 
   private IdentityManager identityManager;
+
+  private UserStateService userStateService;
+
+  private SpaceService spaceService;
 
   public static enum ACTIVITY_STREAM_TYPE {
     all, owner, connections, spaces
   }
 
+  private static final String INVISIBLE = "invisible";
+
   private static final Log LOG = ExoLogger.getLogger(UserRestResourcesV1.class);
   
-  public UserRestResourcesV1(UserACL userACL, IdentityManager identityManager) {
+  public UserRestResourcesV1(UserACL userACL, IdentityManager identityManager, UserStateService userStateService, SpaceService spaceService) {
     this.userACL = userACL;
     this.identityManager = identityManager;
+    this.userStateService = userStateService;
+    this.spaceService = spaceService;
   }
   
   @GET
@@ -87,14 +99,19 @@ public class UserRestResourcesV1 implements UserRestResources {
   @ApiOperation(value = "Gets all users",
                 httpMethod = "GET",
                 response = Response.class,
-                notes = "Using the query param \"q\" to filter the target users, ex: \"q=jo*\" returns all the users beginning by \"jo\".")
-  @ApiResponses(value = { 
+                notes = "Using the query param \"q\" to filter the target users, ex: \"q=jo*\" returns all the users beginning by \"jo\"."
+                + "Using the query param \"status\" to filter the target users, ex: \"status=online*\" returns the visible online users."
+                + "Using the query params \"status\" and \"spaceId\" together to filter the target users, ex: \"status=online*\" and \"spaceId=1*\" returns the visible online users who are member of space with id=1."
+                + "The params \"status\" and \"spaceId\" cannot be used with \"q\" param since it will falsify the \"limit\" param which is 20 by default. If these 3 parameters are used together, the parameter \"q\" will be ignored")
+  @ApiResponses(value = {
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 404, message = "Resource not found"),
     @ApiResponse (code = 500, message = "Internal server error due to data encoding"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getUsers(@Context UriInfo uriInfo,
                            @ApiParam(value = "User name information to filter, ex: user name, last name, first name or full name", required = false) @QueryParam("q") String q,
+                           @ApiParam(value = "User status to filter online users, ex: online", required = false) @QueryParam("status") String status,
+                           @ApiParam(value = "Space id to filter only its members, ex: 1", required = false) @QueryParam("spaceId") String spaceId,
                            @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                            @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                            @ApiParam(value = "Returning the number of users found or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
@@ -103,12 +120,39 @@ public class UserRestResourcesV1 implements UserRestResources {
     offset = offset > 0 ? offset : RestUtils.getOffset(uriInfo);
     limit = limit > 0 ? limit : RestUtils.getLimit(uriInfo);
 
-    ProfileFilter filter = new ProfileFilter();
-    filter.setName(q == null || q.isEmpty() ? "" : q);
+    Identity[] identities;
+    int totalSize = 0;
 
-    ListAccess<Identity> list = CommonsUtils.getService(IdentityManager.class).getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false);
-
-    Identity[] identities = list.load(offset, limit);
+    if (StringUtils.isNotBlank(status) && ONLINE.equals(status)) {
+      String userId;
+      try {
+        userId = ConversationState.getCurrent().getIdentity().getUserId();
+      } catch (Exception e) {
+        return Response.status(HTTPStatus.UNAUTHORIZED).build();
+      }
+      if (StringUtils.isBlank(userId)) {
+        return Response.status(HTTPStatus.UNAUTHORIZED).build();
+      }
+      Space space = null;
+      if (StringUtils.isNotBlank(spaceId)) {
+        space = spaceService.getSpaceById(spaceId);
+        if (space != null) {
+          identities = getOnlineIdentitiesOfSpace(userId, space, limit);
+        } else {
+          return EntityBuilder.getResponse(new ErrorResource("space " + spaceId + " does not exist", "space not found"), uriInfo, RestUtils.getJsonMediaType(), Response.Status.NOT_FOUND);
+        }
+      } else {
+        identities = getOnlineIdentities(userId, limit);
+      }
+    } else {
+      ProfileFilter filter = new ProfileFilter();
+      filter.setName(q == null || q.isEmpty() ? "" : q);
+      ListAccess<Identity> list = CommonsUtils.getService(IdentityManager.class).getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false);
+      identities = list.load(offset, limit);
+      if(returnSize) {
+        totalSize = list.getSize();
+      }
+    }
     List<DataEntity> profileInfos = new ArrayList<DataEntity>();
     for (Identity identity : identities) {
       ProfileEntity profileInfo = EntityBuilder.buildEntityProfile(identity.getProfile(), uriInfo.getPath(), expand);
@@ -116,12 +160,13 @@ public class UserRestResourcesV1 implements UserRestResources {
       profileInfos.add(profileInfo.getDataEntity());
     }
     CollectionEntity collectionUser = new CollectionEntity(profileInfos, EntityBuilder.USERS_TYPE, offset, limit);
-    if(returnSize) {
-      collectionUser.setSize(list.getSize());
+    if (returnSize) {
+      collectionUser.setSize(totalSize);
     }
+
     return EntityBuilder.getResponse(collectionUser, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
-  
+
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
@@ -615,6 +660,58 @@ public class UserRestResourcesV1 implements UserRestResources {
     if (model.getPassword() != null && !model.getPassword().isEmpty()) {
       user.setPassword(model.getPassword());
     }
+  }
+
+  /**
+   * gets online identities who are members of a space.
+   *
+   * @param userId The current user.
+   * @param space The space of which extract members.
+   * @param limit Maximum number of identities to return.
+   * @return identity array.
+   */
+  private Identity[] getOnlineIdentitiesOfSpace(String userId, Space space, int limit) {
+    List<Identity> identities = new ArrayList<>();
+    String[] spaceMembers = space.getMembers();
+    String superUserName = userACL.getSuperUser();
+    for (String user : spaceMembers) {
+        UserStateModel userModel = userStateService.getUserState(user);
+        boolean isOnline = userStateService.isOnline(user);
+        if (user.equals(userId) || user.equals(superUserName) || userModel == null || INVISIBLE.equals(userModel.getStatus()) || !isOnline) {
+          continue;
+        }
+        Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, false);
+        identities.add(userIdentity);
+        if (identities.size() == limit) {
+          break;
+        }
+    }
+    return identities.toArray(new Identity[identities.size()]);
+  }
+
+  /**
+   * gets online identities.
+   *
+   * @param userId The current user.
+   * @param limit Maximum number of identities to return.
+   * @return identity array.
+   */
+  private Identity[] getOnlineIdentities(String userId, int limit) {
+    List<Identity> identities = new ArrayList<>();
+    List<UserStateModel> users = userStateService.online();
+    Collections.reverse(users);
+    if (users.size() > limit) {
+      users = users.subList(0, limit);
+    }
+    String superUserName = userACL.getSuperUser();
+    for (UserStateModel userModel : users) {
+      String user = userModel.getUserId();
+      if (user.equals(userId) || user.equals(superUserName) || userModel == null || INVISIBLE.equals(userModel.getStatus()))
+        continue;
+      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, false);
+      identities.add(userIdentity);
+    }
+    return identities.toArray(new Identity[identities.size()]);
   }
   
   /**

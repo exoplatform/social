@@ -23,6 +23,24 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
 
   <portlet>
+    <portlet-name>SpaceInfos</portlet-name>
+    <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
+    <init-param>
+      <name>portlet-view-dispatched-file-path</name>
+      <value>/space-infos-app/index.html</value>
+    </init-param>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.social.SpaceInfosPortlet</resource-bundle>
+    <portlet-info>
+      <title>Space Infos</title>
+      <keywords>Space-homepage-portlets</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
     <description xml:lang="EN">Social Banner Portlet</description>
     <portlet-name>SocialBannerPortlet</portlet-name>
     <display-name xml:lang="EN">Social Banner Portlet</display-name>

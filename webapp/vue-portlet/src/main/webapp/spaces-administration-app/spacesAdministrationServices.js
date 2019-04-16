@@ -1,4 +1,4 @@
-import { spacesConstants } from './spacesAdministrationConstants.js';
+import { spacesConstants } from '../js/spacesConstants.js';
 
 export function getSpaces(){
   return fetch(`${spacesConstants.SOCIAL_SPACE_API}?sort=date&order=desc&limit=${spacesConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());

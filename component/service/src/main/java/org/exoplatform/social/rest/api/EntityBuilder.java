@@ -149,7 +149,6 @@ public class EntityBuilder {
     userEntity.setIms(getSubListByProperties((List<Map<String, String>>) profile.getProperty(Profile.CONTACT_IMS), getImsProperties()));
     userEntity.setUrls(getSubListByProperties((List<Map<String, String>>) profile.getProperty(Profile.CONTACT_URLS), getUrlProperties()));
     userEntity.setDeleted(profile.getIdentity().isDeleted());
-    updateCachedEtagValue(getEtagValue(profile.getId()));
     return userEntity;
   }
 

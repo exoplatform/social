@@ -78,7 +78,7 @@
 </template>
 <script>
 import * as spacesAdministrationServices from '../spacesAdministrationServices';
-import { spacesConstants } from '../spacesAdministrationConstants';
+import { spacesConstants } from '../../js/spacesConstants';
 
 export default {
   data() {
