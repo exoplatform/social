@@ -44,15 +44,15 @@
           var checkbox = parent.find('input[type=checkbox]');
           var checkProcess = function(input) {
             if(input.is(':checked')) {
-              var existingMandatory = parent.find('.control-group').eq(4).find('.controls').find('>span').length > 0;
+              var existingMandatory = parent.find('.control-group').eq(5).find('.controls').find('>span').length > 0;
               if (!existingMandatory) {
-                parent.find('.control-group').eq(4)
+                parent.find('.control-group').eq(5)
                   .find('.controls').append($("<span> *  </span>"));
               }
-              parent.find('.control-group').eq(5).hide();
+              parent.find('.control-group').eq(6).hide();
             } else {
-              parent.find('.control-group').eq(5).show();
-              parent.find('.control-group').eq(4)
+              parent.find('.control-group').eq(6).show();
+              parent.find('.control-group').eq(5)
               		.find('.controls').find('span').remove();
             }
           }
