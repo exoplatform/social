@@ -22,20 +22,32 @@ public class UserProfileHelperTest {
         experience1.put(Profile.EXPERIENCES_ID, "1");
         experience1.put(Profile.EXPERIENCES_COMPANY, "Google");
         experience1.put(Profile.EXPERIENCES_POSITION, "Developer");
-        experience1.put(Profile.EXPERIENCES_IS_CURRENT, "false");
+        experience1.put(Profile.EXPERIENCES_IS_CURRENT, "true");
+        experience1.put(Profile.EXPERIENCES_START_DATE,"01/09/2001");
         experiences.add(experience1);
         Map<String, String> experience2 = new HashMap<>();
         experience2.put(Profile.EXPERIENCES_ID, "2");
         experience2.put(Profile.EXPERIENCES_COMPANY, "eXo");
         experience2.put(Profile.EXPERIENCES_POSITION, "Developer");
-        experience2.put(Profile.EXPERIENCES_IS_CURRENT, "true");
+        experience2.put(Profile.EXPERIENCES_IS_CURRENT, "false");
+        experience2.put(Profile.EXPERIENCES_START_DATE,"01/09/2003");
+        experience2.put(Profile.EXPERIENCES_END_DATE,"01/09/2004");
         experiences.add(experience2);
         Map<String, String> experience3 = new HashMap<>();
         experience3.put(Profile.EXPERIENCES_ID, "3");
         experience3.put(Profile.EXPERIENCES_COMPANY, "Apple");
         experience3.put(Profile.EXPERIENCES_POSITION, "Developer");
-        experience3.put(Profile.EXPERIENCES_IS_CURRENT, "false");
+        experience3.put(Profile.EXPERIENCES_IS_CURRENT, "true");
+        experience3.put(Profile.EXPERIENCES_START_DATE,"01/09/2007");
         experiences.add(experience3);
+        Map<String, String> experience4 = new HashMap<>();
+        experience4.put(Profile.EXPERIENCES_ID, "4");
+        experience4.put(Profile.EXPERIENCES_COMPANY, "Youtube");
+        experience4.put(Profile.EXPERIENCES_POSITION, "Developer");
+        experience4.put(Profile.EXPERIENCES_IS_CURRENT, "false");
+        experience4.put(Profile.EXPERIENCES_START_DATE,"01/09/2005");
+        experience4.put(Profile.EXPERIENCES_END_DATE,"01/12/2006");
+        experiences.add(experience4);
         profile.setProperty(Profile.EXPERIENCES, experiences);
 
         // When
@@ -43,11 +55,12 @@ public class UserProfileHelperTest {
 
         // Then
         assertNotNull(displayExperiences);
-        assertEquals(3, displayExperiences.size());
+        assertEquals(4, displayExperiences.size());
         // The current experience must be the first one
-        assertEquals("2", displayExperiences.get(0).get(Profile.EXPERIENCES_ID));
+        assertEquals("3", displayExperiences.get(0).get(Profile.EXPERIENCES_ID));
         assertEquals("1", displayExperiences.get(1).get(Profile.EXPERIENCES_ID));
-        assertEquals("3", displayExperiences.get(2).get(Profile.EXPERIENCES_ID));
+        assertEquals("4", displayExperiences.get(2).get(Profile.EXPERIENCES_ID));
+        assertEquals("2", displayExperiences.get(3).get(Profile.EXPERIENCES_ID));
     }
 
     @Test
