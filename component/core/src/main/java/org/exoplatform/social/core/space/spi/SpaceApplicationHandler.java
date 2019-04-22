@@ -16,7 +16,10 @@
  */
 package org.exoplatform.social.core.space.spi;
 
+import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
+import org.exoplatform.social.core.space.SpaceTemplate;
+import org.exoplatform.social.core.space.SpaceTemplateConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 
@@ -28,7 +31,7 @@ import org.exoplatform.social.core.space.model.Space;
  * @since  Oct 17, 2008
  */
 
-public interface SpaceApplicationHandler {
+public interface SpaceApplicationHandler extends ComponentPlugin {
 
   /**
    * Initializes home space applications and space applications.
@@ -38,7 +41,18 @@ public interface SpaceApplicationHandler {
    * @throws SpaceException
    * @since 1.2.0-GA
    */
-  public void initApps(Space space, SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) throws SpaceException;
+//  @Deprecated
+//  public void initApps(Space space, SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) throws SpaceException;
+
+  /**
+   * Initializes home space applications and space applications.
+   *
+   * @param space
+   * @param spaceTemplate
+   * @throws SpaceException
+   * @since 1.2.0-GA
+   */
+  public void initApps(Space space, SpaceTemplate spaceTemplate) throws SpaceException;
 
   /**
    * De-initializes a space application.

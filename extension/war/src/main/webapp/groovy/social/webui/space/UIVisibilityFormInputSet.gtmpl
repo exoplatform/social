@@ -37,3 +37,8 @@ jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addS
     </div>
     <div class="center"><% uicomponent.renderChild(UIFormInputInfo.class); %></div>
 </div>
+<style>
+#UIPopupAddSpace h5.title {
+    display: none;
+}
+</style>

@@ -62,6 +62,12 @@
 				<label class="control-label" for="<%=uiform.SPACE_DESCRIPTION%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
 				<div class="controls"><% uiform.renderField(uiform.SPACE_DESCRIPTION); %></div>
 			</div>
+			<% if (uicomponent.isSpaceTemplatesActive()) { %>
+				<div class="control-group">
+					<label class="control-label" for="<%=uiform.SPACE_TEMPLATE%>"><%=_ctx.appRes(uicomponent.getId() + ".label.template")%></label>
+					<div class="controls"><% uiform.renderField(uiform.SPACE_TEMPLATE); %></div>
+				</div>
+			<% } %>
 		</div>
 	</div>
 	<div class="uiAction uiActionBorder"><button class="btn" type="button" onclick="$saveAction">$saveLabel</button></div>

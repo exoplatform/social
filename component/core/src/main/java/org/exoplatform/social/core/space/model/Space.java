@@ -54,8 +54,8 @@ public class Space {
   /** The invited users. */
   private String[] invitedUsers;
 
-  /** The type. */
-  private String type;
+  /** The template. */
+  private String template;
 
   /** The url. */
   private String url;
@@ -384,18 +384,39 @@ public class Space {
    * Sets the type.
    *
    * @param type the new type
+   **@deprecated Use {@link #setTemplate(String)} instead
    */
+  @Deprecated
   public void setType(String type) {
-    this.type = type;
+    this.template = type;
+  }
+
+  /**
+   * Sets the template.
+   *
+   * @param template the new template
+   */
+  public void setTemplate(String template) {
+    this.template = template;
   }
 
   /**
    * Gets the type.
    *
    * @return the type
+   **@deprecated Use {@link #getTemplate()} instead
    */
   public String getType() {
-    return type;
+    return template;
+  }
+
+  /**
+   * Gets the template.
+   *
+   * @return the template
+   */
+  public String getTemplate() {
+    return template;
   }
 
   /**

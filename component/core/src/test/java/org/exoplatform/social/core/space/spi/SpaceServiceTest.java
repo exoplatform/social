@@ -2779,12 +2779,12 @@ public class SpaceServiceTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link SpaceService#setSpaceApplicationConfigPlugin(org.exoplatform.social.core.space.SpaceApplicationConfigPlugin)}
+   * Test {@link SpaceService#addSpaceTemplateConfigPlugin(SpaceTemplateConfigPlugin)} (org.exoplatform.social.core.space.spaceTemplateConfigPlugin)}
    *
    * @throws Exception
    * @since 1.2.0-GA
    */
-  public void testSetSpaceApplicationConfigPlugin() throws Exception {
+  public void testAddSpaceTemplateConfigPlugin() throws Exception {
     //TODO Complete this
   }
 
@@ -2794,7 +2794,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  public void testGetSpaceApplicationConfigPlugin() throws Exception {
+  public void testGetSpaceTemplateConfigPlugin() throws Exception {
     //TODO Complete this
   }
   

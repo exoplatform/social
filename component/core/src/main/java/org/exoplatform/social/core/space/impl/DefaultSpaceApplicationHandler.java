@@ -29,6 +29,7 @@ import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -59,13 +60,11 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
-import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication;
-import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.*;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
 /**
@@ -80,6 +79,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   private static final Log LOG = ExoLogger.getLogger(DefaultSpaceApplicationHandler.class);
 
   public static final String NAME = "classic";
+
+  private static final String TEMPLATE_NAME_PARAM = "templateName";
 
   public static final String SPACE_TEMPLATE_PAGE_ID = "portal::classic::spacetemplate";
 
@@ -120,26 +121,34 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
 
   private SpaceService spaceService;
 
+  private SpaceTemplateService spaceTemplateService;
+
   private Map<ApplicationCategory, List<Application>> appStoreCache = null;
 
   private static List<Application> appCache = new ArrayList<Application>();
-  
-  private List<SpaceApplication> spaceApplications = new ArrayList<SpaceApplication>();
+
+  private String templateName;
 
   /**
    * Constructor.
    *
    * @param dataStorage
    */
-  public DefaultSpaceApplicationHandler(DataStorage dataStorage, PageService pageService) {
+  public DefaultSpaceApplicationHandler(InitParams params, DataStorage dataStorage, PageService pageService, SpaceTemplateService spaceTemplateService) {
     this.dataStorage = dataStorage;
     this.pageService = pageService;
+    this.spaceTemplateService = spaceTemplateService;
+    if (params == null) {
+      templateName = NAME;
+    } else {
+      templateName = params.getValueParam(TEMPLATE_NAME_PARAM).getValue();
+    }
   }
 
   /**
    * {@inheritDoc}
    */
-  public void initApps(Space space, SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) throws SpaceException {
+  public void initApps(Space space, SpaceTemplate spaceTemplate) throws SpaceException {
     try {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
@@ -148,16 +157,22 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       NodeContext<NodeContext<?>> parentNodeCtx = navService.loadNode(NodeModel.SELF_MODEL, navContext, Scope.CHILDREN, null);
 
       //
-      NodeContext<NodeContext<?>> homeNodeCtx = createPageNodeFromApplication(navContext, parentNodeCtx, space, spaceApplicationConfigPlugin.getHomeApplication(), null, true);
+      SpaceApplication homeApplication = spaceTemplate.getSpaceHomeApplication();
+      if (homeApplication == null) {
+        throw new IllegalStateException("Could not find space home application for template "
+            + spaceTemplate.getName() == null ? "" : spaceTemplate.getName() + ". Could not init space apps");
+      }
+      NodeContext<NodeContext<?>> homeNodeCtx = createPageNodeFromApplication(navContext, parentNodeCtx, space, homeApplication, null, true);
       SpaceService spaceService = getSpaceService();
 
 
-      spaceApplications = spaceApplicationConfigPlugin.getSpaceApplicationList();
-      for (SpaceApplication spaceApplication : spaceApplications) {
-        createPageNodeFromApplication(navContext, homeNodeCtx, space, spaceApplication, null, false);
-        spaceService.installApplication(space, spaceApplication.getPortletName());
+      List<SpaceApplication> spaceApplications = spaceTemplate.getSpaceApplicationList();
+      if (spaceApplications != null) {
+        for (SpaceApplication spaceApplication : spaceApplications) {
+          createPageNodeFromApplication(navContext, homeNodeCtx, space, spaceApplication, null, false);
+          spaceService.installApplication(space, spaceApplication.getPortletName());
+        }
       }
-      
       //commit the parentNode to JCR 
       navService.saveNode(parentNodeCtx, null);
     } catch (Exception e) {
@@ -200,7 +215,37 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    * {@inheritDoc}
    */
   public void activateApplication(Space space, String appId, String appName) throws SpaceException {
-    activateApplicationClassic(space, appId, appName);
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
+    NavigationContext navContext;
+    NodeContext<NodeContext<?>> homeNodeCtx = null;
+
+    try {
+      navContext = SpaceUtils.getGroupNavigationContext(space.getGroupId());
+      homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(navContext, space.getUrl());
+
+    } catch (Exception e) {
+      LOG.warn("space navigation not found.", e);
+      return;
+    }
+    SpaceApplication spaceApplication = null;
+    String spaceTemplateName = space.getTemplate();
+    SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(spaceTemplateName);
+    if (spaceTemplate == null) {
+      throw new IllegalStateException("Space template with name " + spaceTemplateName +" wasn't found");
+    }
+    for(SpaceApplication application : spaceTemplate.getSpaceApplicationList()){
+      if (appId.equals(application.getPortletName()) && !SpaceUtils.isInstalledApp(space, appId)) {
+        spaceApplication = application;
+      }
+    }
+
+    if(spaceApplication == null) {
+      spaceApplication = new SpaceApplication();
+      spaceApplication.setPortletName(appId);
+    }
+    createPageNodeFromApplication(navContext, homeNodeCtx, space, spaceApplication, appName, false);
+    navService.saveNode(homeNodeCtx, null);
   }
 
   /**
@@ -244,43 +289,22 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    * {@inheritDoc}
    */
   public String getName() {
-    return NAME;
+    return templateName;
   }
 
-  /**
-   * Activates classic application type in a space
-   *
-   * @param space
-   * @param appId
-   * @throws SpaceException
-   */
-  private void activateApplicationClassic(Space space, String appId, String appName) throws SpaceException {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
-    NavigationContext navContext;
-    NodeContext<NodeContext<?>> homeNodeCtx = null;
+  @Override
+  public void setName(String s) {
 
-    try {
-      navContext = SpaceUtils.getGroupNavigationContext(space.getGroupId());
-      homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(navContext, space.getUrl());
-      
-    } catch (Exception e) {
-      LOG.warn("space navigation not found.", e);
-      return;
-    }
-    SpaceApplication spaceApplication = null;
-    for(SpaceApplication application : getSpaceService().getSpaceApplicationConfigPlugin().getSpaceApplicationList()){
-      if (appId.equals(application.getPortletName()) && !SpaceUtils.isInstalledApp(space, appId)) {
-         spaceApplication = application;
-      }
-    }
+  }
 
-    if(spaceApplication == null) {
-      spaceApplication = new SpaceApplication();
-      spaceApplication.setPortletName(appId);
-    }
-    createPageNodeFromApplication(navContext, homeNodeCtx, space, spaceApplication, appName, false);
-    navService.saveNode(homeNodeCtx, null);
+  @Override
+  public String getDescription() {
+    return null;
+  }
+
+  @Override
+  public void setDescription(String s) {
+
   }
 
   /**
@@ -308,7 +332,12 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       
       if (removedNode == null) {
         // In case of cannot find the removed node, try one more time
-        spaceApplications = getSpaceService().getSpaceApplicationConfigPlugin().getSpaceApplicationList();
+        String spaceTemplateName = space.getTemplate();
+        SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(spaceTemplateName);
+        if (spaceTemplate == null) {
+          throw new IllegalStateException("Space template with name " + spaceTemplateName +" wasn't found");
+        }
+        List<SpaceApplication> spaceApplications = spaceTemplate.getSpaceApplicationList();
         for (SpaceApplication spaceApplication : spaceApplications) {
           if (appId.equals(spaceApplication.getPortletName())) {
             removedNode = spaceUserNode.getChild(spaceApplication.getUri());
@@ -617,7 +646,12 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     String[] persistenceChunks = Utils.split("/", persistenceid);
     PortletBuilder pb = new PortletBuilder();
 
-    List<SpaceApplication> spaceApplicationList = getSpaceService().getSpaceApplicationConfigPlugin().getSpaceApplicationList();
+    String spaceTemplateName = space.getTemplate();
+    SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(spaceTemplateName);
+    if (spaceTemplate == null) {
+      throw new IllegalStateException("Space template with name " + spaceTemplateName +" wasn't found");
+    }
+    List<SpaceApplication> spaceApplicationList = spaceTemplate.getSpaceApplicationList();
     SpaceApplication spaceApplication = null;
     for (Iterator<SpaceApplication> iterator = spaceApplicationList.iterator(); iterator.hasNext() && spaceApplication == null;) {
       SpaceApplication tmpSpaceApplication = iterator.next();

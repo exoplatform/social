@@ -17,7 +17,6 @@
 package org.exoplatform.social.core.space.spi;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
@@ -30,9 +29,9 @@ import java.util.List;
 
 /**
  * Provides methods to work with Space.
- * 
+ *
  * @since Aug 29, 2008
- * 
+ *
  */
 public interface SpaceService {
 
@@ -323,7 +322,7 @@ public interface SpaceService {
    * @return TRUE if the user request is pending. Otherwise, it is FALSE.
    * @LevelAPI Platform
    * @since 1.2.0-GA
-   * 
+   *
    */
   boolean isPendingUser(Space space, String userId);
 
@@ -355,7 +354,7 @@ public interface SpaceService {
    * @return TRUE if the user is in the list of invited users. Otherwise, it is FALSE.
    * @LevelAPI Platform
    * @since 1.2.0-GA
-   * 
+   *
    */
   boolean isInvitedUser(Space space, String userId);
 
@@ -427,12 +426,12 @@ public interface SpaceService {
    * @param userId The remote user Id.
    * @return "True" if the access permission is allowed. Otherwise, it returns "false".
    * @LevelAPI Platform
-   * 
+   *
    */
   boolean hasAccessPermission(Space space, String userId);
 
   /**
-   * Checks if a given user has the setting permission to a space or not. 
+   * Checks if a given user has the setting permission to a space or not.
    *
    * @param space The space that its user is checked if he has the setting permission or not.
    * @param userId The remote user Id.
@@ -469,6 +468,7 @@ public interface SpaceService {
    * @LevelAPI Platform
    * @since 1.2.0-GA
    */
+  @Deprecated
   void setSpaceApplicationConfigPlugin(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin);
 
   /**
@@ -477,6 +477,7 @@ public interface SpaceService {
    * @return The space application config plugin.
    * @LevelAPI Platform
    */
+  @Deprecated
   SpaceApplicationConfigPlugin getSpaceApplicationConfigPlugin();
 
   /**
@@ -563,7 +564,7 @@ public interface SpaceService {
    * @since 1.2.5-GA
    */
   public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter) throws SpaceException;
-  
+
   /**
    * Gets spaces that a given user can see.
    * @param userId Id of the user.
@@ -573,7 +574,7 @@ public interface SpaceService {
    * @since 1.2.5-GA
    */
   public SpaceListAccess getVisibleSpacesWithListAccess(String userId, SpaceFilter spaceFilter);
-  
+
   /**
    * Provides the Unified Search feature to get spaces that a user can see.
    * @param userId Id of the user.
@@ -583,7 +584,7 @@ public interface SpaceService {
    * @since 4.0.0-GA
    */
   public SpaceListAccess getUnifiedSearchSpacesWithListAccess(String userId, SpaceFilter spaceFilter);
-  
+
   /**
    * Gets spaces that a given user has the edit permission.
    *
@@ -663,7 +664,7 @@ public interface SpaceService {
 
   /**
    * Renames a space.
-   * 
+   *
    * @param space The space to be renamed.
    * @param newDisplayName New name of the space.
    * @throws SpaceException
@@ -671,10 +672,10 @@ public interface SpaceService {
    * @since 1.2.8
    */
   void renameSpace(Space space, String newDisplayName) throws SpaceException;
-  
+
   /**
    * Renames a space by an identity who has rights of super admin.
-   * 
+   *
    * @param remoteId The identity who has renamed a space.
    * @param space The space to be renamed.
    * @param newDisplayName New name of the space.
@@ -683,7 +684,7 @@ public interface SpaceService {
    * @since 4.0.0
    */
   void renameSpace(String remoteId, Space space, String newDisplayName) throws SpaceException;
-  
+
   /**
    * Deletes a space by its Id.
    *
@@ -882,7 +883,7 @@ public interface SpaceService {
   /**
    * Checks if a user can access a space or not.
    * If the user is root or the space's member, the "true" value is returned.
-   * 
+   *
    * @param spaceId Id of the space.
    * @param userId Id of the user (remoteId).
    * @return "True" if the user has the access permission. "False" if the user does not have the access permission.
@@ -1081,7 +1082,7 @@ public interface SpaceService {
    * @LevelAPI Platform
    */
   void removeApplication(String spaceId, String appId, String appName) throws SpaceException;
-  
+
   /**
    * Updates the most recently accessed space of a user to the top of spaces list.
    *
@@ -1090,7 +1091,7 @@ public interface SpaceService {
    * @LevelAPI Platform
    */
   void updateSpaceAccessed(String remoteId, Space space) throws SpaceException;
-  
+
   /**
    * Gets a list of the most recently accessed spaces of a user.
    *
@@ -1120,7 +1121,7 @@ public interface SpaceService {
    * @LevelAPI Platform
    */
   ListAccess<Space> getLastAccessedSpace(String remoteId, String appId);
-  
+
 
   /**
    * Requests to join a space, then adds the requester to the list of pending spaces.
@@ -1372,7 +1373,7 @@ public interface SpaceService {
 
   /**
    * Gets the list of spaces which are visited by users
-   * 
+   *
    * @param remoteId
    * @param appId
    * @return
@@ -1381,9 +1382,10 @@ public interface SpaceService {
 
   /**
    * Checks if the user is a super manager of all spaces
-   * 
+   *
    * @param userId username
    * @return true if the user is member of super administrators groups, else false
    */
   boolean isSuperManager(String userId);
+
 }
