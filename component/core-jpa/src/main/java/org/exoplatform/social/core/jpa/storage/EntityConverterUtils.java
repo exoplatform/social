@@ -260,7 +260,7 @@ public class EntityConverterUtils {
     }
     spaceEntity.setCreatedDate(space.getCreatedTime() > 0 ? new Date(space.getCreatedTime()) : new Date());
     spaceEntity.setDescription(space.getDescription());
-    spaceEntity.setType(space.getType());
+    spaceEntity.setTemplate(space.getTemplate());
     spaceEntity.setDisplayName(space.getDisplayName());
     spaceEntity.setGroupId(space.getGroupId());
     spaceEntity.setPrettyName(space.getPrettyName());

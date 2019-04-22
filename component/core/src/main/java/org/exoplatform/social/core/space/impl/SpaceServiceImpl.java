@@ -16,13 +16,11 @@
  */
 package org.exoplatform.social.core.space.impl;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,8 +32,7 @@ import org.exoplatform.commons.api.notification.service.WebNotificationService;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.container.xml.ValuesParam;
+import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -51,13 +48,14 @@ import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.space.*;
-import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
@@ -79,24 +77,18 @@ public class SpaceServiceImpl implements SpaceService {
   private SpaceStorage                         spaceStorage;
 
   private IdentityStorage                      identityStorage;
-  
+
   private OrganizationService                  orgService               = null;
 
   private UserACL                              userACL                  = null;
 
-  private Map<String, SpaceApplicationHandler> spaceApplicationHandlers = null;
-
   private SpaceLifecycle                       spaceLifeCycle           = new SpaceLifecycle();
-  
-  List<String>                                 portletPrefsRequired = null;
 
-  private SpaceApplicationConfigPlugin         spaceApplicationConfigPlugin;
-  
-  private SpaceApplication spaceHomeApplication;
+  List<String>                                 portletPrefsRequired = null;
 
   /** The offset for list access loading. */
   private static final int                   OFFSET = 0;
-  
+
   /** The limit for list access loading. */
   private static final int                   LIMIT = 200;
 
@@ -104,70 +96,27 @@ public class SpaceServiceImpl implements SpaceService {
 
   private SpacesAdministrationService spacesAdministrationService;
 
+  private SpaceTemplateService spaceTemplateService;
+
+  private ConfigurationManager configurationManager;
+
   /**
    * SpaceServiceImpl constructor Initialize
    * <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
-   * 
-   * @param params
+   *
    * @throws Exception
    */
-  public SpaceServiceImpl(InitParams params, SpaceStorage spaceStorage, IdentityStorage identityStorage, UserACL userACL,
+  public SpaceServiceImpl(SpaceStorage spaceStorage, IdentityStorage identityStorage, UserACL userACL, ConfigurationManager configurationManager,
                           IdentityRegistry identityRegistry, WebNotificationService webNotificationService,
-                          SpacesAdministrationService spacesAdministrationService) throws Exception {
+                          SpacesAdministrationService spacesAdministrationService, SpaceTemplateService spaceTemplateService) throws Exception {
     this.spaceStorage = spaceStorage;
     this.identityStorage = identityStorage;
     this.identityRegistry = identityRegistry;
     this.userACL = userACL;
     this.webNotificationService = webNotificationService;
     this.spacesAdministrationService = spacesAdministrationService;
-
-    
-    if (params != null) {
-
-      //backward compatible
-      spaceApplicationConfigPlugin = new SpaceApplicationConfigPlugin();
-      Iterator<ValuesParam> it = params.getValuesParamIterator();
-
-      boolean deprecatedConfiguration = false;
-      while (it.hasNext()) {
-        ValuesParam param = it.next();
-        String name = param.getName();
-        if (name.endsWith("homeNodeApp")) {
-          String homeNodeApp = param.getValue();
-          spaceHomeApplication = new SpaceApplication();
-          spaceHomeApplication.setPortletName(homeNodeApp);
-          spaceHomeApplication.setAppTitle(homeNodeApp);
-          spaceHomeApplication.setIcon("SpaceHomeIcon");
-          spaceApplicationConfigPlugin.setHomeApplication(spaceHomeApplication);
-          deprecatedConfiguration = true;
-        } else if (name.endsWith("apps")) {
-          List<String> apps = param.getValues();
-          for (String app : apps) {
-            String[] splitedString = app.trim().split(":");
-            String appName;
-            boolean isRemovable;
-            if (splitedString.length >= 2) {
-              appName = splitedString[0];
-              isRemovable = Boolean.getBoolean(splitedString[1]);
-            } else { // suppose app is just the name
-              appName = app;
-              isRemovable = false;
-            }
-            SpaceApplication spaceApplication = new SpaceApplication();
-            spaceApplication.setPortletName(appName);
-            spaceApplication.isRemovable(isRemovable);
-
-            spaceApplicationConfigPlugin.addToSpaceApplicationList(spaceApplication);
-          }
-          deprecatedConfiguration = true;
-        }
-      }
-      if (deprecatedConfiguration) {
-        LOG.warn("The SpaceService configuration you attempt to use is deprecated, please update it by"
-            + " using external-component-plugins configuration");
-      }
-    }
-
+    this.spaceTemplateService = spaceTemplateService;
+    this.configurationManager = configurationManager;
   }
 
   /**
@@ -180,7 +129,7 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -273,14 +222,14 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public SpaceListAccess getAccessibleSpacesWithListAccess(String userId) {
     return new SpaceListAccess(this.spaceStorage, userId, SpaceListAccess.Type.ACCESSIBLE);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -291,14 +240,14 @@ public class SpaceServiceImpl implements SpaceService {
       throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public SpaceListAccess getVisibleSpacesWithListAccess(String userId, SpaceFilter spaceFilter) {
     if (isSuperManager(userId)) {
       if (spaceFilter == null)
-       return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ALL);
+        return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ALL);
       else
         return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ALL_FILTER);
     } else {
@@ -312,7 +261,7 @@ public class SpaceServiceImpl implements SpaceService {
   public SpaceListAccess getUnifiedSearchSpacesWithListAccess(String userId, SpaceFilter spaceFilter) {
     return new SpaceListAccess(this.spaceStorage, userId, spaceFilter,SpaceListAccess.Type.UNIFIED_SEARCH);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -356,7 +305,7 @@ public class SpaceServiceImpl implements SpaceService {
       return new SpaceListAccess(this.spaceStorage, userId, SpaceListAccess.Type.PUBLIC);
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -374,7 +323,7 @@ public class SpaceServiceImpl implements SpaceService {
   public SpaceListAccess getPendingSpacesWithListAccess(String userId) {
     return new SpaceListAccess(this.spaceStorage, userId, SpaceListAccess.Type.PENDING);
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -392,7 +341,7 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     if (!SpaceUtils.isValidSpaceName(space.getDisplayName())) {
-        throw new RuntimeException("Error while creating the space " + space.getDisplayName()+ ": space name can only contain letters, digits or space characters only");
+      throw new RuntimeException("Error while creating the space " + space.getDisplayName()+ ": space name can only contain letters, digits or space characters only");
     }
 
     if(!spacesAdministrationService.canCreateSpace(creator)) {
@@ -417,7 +366,7 @@ public class SpaceServiceImpl implements SpaceService {
 
     List<String> inviteds = new ArrayList<String>();
     if (invitedGroupId != null) { // Invites user in group join to new created
-                                  // space.
+      // space.
       // Gets users in group and then invites user to join into space.
       OrganizationService org = getOrgService();
       try {
@@ -446,39 +395,53 @@ public class SpaceServiceImpl implements SpaceService {
         throw new RuntimeException("Failed to invite users from group " + invitedGroupId, e);
       }
     }
-    
+
     String prettyName = groupId.split("/")[2];
-    
+
     if (!prettyName.equals(space.getPrettyName())) {
       //work around for SOC-2366
       space.setPrettyName(groupId.split("/")[2]);
     }
-    
+
 
     space.setGroupId(groupId);
     space.setUrl(space.getPrettyName());
 
     try {
-      SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
-      spaceApplicationHandler.initApps(space, getSpaceApplicationConfigPlugin());
-      for (SpaceApplication spaceApplication : getSpaceApplicationConfigPlugin().getSpaceApplicationList()) {
-        setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(),
-               Space.ACTIVE_STATUS);
+      String spaceType = space.getTemplate();
+      SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(spaceType);
+      if (spaceTemplate == null) {
+        LOG.warn("could not find space template of type {}, will use Default template", spaceType);
+        String defaultTemplate = spaceTemplateService.getDefaultSpaceTemplate();
+        spaceTemplate = spaceTemplateService.getSpaceTemplateByName(defaultTemplate);
+        space.setTemplate(defaultTemplate);
       }
-      
-      
+      String bannerPath = spaceTemplate.getBannerPath();
+      if (StringUtils.isNotBlank(bannerPath)) {
+        try {
+          InputStream bannerStream = configurationManager.getInputStream(bannerPath);
+          if (bannerStream != null) {
+            BannerAttachment bannerAttachment = new BannerAttachment(null, "banner", "png", bannerStream, null, System.currentTimeMillis());
+            space.setBannerAttachment(bannerAttachment);
+          }
+        } catch (Exception e) {
+          LOG.warn("No file found for space banner at path {}", bannerPath);
+        }
+      }
+      SpaceApplicationHandler applicationHandler = getSpaceApplicationHandler(space);
+      spaceTemplateService.initSpaceApplications(space, applicationHandler);
     } catch (Exception e) {
       throw new RuntimeException("Failed to init apps for space " + space.getPrettyName(), e);
     }
-    
+
     saveSpace(space, true);
     spaceLifeCycle.spaceCreated(space, creator);
-    
+
     //process invited user list
     for (String invited : inviteds) {
       spaceLifeCycle.addInvitedUser(space, invited);
     }
-    
+    updateSpaceBanner(space);
     return space;
   }
 
@@ -496,7 +459,7 @@ public class SpaceServiceImpl implements SpaceService {
       String oldRegistration = oldSpace.getRegistration();
       String registration = space.getRegistration();
       if ((oldRegistration == null && registration != null)
-              || (oldRegistration != null && !oldRegistration.equals(registration))) {
+          || (oldRegistration != null && !oldRegistration.equals(registration))) {
         spaceLifeCycle.spaceRegistrationEdited(space, space.getEditor());
       }
     }
@@ -509,27 +472,27 @@ public class SpaceServiceImpl implements SpaceService {
     spaceStorage.renameSpace(space, newDisplayName);
     spaceLifeCycle.spaceRenamed(space, space.getEditor());
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void renameSpace(String remoteId, Space space, String newDisplayName) {
-    
-    if (remoteId != null && 
+
+    if (remoteId != null &&
         isSuperManager(remoteId) &&
         isMember(space, remoteId) == false) {
 
       spaceStorage.renameSpace(remoteId, space, newDisplayName);
-      
+
     } else {
-      
+
       spaceStorage.renameSpace(space, newDisplayName);
     }
-    
+
     //
     spaceLifeCycle.spaceRenamed(space, space.getEditor());
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -540,12 +503,12 @@ public class SpaceServiceImpl implements SpaceService {
       if (spaceIdentity != null) {
         identityStorage.hardDeleteIdentity(spaceIdentity);
       }
-      
+
       // remove memberships of users with deleted space.
       SpaceUtils.removeMembershipFromGroup(space);
-      
+
       spaceStorage.deleteSpace(space.getId());
-      
+
       OrganizationService orgService = getOrgService();
       UserACL acl = getUserACL();
       GroupHandler groupHandler = orgService.getGroupHandler();
@@ -558,10 +521,10 @@ public class SpaceServiceImpl implements SpaceService {
       } else {
         LOG.warn("deletedGroup is null");
       }
-      
+
       //remove pages and group navigation of space
       SpaceUtils.removePagesAndGroupNavigation(space);
-      
+
     } catch (Exception e) {
       LOG.error("Unable delete space", e);
     }
@@ -577,7 +540,7 @@ public class SpaceServiceImpl implements SpaceService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @deprecated Uses {@link #initApps(Space)} instead.
    */
   public void initApp(Space space) throws SpaceException {
@@ -703,7 +666,7 @@ public class SpaceServiceImpl implements SpaceService {
   public List<String> getMembers(Space space) {
     if (space.getMembers() != null) {
       return Arrays.asList(space.getMembers());
-    } 
+    }
     return new ArrayList<String> ();
   }
 
@@ -726,7 +689,7 @@ public class SpaceServiceImpl implements SpaceService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * If isLeader == true, that user will be assigned "manager" membership and the "member" membership will be removed.
    * Otherwise, that user will be assigned "member" membership and the "manager" membership will be removed.
    */
@@ -780,8 +743,8 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public boolean hasAccessPermission(Space space, String userId) {
-    if (isSuperManager(userId) 
-        || (ArrayUtils.contains(space.getMembers(), userId)) 
+    if (isSuperManager(userId)
+        || (ArrayUtils.contains(space.getMembers(), userId))
         || (ArrayUtils.contains(space.getManagers(), userId))) {
       return true;
     }
@@ -891,7 +854,7 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.activateApplication(space, appId, appName);
     // Default is removable, or must be added by configuration or support setting for applications.
-    setApp(space, appId, appName, true, Space.ACTIVE_STATUS);
+    spaceTemplateService.setApp(space, appId, appName, true, Space.ACTIVE_STATUS);
     saveSpace(space, false);
     // Use portletId instead of appId for fixing SOC-1633.
     spaceLifeCycle.activateApplication(space, getPortletId(appId));
@@ -917,7 +880,7 @@ public class SpaceServiceImpl implements SpaceService {
       return;
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.deactiveApplication(space, appId);
-    setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.DEACTIVE_STATUS);
+    spaceTemplateService.setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.DEACTIVE_STATUS);
     saveSpace(space, false);
     spaceLifeCycle.deactivateApplication(space, getPortletId(appId));
   }
@@ -1098,26 +1061,8 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   /**
-   * {@inheritDoc}
-   */
-  public void setSpaceApplicationConfigPlugin(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) {
-    // If not specify homeApplication configuration, use default from Social
-    if (spaceApplicationConfigPlugin.getHomeApplication() == null) {
-      spaceApplicationConfigPlugin.setHomeApplication(this.spaceHomeApplication);
-    }
-    this.spaceApplicationConfigPlugin = spaceApplicationConfigPlugin;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public SpaceApplicationConfigPlugin getSpaceApplicationConfigPlugin() {
-    return spaceApplicationConfigPlugin;
-  }
-
-  /**
    * Gets OrganizationService
-   * 
+   *
    * @return organizationService
    */
   private OrganizationService getOrgService() {
@@ -1130,7 +1075,7 @@ public class SpaceServiceImpl implements SpaceService {
 
   /**
    * Gets UserACL
-   * 
+   *
    * @return userACL
    */
   private UserACL getUserACL() {
@@ -1138,72 +1083,29 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   /**
-   * Gets space application handlers
-   * 
-   * @return
-   */
-  private Map<String, SpaceApplicationHandler> getSpaceApplicationHandlers() {
-    if (this.spaceApplicationHandlers == null) {
-      this.spaceApplicationHandlers = new HashMap<>();
-
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      SpaceApplicationHandler appHandler =
-         (DefaultSpaceApplicationHandler) container.getComponentInstanceOfType(DefaultSpaceApplicationHandler.class);
-      this.spaceApplicationHandlers.put(appHandler.getName(), appHandler);
-    }
-    return this.spaceApplicationHandlers;
-  }
-
-  /**
    * Gets space application handler
-   * 
+   *
    * @param space
    * @return
    * @throws SpaceException
    */
   private SpaceApplicationHandler getSpaceApplicationHandler(Space space) throws SpaceException {
-    SpaceApplicationHandler appHandler = getSpaceApplicationHandlers().get(space.getType());
-    if (appHandler == null)
-      throw new SpaceException(SpaceException.Code.UNKNOWN_SPACE_TYPE);
+    String spaceTemplate = space.getTemplate();
+    SpaceApplicationHandler appHandler = spaceTemplateService.getSpaceApplicationHandlers().get(spaceTemplate);
+    if (appHandler == null) {
+      LOG.debug("No space application handler was defined for template with name {}. Default will be used.", spaceTemplate);
+      String defaultTemplate = spaceTemplateService.getDefaultSpaceTemplate();
+      appHandler = spaceTemplateService.getSpaceApplicationHandlers().get(defaultTemplate);
+      if (appHandler == null) {
+        throw new SpaceException(SpaceException.Code.UNKNOWN_SPACE_TYPE);
+      }
+    }
     return appHandler;
   }
 
   /**
-   * an application status is composed with the form of:
-   * [appId:appDisplayName:isRemovableString:status]. And space app properties is the combined
-   * of application statuses separated by a comma (,). For example:
-   * space.getApp() ="SpaceSettingPortlet:SpaceSettingPortletName:false:active,MembersPortlet:MembersPortlet:true:active"
-   * ;
-   * 
-   * @param space
-   * @param appId
-   * @param appName
-   * @param isRemovable
-   * @param status
-   * @throws SpaceException
-   */
-  public void setApp(Space space, String appId, String appName, boolean isRemovable, String status) throws SpaceException {
-    String apps = space.getApp();
-    // an application status is composed with the form of
-    // [appId:appName:isRemovableString:status]
-    String applicationStatus = appId + ":" + appName;
-    if (isRemovable) {
-      applicationStatus += ":true";
-    } else {
-      applicationStatus += ":false";
-    }
-    applicationStatus += ":" + status;
-    if (apps == null) {
-      apps = applicationStatus;
-    } else {
-      apps += "," + applicationStatus;
-    }
-    space.setApp(apps);
-  }
-
-  /**
    * Removes application from a space
-   * 
+   *
    * @param space
    * @param appId
    * @throws SpaceException
@@ -1248,7 +1150,7 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   /**
-   * 
+   *
    * @param storage
    * @deprecated  To be removed at 1.3.x
    */
@@ -1281,8 +1183,8 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void addPendingUser(Space space, String userId) {
     if (ArrayUtils.contains(space.getMembers(),userId)) {
-        //user is already member. Do nothing
-        return;
+      //user is already member. Do nothing
+      return;
     }
 
     if (ArrayUtils.contains(space.getPendingUsers(), userId)) {
@@ -1291,7 +1193,7 @@ public class SpaceServiceImpl implements SpaceService {
       this.updateSpace(space);
       return;
     }
-    
+
     String registration = space.getRegistration();
     String visibility = space.getVisibility();
     if (visibility.equals(Space.HIDDEN) && registration.equals(Space.CLOSE)) {
@@ -1313,7 +1215,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public ListAccess<Space> getAccessibleSpacesByFilter(String userId, SpaceFilter spaceFilter) {
-    if (isSuperManager(userId) 
+    if (isSuperManager(userId)
         && (spaceFilter == null || spaceFilter.getAppId() == null)) {
       if(spaceFilter == null) {
         return new SpaceListAccess(this.spaceStorage, spaceFilter, SpaceListAccess.Type.ALL);
@@ -1497,7 +1399,7 @@ public class SpaceServiceImpl implements SpaceService {
         space.setManagers(managers);
         this.updateSpace(space);
         SpaceUtils.removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
-        Space updatedSpace = getSpaceById(space.getId()); 
+        Space updatedSpace = getSpaceById(space.getId());
         if (isMember(updatedSpace, userId)) {
           spaceLifeCycle.revokedLead(space, userId);
         }
@@ -1510,6 +1412,18 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void unregisterSpaceListenerPlugin(SpaceListenerPlugin spaceListenerPlugin) {
     spaceLifeCycle.removeListener(spaceListenerPlugin);
+  }
+
+  @Override
+  @Deprecated
+  public void setSpaceApplicationConfigPlugin(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) {
+    LOG.warn("setSpaceApplicationConfigPlugin method has been deprecated, please use addSpaceTemplateConfigPlugin method from SpaceTemplateConfigPlugin class");
+  }
+
+  @Override
+  @Deprecated
+  public SpaceApplicationConfigPlugin getSpaceApplicationConfigPlugin() {
+    return null;
   }
 
   /**
@@ -1532,7 +1446,7 @@ public class SpaceServiceImpl implements SpaceService {
       profile.setProperty(Profile.AVATAR, existingSpace.getAvatarAttachment());
     } else {
       profile.removeProperty(Profile.AVATAR);
-      profile.setAvatarUrl(null); 
+      profile.setAvatarUrl(null);
       profile.setAvatarLastUpdated(null);
     }
     identityStorage.updateProfile(profile);
@@ -1560,26 +1474,26 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   /**
-   * {@inheritDoc} 
+   * {@inheritDoc}
    */
   public ListAccess<Space> getInvitedSpacesWithListAccess(String userId) {
     return new SpaceListAccess(this.spaceStorage, userId, SpaceListAccess.Type.INVITED);
   }
-  
+
   /**
    * Returns portlet id.
    */
   private String getPortletId(String appId) {
     final char SEPARATOR = '.';
-    
+
     if (appId.indexOf(SEPARATOR) != -1) {
       int beginIndex = appId.lastIndexOf(SEPARATOR) + 1;
       int endIndex = appId.length();
-    
+
       return appId.substring(beginIndex, endIndex);
     }
-    
-    return appId;  
+
+    return appId;
   }
 
   @Override
@@ -1598,12 +1512,12 @@ public class SpaceServiceImpl implements SpaceService {
   public List<Space> getLastSpaces(int limit) {
     return spaceStorage.getLastSpaces(limit);
   }
-  
+
   @Override
   public ListAccess<Space> getLastAccessedSpace(String remoteId, String appId) {
     return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.LASTEST_ACCESSED);
   }
-  
+
   public ListAccess<Space> getVisitedSpaces(String remoteId, String appId) {
     return new SpaceListAccess(this.spaceStorage, remoteId, appId, SpaceListAccess.Type.VISITED);
   }
@@ -1653,4 +1567,3 @@ public class SpaceServiceImpl implements SpaceService {
     return editor;
   }
 }
-

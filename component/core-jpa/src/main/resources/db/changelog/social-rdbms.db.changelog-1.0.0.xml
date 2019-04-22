@@ -551,5 +551,8 @@
     <sql dbms="oracle">UPDATE SOC_IDENTITY_EXPERIENCES SET EXPERIENCE_ID=SEQ_SOC_EXPERIENCE_ID.nextval;</sql>
     <addPrimaryKey tableName="SOC_IDENTITY_EXPERIENCES" columnNames="EXPERIENCE_ID"></addPrimaryKey>
   </changeSet>
+  <changeSet author="social" id="1.0.0-61">
+    <renameColumn tableName="SOC_SPACES" oldColumnName="TYPE" newColumnName="TEMPLATE" columnDataType="NVARCHAR(200)"/>
+  </changeSet>
 
 </databaseChangeLog>

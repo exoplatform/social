@@ -25,9 +25,6 @@
   import org.exoplatform.webui.form.input.UICheckBoxInput;
   
   def lblCheckbox = _ctx.appRes("${uicomponent.id}.label.checkbox");
-  def lblDescription = _ctx.appRes("${uicomponent.id}.label.description");
-  def lblDescription_hasGroupManagerRole = _ctx.appRes("${uicomponent.id}.label.description_hasGroupManagerRole");
-  def lblDescription_notHasGroupManagerRole = _ctx.appRes("${uicomponent.id}.label.description_notHasGroupManagerRole");
   def lblSelectedGroup = _ctx.appRes("${uicomponent.id}.label.selected_group");
   
   def uiCheckbox = uicomponent.getChild(UICheckBoxInput.class);
@@ -42,17 +39,9 @@
   <%if (hasGroupWithManagerRole) {
     uiCheckbox.setEnable(true); %>
 	  <div class="uiGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %></div>
-	  <div class="uiGroupBoundDescription">
-	    <%= lblDescription %>
- 	    <%= lblDescription_hasGroupManagerRole %>
-	  </div>
   <% } else {
     uiCheckbox.setEnable(false); %>
 	  <div class="uiGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %> </div>
-	    <%= lblDescription %>
-	    <div class="informationIcon">
-        <%= lblDescription_notHasGroupManagerRole %>
-	 	</div>
   <% } %>
   <div class="groupBoundPopup"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

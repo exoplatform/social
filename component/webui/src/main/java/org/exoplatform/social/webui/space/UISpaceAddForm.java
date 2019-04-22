@@ -20,22 +20,23 @@ package org.exoplatform.social.webui.space;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceTemplate;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.SpacesAdministrationService;
-import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.social.webui.UISocialGroupSelector;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -49,11 +50,10 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIFormInputInfo;
-import org.exoplatform.webui.form.UIFormInputSet;
-import org.exoplatform.webui.form.UIFormRadioBoxInput;
-import org.exoplatform.webui.form.UIFormTabPane;
+import org.exoplatform.webui.form.*;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
+
+import static org.exoplatform.social.webui.space.UISpaceSettings.SPACE_TEMPLATE;
 
 /**
  * UIAddSpaceForm to create new space. By using this UIForm, user can create a
@@ -64,16 +64,16 @@ import org.exoplatform.webui.form.input.UICheckBoxInput;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",
+  template = "system:/groovy/webui/form/UIFormWithTitle.gtmpl",
   events = {
-    @EventConfig(listeners = UIFormTabPane.SelectTabActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UISpaceAddForm.CreateActionListener.class),
     @EventConfig(listeners = UISpaceAddForm.ToggleUseGroupActionListener.class, phase = Phase.DECODE),
-    @EventConfig(listeners = UISpaceAddForm.ChangeOptionActionListener.class, phase = Phase.DECODE)
+    @EventConfig(listeners = UISpaceAddForm.ChangeOptionActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UISpaceAddForm.ChangeTemplateActionListener.class, phase = Phase.DECODE)
   }
 )
 
-public class UISpaceAddForm extends UIFormTabPane {
+public class UISpaceAddForm extends UIForm {
 
   private static final Log LOG = ExoLogger.getLogger(UISpaceAddForm.class);
   
@@ -101,7 +101,6 @@ public class UISpaceAddForm extends UIFormTabPane {
    * @throws Exception
    */
   public UISpaceAddForm() throws Exception {
-    super("UISpaceAddForm");
     UISpaceSettings uiSpaceSettings = new UISpaceSettings(SPACE_SETTINGS);
     addChild(uiSpaceSettings);
 
@@ -112,7 +111,6 @@ public class UISpaceAddForm extends UIFormTabPane {
     addChild(UISpaceGroupBound.class, null, null);
 
     setActions(new String[]{"Create"});
-    setSelectedTab(1);
   }
 
   @Override
@@ -173,8 +171,6 @@ public class UISpaceAddForm extends UIFormTabPane {
         if (identity != null) {
           space.setPrettyName(SpaceUtils.buildPrettyName(space));
         }
-
-        space.setType(DefaultSpaceApplicationHandler.NAME);
         if(!spacesAdministrationService.canCreateSpace(ctx.getRemoteUser())) {
           throw new SpaceException(SpaceException.Code.SPACE_PERMISSION);
         } else {   
@@ -288,6 +284,25 @@ public class UISpaceAddForm extends UIFormTabPane {
       } else {
         uiFormInfo.setValue(hiddenSpace);
       }
+    }
+  }
+
+  static public class ChangeTemplateActionListener extends EventListener<UISpaceAddForm> {
+    public void execute(Event<UISpaceAddForm> event) throws Exception {
+      UISpaceAddForm uiSpaceAddForm = event.getSource();
+      UISpaceSettings uiSpaceSettings = uiSpaceAddForm.getChild(UISpaceSettings.class);
+      String templateName = uiSpaceSettings.getUIFormSelectBox(SPACE_TEMPLATE).getValue();
+      SpaceTemplateService spaceTemplateService = PortalContainer.getInstance().getComponentInstanceOfType(SpaceTemplateService.class);
+      SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(templateName);
+      String visibility = spaceTemplate.getVisibility();
+      String registration = spaceTemplate.getRegistration();
+      UISpaceAddForm uiForm = uiSpaceSettings.getAncestorOfType(UISpaceAddForm.class);
+      UISpaceVisibility uiSpaceVisibility = uiForm.findFirstComponentOfType(UISpaceVisibility.class);
+      UIFormRadioBoxInput uiVisibility = uiSpaceVisibility.findComponentById(uiSpaceVisibility.UI_SPACE_VISIBILITY);
+      UIFormRadioBoxInput uiRegistration = uiSpaceVisibility.findComponentById(uiSpaceVisibility.UI_SPACE_REGISTRATION);
+      uiVisibility.setValue(visibility);
+      uiRegistration.setValue(registration);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceVisibility);
     }
   }
 }

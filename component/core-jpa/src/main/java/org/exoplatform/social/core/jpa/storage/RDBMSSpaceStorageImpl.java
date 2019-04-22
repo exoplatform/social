@@ -661,7 +661,7 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
       space.setRegistration(entity.getRegistration().name().toLowerCase());
     }
     space.setDescription(entity.getDescription());
-    space.setType(entity.getType());
+    space.setTemplate(entity.getTemplate());
     if (entity.getVisibility() != null) {
       space.setVisibility(entity.getVisibility().name().toLowerCase());
     }

@@ -41,6 +41,9 @@ public class SpaceFilter {
   
   /** The appId search condition. */
   private String appId;
+
+  /** The template search condition. */
+  private String template;
   
   /** The default value for char type. */
   private static char CHAR_DEFAULT_VALUE = '\u0000';
@@ -148,6 +151,23 @@ public class SpaceFilter {
    */
   public void setAppId(String appId) {
     this.appId = appId;
+  }
+
+  /**
+   * Gets template to filter
+   * @return
+   */
+  public String getTemplate() {
+    return template;
+  }
+
+  /**
+   * Sets template to filter
+   * @param template
+   * @since 4.0
+   */
+  public void setTemplate(String template) {
+    this.template = template;
   }
 
   /**

@@ -66,10 +66,10 @@ public class UISpaceVisibility extends UIFormInputSet {
     List<SelectItemOption<String>> spaceRegistration = new ArrayList<SelectItemOption<String>>(3);
 
     SelectItemOption<String> openOption = new SelectItemOption<String>(Space.OPEN);
+    openOption.setSelected(true);
     spaceRegistration.add(openOption);
 
     SelectItemOption<String> validationOption = new SelectItemOption<String>(Space.VALIDATION);
-    validationOption.setSelected(true);
     spaceRegistration.add(validationOption);
 
     SelectItemOption<String> closeOption = new SelectItemOption<String>(Space.CLOSE);
@@ -78,7 +78,7 @@ public class UISpaceVisibility extends UIFormInputSet {
     UIFormRadioBoxInput uiRadioRegistration = new UIFormRadioBoxInput(UI_SPACE_REGISTRATION,
                                                                       REGISTRATION_BINDING,
                                                                       spaceRegistration);
-    uiRadioRegistration.setValue(Space.VALIDATION);
+    uiRadioRegistration.setValue(Space.OPEN);
     addUIFormInput(uiRadioRegistration);
 
     UIFormInputInfo visibilityInfo = new UIFormInputInfo("Visibility", null, null);

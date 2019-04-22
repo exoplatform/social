@@ -104,8 +104,8 @@ public class SpaceEntity implements Serializable {
   @Column(name = "URL")
   public String             url;
 
-  @Column(name = "TYPE")
-  private String            type;
+  @Column(name = "TEMPLATE")
+  private String            template;
 
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "CREATED_DATE", nullable = false)
@@ -215,12 +215,12 @@ public class SpaceEntity implements Serializable {
     this.createdDate = createdDate;
   }
 
-  public String getType() {
-    return type;
+  public String getTemplate() {
+    return template;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public void setTemplate(String template) {
+    this.template = template;
   }
 
   public Set<SpaceMemberEntity> getMembers() {

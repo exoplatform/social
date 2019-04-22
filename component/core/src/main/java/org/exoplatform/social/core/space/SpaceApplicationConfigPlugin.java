@@ -29,7 +29,9 @@ import org.exoplatform.container.xml.InitParams;
  * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since     Sep 1, 2010
  * @since     1.2.0-GA
+ * @deprecated Use {@link SpaceTemplateConfigPlugin} instead.
  */
+@Deprecated
 public class SpaceApplicationConfigPlugin extends BaseComponentPlugin {
 
   private static final String SPACE_HOME_PARAM_NAME = "spaceHomeApplication";
@@ -55,7 +57,7 @@ public class SpaceApplicationConfigPlugin extends BaseComponentPlugin {
   public SpaceApplicationConfigPlugin(InitParams initParams) {
     homeApplication = (SpaceApplication) initParams.getObjectParam(SPACE_HOME_PARAM_NAME).getObject();
     spaceApplicationList = initParams.getObjectParamValues(SpaceApplicationConfigPlugin.class).
-            get(0).getSpaceApplicationList();
+        get(0).getSpaceApplicationList();
   }
 
   /**
@@ -264,4 +266,3 @@ public class SpaceApplicationConfigPlugin extends BaseComponentPlugin {
 
   }
 }
-
