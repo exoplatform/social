@@ -89,7 +89,7 @@ String srcAppIcon;
 String appName;
 String uiIconAppSpaceActivityStreamPortlet = "uiIconAppSpaceActivityStreamPortlet";
 String selectedClazz = "";
-String activityStreamUrl = "href=\"javascript:void(0);\" onclick=\"window.location.href='" + spaceHomeUrl + "'\"";
+String activityStreamUrl = "href=\"" + spaceHomeUrl + "\"";
 if(appSelected == null || appSelected.length() == 0) {
   selectedClazz = "active";
   activityStreamUrl = "href=\"javascript:void(0);\"";
@@ -126,7 +126,7 @@ String spaceHomeAppLabel = _ctx.appRes(uicomponent.getId() + ".label.SpaceHomePa
 
 <ul class="nav nav-tabs spaceMenuTab" id="spaceMenuTab" style="visibility: hidden;">
 <li class="$selectedClazz">
-<a data-toggle="tab" <%=activityStreamUrl%>>
+<a <%=activityStreamUrl%>>
         <i class="uiIconAppSpaceHomePage uiIconDefaultApp"></i>
 <span class="tabName"> $spaceHomeAppLabel</span>
 </a>
@@ -152,7 +152,7 @@ for(node in apps) {
   String nodeLabel = getFitString(nodeTitle, 15);
 
 
-  String pageURI = "href=\"javascript:void(0);\" onclick=\"window.location.href='" + spaceHomeUrl + "/" + nodeName + "'\"";
+  String pageURI = "href=\"" + spaceHomeUrl + "/" + nodeName + "\"";
   selectedClazz = "";
   if(appSelected != null && nodeName.equals(appSelected)) {
     pageURI = "href=\"javascript:void(0);\"";
@@ -160,7 +160,7 @@ for(node in apps) {
   }
   %>
   <li class="$selectedClazz">
-  <a data-toggle="tab" <%=pageURI%>>
+  <a <%=pageURI%>>
           <% if (nodeIcon != null) { %>
     <i class="<%=nodeIcon%> nodeIconBg" >&nbsp;</i>
                           <% } else { %>
