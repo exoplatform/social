@@ -2,8 +2,9 @@ package org.exoplatform.social.user.portlet;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,7 @@ public class UserProfileHelper {
   final public static String URL_KEY = "url";
   final public static String OTHER_KEY = "other";
   final public static String DEFAULT_PROTOCOL = "http://";
+  final public static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
   enum StatusIconCss {
     DEFAULT("", ""),
@@ -94,8 +96,9 @@ public class UserProfileHelper {
   public static List<Map<String, String>> getSortedExperiences(Profile currentProfile) {
     List<Map<String, String>> experiences = getMultiValues(currentProfile, Profile.EXPERIENCES);
     if (experiences != null) {
-      experiences.sort((exp1, exp2) -> isCurrent(exp1) ? -1 : 1);
+      Collections.sort(experiences, Comparator.comparing(UserProfileHelper::isCurrent).thenComparing(UserProfileHelper::getStartDate).reversed());
     }
+
     return experiences;
   }
   
@@ -179,6 +182,10 @@ public class UserProfileHelper {
 
   private static boolean isCurrent(Map<String, String> srcExperience) {
     return Boolean.valueOf(String.valueOf(srcExperience.get(Profile.EXPERIENCES_IS_CURRENT)));
+  }
+
+  private static LocalDate getStartDate(Map<String, String> srcExperience) {
+    return LocalDate.parse(srcExperience.get(Profile.EXPERIENCES_START_DATE),DATE_TIME_FORMATTER);
   }
 
   private static void putExperienceData(Map<String, String> srcExperience, Map<String, String> destExperience, String key) {
