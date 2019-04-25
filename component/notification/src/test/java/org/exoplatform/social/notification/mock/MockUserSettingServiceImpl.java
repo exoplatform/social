@@ -48,6 +48,11 @@ public class MockUserSettingServiceImpl implements UserSettingService {
   }
 
   @Override
+  public UserSetting getDefaultSettings() {
+    return new UserSetting();
+  }
+
+  @Override
   public List<UserSetting> getDigestSettingForAllUser(NotificationContext context,
                                                       int offset,
                                                       int limit) {

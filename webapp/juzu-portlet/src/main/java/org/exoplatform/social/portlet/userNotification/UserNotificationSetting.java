@@ -221,7 +221,7 @@ public class UserNotificationSetting {
   @Resource
   public Response resetSetting(String params) {
     try {
-      UserSetting setting = UserSetting.getDefaultInstance();
+      UserSetting setting = userSettingService.getDefaultSettings();
       //
       userSettingService.save(setting.setUserId(getRemoteUser()));
     } catch (Exception e) {

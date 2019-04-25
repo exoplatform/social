@@ -427,6 +427,18 @@
   </component>
 
   <component>
+    <type>org.exoplatform.commons.notification.impl.PluginStatisticService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.commons.notification.impl.StatisticsService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.commons.notification.NotificationContextFactory</type>
+  </component>
+
+  <component>
     <type>org.exoplatform.commons.notification.NotificationConfiguration</type>
     <init-params>
       <value-param>

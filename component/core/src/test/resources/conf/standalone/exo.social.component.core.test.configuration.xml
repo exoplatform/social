@@ -412,6 +412,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.commons.api.notification.service.setting.PluginSettingService</key>
+    <type>org.exoplatform.commons.notification.impl.setting.PluginSettingServiceImpl</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.commons.api.notification.service.setting.UserSettingService</key>
     <type>org.exoplatform.settings.jpa.JPAUserSettingServiceImpl</type>
   </component>

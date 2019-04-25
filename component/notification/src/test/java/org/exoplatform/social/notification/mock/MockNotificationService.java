@@ -104,7 +104,7 @@ public class MockNotificationService implements NotificationService {
       UserSetting userSetting =  userSettingService.get(userId);
       
       if (userSetting == null) {
-        userSetting = UserSetting.getDefaultInstance();
+        userSetting = userSettingService.getDefaultSettings();
         userSetting.setUserId(userId);
       }
       
