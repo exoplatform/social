@@ -200,6 +200,15 @@
     post : function() {
       UIComposer.isReady = false;
       UIComposer.currentValue = "";
+      try {
+        if (window.CKEDITOR && window.CKEDITOR.instances && window.CKEDITOR.instances.composerInput) {
+          var ckeditorInstance = window.CKEDITOR.instances.composerInput;
+          ckeditorInstance.destroy(true);
+          CKEDITOR.remove(ckeditorInstance);
+        }
+      } catch(e) {
+        console.error("Error cleaning old CKEditor content", e);
+      }
     },
     getValue : function() {
       return (UIComposer.currentValue) ? UIComposer.currentValue : '';
