@@ -326,68 +326,6 @@
       }
       return {'isMobile' : isMobile, 'isTablet' : isTablet, 'isTabletL' : isTabletL};
     },
-    onViewActivity: function(responsiveId) {
-      var root = $('#'+responsiveId);
-      if(root.length > 0 && eXo.social.SocialUtil.checkDevice().isMobile === true) {
-        root.find('.activityStream').off('click').on('click', function(evt) {
-          if ($(evt.target).hasClass('uiIconActivityAction')) {
-            return;
-          }
-
-          var activity = $(this);
-          if(activity.hasClass('block-activity')) {
-            return true;
-          }
-          var parent = root;
-          parent.find('.activityStream').addClass('hidden-phone');
-          //
-          var activityLoadMore = $('#ActivitiesLoader');
-          if (activityLoadMore != null) {
-             this.isLoadMore = (activityLoadMore.css('display') !== 'none');
-             activityLoadMore.hide();
-
-          }
-          //
-          var activityDisplay = parent.find('div.uiActivitiesDisplay:first').addClass('activityDisplay');
-          activityDisplay.find('.activityTop').addClass('hidden-phone');
-
-          // If it is in activity list screen.
-          if(activityDisplay.find('.iconReturn').length === 0) {
-            activityDisplay.prepend($('<div class="visible-phone" style="cursor:pointer"><i class="uiIconEcmsDarkGray uiIconEcmsReturn iconReturn"></i></div>').click(function() {
-              var parent = root;
-              parent.find('div.uiActivitiesDisplay:first').removeClass('activityDisplay');
-              parent.find('.activityStream').removeClass('hidden-phone');
-              parent.find('.activityTop').removeClass('hidden-phone');
-              var activity = parent.find('.block-activity').removeClass('block-activity');
-              $(this).remove();
-              if (this.isLoadMore) {
-                var activityLoadMore = $('#ActivitiesLoader');
-                if (activityLoadMore != null) {
-                  activityLoadMore.show();
-                }
-
-              }
-            }));
-          }
-          //
-          activity.removeClass('hidden-phone').addClass('block-activity');
-
-          var input = activity.find('.inputContainer:first');
-          input.removeClass('hidden-phone');
-
-          if(!input.is(":visible")) {
-            //
-            var commentList = activity.find('.commentListInfo:first');
-            if(commentList.length > 0 && commentList.find('a:first').length > 0) {
-              var action = commentList.find('a:first').attr('onclick');
-              if(action && action.length > 0) {
-                $.globalEval(action.replace('objectId=none', 'objectId=all'));
-              }
-            }
-          }
-        });
-      }
-    },
     multipleLineEllipsis : function(selector) {
       $(selector).each(function(i,elem) {
         var elemChild = elem.querySelector('p');
@@ -395,7 +333,7 @@
         var elemHeight = elem.clientHeight;
         while (elemChild.offsetHeight > elemHeight) {
           elemChild.textContent = elemChild.textContent.replace(/\W*\s(\S)*$/, '...');
-        }  
+        }
       });
     }
   };
@@ -412,7 +350,7 @@
       popup.find('.uiIconClose:first').on('click', PopupConfirmation.hiden);
       return popup;
     },
-  
+
     confirm : function(id, actions, title, message, closeLabel) {
       SocialUtils.setCookies('currentConfirm', id, 300);
       var popup = PopupConfirmation.makeTemplate();
@@ -423,11 +361,11 @@
         uiAction.append(PopupConfirmation.addAction(actions[i].action, actions[i].label));
       }
       uiAction.append(PopupConfirmation.addAction(null, closeLabel));
-  
+
       //
       PopupConfirmation.show(popup);
     },
-  
+
     addAction : function(action, label) {
       var btn = $('<a href="javascript:void(0);" class="btn">' + label + '</a>');
       btn.on('click', PopupConfirmation.hiden);
@@ -439,7 +377,7 @@
       }
       return btn;
     },
-  
+
     show : function(popup) {
       $('#UIPortalApplication').append(popup);
       $(document.body).addClass('modal-open');
@@ -466,7 +404,7 @@
       uiMaskLayer.createMask(popup[0].parentNode, popup[0], 1);
       popupWindow.initDND(popup.find('.popupTitle')[0], popup[0]);
     },
-  
+
     hiden : function(e) {
       var thiz = $(this);
       $(document.body).removeClass('modal-open');
@@ -512,7 +450,7 @@
     //
   });
   //
-  
+
   setTimeout(PopupConfirmation.executeCurrentConfirm, 220);
   eXo.social.PopupConfirmation = eXo.social.PopupConfirmation || PopupConfirmation;
   SocialUtils.PopupConfirmation = eXo.social.PopupConfirmation;
