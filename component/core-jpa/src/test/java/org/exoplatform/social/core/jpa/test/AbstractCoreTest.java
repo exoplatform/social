@@ -86,22 +86,10 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected ActivityStorage activityStorage;
 
   protected ProfileSearchConnector mockProfileSearch = Mockito.mock(ProfileSearchConnector.class);
-  
-  public static boolean wantCount = false;
-  private static int count;
-  private int maxQuery;
-  private boolean hasByteMan;
 
   @Override
   protected void setUp() throws Exception {
     begin();
-    // If is query number test, init byteman
-    hasByteMan = getClass().isAnnotationPresent(QueryNumberTest.class);
-    if (hasByteMan) {
-      count = 0;
-      maxQuery = 0;
-      BMUnit.loadScriptFile(getClass(), "queryCount", "src/test/resources");
-    }
     
     identityManager = getService(IdentityManager.class);
     activityManager =  getService(ActivityManager.class);
@@ -155,11 +143,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
    }
 
    try {
-     MaxQueryNumber queryNumber = runMethod.getAnnotation(MaxQueryNumber.class);
-     if (queryNumber != null) {
-       wantCount = true;
-       maxQuery = queryNumber.value();
-     }
      runMethod.invoke(this);
    }
    catch (InvocationTargetException e) {
@@ -170,18 +153,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
      e.fillInStackTrace();
      throw e;
    }
-   
-   if (hasByteMan) {
-     if (wantCount && count > maxQuery) {
-       throw new AssertionFailedError(""+ count + " JDBC queries was executed but the maximum is : " + maxQuery);
-     }
-   }
  }
-
- // Called by byteman
- public static void count() {
-   ++count;
-  }
 
   /**
    * Creates new space with out init apps.
