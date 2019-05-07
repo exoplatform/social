@@ -17,8 +17,9 @@
 package org.exoplatform.social.webui.space;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -31,11 +32,12 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.space.SpaceTemplate;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.UIAvatarUploadContent;
+import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.social.webui.UIAvatarUploader;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
@@ -47,19 +49,19 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 @ComponentConfig(
@@ -78,8 +80,13 @@ public class UISpaceInfo extends UIForm {
 
   private static final String SPACE_DISPLAY_NAME            = "displayName";
   private static final String SPACE_DESCRIPTION             = "description";
+  private static final String SPACE_TEMPLATES_FEATURE       = "space-templates";
+  private static final String SPACE_TEMPLATE                = "template";
   private static final String SPACE_TAG                     = "tag";
   private SpaceService spaceService = null;
+  private SpaceTemplateService spaceTemplateService = null;
+  private ExoFeatureService featureService = null;
+  private boolean isSpaceTemplatesActive;
   private final static String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
   
   /** Html attribute title. */
@@ -109,6 +116,9 @@ public class UISpaceInfo extends UIForm {
     description.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDescription"));
     addUIFormInput(description.addValidator(StringLengthValidator.class, 0, 255));
 
+    List<SelectItemOption<String>> templates = getSpaceTemplatesOptions();
+    addUIFormInput(new UIFormSelectBox(SPACE_TEMPLATE, SPACE_TEMPLATE, templates).setDisabled(true));
+
     //temporary disable tag
     UIFormStringInput tag = new UIFormStringInput(SPACE_TAG, SPACE_TAG, null).setRendered(false);
     tag.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.tag"));
@@ -116,6 +126,39 @@ public class UISpaceInfo extends UIForm {
 
     PopupContainer popupContainer = createUIComponent(PopupContainer.class, null, null);
     addChild(popupContainer);
+  }
+
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    UIFormSelectBox uiFormTypesSelectBox = getUIFormSelectBox(SPACE_TEMPLATE);
+    isSpaceTemplatesActive = getFeatureService().isActiveFeature(SPACE_TEMPLATES_FEATURE);
+    Space space = getSpace();
+    String templateName = space.getTemplate();
+    SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(templateName);
+    templateName = spaceTemplate == null ? spaceTemplateService.getDefaultSpaceTemplate() : spaceTemplate.getName();
+    uiFormTypesSelectBox.setValue(templateName);
+    uiFormTypesSelectBox.setRendered(isSpaceTemplatesActive);
+    super.processRender(context);
+  }
+
+  private List<SelectItemOption<String>> getSpaceTemplatesOptions() {
+    List<SelectItemOption<String>> templates = new ArrayList<SelectItemOption<String>>();
+    for (SpaceTemplate spaceTemplate : getSpaceTemplateService().getSpaceTemplates()) {
+      String spaceType = spaceTemplate.getName();
+      String translation = null;
+      try {
+        ResourceBundle resourceBundle = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle();
+        String key = "space.template." + spaceType;
+        translation = resourceBundle.getString(key);
+      } catch (MissingResourceException e) {
+        translation = StringUtils.capitalize(spaceType);
+      } catch (Exception e) {
+        LOG.debug("Could not get resource bundle.");
+      }
+      SelectItemOption<String> option = new SelectItemOption<String>(translation, spaceType);
+      templates.add(option);
+    }
+    return templates;
   }
 
   /**
@@ -165,6 +208,14 @@ public class UISpaceInfo extends UIForm {
     String id = getUIStringInput(SPACE_ID).getValue();
     Space space = spaceService.getSpaceById(id);
     return space;
+  }
+
+  /**
+   * Gets if space templates feature is active.
+   *
+   */
+  protected boolean isSpaceTemplatesActive() {
+    return isSpaceTemplatesActive;
   }
 
   /**
@@ -287,6 +338,32 @@ public class UISpaceInfo extends UIForm {
       spaceService = getApplicationComponent(SpaceService.class);
     }
     return spaceService;
+  }
+
+  /**
+   * Gets spaceTemplateService.
+   *
+   * @return spaceTemplateService
+   * @see SpaceTemplateService
+   */
+  public SpaceTemplateService getSpaceTemplateService() {
+    if (spaceTemplateService == null) {
+      spaceTemplateService = getApplicationComponent(SpaceTemplateService.class);
+    }
+    return spaceTemplateService;
+  }
+
+  /**
+   * Gets featureService.
+   *
+   * @return featureService
+   * @see ExoFeatureService
+   */
+  protected ExoFeatureService getFeatureService() {
+    if (featureService == null) {
+      featureService = getApplicationComponent(ExoFeatureService.class);
+    }
+    return featureService;
   }
 
   /**
