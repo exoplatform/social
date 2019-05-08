@@ -1457,6 +1457,40 @@ public class SpaceServiceTest extends AbstractCoreTest {
      assertEquals(4,space.getMembers().length);
    }
 
+   /**
+   * Test {@link SpaceService#createSpace(org.exoplatform.social.core.space.model.Space, String, List)}
+   *
+   */
+   public void testCreateSpaceWithInvitation() throws Exception {
+     String[] managers = {"manager"};
+     String creator = "root";
+     Space spaceCreated = createMoreSpace("invitedSpace");
+     String[] users = {"member1", "member2"};
+     spaceCreated.setMembers(users);
+     spaceService.updateSpace(spaceCreated);
+     Identity spaceIdentity = getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, "invitedspace", false);
+     List<Identity> invitedIdentities = new ArrayList<>(Arrays.asList(tom, dragon, hearBreaker, spaceIdentity));
+     Space space = new Space();
+     space.setDisplayName("testSpace");
+     space.setDescription("Space Description for Testing");
+     String shortName = SpaceUtils.cleanString(space.getDisplayName());
+     space.setGroupId("/spaces/" + shortName);
+     space.setManagers(managers);
+     space.setPrettyName(space.getDisplayName());
+     space.setPriority("3");
+     space.setRegistration("validation");
+     space.setTag("Space Tag for Testing");
+     space.setType("classic");
+     space.setUrl(shortName);
+     space.setVisibility("public");
+     spaceService.createSpace(space,creator,invitedIdentities);
+     tearDownSpaceList.add(space);
+     // 2 = 1 creator + 1 managers
+     assertEquals(2,space.getManagers().length);
+     // 5 = member1, member2 from invitedSpace + tom + dragon + hearBreaker
+     assertEquals(5,space.getInvitedUsers().length);
+   }
+
   public void testCreateSpaceExceedingNameLimit () throws RuntimeException{
     Space space = new Space();
     String spaceDisplayName = "zzz0123456791011121314151617181920012345679101112131415161718192001234567910111213141516171819200123456791011121314151617181920012345679101112131415161718192001234567910111213141516171819200123456791011121314151617181920012345679101112131415161718192001234567910111213141516171819200123456791011121314151617181920";

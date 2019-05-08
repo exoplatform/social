@@ -55,7 +55,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -569,8 +568,8 @@ public class PeopleRestService implements ResourceContainer{
         opt.setValue(fullName);
         opt.setText(fullName);
         opt.setAvatarUrl(identity.getProfile() == null ? null : identity.getProfile().getAvatarUrl());
-      } else if (USER_TO_INVITE.equals(typeOfRelation) && !spaceSrv.isInvitedUser(space, userName)
-                 && !spaceSrv.isPendingUser(space, userName) && !spaceSrv.isMember(space, userName)) {
+      } else if (USER_TO_INVITE.equals(typeOfRelation) && (space == null || (!spaceSrv.isInvitedUser(space, userName)
+                 && !spaceSrv.isPendingUser(space, userName) && !spaceSrv.isMember(space, userName)))) {
         opt.setType("user");
         opt.setValue(userName);
         opt.setText(fullName + " (" + userName + ")");

@@ -7,6 +7,7 @@ let config = {
   // can use multiple entry
   entry: {
     spacesAdministration: './src/main/webapp/spaces-administration-app/main.js',
+    spaceTemplates: './src/main/webapp/space-templates-app/main.js'
   },
   module: {
     rules: [

@@ -11,4 +11,5 @@ export const spacesConstants = {
   GROUP_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/groups`,
   SPACES_PER_PAGE: 30,
   DEFAULT_SPACE_AVATAR: '/eXoSkin/skin/images/system/SpaceAvtDefault.png',
+  SPACES_TEMPLATES_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/spaceTemplates`,
 };

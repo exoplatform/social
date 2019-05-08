@@ -1,0 +1,42 @@
+<%
+/*
+<!--
+    Copyright (C) 2003-2019 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+String placeholder = _ctx.appRes("UISpaceGroup.input.placeholder");
+String restUrl = uicomponent.getRestURL();
+%>
+<div class="uiSpaceGroupBound" id="$uicomponent.id">
+  <div class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label"><%=_ctx.appRes("UISpaceGroup.label.input")%>:</label>
+      <div class="controls">
+        <% uicomponent.renderChild("users-spaces") %>
+      </div>
+    </div>
+  </div>
+</div>
+<%
+def rcontext = _ctx.getRequestContext();
+def jsManager = rcontext.getJavascriptManager();
+def requireJs = jsManager.getRequireJS();
+requireJs.require("SHARED/userInvitation", "invite");
+requireJs.addScripts("invite.build('users-spaces', '$restUrl', '$placeholder');");
+%>
