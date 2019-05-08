@@ -28,4 +28,23 @@
         </module>
     </portlet>
 
+    <portlet>
+        <name>SpaceTemplates</name>
+        <module>
+            <script>
+                <minify>false</minify>
+                <path>/js/spaceTemplates.bundle.js</path>
+            </script>
+            <depends>
+                <module>vue</module>
+            </depends>
+            <depends>
+                <module>eXoVueI18n</module>
+            </depends>
+            <depends>
+                <module>extensionRegistry</module>
+            </depends>
+        </module>
+    </portlet>
+
 </gatein-resources>

@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
@@ -26,7 +27,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceTemplate;
 import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.form.*;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
@@ -72,6 +72,7 @@ public class UISpaceSettings extends UIFormInputSet {
     initTypeSelectBox(uiFormTypesSelectBox);
     uiFormTypesSelectBox.setOnChange(TEMPLATES_ONCHANGE);
     addUIFormInput(uiFormTypesSelectBox);
+    addChild(UISpaceTemplateDescription.class, null, "UISpaceTemplateDescription");
     addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, ""));
   }
   
@@ -80,13 +81,6 @@ public class UISpaceSettings extends UIFormInputSet {
     ResourceBundle resourceBundle = context.getApplicationResourceBundle();
     getUIStringInput(SPACE_DISPLAY_NAME).setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSettings.label.spaceDisplayName"));
     UIFormSelectBox uiFormTypesSelectBox = getUIFormSelectBox(SPACE_TEMPLATE);
-    String key = "space.template.description." + uiFormTypesSelectBox.getValue();
-    String descriptionLabel;
-    try {
-      descriptionLabel = resourceBundle.getString(key);
-    } catch (MissingResourceException e) {
-      descriptionLabel = null;
-    }
     //Fix bug SOC-4821
     String scripts = new StringBuilder("(function(jq){jq(\"textarea#")
                         .append(SPACE_DESCRIPTION)
@@ -103,7 +97,6 @@ public class UISpaceSettings extends UIFormInputSet {
 
   private void initTypeSelectBox(UIFormSelectBox typeSelectBox) {
     List<SelectItemOption<String>> templates = new ArrayList<SelectItemOption<String>>();
-    Locale currentLocale = ((PortletRequestContext) WebuiRequestContext.getCurrentInstance()).getLocale();
     for (SpaceTemplate spaceTemplate : spaceTemplateService.getSpaceTemplates()) {
       String spaceType = spaceTemplate.getName();
       String translation = null;
@@ -120,7 +113,7 @@ public class UISpaceSettings extends UIFormInputSet {
       templates.add(option);
     }
     String defaultSpaceTemplate = spaceTemplateService.getDefaultSpaceTemplate();
-    typeSelectBox.setOptions(templates);
+    typeSelectBox.setOptions(templates.stream().sorted(Comparator.comparing(SelectItemOption::getValue)).collect(Collectors.toList()));
     typeSelectBox.setValue(defaultSpaceTemplate);
   }
   

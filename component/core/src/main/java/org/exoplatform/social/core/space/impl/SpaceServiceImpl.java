@@ -17,10 +17,7 @@
 package org.exoplatform.social.core.space.impl;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -36,17 +33,14 @@ import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.space.*;
@@ -328,13 +322,39 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public Space createSpace(Space space, String creator) {
-    return createSpace(space, creator, null);
+    return createSpace(space, creator, (String) null);
   }
 
   /**
    * {@inheritDoc}
    */
+  @Deprecated
   public Space createSpace(Space space, String creator, String invitedGroupId) {
+    List<Identity> invitedIdentities = new ArrayList<Identity>();
+    if (invitedGroupId != null) { // Invites users in group to join the new created space
+      // Gets identities of users in group and then invites them to join into space.
+      OrganizationService org = getOrgService();
+      try {
+        ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroupId(invitedGroupId);
+        User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
+        for (User user : users) {
+          String userId = user.getUserName();
+          Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userId);
+          if (identity != null) {
+            invitedIdentities.add(identity);
+          }
+        }
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to invite users from group " + invitedGroupId, e);
+      }
+    }
+    return createSpace(space, creator, invitedIdentities);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public Space createSpace(Space space, String creator, List<Identity> identitiesToInvite) {
 
     if (space.getDisplayName().length() > LIMIT) {
       throw new RuntimeException("Error while creating the space " + space.getDisplayName() + ": space name cannot exceed 200 characters");
@@ -365,34 +385,22 @@ public class SpaceServiceImpl implements SpaceService {
     }
 
     List<String> inviteds = new ArrayList<String>();
-    if (invitedGroupId != null) { // Invites user in group join to new created
-      // space.
-      // Gets users in group and then invites user to join into space.
-      OrganizationService org = getOrgService();
-      try {
-
-        ListAccess<User> groupMembersAccess = org.getUserHandler().findUsersByGroupId(invitedGroupId);
-        User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
-
-        for (User user : users) {
-          String userId = user.getUserName();
-          if (!userId.equals(creator)) {
-            String[] invitedUsers = space.getInvitedUsers();
-            if (isSuperManager(userId)) {
-              members = space.getMembers();
-              if (!ArrayUtils.contains(members, userId)) {
-                members = (String[]) ArrayUtils.add(members, userId);
-                space.setMembers(members);
-              }
-            } else if (!ArrayUtils.contains(invitedUsers, userId)) {
-              invitedUsers = (String[]) ArrayUtils.add(invitedUsers, userId);
-              inviteds.add(userId);
-              space.setInvitedUsers(invitedUsers);
-            }
+    if (identitiesToInvite != null) {
+      Set<String> userIds = getUsersToInvite(identitiesToInvite);
+      userIds.remove(creator);
+      for (String userId : userIds) {
+        String[] invitedUsers = space.getInvitedUsers();
+        if (isSuperManager(userId)) {
+          members = space.getMembers();
+          if (!ArrayUtils.contains(members, userId)) {
+            members = (String[]) ArrayUtils.add(members, userId);
+            space.setMembers(members);
           }
+        } else if (!ArrayUtils.contains(invitedUsers, userId)) {
+          invitedUsers = (String[]) ArrayUtils.add(invitedUsers, userId);
+          inviteds.add(userId);
+          space.setInvitedUsers(invitedUsers);
         }
-      } catch (Exception e) {
-        throw new RuntimeException("Failed to invite users from group " + invitedGroupId, e);
       }
     }
 
@@ -443,6 +451,25 @@ public class SpaceServiceImpl implements SpaceService {
     }
     updateSpaceBanner(space);
     return space;
+  }
+
+  private Set<String> getUsersToInvite(List<Identity> identities) {
+    Set<String> invitedUserIds = new HashSet<>();
+    for (Identity identity : identities) {
+      String providerId = identity.getProviderId();
+      String remoteId = identity.getRemoteId();
+      // If it's a space
+      if (SpaceIdentityProvider.NAME.equals(providerId)) {
+        Space space = getSpaceByPrettyName(remoteId);
+        if (space != null) {
+          String[] users = space.getMembers();
+          invitedUserIds.addAll(Arrays.asList(users));
+        }
+      } else { // Otherwise, it's an user
+        invitedUserIds.add(remoteId);
+      }
+    }
+    return invitedUserIds;
   }
 
   /**

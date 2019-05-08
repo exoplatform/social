@@ -86,6 +86,9 @@
   <component>
     <type>org.exoplatform.social.rest.impl.spacesadministration.SpacesAdministrationRestResourcesV1</type>
   </component>
+  <component>
+    <type>org.exoplatform.social.rest.impl.spacetemplates.SpaceTemplatesRestResourcesV1</type>
+  </component>
 <!-- REST service -->
 
 <!-- Social Rest API resources for latest -->
