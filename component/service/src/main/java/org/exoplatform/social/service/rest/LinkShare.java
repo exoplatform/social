@@ -93,7 +93,7 @@ import org.exoplatform.services.log.Log;
  */
 @XmlRootElement
 public class LinkShare extends DefaultFilter {
-  
+
   private final String MEDIUM_TYPE_NEWS = "news";
   private final String MEDIUM_TYPE_AUDIO = "audio";
   private final String MEDIUM_TYPE_IMAGE = "image";
@@ -125,6 +125,8 @@ public class LinkShare extends DefaultFilter {
   private static final int MIN_HEIGHT = 55;
   //maxium description length = 250 characters
   private static final int MAX_DESCRIPTION = 500;
+  public static final String ACTIVITY_LINK_PREVIEW_ENABLED_PROPERTY = "exo.activity.link.preview.enabled";
+  private static boolean previewEnabled = isPreviewEnabled();
   //default lang
   private static String lang = "en";
   private String   link;
@@ -363,10 +365,12 @@ public class LinkShare extends DefaultFilter {
    * @throws Exception 
    */
   public static LinkShare getInstance(String link, String lang) throws Exception {
-    if (link == null)
+    if (link == null) {
       return null;
-    if (!Util.isValidURL(link))
+    }
+    if (!Util.isValidURL(link)) {
       return null;
+    }
     
     if (!(link.toLowerCase().startsWith(HTTP_PROTOCOL) || link.toLowerCase().startsWith(HTTPS_PROTOCOL))) {
         link = HTTP_PROTOCOL + link;
@@ -375,57 +379,64 @@ public class LinkShare extends DefaultFilter {
     LinkShare linkShare = new LinkShare();
     linkShare.link = link;
     LinkShare.lang = lang;
-    
-    linkShare.mediaObject = EmbedderFactory.getInstance(link).getExoMedia(); 
-    
-    // if there is no media object, processes link to get page metadata
-    if(linkShare.mediaObject == null) {
-      String mimeType = org.exoplatform.social.service.rest.Util.getMimeTypeOfURL(link);
-      if(mimeType.toLowerCase().startsWith(IMAGE_MIME_TYPE)){
-        linkShare.images = new ArrayList<String>(0);
-        linkShare.images.add(link);
-        linkShare.description = "";
-      } else if(mimeType.toLowerCase().startsWith(HTML_MIME_TYPE)){
-        String encoding = (mimeType.contains("charset=")) ? mimeType.split("charset=")[1] : "UTF-8"; 
-        linkShare.get(encoding);
-      } else {
-        linkShare.images = new ArrayList<String>(0);
-        linkShare.description = "";
-      }
-      
-      if ((linkShare.title == null) || (linkShare.title.trim().length() == 0)) linkShare.title = link;
-      
-      //If image_src detected from meta tag, sets this image_src to images
-      if (linkShare.imageSrc != null) {
-        List<String> images = new ArrayList<String>();
-        images.add(linkShare.imageSrc);
-        linkShare.images = images;
-      }
-      //gets desired description by lang when there are many description meta name with different lang
-      HashMap<String, String> descriptions = linkShare.descriptions;
-      if (descriptions != null) {
-        String description = descriptions.get(LinkShare.lang);
-        if (description == null) {
-         Collection<String> values = descriptions.values();
-         //get the first value in the collection
-         description = values.iterator().next();
+
+    if(previewEnabled) {
+      linkShare.mediaObject = EmbedderFactory.getInstance(link).getExoMedia();
+
+      // if there is no media object, processes link to get page metadata
+      if (linkShare.mediaObject == null) {
+        String mimeType = org.exoplatform.social.service.rest.Util.getMimeTypeOfURL(link);
+        if (mimeType.toLowerCase().startsWith(IMAGE_MIME_TYPE)) {
+          linkShare.images = new ArrayList<>(0);
+          linkShare.images.add(link);
+          linkShare.description = "";
+        } else if (mimeType.toLowerCase().startsWith(HTML_MIME_TYPE)) {
+          String encoding = (mimeType.contains("charset=")) ? mimeType.split("charset=")[1] : "UTF-8";
+          linkShare.get(encoding);
+        } else {
+          linkShare.images = new ArrayList<>(0);
+          linkShare.description = "";
         }
-        linkShare.description = description;
-        //gets with maximum characters only
-        String tail = "";
-        if (description.length() > MAX_DESCRIPTION) {
-          tail = "...";
-          linkShare.description = description.substring(0, MAX_DESCRIPTION - 1) + tail;
+
+        if ((linkShare.title == null) || (linkShare.title.trim().length() == 0)) linkShare.title = link;
+
+        //If image_src detected from meta tag, sets this image_src to images
+        if (linkShare.imageSrc != null) {
+          List<String> images = new ArrayList<>();
+          images.add(linkShare.imageSrc);
+          linkShare.images = images;
         }
-      }
-      if (linkShare.description == null) linkShare.description = "";
-      if (linkShare.images == null) {
-        linkShare.images = new ArrayList<String>();
+        //gets desired description by lang when there are many description meta name with different lang
+        HashMap<String, String> descriptions = linkShare.descriptions;
+        if (descriptions != null) {
+          String description = descriptions.get(LinkShare.lang);
+          if (description == null) {
+            Collection<String> values = descriptions.values();
+            //get the first value in the collection
+            description = values.iterator().next();
+          }
+          linkShare.description = description;
+          //gets with maximum characters only
+          String tail = "";
+          if (description.length() > MAX_DESCRIPTION) {
+            tail = "...";
+            linkShare.description = description.substring(0, MAX_DESCRIPTION - 1) + tail;
+          }
+        }
+        if (linkShare.description == null) linkShare.description = "";
+        if (linkShare.images == null) {
+          linkShare.images = new ArrayList<>();
+        }
       }
     }
     return linkShare;
   }
-  
+
+  private static boolean isPreviewEnabled() {
+    String previewEnabledPropertyValue = System.getProperty(ACTIVITY_LINK_PREVIEW_ENABLED_PROPERTY);
+    return previewEnabledPropertyValue == null || Boolean.valueOf(previewEnabledPropertyValue);
+  }
+
   /**
    * filter method is called back when scanning meets start element tag
    */
