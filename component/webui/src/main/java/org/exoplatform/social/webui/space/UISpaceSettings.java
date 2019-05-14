@@ -66,7 +66,7 @@ public class UISpaceSettings extends UIFormInputSet {
     //
     addUIFormInput(new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, "").
             addValidator(MandatoryValidator.class).
-            addValidator(ExpressionValidator.class, "^([\\p{L}\\s\\d\'&]+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
+            addValidator(ExpressionValidator.class, "^([\\p{L}\\s\\d\'_&]+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
             addValidator(StringLengthValidator.class, 3, 200));
     UIFormSelectBox uiFormTypesSelectBox = new UIFormSelectBox(SPACE_TEMPLATE, SPACE_TEMPLATE, null);
     initTypeSelectBox(uiFormTypesSelectBox);
