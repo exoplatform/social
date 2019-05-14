@@ -39,9 +39,18 @@ public abstract class UIActivityComposer extends UIContainer {
   
   private UIContainer activityDisplay;
   private UIActivityComposerManager activityComposerManager;
+  private boolean enabled = true;
   private boolean isReady = false;
   private boolean isDisplayed = false;
-  
+
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
   /**
    * Gets displayed information of component.
    * 
