@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.composer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.services.log.ExoLogger;
@@ -72,7 +73,7 @@ public class UIActivityComposerManager extends BaseComponentPlugin {
   }
 
   public List<UIActivityComposer> getAllComposers() {
-    return activityComposers;
+    return activityComposers.stream().filter(UIActivityComposer::isEnabled).collect(Collectors.toList());
   }
 
   public void setActivityDisplay(UIContainer uiContainer) {

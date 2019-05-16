@@ -88,12 +88,10 @@
 		<div id="ActivityComposerExt" class="attachMents">
 			<%
 				def simpleName, labelSimpleName, actionEvent, clazz;
-				
 				for(acComposer in uicomponent.getActivityComposers()) {
 					simpleName = acComposer.getClass().getSimpleName();
 					labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
 					clazz = simpleName.toLowerCase();
-
 					String action = acComposer.event("Activate") + ";  UIComposer.setSelectedComposer(this); UIComposer.setCurrentValue()";
 
 					// the first composer is always the one activated by default
@@ -109,14 +107,13 @@
 				}
 				%>
 		</div>
+
   	<div class="desktop-input">
 	    <div class="$blastInput">
 	      <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT); %>
 	    </div>
-	    
 	    <%
     %>
-    
 
         <div id="ComposerContainer" class="clearfix">
           <%
