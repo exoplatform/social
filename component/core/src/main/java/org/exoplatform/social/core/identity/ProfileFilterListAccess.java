@@ -131,23 +131,26 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
       switch(type) {
       case UNIFIED_SEARCH:
         identities = identityStorage.getIdentitiesForUnifiedSearch(providerId, profileFilter, offset, usedLimit);
+        break;
       default: 
           break;
       }
-    } else {
-      if (profileFilter.getFirstCharacterOfName() != EMPTY_CHARACTER) {
-        identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset,
-                                                                         usedLimit, forceLoadProfile);
-      } else if (profileFilter.isEmpty()) {
-        if(profileFilter.getViewerIdentity() == null) {
-          identities = identityStorage.getIdentities(providerId, offset, usedLimit);
-        } else {
-          identities = identityStorage.getIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId(), offset, usedLimit);
-        }
+    } else if (profileFilter == null || profileFilter.isEmpty()) {
+      if (profileFilter == null || profileFilter.getViewerIdentity() == null) {
+        identities = identityStorage.getIdentities(providerId,
+                                                   profileFilter == null ? EMPTY_CHARACTER
+                                                                         : profileFilter.getFirstCharacterOfName(),
+                                                   offset,
+                                                   usedLimit);
       } else {
-        identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, null, offset,
-                                                              usedLimit, forceLoadProfile);
+        identities = identityStorage.getIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId(),
+                                                                    profileFilter.getFirstCharacterOfName(),
+                                                                    offset,
+                                                                    usedLimit);
       }
+    } else {
+      identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, null, offset,
+                                                            usedLimit, forceLoadProfile);
     }
     if (profileFilter != null && profileFilter.getViewerIdentity() != null) {
       Iterator<? extends Identity> iterator = identities.iterator();

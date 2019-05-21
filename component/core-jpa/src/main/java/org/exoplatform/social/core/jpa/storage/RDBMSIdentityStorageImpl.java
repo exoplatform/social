@@ -852,8 +852,9 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     return EntityConverterUtils.convertToIdentities(list, offset, limit);
   }
 
-  public List<Identity> getIdentities(final String providerId, long offset, long limit) throws IdentityStorageException {
-    List<String> usernames = getIdentityDAO().getAllIdsByProviderSorted(providerId, Profile.FULL_NAME, offset, limit);
+  @Override
+  public List<Identity> getIdentities(String providerId, char firstCharacterOfName, long offset, long limit) {
+    List<String> usernames = getIdentityDAO().getAllIdsByProviderSorted(providerId, Profile.FULL_NAME, firstCharacterOfName, offset, limit);
     List<Identity> identities = new ArrayList<>();
     if (usernames != null && !usernames.isEmpty()) {
       for (String username : usernames) {
@@ -866,15 +867,24 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     return identities;
   }
 
+  public List<Identity> getIdentities(final String providerId, long offset, long limit) throws IdentityStorageException {
+    return this.getIdentities(providerId, (char) 0, offset, limit);
+  }
+
   @Override
   public List<IdentityWithRelationship> getIdentitiesWithRelationships(final String identityId, int offset, int limit)  throws IdentityStorageException {
-    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), Profile.FULL_NAME);
+    return getIdentitiesWithRelationships(identityId, (char) 0, offset, limit);
+  }
+
+  @Override
+  public List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, char firstChar, int offset, int limit) {
+    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), Profile.FULL_NAME, firstChar);
     return EntityConverterUtils.convertToIdentitiesWithRelationship(list, offset, limit);
   }
 
   @Override
   public int countIdentitiesWithRelationships(String identityId) throws Exception {
-    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), Profile.FULL_NAME);
+    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), Profile.FULL_NAME, (char) 0);
     return list.getSize();
   }
 

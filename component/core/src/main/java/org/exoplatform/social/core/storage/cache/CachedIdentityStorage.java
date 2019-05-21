@@ -632,6 +632,14 @@ public class CachedIdentityStorage implements IdentityStorage {
    * {@inheritDoc}
    */
   @Override
+  public List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, char firstChar, int offset, int limit) {
+    return storage.getIdentitiesWithRelationships(identityId, firstChar, offset, limit);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public int countIdentitiesWithRelationships(String identityId) throws Exception {
     return storage.countIdentitiesWithRelationships(identityId);
   }
@@ -665,25 +673,36 @@ public class CachedIdentityStorage implements IdentityStorage {
     return storage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public List<Identity> getIdentities(String providerId, long offset, long limit) {
+  public List<Identity> getIdentities(String providerId, char firstCharacterOfName, long offset, long limit) {
+    ProfileFilter profileFilter = null;
+    if (firstCharacterOfName == '\u0000') {
+      profileFilter = new ProfileFilter();
+      profileFilter.setFirstCharacterOfName(firstCharacterOfName);
+    }
+
     //
-    IdentityFilterKey key = new IdentityFilterKey(providerId, null);
+    IdentityFilterKey key = new IdentityFilterKey(providerId, profileFilter);
     ListIdentitiesKey listKey = new ListIdentitiesKey(key, offset, limit);
 
     //
     ListIdentitiesData keys = identitiesCache.get(new ServiceContext<ListIdentitiesData>() {
       public ListIdentitiesData execute() {
-        List<Identity> got = storage.getIdentities(providerId, offset, limit);
+        List<Identity> got = storage.getIdentities(providerId, firstCharacterOfName, offset, limit);
         return buildIds(got);
       }
     }, listKey);
 
     //
     return buildIdentities(keys);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<Identity> getIdentities(String providerId, long offset, long limit) {
+    return this.getIdentities(providerId, (char) 0, offset, limit);
   }
 
   @Override

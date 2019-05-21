@@ -1023,6 +1023,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   }
 
   @Override
+  public List<Identity> getIdentities(String providerId, char firstCharacterOfName, long offset, long limit) {
+    if (firstCharacterOfName == '\u0000') {
+      return this.getIdentities(providerId, offset, limit);
+    } else {
+      ProfileFilter filter = new ProfileFilter();
+      filter.setFirstCharacterOfName(firstCharacterOfName);
+      return getIdentitiesByFirstCharacterOfName(providerId, filter, offset, limit, true);
+    }
+  }
+
+  @Override
   public List<Identity> getIdentities(String providerId, long offset, long limit) {
     // this is a placeholder impl to run tests
     return getIdentitiesByProfileFilter(providerId, new ProfileFilter(), offset, limit, true);

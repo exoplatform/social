@@ -229,8 +229,10 @@ public interface IdentityStorage {
    * @param forceLoadOrReloadProfile Load profile or not.
    * @return Identities that have name start with the first character.
    * @throws IdentityStorageException
+   * @deprecated use method getIdentities or getIdentitiesForUnifiedSearch instead
    * @since 1.2.0-GA
    */
+  @Deprecated
   public List<Identity> getIdentitiesByFirstCharacterOfName(final String providerId, final ProfileFilter profileFilter,
       long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException;
 
@@ -321,6 +323,20 @@ public interface IdentityStorage {
   List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, int offset, int limit);
 
   /**
+   * Gets all identities from the store with the relationship that they have with current user identity.
+   * The firstChar parameter will be used to filter on identities full names first character.
+   * 
+   * @param identityId
+   * @param firstChar
+   * @param offset
+   * @param limit
+   * @return
+   */
+  default List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, char firstChar, int offset, int limit) {
+    throw new UnsupportedOperationException("This operation is not supported using current implementation of service IdentityStorage");
+  }
+
+  /**
    * Counts the number of identities
    *
    * @param identityId Id of Identity.
@@ -369,10 +385,26 @@ public interface IdentityStorage {
   }
 
   /**
+   * Get list of identities by providerId
+   * The firstChar parameter will be used to filter on identities full names first character.
+   * 
+   * @param providerId
+   * @param firstCharacterOfName
+   * @param offset
+   * @param limit
+   * @return
+   */
+  default public List<Identity> getIdentities(String providerId, char firstCharacterOfName, long offset, long limit) {
+    throw new UnsupportedOperationException("This operation is not supported using current implementation of service IdentityStorage");
+  }
+
+  /**
    * Sorts a list of user identities using a field
    * 
    * @param identityRemoteIds
    * @param sortField
    * @return
    */
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);}
+  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);
+
+}
