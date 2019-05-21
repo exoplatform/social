@@ -710,12 +710,12 @@ public class IdentityManagerTest extends AbstractCoreTest {
     identityListAccess = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, pf, false);
     assertEquals(1, identityListAccess.getSize());
   }
-  
+
   /**
    * Test order {@link IdentityManager#getIdentitiesByProfileFilter(String, ProfileFilter, boolean)}
    */
   public void testOrderOfGetIdentitiesByProfileFilter() throws Exception {
-    // Create new users 
+    // Create new users
     String providerId = "organization";
     String[] FirstNameList = {"John","Bob","Alain"};
     String[] LastNameList = {"Smith","Dupond","Dupond"};
@@ -732,9 +732,9 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
       identityManager.saveProfile(profile);
       identity.setProfile(profile);
-      tearDownIdentityList.add(identity);   
+      tearDownIdentityList.add(identity);
     }
-    
+
     ProfileFilter pf = new ProfileFilter();
     ListAccess<Identity> idsListAccess = null;
     // Test order by last name
@@ -744,7 +744,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     assertEquals(2, idsListAccess.getSize());
     assertEquals("Alain Dupond", idsListAccess.load(0, 20)[0].getProfile().getFullName());
     assertEquals("Bob Dupond", idsListAccess.load(0, 20)[1].getProfile().getFullName());
-    
+
     pf = new ProfileFilter();
     idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
     assertNotNull(idsListAccess);
@@ -752,11 +752,11 @@ public class IdentityManagerTest extends AbstractCoreTest {
     assertEquals("Alain Dupond", idsListAccess.load(0, 20)[0].getProfile().getFullName());
     assertEquals("Bob Dupond", idsListAccess.load(0, 20)[1].getProfile().getFullName());
     assertEquals("John Smith", idsListAccess.load(0, 20)[2].getProfile().getFullName());
-    
+
     // Test order by first name if last name is equal
     Identity[] identityArray = idsListAccess.load(0, 2);
     assertEquals(tearDownIdentityList.get(2).getId(), identityArray[0].getId());
-    
+
   }
 
   /**
