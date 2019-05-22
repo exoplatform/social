@@ -170,6 +170,42 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     }
   }
 
+  public void testGetSpaceActivityWithBody() throws Exception {
+    startSessionAs("root");
+
+    Space space = getSpaceInstance("test", "root");
+    testSpaceIdentity = new Identity(SpaceIdentityProvider.NAME, "test");
+    identityStorage.saveIdentity(testSpaceIdentity);
+    try {
+      ExoSocialActivity testSpaceActivity = new ExoSocialActivityImpl();
+      testSpaceActivity.setTitle("Test space activity title");
+      testSpaceActivity.setBody("test space activity body");
+      activityManager.saveActivityNoReturn(testSpaceIdentity, testSpaceActivity);
+
+      assertNotNull(testSpaceIdentity.getId());
+      // Test get an activity(which is not a comment)
+      ContainerResponse response = service("GET",
+                                           "/" + VersionResources.VERSION_ONE + "/social/activities/" + testSpaceActivity.getId(),
+                                           "",
+                                           null,
+                                           null);
+      assertNotNull(response);
+      assertEquals(200, response.getStatus());
+      ActivityEntity activityEntity = getBaseEntity((DataEntity) response.getEntity(), ActivityEntity.class);
+      assertNotNull(activityEntity);
+      assertNotNull(activityEntity.getBody());
+      assertEquals("Test space activity title", activityEntity.getTitle());
+      assertEquals("test space activity body", activityEntity.getBody());
+
+      assertNotNull(activityEntity.getOwner());
+      assertTrue(activityEntity.getOwner().contains("/social/spaces/" + space.getId()));
+    } finally {
+      if (space != null) {
+        spaceService.deleteSpace(space);
+      }
+    }
+  }
+
   public void testGetActivitiesOfCurrentUser() throws Exception {
     startSessionAs("root");
 

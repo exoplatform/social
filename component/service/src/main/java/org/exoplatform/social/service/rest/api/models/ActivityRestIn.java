@@ -28,22 +28,29 @@ public class ActivityRestIn {
   /**
    * The title.
    */
-  private String title;
-  
+  private String              title;
+
+  /**
+   * The activity body
+   */
+
+  private String              body;
+
   /**
    * The activity type.
    */
-  private String type;
-  
+  private String              type;
+
   /**
    * The priority from 0 to 1. 1 is the higher priority.
    */
-  private Float priority;
-  
+  private Float               priority;
+
   /**
    * The title id.
    */
-  private String titleId;
+  private String              titleId;
+
   /**
    * The template parameters.
    */
@@ -64,6 +71,24 @@ public class ActivityRestIn {
    */
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  /**
+   * Gets the activity body, optional value.
+   *
+   * @return the activity body
+   */
+  public String getBody() {
+    return body;
+  }
+
+  /**
+   * Sets the activity body, optional value.
+   *
+   * @param body
+   */
+  public void setBody(String body) {
+    this.body = body;
   }
 
   /**

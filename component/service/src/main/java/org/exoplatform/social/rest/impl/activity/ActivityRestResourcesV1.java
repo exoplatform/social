@@ -42,8 +42,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
+import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -65,7 +68,9 @@ import org.exoplatform.social.service.rest.api.VersionResources;
 @Path(VersionResources.VERSION_ONE + "/social/activities")
 @Api(tags = VersionResources.VERSION_ONE + "/social/activities", value = VersionResources.VERSION_ONE + "/social/activities", description = "Managing activities together with comments and likes")
 public class ActivityRestResourcesV1 implements ActivityRestResources {
-  
+
+  private static final Log LOG = ExoLogger.getLogger(ActivityRestResourcesV1.class);
+
   private static final String SPACE_PREFIX = "/spaces/";
   private static final String TYPE = "space";
 
@@ -167,7 +172,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
                                      @ApiParam(value = "Asking for a full representation of a specific subresource, ex: comments or likes", required = false) @QueryParam("expand") String expand,
                                      @ApiParam(value = "Activity object to be updated, ex: <br/>{<br/>\"title\" : \"My activity\"<br/>}", required = true) ActivityEntity model) throws Exception {
   
-    if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
+    if (model == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     //
@@ -179,10 +184,23 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
     if (activity == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    checkPermissionToModifyActivity(activity, currentUser);
-    //update activity's title
-    activity.setTitle(model.getTitle());
-    activityManager.updateActivity(activity);
+
+    ActivityStream activityStream = activity.getActivityStream();
+    if("true".equals(model.getRead())
+            && "news".equals(activity.getType())
+            && activityStream != null && activityStream.getType().equals(ActivityStream.Type.SPACE)) {
+      LOG.info("service=news operation=read_news parameters=\"activity_id:{},space_name:{},space_id:{},user_id:{}\"",
+              activity.getId(),
+              activityStream.getPrettyId(),
+              activityStream.getId(),
+              currentUser.getId());
+    }
+
+    if(model.getTitle() != null && !model.getTitle().isEmpty()) {
+      checkPermissionToModifyActivity(activity, currentUser);
+      activity.setTitle(model.getTitle());
+      activityManager.updateActivity(activity);
+    }
     
     DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
     ActivityEntity activityInfo = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);

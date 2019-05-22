@@ -5,6 +5,13 @@
     numberOfReqsPerSec : 10,//Perfect range: 5 -> 20
     hasMore: false,
     parentContainer : $('#UIActivitiesLoader'),
+    scrolling: false,
+    scrollingTimeout: null,
+    readingCheckDelayInSeconds: 2,
+    markAsReadTimeInSeconds: 3,
+    monitoredActivities: [],
+    visibleActivities: [],
+    readActivities: [],
     scrollBottom : function() {
     return $(document).height() - $(window).scrollTop() - $(window).height();  
     },
@@ -57,6 +64,7 @@
         url += activityItem.attr('id') + ((UIActivityLoader.getRequestParam().length > 0) ? UIActivityLoader.getRequestParam() : "");
         window.ajaxGet(url, function(data) {
           activityItem.attr('style', '').removeClass('activity-loadding');
+          UIActivityLoader.findActivitiesToMonitor();
         });
       }
     },
@@ -95,6 +103,8 @@
         }
         ++index;
       }, batchDelay / numberOfReqsPerSec);
+
+      me.initCheckRead();
     },
     addTop : function(activityItemId, responsiveId) {
       UIActivityLoader.responsiveId = responsiveId;
@@ -116,6 +126,95 @@
           UIActivityLoader.renderActivity(activityItem);
         }
       }
+    },
+    initCheckRead: function() {
+      UIActivityLoader.findActivitiesToMonitor();
+
+      // Scroll handler
+      window.removeEventListener('scroll', UIActivityLoader.scrollHandler);
+      window.addEventListener('scroll', UIActivityLoader.scrollHandler);
+
+      // visibility check interval
+      const readingCheckInterval = setInterval(function() {
+        UIActivityLoader.monitoredActivities.forEach(function(element) {
+          if(UIActivityLoader.isInViewport(element)) {
+            // The element is visible
+            const foundElement = UIActivityLoader.visibleActivities.find(visibleElement => visibleElement.id === element.id);
+            if(foundElement) {
+              var now = new Date().getTime();
+              var readTime = ((now-foundElement.time)/1000).toFixed(1);
+              if(readTime > UIActivityLoader.markAsReadTimeInSeconds) {
+                let activityId = foundElement.id.substring('activityContainer'.length, foundElement.id.length);
+                UIActivityLoader.markActivityAsRead(activityId);
+              }
+            }
+          } else {
+            // The element is not visible
+            // Remove it from the visibleActivities array if it's there
+            UIActivityLoader.visibleActivities = UIActivityLoader.visibleActivities.filter(visibleElement => visibleElement.id !== element.id);
+          }
+        });
+      }, UIActivityLoader.readingCheckDelayInSeconds * 1000);
+    },
+    findActivitiesToMonitor: function() {
+      UIActivityLoader.monitoredActivities = document.querySelectorAll('.uiActivityLoader .uiNewsActivity');
+    },
+    scrollHandler: function() {
+      UIActivityLoader.scrolling = true;
+
+      clearTimeout(UIActivityLoader.scrollingTimeout);
+      UIActivityLoader.scrollingTimeout = setTimeout(function() {
+        UIActivityLoader.scrolling = false;
+
+        // User stopped scrolling, check all element for visibility
+        UIActivityLoader.monitoredActivities.forEach(function(element) {
+          if(UIActivityLoader.isInViewport(element)) {
+
+            // Check if it's already logged in the visibleActivities array
+            var found = UIActivityLoader.visibleActivities.some(visibleElement => visibleElement.id === element.id);
+
+            if(!found){
+              // Push an object with the visible element id and the actual time
+              UIActivityLoader.visibleActivities.push({id: element.id, time: new Date().getTime()});
+            }
+          }
+        });
+      }, 200);
+    },
+    isInViewport: function(element) {
+      if(document.hidden) {
+        return false;
+      }
+
+      var rect = element.getBoundingClientRect();
+
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    },
+    markActivityAsRead: function(activityId) {
+      if(this.readActivities.includes(activityId)) {
+        return;
+      } else {
+        this.readActivities.push(activityId);
+      }
+
+      const activity = {
+        id: activityId,
+        type: 'news',
+        read: true
+      };
+      fetch(`${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/activities/${activityId}`, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          method: 'PUT',
+          body: JSON.stringify(activity)
+        });
     }
   };
   return UIActivityLoader;
