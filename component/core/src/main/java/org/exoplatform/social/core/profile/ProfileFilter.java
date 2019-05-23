@@ -268,7 +268,6 @@ public class ProfileFilter implements Cloneable {
         && StringUtils.isBlank(this.position)
         && StringUtils.isBlank(this.skills)
         && (this.remoteIds == null || this.remoteIds.isEmpty())
-        && this.firstCharacterOfName == '\u0000'
         && (this.excludedIdentityList == null || this.excludedIdentityList.isEmpty() || (this.excludedIdentityList.size() == 1 && this.viewerIdentity != null && this.excludedIdentityList.contains(this.viewerIdentity)));
   }
 

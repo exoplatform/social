@@ -319,6 +319,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     }
   }
 
+
   @MaxQueryNumber(108)
   public void testFindIdentityByExistName() throws Exception {
     String providerId = "organization";
@@ -421,90 +422,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, 1, false);
     assertEquals(0, result.size());
   }
-
-  /**
-   * Tests {@link IdenityStorage#getIdentitiesByProfileFilter(String, ProfileFilter, int, int, boolean)}
-   *
-   */
-  @MaxQueryNumber(582)
-  public void testFindIdentityByProfileFilter() throws Exception {
-    String providerId = OrganizationIdentityProvider.NAME;
-    String remoteId = "username";
-
-    Identity rootIdentity = identityStorage.findIdentity(providerId, "root");
-    int countRootIdentity = (rootIdentity == null || rootIdentity.isDeleted() || !rootIdentity.isEnable()) ? 0 : 1;
-
-    Identity identity = new Identity(providerId, remoteId);
-    identityStorage.saveIdentity(identity);
-    tearDownIdentityList.add(identity);
-
-    Profile profile = new Profile(identity);
-    profile.setProperty(Profile.FIRST_NAME, "FirstName");
-    profile.setProperty(Profile.LAST_NAME, "LastName");
-    profile.setProperty(Profile.FULL_NAME, "FirstName" + " " + "LastName");
-    profile.setProperty("position", "developer");
-    profile.setProperty("gender", "male");
-
-    identityStorage.saveProfile(profile);
-    identity.setProfile(profile);
-    final ProfileFilter filter = new ProfileFilter();
-    filter.setPosition("developer");
-    filter.setName("First");
-    final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, 1, false);
-    assertEquals(1, result.size());
-
-    //create a new identity
-    Identity test2Identity = populateIdentity("test2", false);
-
-    //check when new identity is not deleted
-    final ProfileFilter profileFilter2 = new ProfileFilter();
-    List<Identity> foundIdentities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
-    assertEquals(2 + countRootIdentity, foundIdentities.size());
-
-    //finds the second one
-    profileFilter2.setName("g");
-    foundIdentities =  identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
-    assertEquals(1, foundIdentities.size());
-
-    //check when new identity is deleted
-    identityStorage.deleteIdentity(test2Identity);
-    foundIdentities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
-    assertEquals(0, foundIdentities.size());
-  }
-
-  /**
-   * Tests {@link IdenityStorage#getIdentitiesByProfileFilter(String, ProfileFilter, int, int, boolean)}
-   *
-   */
-  @MaxQueryNumber(1140)
-  public void testFindManyIdentitiesByProfileFilter() throws Exception {
-    String providerId = "organization";
-
-    int total = 10;
-    for (int i = 0; i < total; i++) {
-      String remoteId = "username" + i;
-      Identity identity = new Identity(providerId, remoteId);
-      identityStorage.saveIdentity(identity);
-      tearDownIdentityList.add(identity);
-
-      Profile profile = new Profile(identity);
-      profile.setProperty(Profile.FIRST_NAME, "FirstName" + i);
-
-      profile.setProperty(Profile.LAST_NAME, "LastName");
-      profile.setProperty(Profile.FULL_NAME, "FirstName" + i + " " + "LastName" + i);
-      profile.setProperty(Profile.POSITION, "developer");
-      profile.setProperty(Profile.GENDER, "male");
-      identity.setProfile(profile);
-      identityStorage.saveProfile(profile);
-    }
-
-    final ProfileFilter filter = new ProfileFilter();
-    filter.setPosition("developer");
-    filter.setName("FirstN");
-    final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, total, false);
-    assertEquals(total, result.size());
-  }
-  
   /**
    * Tests {@link IdenityStorage#getIdentitiesByFirstCharaterOfNameCount(String, char)}
    * 
