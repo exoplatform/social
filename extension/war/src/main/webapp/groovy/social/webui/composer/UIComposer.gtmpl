@@ -109,11 +109,9 @@
 		</div>
 
   	<div class="desktop-input">
-	    <div class="$blastInput">
+	    <div id="activityComposerTextarea" class="$blastInput">
 	      <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT); %>
 	    </div>
-	    <%
-    %>
 
         <div id="ComposerContainer" class="clearfix">
           <%

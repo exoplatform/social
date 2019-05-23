@@ -13,11 +13,10 @@
         "Vue": true,
         "eXo": true,
         "$": true,
-        "cCometD": true,
-        "CalDateTimePicker": true,
         "global": true,
         "exoi18n": true,
-        "extensionRegistry": true
+        "extensionRegistry": true,
+        "CKEDITOR": true
     },
     "parserOptions": {
         "sourceType": "module",
