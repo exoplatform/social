@@ -38,6 +38,7 @@ import org.exoplatform.social.core.space.SpaceUtilsRestTest;
 import org.exoplatform.social.core.space.SpaceUtilsTest;
 import org.exoplatform.social.core.space.SpaceUtilsWildCardMembershipTest;
 import org.exoplatform.social.core.space.spi.SpaceServiceTest;
+import org.exoplatform.social.core.space.spi.SpaceTemplateServiceTest;
 import org.exoplatform.social.core.storage.*;
 import org.exoplatform.social.core.storage.cache.JCRCachedActivityStorageTestCase;
 import org.exoplatform.social.core.storage.cache.JCRCachedIdentityStorageTestCase;
@@ -85,7 +86,8 @@ import org.junit.runners.Suite.SuiteClasses;
   LinkProviderTest.class,
   PeopleSearchConnectorTestCase.class,
   SpaceSearchConnectorTestCase.class,
-  SpaceUtilsWildCardMembershipTest.class
+  SpaceUtilsWildCardMembershipTest.class,
+  SpaceTemplateServiceTest.class
   })
 @ConfigTestCase(AbstractCoreTest.class)
 public class InitContainerTestSuite extends BaseExoContainerTestSuite {

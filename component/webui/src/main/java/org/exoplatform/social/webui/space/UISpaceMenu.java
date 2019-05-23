@@ -16,10 +16,12 @@
  */
 package org.exoplatform.social.webui.space;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.DataStorage;
@@ -38,10 +40,14 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
+import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceTemplate;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.space.spi.SpaceTemplateService;
+import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.social.webui.UIBannerAvatarUploader;
 import org.exoplatform.social.webui.UIBannerUploader;
 import org.exoplatform.social.webui.Utils;
@@ -92,6 +98,8 @@ public class UISpaceMenu extends UIContainer {
    * Stores SpaceService object.
    */
   private SpaceService spaceService = null;
+  private SpaceTemplateService spaceTemplateService = null;
+  private ConfigurationManager configurationManager = null;
 
   /**
    * Stores Space object.
@@ -109,6 +117,8 @@ public class UISpaceMenu extends UIContainer {
    */
   public UISpaceMenu() throws Exception {
     spaceService = getSpaceService();
+    spaceTemplateService = getSpaceTemplateService();
+    configurationManager = getConfigurationManager();
     space = Utils.getSpaceByContext();
 
     uiBanner = createUIComponent(UIBannerUploader.class, null, null);
@@ -210,8 +220,23 @@ public class UISpaceMenu extends UIContainer {
 
   private void removeSpaceBanner() {
     Space space = getSpace();
-    space.setBannerAttachment(null);
-
+    String templateName = space.getTemplate();
+    SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(templateName);
+    String bannerPath = spaceTemplate.getBannerPath();
+    if (StringUtils.isNotBlank(bannerPath)) {
+      try {
+        InputStream bannerStream = configurationManager.getInputStream(bannerPath);
+        if (bannerStream != null) {
+          BannerAttachment bannerAttachment = new BannerAttachment(null, "banner", "png", bannerStream, null, System.currentTimeMillis());
+          space.setBannerAttachment(bannerAttachment);
+        }
+      } catch (Exception e) {
+        LOG.warn("No file found for space banner at path {}", bannerPath);
+        space.setBannerAttachment(null);
+      }
+    } else {
+      space.setBannerAttachment(null);
+    }
     space.setEditor(Utils.getViewerRemoteId());
 
     spaceService.updateSpace(space);
@@ -406,6 +431,32 @@ public class UISpaceMenu extends UIContainer {
       spaceService = getApplicationComponent(SpaceService.class);
     }
     return spaceService;
+  }
+
+  /**
+   * Gets spaceTemplateService.
+   *
+   * @return spaceTemplateService
+   * @see SpaceTemplateService
+   */
+  private SpaceTemplateService getSpaceTemplateService() {
+    if (spaceTemplateService == null) {
+      spaceTemplateService = getApplicationComponent(SpaceTemplateService.class);
+    }
+    return spaceTemplateService;
+  }
+
+  /**
+   * Gets configurationManager.
+   *
+   * @return configurationManager
+   * @see ConfigurationManager
+   */
+  private ConfigurationManager getConfigurationManager() {
+    if (configurationManager == null) {
+      configurationManager = getApplicationComponent(ConfigurationManager.class);
+    }
+    return configurationManager;
   }
 
   /**

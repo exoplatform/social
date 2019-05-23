@@ -22,6 +22,7 @@ import org.exoplatform.social.core.space.SpaceTemplateConfigPlugin;
 import org.exoplatform.social.core.space.model.Space;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -37,6 +38,21 @@ public interface SpaceTemplateService {
    *
    */
   List<SpaceTemplate> getSpaceTemplates();
+
+  /**
+   * Gets all space templates on which the user has permissions
+   *
+   * @param userId
+   */
+  List<SpaceTemplate> getSpaceTemplates(String userId) throws Exception;
+
+  /**
+   * Gets all space templates on which the user has permissions with permission labels according to lang
+   * If userId is not an administrators, all permissions are empty
+   *  @param userId
+   * @param lang
+   */
+  List<SpaceTemplate> getLabelledSpaceTemplates(String userId, String lang) throws Exception;
 
   /**
    * Gets a space template by name
