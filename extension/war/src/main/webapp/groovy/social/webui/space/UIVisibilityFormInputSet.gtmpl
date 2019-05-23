@@ -2,8 +2,10 @@
 import org.exoplatform.webui.form.UIFormRadioBoxInput ;
 import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.form.UIFormInputInfo;
+import org.exoplatform.social.core.space.model.Space;
 
 def uicomponentId = uicomponent.id;
+boolean isHidden = Space.HIDDEN.equals(uicomponent.getVisibility());
 
 def rcontext = _ctx.getRequestContext() ;
 def jsmanager = rcontext.getJavascriptManager();
@@ -11,6 +13,18 @@ jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addS
 %>
 <div class="uiSpaceVisibility" id="$uicomponentId">
     <div class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label"><%=_ctx.appRes(uicomponent.getName() + ".label.UIVisibility")%>:</label>
+            <div class="controls">
+                <div class="spaceVisibility" onclick="<%=uicomponent.event('ChangeVisibility')%>">
+                    <% if(isHidden) { %>
+                        <input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;">
+                    <% }else { %>
+                        <input type="checkbox" class="yesno" style="visibility: hidden;">
+                    <% } %>
+                </div>
+            </div>
+        </div>
 		    <%
 		      for(inputEntry in uicomponent.getChildren()) {
 		        if(inputEntry.isRendered()) {
@@ -35,10 +49,24 @@ jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addS
 	              <% }
 	      } %>
     </div>
-    <div class="center"><% uicomponent.renderChild(UIFormInputInfo.class); %></div>
+<script type="text/javascript">
+    require(["SHARED/jquery", "SHARED/iphoneStyleCheckbox"], function (gj) {
+        gj('div.uiSpaceVisibility').find("div.spaceVisibility").children('input:checkbox').each(function() {
+            gj(this).iphoneStyle({
+                disabledClass: 'switchBtnDisabled',
+                containerClass: 'uiSwitchBtn',
+                labelOnClass: 'switchBtnLabelOn',
+                labelOffClass: 'switchBtnLabelOff',
+                handleClass: 'switchBtnHandle',
+                handleCenterClass: 'switchBtnHandleCenter',
+                handleRightClass: 'switchBtnHandleRight',
+                checkedLabel: '${_ctx.appRes("UISpaceVisibility.label.Yes")}',
+                uncheckedLabel: '${_ctx.appRes("UISpaceVisibility.label.No")}'
+            });
+            gj(this).change(function() {
+                gj(this).closest("div.spaceVisibility").trigger("click");
+            });
+        });
+    });
+</script>
 </div>
-<style>
-#UIPopupAddSpace h5.title {
-    display: none;
-}
-</style>

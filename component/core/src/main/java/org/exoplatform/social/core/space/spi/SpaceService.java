@@ -18,6 +18,7 @@ package org.exoplatform.social.core.space.spi;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
@@ -647,8 +648,22 @@ public interface SpaceService {
    * @return The space.
    * @throws SpaceException with possible code SpaceException.Code.SPACE_ALREADY_EXIST; UNABLE_TO_ADD_CREATOR
    * @LevelAPI Platform
+   * @deprecated Use {@link #createSpace(Space, String, List)} instead.
    */
+  @Deprecated
   Space createSpace(Space space, String creator, String invitedGroupId) throws SpaceException;
+
+  /**
+   * Creates a new space and invites all users from identitiesToInvite to join this newly created space.
+   *
+   * @param space The space to be created.
+   * @param creator The user who creates the space.
+   * @param identitiesToInvite The list of identities who are invited to join the space.
+   *                           Identity could be of type user or space
+   * @return The space.
+   * @throws SpaceException with possible code SpaceException.Code.SPACE_ALREADY_EXIST; UNABLE_TO_ADD_CREATOR
+   */
+  Space createSpace(Space space, String creator, List<Identity> identitiesToInvite) throws SpaceException;
 
   /**
    * Saves a new space or updates a space.

@@ -6,7 +6,7 @@ const webpackCommonConfig = require('./webpack.common.js');
 const app = 'social-vue-portlet';
 
 // add the server path to your server location path
-const exoServerPath = "/home/exo/Desktop/WORK-WKH/eXo/servers/platform-5.2.x-SNAPSHOT";
+const exoServerPath = "/server";
 
 let config = merge(webpackCommonConfig, {
   output: {

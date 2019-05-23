@@ -324,7 +324,7 @@
     <init-params>
       <value-param>
         <name>defaultSpaceTemplate</name>
-        <value>community</value>
+        <value>${exo.social.template.default:community}</value>
       </value-param>
     </init-params>
   </component>
@@ -923,7 +923,7 @@
       <init-params>
         <value-param>
           <name>templateName</name>
-          <value>community</value>
+          <value>${exo.social.template.default:community}</value>
         </value-param>
       </init-params>
     </component-plugin>
@@ -956,9 +956,8 @@
                       <field name="portletName"><string>DashboardPortlet</string></field>
                       <field name="appTitle"><string>Dashboard</string></field>
                       <field name="removable"><boolean>true</boolean></field>
-                      <field name="order"><int>1</int></field>
+                      <field name="order"><int>100</int></field>
                       <field name="uri"><string>dashboard</string></field>
-                      <!--<field name="icon"><string>SpaceDashboardIcon</string></field>-->
                     </object>
                   </value>
                   <value>
@@ -967,9 +966,8 @@
                       <field name="portletName"><string>SpaceSettingPortlet</string></field>
                       <field name="appTitle"><string>Space Settings</string></field>
                       <field name="removable"><boolean>false</boolean></field>
-                      <field name="order"><int>2</int></field>
+                      <field name="order"><int>200</int></field>
                       <field name="uri"><string>settings</string></field>
-                      <!--<field name="icon"><string>SpaceSettingsIcon</string></field>-->
                     </object>
                   </value>
                   <value>
@@ -978,9 +976,8 @@
                       <field name="portletName"><string>MembersPortlet</string></field>
                       <field name="appTitle"><string>Members</string></field>
                       <field name="removable"><boolean>true</boolean></field>
-                      <field name="order"><int>3</int></field>
+                      <field name="order"><int>300</int></field>
                       <field name="uri"><string>members</string></field>
-                      <!--<field name="icon"><string>SpaceMembersIcon</string></field>-->
                     </object>
                   </value>
                 </collection>
