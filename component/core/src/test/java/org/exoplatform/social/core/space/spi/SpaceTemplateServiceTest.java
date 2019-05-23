@@ -17,10 +17,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SpaceTemplateServiceTest extends AbstractCoreTest {
   private SpaceTemplateService spaceTemplateService;
@@ -28,7 +25,8 @@ public class SpaceTemplateServiceTest extends AbstractCoreTest {
   private List<Space> tearDownSpaceList;
 
   @Override
-  public void setUp() {
+  public void setUp() throws Exception {
+    super.setUp();
     spaceTemplateService = CommonsUtils.getService(SpaceTemplateService.class);
     identityStorage = CommonsUtils.getService(IdentityStorage.class);
     spaceService = CommonsUtils.getService(SpaceService.class);
@@ -72,6 +70,29 @@ public class SpaceTemplateServiceTest extends AbstractCoreTest {
   }
 
   /**
+   * Test {@link SpaceTemplateService#getSpaceTemplates(String)} ()}
+   *
+   */
+  public void testGetAllSpaceTemplates() throws Exception {
+    // When
+    List<SpaceTemplate> templates = spaceTemplateService.getSpaceTemplates("root");
+    // Then
+    assertEquals(1, templates.size());
+    assertEquals("classic", templates.get(0).getName());
+  }
+
+  /**
+   * Test {@link SpaceTemplateService#getSpaceTemplates(String)} ()}
+   *
+   */
+  public void testGetAllSpaceTemplatesWithNoPermissions() throws Exception {
+    // When
+    List<SpaceTemplate> templates = spaceTemplateService.getSpaceTemplates("toto");
+    // Then
+    assertEquals(0, templates.size());
+  }
+
+  /**
    * Test {@link SpaceTemplateService#getSpaceTemplateByName(String)}
    *
    */
@@ -81,7 +102,8 @@ public class SpaceTemplateServiceTest extends AbstractCoreTest {
     SpaceTemplate templateFake = spaceTemplateService.getSpaceTemplateByName("fake");
     // Then
     assertEquals(template.getName(), "classic");
-    assertNull(templateFake);
+    assertNotNull(templateFake);
+    assertEquals(templateFake.getName(), "classic");
   }
 
   /**
@@ -214,6 +236,18 @@ public class SpaceTemplateServiceTest extends AbstractCoreTest {
     spaceTemplateService.setApp(space, "appId", "appName", true, Space.ACTIVE_STATUS);
     //then
     assertEquals("appId:appName:true:active", space.getApp());
+  }
+
+  /**
+   * Test {@link SpaceTemplateService#getLabelledSpaceTemplates(String, String)}
+   *
+   */
+  public void testGetLabelledSpaceTemplates() throws Exception {
+    //when
+    List<SpaceTemplate> list = spaceTemplateService.getLabelledSpaceTemplates("root", "en");
+    //then
+    assertEquals(1, list.size());
+    assertEquals("Any in Administrators ", list.get(0).getPermissionsLabels());
   }
 
   private Space createSpace(String spaceName, String creator) throws Exception {

@@ -685,6 +685,7 @@
             <field name="visibility"><string>private</string></field>
             <field name="registration"><string>open</string></field>
             <field name="bannerPath"><string>war:/conf/social-extension/social/space-template/classic/banner.png</string></field>
+            <field name="permissions"><string>*:/platform/administrators</string></field>
             <field name="homePageApplication">
               <object type="org.exoplatform.social.core.space.SpaceApplication">
                 <field name="portletApp"><string>social-portlet</string></field>

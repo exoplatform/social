@@ -128,6 +128,22 @@ public class UISpaceAddForm extends UIForm {
       SpacesAdministrationService spacesAdministrationService =  CommonsUtils.getService(SpacesAdministrationService.class);
       UIInvitation uiInvitation = uiAddForm.getChild(UIInvitation.class);
       List<Identity> invitedIdentities = uiInvitation.getSelectedIdentities();
+      List<String> notFoundList = uiInvitation.getNotFoundInvitees();
+      if (notFoundList.size() > 0) {
+        StringBuilder sb = new StringBuilder();
+        boolean isSeparated = false;
+        for (String i : notFoundList) {
+          if (isSeparated) {
+            sb.append(", ");
+          }
+          sb.append("'").append(i).append("'");
+          isSeparated = true;
+        }
+        uiApplication.addMessage(new ApplicationMessage("UIUserInvitation.msg.invalid-input",
+            new String[]{sb.toString()},
+            ApplicationMessage.ERROR));;
+        return;
+      }
       String creator = ctx.getRemoteUser();          
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);

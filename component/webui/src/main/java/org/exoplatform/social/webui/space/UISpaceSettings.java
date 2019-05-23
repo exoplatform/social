@@ -17,13 +17,13 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.space.SpaceTemplate;
 import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -91,13 +91,19 @@ public class UISpaceSettings extends UIFormInputSet {
            .require("SHARED/jquery", "jq")
            .addScripts(scripts);
     boolean isActive = featureService.isActiveFeature(SPACE_TEMPLATES_FEATURE);
-    uiFormTypesSelectBox.setRendered(isActive);
+    boolean hasTemplates = uiFormTypesSelectBox.getOptions().size() > 0;
+    uiFormTypesSelectBox.setRendered(isActive && hasTemplates);
+    UISpaceTemplateDescription uiSpaceTemplateDescription = getChild(UISpaceTemplateDescription.class);
+    uiSpaceTemplateDescription.setTemplateName(uiFormTypesSelectBox.getValue());
+    uiSpaceTemplateDescription.setRendered(isActive && hasTemplates);
     super.processRender(context);
   }
 
-  private void initTypeSelectBox(UIFormSelectBox typeSelectBox) {
+  private void initTypeSelectBox(UIFormSelectBox typeSelectBox) throws Exception {
     List<SelectItemOption<String>> templates = new ArrayList<SelectItemOption<String>>();
-    for (SpaceTemplate spaceTemplate : spaceTemplateService.getSpaceTemplates()) {
+    String userId = ConversationState.getCurrent().getIdentity().getUserId();
+    List<SpaceTemplate> spaceTemplates = spaceTemplateService.getSpaceTemplates(userId);
+    for (SpaceTemplate spaceTemplate : spaceTemplates) {
       String spaceType = spaceTemplate.getName();
       String translation = null;
       try {
@@ -113,8 +119,10 @@ public class UISpaceSettings extends UIFormInputSet {
       templates.add(option);
     }
     String defaultSpaceTemplate = spaceTemplateService.getDefaultSpaceTemplate();
-    typeSelectBox.setOptions(templates.stream().sorted(Comparator.comparing(SelectItemOption::getValue)).collect(Collectors.toList()));
-    typeSelectBox.setValue(defaultSpaceTemplate);
+    typeSelectBox.setOptions(templates);
+    SpaceTemplate defaultTemplate = spaceTemplateService.getSpaceTemplateByName(defaultSpaceTemplate);
+    if (defaultTemplate != null && spaceTemplates.stream().anyMatch(st -> st.getName().equals(defaultSpaceTemplate))) {
+      typeSelectBox.setValue(defaultSpaceTemplate);
+    }
   }
-  
 }

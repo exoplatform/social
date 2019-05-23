@@ -30,6 +30,8 @@ public class SpaceTemplate implements Cloneable {
   private String visibility;
   private String registration;
   private String bannerPath;
+  private String permissions;
+  private String permissionsLabels;
   private SpaceApplication homePageApplication;
   private List<SpaceApplication> applications;
 
@@ -103,6 +105,42 @@ public class SpaceTemplate implements Cloneable {
    */
   public String getBannerPath() {
     return bannerPath;
+  }
+
+  /**
+   * Sets space template visibility permissions.
+   *
+   * @param permissions
+   */
+  public void setPermissions(String permissions) {
+    this.permissions = permissions;
+  }
+
+  /**
+   * Gets the space template visibility permissions
+   *
+   * @return permissions
+   */
+  public String getPermissions() {
+    return permissions;
+  }
+
+  /**
+   * Sets space template permissionsLabels.
+   *
+   * @param permissionsLabels
+   */
+  public void setPermissionsLabels(String permissionsLabels) {
+    this.permissionsLabels = permissionsLabels;
+  }
+
+  /**
+   * Gets the space template permissionsLabels
+   *
+   * @return permissionsLabels
+   */
+  public String getPermissionsLabels() {
+    return permissionsLabels;
   }
 
   /**

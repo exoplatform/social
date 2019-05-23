@@ -17,9 +17,19 @@
 package org.exoplatform.social.core.space.impl;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.GroupHandler;
+import org.exoplatform.services.organization.Membership;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.resources.ResourceBundleService;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.IdentityRegistry;
+import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.space.SpaceApplication;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceTemplate;
@@ -30,6 +40,8 @@ import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.picocontainer.Startable;
 
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * {@link org.exoplatform.social.core.space.spi.SpaceTemplateService} implementation.
@@ -50,7 +62,6 @@ public class SpaceTemplateServiceImpl implements SpaceTemplateService, Startable
 
   private String defaultSpaceTemplate;
 
-
   public SpaceTemplateServiceImpl(InitParams params) {
     if (params != null) {
       defaultSpaceTemplate = params.getValueParam(DEFAULT_SPACE_TEMPLATE_PARAM).getValue();
@@ -59,7 +70,78 @@ public class SpaceTemplateServiceImpl implements SpaceTemplateService, Startable
 
   @Override
   public List<SpaceTemplate> getSpaceTemplates() {
-    return Collections.unmodifiableList(new ArrayList<>(spaceTemplates.values()));
+    return Collections.unmodifiableList(new ArrayList<>(spaceTemplates.values().stream().map(SpaceTemplate::clone)
+        .sorted(Comparator.comparing(SpaceTemplate::getName)).collect(Collectors.toList())));
+  }
+
+  @Override
+  public List<SpaceTemplate> getSpaceTemplates(String userId) throws Exception {
+    List<SpaceTemplate> list = new ArrayList<>();
+    Identity identity = getIdentity(userId);
+    for (SpaceTemplate spaceTemplate : getSpaceTemplates()) {
+      String perms = spaceTemplate.getPermissions();
+      if (perms != null) {
+        Pattern pattern = Pattern.compile(";");
+        List<String> permissions = pattern.splitAsStream(perms).collect(Collectors.toList());
+        for (String perm : permissions) {
+          UserACL.Permission permission = new UserACL.Permission();
+          permission.setPermissionExpression(perm);
+          String groupId = permission.getGroupId();
+          String membership = permission.getMembership();
+          if (identity.isMemberOf(groupId, membership)) {
+            list.add(spaceTemplate);
+            break;
+          }
+        }
+      }
+    }
+    return list;
+  }
+
+  @Override
+  public List<SpaceTemplate> getLabelledSpaceTemplates(String userId, String lang) throws Exception {
+    List<SpaceTemplate> templatelist = new ArrayList<>();
+    Identity identity = getIdentity(userId);
+    ResourceBundleService resourceBundleService = CommonsUtils.getService(ResourceBundleService.class);
+    OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
+    for (SpaceTemplate spaceTemplate : getSpaceTemplates(userId)) {
+      String perms = spaceTemplate.getPermissions();
+      StringBuilder templatePermission = new StringBuilder("");
+      if (identity.isMemberOf("/platform/administrators")) {
+        if (perms != null) {
+          ResourceBundle resourceBundle = resourceBundleService.getResourceBundle("locale.portlet.social.SpaceTemplatesPortlet", new Locale(lang));
+          Pattern pattern = Pattern.compile(";");
+          List<String> permissions = pattern.splitAsStream(perms).collect(Collectors.toList());
+          for (String perm : permissions) {
+            UserACL.Permission permission = new UserACL.Permission();
+            permission.setPermissionExpression(perm);
+            String groupId = permission.getGroupId();
+            String membership = permission.getMembership();
+            if ("*".equals(membership)) {
+              membership = resourceBundle.getString("social.spaces.templates.any");
+            } else {
+              membership = StringUtils.capitalize(membership);
+            }
+            GroupHandler groupHandler1 = organizationService.getGroupHandler();
+            String groupName = groupId;
+            Group group = groupHandler1.findGroupById(groupId);
+            if (group != null) {
+              groupName = group.getGroupName();
+            }
+            // Uppercase the first char
+            groupName = StringUtils.capitalize(groupName);
+            String key = resourceBundle.getString("social.spaces.templates.permissionEntry");
+            templatePermission.append(key.replace("{0}", membership).replace("{1}", groupName));
+            templatePermission.append(", ");
+          }
+          int index = templatePermission.lastIndexOf(", ");
+          templatePermission.deleteCharAt(index);
+        }
+      }
+      spaceTemplate.setPermissionsLabels(templatePermission.toString());
+      templatelist.add(spaceTemplate);
+    }
+    return templatelist;
   }
 
   @Override
@@ -181,5 +263,21 @@ public class SpaceTemplateServiceImpl implements SpaceTemplateService, Startable
   @Override
   public void stop() {
 
+  }
+
+  private Identity getIdentity(String userId) throws Exception {
+    IdentityRegistry identityRegistry = CommonsUtils.getService(IdentityRegistry.class);
+    OrganizationService organizationService = CommonsUtils.getService(OrganizationService.class);
+    Identity identity = identityRegistry.getIdentity(userId);
+    if (identity == null) {
+      Collection<Membership> memberships = new ArrayList<>();
+      memberships = organizationService.getMembershipHandler().findMembershipsByUser(userId);
+      List<MembershipEntry> entries = new ArrayList<>();
+      for (Membership membership : memberships) {
+        entries.add(new MembershipEntry(membership.getGroupId(), membership.getMembershipType()));
+      }
+      identity = new Identity(userId, entries);
+    }
+    return identity;
   }
 }
