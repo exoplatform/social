@@ -204,7 +204,7 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
     List<Relationship> maryPendingRelationships = relationshipManager.getAll(maryIdentity, Relationship.Type.PENDING, listIdentities);
     assertNotNull("maryPendingRelationships must not be null", maryPendingRelationships);
     assertEquals("maryPendingRelationships.size() mut return: 1", 1, maryPendingRelationships.size());
-    
+
     List<Relationship> johnPendingRelationships = relationshipManager.getAll(maryIdentity, Relationship.Type.PENDING, listIdentities);
     assertNotNull("johnPendingRelationships must not be null", johnPendingRelationships);
     assertEquals("johnPendingRelationships.size() mut return: 1", 1, johnPendingRelationships.size());
@@ -893,7 +893,7 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
     assertEquals("rootToDemoRelationship.getStatus() must return: " + Relationship.Type.CONFIRMED, Relationship.Type.CONFIRMED, rootToDemoRelationship.getStatus());
     
   }
-  
+
   /**
    * Test {@link RelationshipManager#findRelationships(Identity, Type)}
    * 
@@ -904,19 +904,222 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
     Relationship rootToDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     Relationship maryToRootRelationship = relationshipManager.inviteToConnect(maryIdentity, rootIdentity);
     Relationship rootToJohnRelationship = relationshipManager.inviteToConnect(rootIdentity, johnIdentity);
-    
+
     List<Identity> rootRelationships = relationshipManager.findRelationships(rootIdentity, Relationship.Type.PENDING);
     assertNotNull("rootRelationships must not be null", rootRelationships);
     assertEquals("rootRelationships.size() must return: 3", 3, rootRelationships.size());
-    
+
     relationshipManager.confirm(rootIdentity, demoIdentity);
-    
+
     rootRelationships = relationshipManager.findRelationships(rootIdentity, Relationship.Type.CONFIRMED);
     assertNotNull("rootRelationships must not be null", rootRelationships);
     assertEquals("rootRelationships.size() must return: 1", 1, rootRelationships.size());
     
   }
   
+  /**
+   * Test
+   * {@link RelationshipManager#getOutgoingByFilter(Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   */
+  public void testGetIncomingRelationshipsSorted() throws Exception {
+    Identity testuser5 = createUserAndIdentity("testuser5");
+    Identity testuser3 = createUserAndIdentity("testuser3");
+    Identity testuser1 = createUserAndIdentity("testuser1");
+    Identity testuser4 = createUserAndIdentity("testuser4");
+    Identity testuser2 = createUserAndIdentity("testuser2");
+
+    // Pending incoming connections
+    relationshipManager.inviteToConnect(testuser5, testuser1);
+    relationshipManager.inviteToConnect(testuser2, testuser1);
+    relationshipManager.inviteToConnect(testuser4, testuser1);
+    relationshipManager.inviteToConnect(testuser3, testuser1);
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    ListAccess<Identity> identities = relationshipManager.getIncomingByFilter(testuser1, profileFilter);
+
+    assertNotNull("Relationships must not be null", identities);
+    assertEquals("Wrong size of returned relationships", 4, identities.getSize());
+
+    Identity[] loadedIdentities = identities.load(0, identities.getSize());
+    assertEquals("Returned identities list semms not sorted", "testuser2", loadedIdentities[0].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser3", loadedIdentities[1].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser4", loadedIdentities[2].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser5", loadedIdentities[3].getRemoteId());
+  }
+
+  /**
+   * Test
+   * {@link RelationshipManager#getConfirmedByFilter(Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   */
+  public void testGetConfirmedRelationshipsSorted() throws Exception {
+    Identity testuser5 = createUserAndIdentity("testuser5");
+    Identity testuser3 = createUserAndIdentity("testuser3");
+    Identity testuser1 = createUserAndIdentity("testuser1");
+    Identity testuser4 = createUserAndIdentity("testuser4");
+    Identity testuser2 = createUserAndIdentity("testuser2");
+
+    // Confirmed connections
+    relationshipManager.inviteToConnect(testuser5, testuser1);
+    relationshipManager.confirm(testuser5, testuser1);
+    relationshipManager.inviteToConnect(testuser2, testuser1);
+    relationshipManager.confirm(testuser2, testuser1);
+    relationshipManager.inviteToConnect(testuser4, testuser1);
+    relationshipManager.confirm(testuser4, testuser1);
+    relationshipManager.inviteToConnect(testuser3, testuser1);
+    relationshipManager.confirm(testuser3, testuser1);
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    ListAccess<Identity> identities = relationshipManager.getConnectionsByFilter(testuser1, profileFilter);
+
+    assertNotNull("Relationships must not be null", identities);
+    assertEquals("Wrong size of returned relationships", 4, identities.getSize());
+
+    Identity[] loadedIdentities = identities.load(0, identities.getSize());
+    assertEquals("Returned identities list semms not sorted", "testuser2", loadedIdentities[0].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser3", loadedIdentities[1].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser4", loadedIdentities[2].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser5", loadedIdentities[3].getRemoteId());
+  }
+
+  /**
+   * Test
+   * {@link RelationshipManager#getOutgoingByFilter(Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   */
+  public void testGetOutgoingRelationshipsSorted() throws Exception {
+    Identity testuser5 = createUserAndIdentity("testuser5");
+    Identity testuser3 = createUserAndIdentity("testuser3");
+    Identity testuser1 = createUserAndIdentity("testuser1");
+    Identity testuser4 = createUserAndIdentity("testuser4");
+    Identity testuser2 = createUserAndIdentity("testuser2");
+
+    // Pending connections
+    relationshipManager.inviteToConnect(testuser1, testuser5);
+    relationshipManager.inviteToConnect(testuser1, testuser2);
+    relationshipManager.inviteToConnect(testuser1, testuser4);
+    relationshipManager.inviteToConnect(testuser1, testuser3);
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    ListAccess<Identity> identities = relationshipManager.getOutgoingByFilter(testuser1, profileFilter);
+
+    assertNotNull("Relationships must not be null", identities);
+    assertEquals("Wrong size of returned relationships", 4, identities.getSize());
+
+    Identity[] loadedIdentities = identities.load(0, identities.getSize());
+    assertEquals("Returned identities list semms not sorted", "testuser2", loadedIdentities[0].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser3", loadedIdentities[1].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser4", loadedIdentities[2].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser5", loadedIdentities[3].getRemoteId());
+  }
+
+  /**
+   * Test
+   * {@link RelationshipManager#getOutgoingByFilter(Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   */
+  public void testGetIncomingRelationshipsByFirstLetterSorted() throws Exception {
+    Identity testuser5 = createUserAndIdentity("testuser5");
+    Identity testuser3 = createUserAndIdentity("testuser3");
+    Identity testuser1 = createUserAndIdentity("testuser1");
+    Identity testuser4 = createUserAndIdentity("testuser4");
+    Identity testuser2 = createUserAndIdentity("testuser2");
+
+    // Pending incoming connections
+    relationshipManager.inviteToConnect(testuser5, testuser1);
+    relationshipManager.inviteToConnect(testuser2, testuser1);
+    relationshipManager.inviteToConnect(testuser4, testuser1);
+    relationshipManager.inviteToConnect(testuser3, testuser1);
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.setFirstCharacterOfName('T');
+    ListAccess<Identity> identities = relationshipManager.getIncomingByFilter(testuser1, profileFilter);
+
+    assertNotNull("Relationships must not be null", identities);
+    assertEquals("Wrong size of returned relationships", 4, identities.getSize());
+
+    Identity[] loadedIdentities = identities.load(0, identities.getSize());
+    assertEquals("Returned identities list semms not sorted", "testuser2", loadedIdentities[0].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser3", loadedIdentities[1].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser4", loadedIdentities[2].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser5", loadedIdentities[3].getRemoteId());
+  }
+
+  /**
+   * Test
+   * {@link RelationshipManager#getConfirmedByFilter(Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   */
+  public void testGetConfirmedRelationshipsByFirstLetterSorted() throws Exception {
+    Identity testuser5 = createUserAndIdentity("testuser5");
+    Identity testuser3 = createUserAndIdentity("testuser3");
+    Identity testuser1 = createUserAndIdentity("testuser1");
+    Identity testuser4 = createUserAndIdentity("testuser4");
+    Identity testuser2 = createUserAndIdentity("testuser2");
+
+    // Confirmed connections
+    relationshipManager.inviteToConnect(testuser5, testuser1);
+    relationshipManager.confirm(testuser5, testuser1);
+    relationshipManager.inviteToConnect(testuser2, testuser1);
+    relationshipManager.confirm(testuser2, testuser1);
+    relationshipManager.inviteToConnect(testuser4, testuser1);
+    relationshipManager.confirm(testuser4, testuser1);
+    relationshipManager.inviteToConnect(testuser3, testuser1);
+    relationshipManager.confirm(testuser3, testuser1);
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.setFirstCharacterOfName('T');
+    ListAccess<Identity> identities = relationshipManager.getConnectionsByFilter(testuser1, profileFilter);
+
+    assertNotNull("Relationships must not be null", identities);
+    assertEquals("Wrong size of returned relationships", 4, identities.getSize());
+
+    Identity[] loadedIdentities = identities.load(0, identities.getSize());
+    assertEquals("Returned identities list semms not sorted", "testuser2", loadedIdentities[0].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser3", loadedIdentities[1].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser4", loadedIdentities[2].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser5", loadedIdentities[3].getRemoteId());
+  }
+
+  /**
+   * Test
+   * {@link RelationshipManager#getOutgoingByFilter(Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   */
+  public void testGetOutgoingRelationshipsByFirstLetterSorted() throws Exception {
+    Identity testuser5 = createUserAndIdentity("testuser5");
+    Identity testuser3 = createUserAndIdentity("testuser3");
+    Identity testuser1 = createUserAndIdentity("testuser1");
+    Identity testuser4 = createUserAndIdentity("testuser4");
+    Identity testuser2 = createUserAndIdentity("testuser2");
+
+    // Pending connections
+    relationshipManager.inviteToConnect(testuser1, testuser5);
+    relationshipManager.inviteToConnect(testuser1, testuser2);
+    relationshipManager.inviteToConnect(testuser1, testuser4);
+    relationshipManager.inviteToConnect(testuser1, testuser3);
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.setFirstCharacterOfName('T');
+    ListAccess<Identity> identities = relationshipManager.getOutgoingByFilter(testuser1, profileFilter);
+
+    assertNotNull("Relationships must not be null", identities);
+    assertEquals("Wrong size of returned relationships", 4, identities.getSize());
+
+    Identity[] loadedIdentities = identities.load(0, identities.getSize());
+    assertEquals("Returned identities list semms not sorted", "testuser2", loadedIdentities[0].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser3", loadedIdentities[1].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser4", loadedIdentities[2].getRemoteId());
+    assertEquals("Returned identities list semms not sorted", "testuser5", loadedIdentities[3].getRemoteId());
+  }
+
   /**
    * Test {@link RelationshipManager#getRelationshipStatus(Relationship, Identity)}
    * 

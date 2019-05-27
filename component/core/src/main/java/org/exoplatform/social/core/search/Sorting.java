@@ -14,7 +14,18 @@ public class Sorting implements Serializable, Cloneable {
   }
 
   public static enum SortBy {
-    RELEVANCY, DATE, TITLE
+    RELEVANCY("relevancy"), DATE("date"), TITLE("title"), LASTNAME("lastName"), FIRSTNAME("firstName"), FULLNAME("fullName");
+
+    private String fieldName;
+
+    SortBy(String fieldName) {
+      this.fieldName = fieldName;
+    }
+
+    public String getFieldName() {
+      return fieldName;
+    }
+
   }
 
   public final SortBy sortBy;
