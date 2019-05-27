@@ -864,7 +864,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       //
       IdentityEntity receiverEntity = _findById(IdentityEntity.class, identity.getId());
 
-      if (type == null) {
+      if (type == null || type.equals(Relationship.Type.ALL)) {
         putRelationshipToList(relationships, receiverEntity.getRelationship());
         putRelationshipToList(relationships, receiverEntity.getReceiver());
         putRelationshipToList(relationships, receiverEntity.getSender());

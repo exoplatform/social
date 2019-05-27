@@ -338,7 +338,7 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
     queryStringBuilder.append(" WHERE identity_1.provider_id = '").append(providerId).append("' \n");
     queryStringBuilder.append(" AND identity_1.deleted = ").append(dbBoolFalse).append(" \n");
     queryStringBuilder.append(" AND identity_1.enabled = ").append(dbBoolTrue).append(" \n");
-    queryStringBuilder.append(" ORDER BY identity_prop.value ASC");
+    queryStringBuilder.append(" ORDER BY lower(identity_prop.value) ASC");
 
     Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
     return query;
