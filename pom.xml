@@ -27,7 +27,7 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>5.2.x-acc222-SNAPSHOT</version>
+  <version>5.2.1-acc222-01</version>
   <packaging>pom</packaging>
   <name>eXo PLF:: Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -40,7 +40,7 @@
   <scm>
     <connection>scm:git:git://github.com/exoplatform/social.git</connection>
     <developerConnection>scm:git:git@github.com:exoplatform/social.git</developerConnection>
-    <tag>5.2.1</tag>
+    <tag>5.2.1-acc222-01</tag>
     <url>http://fisheye.exoplatform.org/browse/social</url>
   </scm>
   <properties>
