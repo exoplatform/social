@@ -93,6 +93,8 @@ import org.exoplatform.social.core.storage.impl.StorageUtils;
  */
 public class RDBMSIdentityStorageImpl implements IdentityStorage {
 
+  private static final char NULL_CHARACTER = '\u0000';
+
   private static final Log LOG = ExoLogger.getLogger(RDBMSIdentityStorageImpl.class);
 
   private static final int     BATCH_SIZE = 100;
@@ -853,8 +855,14 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   }
 
   @Override
-  public List<Identity> getIdentities(String providerId, char firstCharacterOfName, long offset, long limit) {
-    List<String> usernames = getIdentityDAO().getAllIdsByProviderSorted(providerId, Profile.FULL_NAME, firstCharacterOfName, offset, limit);
+  public List<Identity> getIdentities(String providerId,
+                                      String firstCharacterFieldName,
+                                      char firstCharacter,
+                                      String sortField,
+                                      String sortDirection,
+                                      long offset,
+                                      long limit) {
+    List<String> usernames = getIdentityDAO().getAllIdsByProviderSorted(providerId, firstCharacterFieldName, firstCharacter, sortField, sortDirection, offset, limit);
     List<Identity> identities = new ArrayList<>();
     if (usernames != null && !usernames.isEmpty()) {
       for (String username : usernames) {
@@ -868,23 +876,23 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   }
 
   public List<Identity> getIdentities(final String providerId, long offset, long limit) throws IdentityStorageException {
-    return this.getIdentities(providerId, (char) 0, offset, limit);
+    return this.getIdentities(providerId, null, NULL_CHARACTER, null, null, offset, limit);
   }
 
   @Override
   public List<IdentityWithRelationship> getIdentitiesWithRelationships(final String identityId, int offset, int limit)  throws IdentityStorageException {
-    return getIdentitiesWithRelationships(identityId, (char) 0, offset, limit);
+    return getIdentitiesWithRelationships(identityId, null, NULL_CHARACTER, null, null, offset, limit);
   }
 
   @Override
-  public List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, char firstChar, int offset, int limit) {
-    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), Profile.FULL_NAME, firstChar);
+  public List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, String firstCharFieldName, char firstChar, String sortFieldName, String sortDirection, int offset, int limit) {
+    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), firstCharFieldName, firstChar, sortFieldName, sortDirection);
     return EntityConverterUtils.convertToIdentitiesWithRelationship(list, offset, limit);
   }
 
   @Override
   public int countIdentitiesWithRelationships(String identityId) throws Exception {
-    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), Profile.FULL_NAME, (char) 0);
+    ListAccess<Entry<IdentityEntity, ConnectionEntity>> list = getIdentityDAO().findAllIdentitiesWithConnections(Long.valueOf(identityId), null, NULL_CHARACTER, null, null);
     return list.getSize();
   }
 

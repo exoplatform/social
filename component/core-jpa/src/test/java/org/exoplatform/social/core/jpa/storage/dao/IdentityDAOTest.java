@@ -116,7 +116,7 @@ public class IdentityDAOTest extends BaseCoreTest {
     IdentityEntity space1 = identityDAO.create(createIdentity(SpaceIdentityProvider.NAME, "spaceABC"));
     deleteIdentities.add(space1);
 
-    ListAccess<Entry<IdentityEntity, ConnectionEntity>> identities = identityDAO.findAllIdentitiesWithConnections(identityUser0.getId(), Profile.FULL_NAME, (char) 0);
+    ListAccess<Entry<IdentityEntity, ConnectionEntity>> identities = identityDAO.findAllIdentitiesWithConnections(identityUser0.getId(), null, '\u0000', null, null);
     try {
       assertTrue("The identities count is incoherent", identities.getSize() >= 20L);
     } catch (Exception e) {
@@ -172,7 +172,13 @@ public class IdentityDAOTest extends BaseCoreTest {
       identityDAO.update(identityUser);
     }
 
-    List<String> identitiesList = identityDAO.getAllIdsByProviderSorted(OrganizationIdentityProvider.NAME, Profile.FULL_NAME, (char) 0, 0, Integer.MAX_VALUE);
+    List<String> identitiesList = identityDAO.getAllIdsByProviderSorted(OrganizationIdentityProvider.NAME,
+                                                                        null,
+                                                                        '\0',
+                                                                        null,
+                                                                        null,
+                                                                        0,
+                                                                        Integer.MAX_VALUE);
     assertTrue(identitiesList.size() >= 20);
     Iterator<String> iterator = identitiesList.iterator();
     while (iterator.hasNext()) {

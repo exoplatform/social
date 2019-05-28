@@ -166,9 +166,26 @@ public class ProfileSearchConnector {
     esQuery.append("{\n");
     esQuery.append("   \"from\" : " + offset + ", \"size\" : " + limit + ",\n");
     Sorting sorting = filter.getSorting();
-    if (sorting != null && SortBy.DATE.equals(sorting.sortBy)) {
-      esQuery.append("   \"sort\": {\"lastUpdatedDate\": {\"order\": \""
-          + (sorting.orderBy == null ? "desc" : sorting.orderBy.name()) + "\"}}\n");
+    if(sorting != null && sorting.sortBy != null) {
+      esQuery.append("   \"sort\": {");
+      switch (sorting.sortBy) {
+      case DATE:
+        esQuery.append("\"lastUpdatedDate\"");
+        break;
+      case FIRSTNAME:
+        esQuery.append("\"firstName.raw\"");
+        break;
+      case LASTNAME:
+        esQuery.append("\"lastName.raw\"");
+        break;
+      default:
+        // Title, Fullname, any other condition, we will use the fullname
+        esQuery.append("\"name.raw\"");
+        break;
+      }
+      esQuery.append(": {\"order\": \"")
+             .append(sorting.orderBy == null ? "asc" : sorting.orderBy.name())
+             .append("\"}}\n");
     } else {
       esQuery.append("   \"sort\": {\"name.raw\": {\"order\": \"asc\"}}\n");
     }
@@ -297,9 +314,26 @@ public class ProfileSearchConnector {
     char firstChar = filter.getFirstCharacterOfName();
     //
     if (firstChar != '\u0000') {
-      char lowerCase = Character.toLowerCase(firstChar);
-      char upperCase = Character.toUpperCase(firstChar);;
-      esExp.append("lastName.whitespace:").append("(").append(upperCase).append(StorageUtils.ASTERISK_STR).append(" OR ").append(lowerCase).append(StorageUtils.ASTERISK_STR).append(")");
+      String filterField = "name";
+      if (filter.getFirstCharFieldName() != null) {
+        switch (SortBy.valueOf(filter.getFirstCharFieldName().toUpperCase())) {
+        case FIRSTNAME:
+          filterField = "firstName";
+          break;
+        case LASTNAME:
+          filterField = "lastName";
+          break;
+        default:
+          // Filter by first character on full name
+          filterField = "name";
+          break;
+        }
+      }
+
+      esExp.append(filterField)
+           .append(".whitespace:")
+           .append(firstChar)
+           .append(StorageUtils.ASTERISK_STR);
       return esExp.toString();
     }
 

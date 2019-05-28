@@ -29,6 +29,9 @@ import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.OrderBy;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
@@ -349,7 +352,8 @@ public class RelationshipStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getRelationshipsCount(Identity)}
+   * Test
+   * {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getRelationshipsCount(Identity)}
    *
    * @throws Exception
    * @since 1.2.0-Beta3
@@ -370,6 +374,168 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     int count = relationshipStorage.getRelationshipsCount(rootIdentity);
     assertEquals("count must be: 3", 3, count);
+  }
+
+  /**
+   * Test
+   * {@link org.exoplatform.social.core.storage.api.RelationshipStorage.getConnectionsByFilter(Identity,
+   * ProfileFilter, long, long)}
+   *
+   * @throws Exception
+   */
+  public void testGetConnectionsByFilterAndSort() {
+    relationshipStorage.saveRelationship(new Relationship(rootIdentity, johnIdentity, Type.CONFIRMED));
+    relationshipStorage.saveRelationship(new Relationship(rootIdentity, maryIdentity, Type.CONFIRMED));
+    relationshipStorage.saveRelationship(new Relationship(rootIdentity, demoIdentity, Type.CONFIRMED));
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.setSorting(new Sorting(SortBy.LASTNAME, OrderBy.ASC));
+    List<Identity> connections = relationshipStorage.getConnectionsByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections count is not consistent", 3, connections.size());
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "john",
+                 connections.get(1).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "mary",
+                 connections.get(2).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setSorting(new Sorting(SortBy.LASTNAME, OrderBy.DESC));
+    connections = relationshipStorage.getConnectionsByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(2).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "john",
+                 connections.get(1).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "mary",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setFirstCharFieldName(SortBy.LASTNAME.getFieldName());
+    profileFilter.setFirstCharacterOfName('D');
+    connections = relationshipStorage.getConnectionsByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections count is not consistent", 1, connections.size());
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setFirstCharFieldName("NotExistingField");
+    profileFilter.setFirstCharacterOfName('J');
+    connections = relationshipStorage.getConnectionsByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections must be 1 event if filtering on not existing field (lastname is used as fallback)",
+                 1,
+                 connections.size());
+  }
+
+  /**
+   * Test
+   * {@link org.exoplatform.social.core.storage.api.RelationshipStorage.getIncomingByFilter(Identity,
+   * ProfileFilter, long, long)}
+   *
+   * @throws Exception
+   */
+  public void testGetIncomingByFilterAndSort() {
+    relationshipStorage.saveRelationship(new Relationship(johnIdentity, rootIdentity, Type.PENDING));
+    relationshipStorage.saveRelationship(new Relationship(maryIdentity, rootIdentity, Type.PENDING));
+    relationshipStorage.saveRelationship(new Relationship(demoIdentity, rootIdentity, Type.PENDING));
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.setSorting(new Sorting(SortBy.LASTNAME, OrderBy.ASC));
+    List<Identity> connections = relationshipStorage.getIncomingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections count is not consistent", 3, connections.size());
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "john",
+                 connections.get(1).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "mary",
+                 connections.get(2).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setSorting(new Sorting(SortBy.LASTNAME, OrderBy.DESC));
+    connections = relationshipStorage.getIncomingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(2).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "john",
+                 connections.get(1).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "mary",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setFirstCharFieldName(SortBy.LASTNAME.getFieldName());
+    profileFilter.setFirstCharacterOfName('D');
+    connections = relationshipStorage.getIncomingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections count is not consistent", 1, connections.size());
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setFirstCharFieldName("NotExistingField");
+    profileFilter.setFirstCharacterOfName('J');
+    connections = relationshipStorage.getIncomingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections must be 1 event if filtering on not existing field (lastname is used as fallback)",
+                 1,
+                 connections.size());
+  }
+
+  /**
+   * Test
+   * {@link org.exoplatform.social.core.storage.api.RelationshipStorage.getConnectionsByFilter(Identity,
+   * ProfileFilter, long, long)}
+   *
+   * @throws Exception
+   */
+  public void testGetOutgoingByFilterAndSort() {
+    relationshipStorage.saveRelationship(new Relationship(rootIdentity, johnIdentity, Type.PENDING));
+    relationshipStorage.saveRelationship(new Relationship(rootIdentity, maryIdentity, Type.PENDING));
+    relationshipStorage.saveRelationship(new Relationship(rootIdentity, demoIdentity, Type.PENDING));
+
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.setSorting(new Sorting(SortBy.LASTNAME, OrderBy.ASC));
+    List<Identity> connections = relationshipStorage.getOutgoingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections count is not consistent", 3, connections.size());
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "john",
+                 connections.get(1).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "mary",
+                 connections.get(2).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setSorting(new Sorting(SortBy.LASTNAME, OrderBy.DESC));
+    connections = relationshipStorage.getOutgoingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(2).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "john",
+                 connections.get(1).getProfile().getProperty(Profile.LAST_NAME));
+    assertEquals("Returned connections seems not sorted correctly",
+                 "mary",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setFirstCharFieldName(SortBy.LASTNAME.getFieldName());
+    profileFilter.setFirstCharacterOfName('D');
+    connections = relationshipStorage.getOutgoingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections count is not consistent", 1, connections.size());
+    assertEquals("Returned connections seems not sorted correctly",
+                 "demo",
+                 connections.get(0).getProfile().getProperty(Profile.LAST_NAME));
+
+    profileFilter.setFirstCharFieldName("NotExistingField");
+    profileFilter.setFirstCharacterOfName('J');
+    connections = relationshipStorage.getOutgoingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
+    assertEquals("Returned connections must be 1 event if filtering on not existing field (lastname is used as fallback)",
+                 1,
+                 connections.size());
   }
 
   /**

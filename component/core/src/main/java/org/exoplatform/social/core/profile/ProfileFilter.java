@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.space.SpaceUtils;
 
 /**
@@ -65,6 +66,8 @@ public class ProfileFilter implements Cloneable {
   private List<String> remoteIds = null;
 
   private Sorting sorting;
+
+  private String firstCharFieldName = SortBy.LASTNAME.getFieldName();
 
   public ProfileFilter() {
     this.name = "";
@@ -222,9 +225,13 @@ public class ProfileFilter implements Cloneable {
     this.all = SpaceUtils.processUnifiedSearchCondition(all);
   }
 
+  public boolean isSortingEmpty() {
+    return sorting == null;
+  }
+
   public Sorting getSorting() {
     if (sorting == null) {
-      return sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
+      return new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
     }
     return sorting;
   }
@@ -259,6 +266,14 @@ public class ProfileFilter implements Cloneable {
 
   public List<String> getRemoteIds() {
     return remoteIds;
+  }
+
+  public String getFirstCharFieldName() {
+    return firstCharFieldName;
+  }
+
+  public void setFirstCharFieldName(String firstCharField) {
+    this.firstCharFieldName = firstCharField;
   }
 
   public boolean isEmpty() {

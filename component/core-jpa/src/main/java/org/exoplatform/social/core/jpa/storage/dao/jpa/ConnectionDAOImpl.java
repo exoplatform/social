@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -73,8 +75,10 @@ public class ConnectionDAOImpl extends GenericDAOJPAImpl<ConnectionEntity, Long>
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<ConnectionEntity> getConnections(Identity identity, Type status, char firstCharacter, long offset, long limit, Sorting sorting) {
-    Query query = getConnectionsQuery(identity.getId(), status, firstCharacter, sorting.sortBy.getFieldName(), sorting.orderBy.name());
+  public List<ConnectionEntity> getConnections(Identity identity, Type status, String firstCharacterField, char firstCharacter, long offset, long limit, Sorting sorting) {
+    String sortFieldName = sorting == null || sorting.sortBy == null ? null : sorting.sortBy.getFieldName();
+    String sortDirection = sorting == null || sorting.orderBy == null ? Sorting.OrderBy.ASC.name() : sorting.orderBy.name();
+    Query query = getConnectionsQuery(identity.getId(), status, firstCharacterField, firstCharacter, sortFieldName, sortDirection);
     if (offset > 0) {
       query.setFirstResult((int) offset);
     }
@@ -238,20 +242,21 @@ public class ConnectionDAOImpl extends GenericDAOJPAImpl<ConnectionEntity, Long>
     return query.getResultList();
   }
 
-  private Query getConnectionsQuery(String identityId, Type status, char firstCharacter, String sortField, String sortDirection) {
+  private Query getConnectionsQuery(String identityId, Type status, String firstCharacterField, char firstCharacter, String sortField, String sortDirection) {
     StringBuilder queryStringBuilder = new StringBuilder("SELECT c.* FROM SOC_CONNECTIONS c \n");
     if (firstCharacter > 0) {
       queryStringBuilder.append(" INNER JOIN SOC_IDENTITY_PROPERTIES identity_prop_first_char \n");
       queryStringBuilder.append("   ON identity_prop_first_char.identity_id <> ").append(identityId).append(" \n");
       queryStringBuilder.append("       AND (identity_prop_first_char.identity_id = c.sender_id OR identity_prop_first_char.identity_id = c.receiver_id) \n");
-      queryStringBuilder.append("       AND identity_prop_first_char.name = '").append(Profile.LAST_NAME).append("' \n");
+      queryStringBuilder.append("       AND identity_prop_first_char.name = '").append(firstCharacterField).append("' \n");
       queryStringBuilder.append("       AND (lower(identity_prop_first_char.value) like '" + Character.toLowerCase(firstCharacter) + "%')\n");
     }
-    queryStringBuilder.append(" LEFT JOIN SOC_IDENTITY_PROPERTIES identity_prop \n");
-    queryStringBuilder.append("   ON identity_prop.identity_id <> ").append(identityId).append(" \n");
-    queryStringBuilder.append("       AND (identity_prop.identity_id = c.sender_id OR identity_prop.identity_id = c.receiver_id) \n");
-    queryStringBuilder.append("       AND identity_prop.name = '").append(sortField).append("' \n");
-
+    if (StringUtils.isNotBlank(sortField)) {
+      queryStringBuilder.append(" LEFT JOIN SOC_IDENTITY_PROPERTIES identity_prop \n");
+      queryStringBuilder.append("   ON identity_prop.identity_id <> ").append(identityId).append(" \n");
+      queryStringBuilder.append("       AND (identity_prop.identity_id = c.sender_id OR identity_prop.identity_id = c.receiver_id) \n");
+      queryStringBuilder.append("       AND identity_prop.name = '").append(sortField).append("' \n");
+    }
     switch(status) {
       case ALL:
         queryStringBuilder.append("WHERE (c.sender_id = ").append(identityId).append(" OR c.receiver_id = ").append(identityId).append(") \n");
@@ -279,9 +284,10 @@ public class ConnectionDAOImpl extends GenericDAOJPAImpl<ConnectionEntity, Long>
       default:
         break;
     }
-    queryStringBuilder.append(" ORDER BY lower(identity_prop.value) ").append(sortDirection);
-    Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString(), ConnectionEntity.class);
-    return query;
+    if (sortField != null) {
+      queryStringBuilder.append(" ORDER BY lower(identity_prop.value) ").append(sortDirection);
+    }
+    return getEntityManager().createNativeQuery(queryStringBuilder.toString(), ConnectionEntity.class);
   }
 
   private Long countSenderId(long receiverId, Type status) {

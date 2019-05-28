@@ -94,7 +94,7 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
   /**
    * {@inheritDoc}
    */
-  public Identity[] load(int offset, int limit) throws Exception, IllegalArgumentException {
+  public Identity[] load(int offset, int limit) throws Exception {
     ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = null;
     if (profileFilter.isEmpty()) {

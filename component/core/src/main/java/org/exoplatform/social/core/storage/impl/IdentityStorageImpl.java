@@ -37,6 +37,7 @@ import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
@@ -76,6 +77,7 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -303,7 +305,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
         break;
       case RELEVANCY:
         builder.orderBy(JCRProperties.JCR_RELEVANCY.getName(), ordering);
-      case TITLE:        
+      case LASTNAME:
+      case TITLE:
+      default:
         builder.orderBy(ProfileEntity.lastName.getName(), ordering).orderBy(ProfileEntity.firstName.getName(), ordering);
         break;
     }
@@ -1023,13 +1027,24 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   }
 
   @Override
-  public List<Identity> getIdentities(String providerId, char firstCharacterOfName, long offset, long limit) {
-    if (firstCharacterOfName == '\u0000') {
+  public List<Identity> getIdentities(String providerId,
+                                      String firstCharacterFieldName,
+                                      char firstCharacter,
+                                      String sortField,
+                                      String sortDirection,
+                                      long offset,
+                                      long limit) {
+    if (firstCharacter == '\u0000') {
       return this.getIdentities(providerId, offset, limit);
     } else {
-      ProfileFilter filter = new ProfileFilter();
-      filter.setFirstCharacterOfName(firstCharacterOfName);
-      return getIdentitiesByFirstCharacterOfName(providerId, filter, offset, limit, true);
+      ProfileFilter profileFilter = new ProfileFilter();
+      if (firstCharacter > 0 || StringUtils.isNotBlank(sortField)) {
+        profileFilter = new ProfileFilter();
+        profileFilter.setFirstCharFieldName(firstCharacterFieldName);
+        profileFilter.setFirstCharacterOfName(firstCharacter);
+        profileFilter.setSorting(Sorting.valueOf(sortField, sortDirection));
+      }
+      return getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset, limit, true);
     }
   }
 

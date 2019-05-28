@@ -23,6 +23,8 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
@@ -137,14 +139,35 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
       }
     } else if (profileFilter == null || profileFilter.isEmpty()) {
       if (profileFilter == null || profileFilter.getViewerIdentity() == null) {
-        identities = identityStorage.getIdentities(providerId,
-                                                   profileFilter == null ? EMPTY_CHARACTER
-                                                                         : profileFilter.getFirstCharacterOfName(),
-                                                   offset,
-                                                   usedLimit);
+        if (profileFilter == null) {
+          identities = identityStorage.getIdentities(providerId,
+                                                     offset,
+                                                     usedLimit);
+        } else {
+          String firstCharFieldName = profileFilter.getFirstCharFieldName();
+          char firstCharacter = profileFilter.getFirstCharacterOfName();
+          Sorting sorting = profileFilter.getSorting();
+          String sortFieldName = sorting == null || sorting.sortBy == null ? null : sorting.sortBy.getFieldName();
+          String sortDirection = sorting == null || sorting.sortBy == null ? null : sorting.orderBy.name();
+          identities = identityStorage.getIdentities(providerId,
+                                                     firstCharFieldName,
+                                                     firstCharacter,
+                                                     sortFieldName,
+                                                     sortDirection,
+                                                     offset,
+                                                     usedLimit);
+        }
       } else {
+        String firstCharFieldName = profileFilter.getFirstCharFieldName();
+        char firstCharacter = profileFilter.getFirstCharacterOfName();
+        Sorting sorting = profileFilter.getSorting();
+        String sortFieldName = sorting == null || sorting.sortBy == null ? null : sorting.sortBy.getFieldName();
+        String sortDirection = sorting == null || sorting.sortBy == null ? null : sorting.orderBy.name();
         identities = identityStorage.getIdentitiesWithRelationships(profileFilter.getViewerIdentity().getId(),
-                                                                    profileFilter.getFirstCharacterOfName(),
+                                                                    firstCharFieldName,
+                                                                    firstCharacter,
+                                                                    sortFieldName,
+                                                                    sortDirection,
                                                                     offset,
                                                                     usedLimit);
       }
