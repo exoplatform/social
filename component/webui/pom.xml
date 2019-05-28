@@ -29,6 +29,9 @@
   <packaging>jar</packaging>
   <name>eXo PLF:: Social Web UI Component</name>
   <description>eXo Social Web UI Component</description>
+  <properties>
+    <exo.test.coverage.ratio>0.004</exo.test.coverage.ratio>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -243,6 +246,12 @@
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
