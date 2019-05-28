@@ -64,13 +64,14 @@ public interface ConnectionDAO extends GenericDAO<ConnectionEntity, Long> {
   /**
    * @param identity the Identity
    * @param type type of connection
+   * @param firstCharacterField first character field name to use
    * @param firstCharacter first character to filter on first character of name
    * @param offset the start index
    * @param limit the max items to load
    * @param sorting sortby field name and sort direction
    * @return list of connection entities
    */
-  List<ConnectionEntity> getConnections(Identity identity, Type type, char firstCharacter, long offset, long limit, Sorting sorting);
+  List<ConnectionEntity> getConnections(Identity identity, Type type, String firstCharacterField, char firstCharacter, long offset, long limit, Sorting sorting);
 
   /**
    *

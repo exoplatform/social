@@ -26,6 +26,9 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
+import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.OrderBy;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.webui.exception.MessageException;
@@ -43,6 +46,10 @@ import java.util.List;
  * Also, the API which adds or removes the provider information is provided.  
  */
 public interface IdentityManager {
+
+  public static final Sorting DEFAULT_SORTING              = new Sorting(SortBy.FULLNAME, OrderBy.ASC);
+
+  public static final String  DEFAULT_FIRST_CHAR_FILTERING = SortBy.LASTNAME.getFieldName();
 
   /**
    * Gets the last identities that have been created.
@@ -572,4 +579,18 @@ public interface IdentityManager {
    * @return
    */
   public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);
+
+  /**
+   * @return default sorting to apply when listing
+   */
+  default Sorting getDefaultSorting() {
+    return DEFAULT_SORTING;
+  }
+
+  /**
+   * @return field name to use to filter on first character when listing identities
+   */
+  default String getFirstCharacterFiltering() {
+    return DEFAULT_FIRST_CHAR_FILTERING;
+  }
 }

@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.manager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.identity.ConnectionFilterListAccess;
@@ -27,6 +29,7 @@ import org.exoplatform.social.core.relationship.RelationshipListener;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
@@ -544,17 +547,19 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   public ListAccess<Identity> getConnectionsByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
+    profileFilter = checkSortingOnProfileFilter(profileFilter);
     return new ConnectionFilterListAccess(identityStorage, this.storage, existingIdentity, profileFilter,
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_CONNECTION);
   }
 
   public ListAccess<Identity> getIncomingByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
+    profileFilter = checkSortingOnProfileFilter(profileFilter);
     return new ConnectionFilterListAccess(identityStorage, this.storage, existingIdentity, profileFilter,
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_INCOMMING);
   }
 
   public ListAccess<Identity> getOutgoingByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
-    
+    profileFilter = checkSortingOnProfileFilter(profileFilter);
     return new ConnectionFilterListAccess(identityStorage, this.storage, existingIdentity, profileFilter,
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
   }
@@ -606,5 +611,18 @@ public class RelationshipManagerImpl implements RelationshipManager {
    */
   public int getRelationshipsCountByStatus(Identity identity, Relationship.Type type) {
     return storage.getRelationshipsCountByStatus(identity, type);
+  }
+
+  private ProfileFilter checkSortingOnProfileFilter(ProfileFilter profileFilter) {
+    if (profileFilter == null) {
+      profileFilter = new ProfileFilter();
+    }
+    if (profileFilter.isSortingEmpty()) {
+      profileFilter.setSorting(getIdentityManager().getDefaultSorting());
+    }
+    if (StringUtils.isBlank(profileFilter.getFirstCharFieldName())) {
+      profileFilter.setFirstCharFieldName(getIdentityManager().getFirstCharacterFiltering());
+    }
+    return profileFilter;
   }
 }

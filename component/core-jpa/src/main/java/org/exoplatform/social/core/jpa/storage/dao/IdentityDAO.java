@@ -40,7 +40,12 @@ public interface IdentityDAO extends GenericDAO<IdentityEntity, Long> {
   List<Long> getAllIds(int offset, int limit);  
 
   List<Long> getAllIdsByProvider(String providerId, int offset, int limit);
-  ListAccess<Map.Entry<IdentityEntity, ConnectionEntity>> findAllIdentitiesWithConnections(long identityId, String sortField, char firstChar);
+
+  ListAccess<Map.Entry<IdentityEntity, ConnectionEntity>> findAllIdentitiesWithConnections(long identityId,
+                                                                                           String firstCharacterFieldName,
+                                                                                           char firstCharacter,
+                                                                                           String sortField,
+                                                                                           String sortDirection);
 
   /**
    * set the DELETED flag to true
@@ -58,11 +63,13 @@ public interface IdentityDAO extends GenericDAO<IdentityEntity, Long> {
    * Get all identities by providerId sorted by sortField
    * 
    * @param providerId
+   * @param firstCharacterFieldName
+   * @param firstCharacter
    * @param sortField
-   * @param firstChar
+   * @param sortDirection
    * @param offset
    * @param limit
    * @return
    */
-  List<String> getAllIdsByProviderSorted(String providerId, String sortField, char firstChar, long offset, long limit);
+  List<String> getAllIdsByProviderSorted(String providerId, String firstCharacterFieldName, char firstCharacter, String sortField, String sortDirection, long offset, long limit);
 }

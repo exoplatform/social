@@ -36,6 +36,9 @@ import org.exoplatform.social.core.identity.provider.FakeIdentityProvider;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.OrderBy;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -739,6 +742,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
     ListAccess<Identity> idsListAccess = null;
     // Test order by last name
     pf.setFirstCharacterOfName('D');
+    pf.setSorting(new Sorting(SortBy.FULLNAME, OrderBy.ASC));
     idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
     assertNotNull(idsListAccess);
     assertEquals(2, idsListAccess.getSize());

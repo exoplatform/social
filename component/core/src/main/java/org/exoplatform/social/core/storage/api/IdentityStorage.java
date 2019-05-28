@@ -324,15 +324,18 @@ public interface IdentityStorage {
 
   /**
    * Gets all identities from the store with the relationship that they have with current user identity.
-   * The firstChar parameter will be used to filter on identities full names first character.
+   * The firstChar parameter will be used to filter on identities fullname|lastname|firstname first character.
    * 
    * @param identityId
+   * @param firstCharFieldName
    * @param firstChar
+   * @param sortFieldName 
+   * @param sortDirection 
    * @param offset
    * @param limit
    * @return
    */
-  default List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, char firstChar, int offset, int limit) {
+  default List<IdentityWithRelationship> getIdentitiesWithRelationships(String identityId, String firstCharFieldName, char firstChar, String sortFieldName, String sortDirection, int offset, int limit) {
     throw new UnsupportedOperationException("This operation is not supported using current implementation of service IdentityStorage");
   }
 
@@ -386,15 +389,18 @@ public interface IdentityStorage {
 
   /**
    * Get list of identities by providerId
-   * The firstChar parameter will be used to filter on identities full names first character.
+   * The firstChar parameter will be used to filter on identities fullname/firstname/lastname first character.
    * 
    * @param providerId
-   * @param firstCharacterOfName
+   * @param firstCharacterFieldName
+   * @param firstCharacter
+   * @param sortField
+   * @param sortDirection
    * @param offset
    * @param limit
    * @return
    */
-  default public List<Identity> getIdentities(String providerId, char firstCharacterOfName, long offset, long limit) {
+  default public List<Identity> getIdentities(String providerId, String firstCharacterFieldName, char firstCharacter, String sortField, String sortDirection, long offset, long limit) {
     throw new UnsupportedOperationException("This operation is not supported using current implementation of service IdentityStorage");
   }
 

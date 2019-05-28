@@ -23,8 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityProvider;
@@ -41,6 +44,8 @@ import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
 import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.search.Sorting.OrderBy;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.webui.exception.MessageException;
@@ -77,6 +82,10 @@ public class IdentityManagerImpl implements IdentityManager {
   /** lifecycle for profile */
   protected ProfileLifeCycle                 profileLifeCycle  = new ProfileLifeCycle();
 
+  private Sorting                            defaultSorting          = DEFAULT_SORTING;
+
+  private String                             firstCharacterFiltering = DEFAULT_FIRST_CHAR_FILTERING;
+
   /**
    * Instantiates a new identity manager.
    *
@@ -85,9 +94,49 @@ public class IdentityManagerImpl implements IdentityManager {
    *          when no other provider matches
    */
   public IdentityManagerImpl(IdentityStorage identityStorage,
-                             IdentityProvider<?> defaultIdentityProvider) {
+                             IdentityProvider<?> defaultIdentityProvider,
+                             InitParams initParams) {
     this.identityStorage = identityStorage;
     this.addIdentityProvider(defaultIdentityProvider);
+    if (initParams != null) {
+      String sortFieldName = this.defaultSorting.sortBy.getFieldName();
+      if (initParams.containsKey("sort.field.name")) {
+        sortFieldName = initParams.getValueParam("sort.field.name").getValue();
+      }
+      String sortDirection = this.defaultSorting.orderBy.name();
+      if (initParams.containsKey("sort.order.direction")) {
+        sortDirection = initParams.getValueParam("sort.order.direction").getValue();
+      }
+      Sorting configuredSorting = Sorting.valueOf(sortFieldName, sortDirection);
+      if (configuredSorting != null) {
+        this.defaultSorting = configuredSorting;
+      }
+
+      String firstCharacterFilteringField = this.firstCharacterFiltering;
+      if (initParams.containsKey("firstChar.field.name")) {
+        firstCharacterFilteringField = initParams.getValueParam("firstChar.field.name").getValue();
+      }
+      configuredSorting = Sorting.valueOf(firstCharacterFilteringField, "ASC");
+      if (configuredSorting != null && configuredSorting.sortBy != null) {
+        this.firstCharacterFiltering = configuredSorting.sortBy.getFieldName();
+      }
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Sorting getDefaultSorting() {
+    return defaultSorting;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getFirstCharacterFiltering() {
+    return firstCharacterFiltering;
   }
 
   /**
@@ -111,6 +160,15 @@ public class IdentityManagerImpl implements IdentityManager {
    */
   public ListAccess<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter,
                                                            boolean forceLoadProfile) {
+    if (profileFilter == null) {
+      profileFilter = new ProfileFilter();
+    }
+    if (profileFilter.isSortingEmpty()) {
+      profileFilter.setSorting(this.defaultSorting);
+    }
+    if (StringUtils.isBlank(profileFilter.getFirstCharFieldName())) {
+      profileFilter.setFirstCharFieldName(this.firstCharacterFiltering);
+    }
     return (new ProfileFilterListAccess(identityStorage, providerId, profileFilter, forceLoadProfile));
   }
 
