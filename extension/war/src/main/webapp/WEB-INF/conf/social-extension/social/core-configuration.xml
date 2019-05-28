@@ -899,4 +899,13 @@
     </component-plugin>
   </external-component-plugins>
 
+  <external-component-plugins>
+    <target-component>org.exoplatform.portal.config.UserACL</target-component>
+    <component-plugin>
+      <name>space_creation_invitation</name>
+      <set-method>addGroupVisibilityPlugin</set-method>
+      <type>org.exoplatform.social.webui.SpaceCreationInvitationGroupVisibilityPlugin</type>
+    </component-plugin>
+  </external-component-plugins>
+
 </configuration>
