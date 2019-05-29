@@ -50,8 +50,6 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
 
   private static final char NULL_CHARACTER = '\u0000';
 
-  private static final Sorting DEFAULT_SORTING = new Sorting(Sorting.SortBy.FULLNAME, OrderBy.ASC);
-
   private static final Log LOG = ExoLogger.getLogger(RDBMSRelationshipStorageImpl.class);
   
   private final ConnectionDAO connectionDAO;
@@ -129,7 +127,7 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
   
   @Override
   public List<Identity> getConnections(Identity identity, long offset, long limit) throws RelationshipStorageException {
-    return convertRelationshipEntitiesToIdentities(connectionDAO.getConnections(identity, Relationship.Type.CONFIRMED, NULL_CHARACTER, offset, limit, DEFAULT_SORTING), identity.getId());
+    return convertRelationshipEntitiesToIdentities(connectionDAO.getConnections(identity, Relationship.Type.CONFIRMED, null, NULL_CHARACTER, offset, limit, null), identity.getId());
   }
 
   @Override
@@ -159,7 +157,7 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
   }
 
   public List<Relationship> getRelationships(Identity identity, Relationship.Type type) {
-    return convertRelationshipEntitiesToRelationships(connectionDAO.getConnections(identity, type, NULL_CHARACTER, 0, -1, DEFAULT_SORTING));
+    return convertRelationshipEntitiesToRelationships(connectionDAO.getConnections(identity, type, null, NULL_CHARACTER, 0, -1, null));
   }
 
   public List<Relationship> getRelationships(Identity sender, Identity receiver, Type type) {
@@ -168,7 +166,7 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
 
   @Override
   public List<Identity> getOutgoingRelationships(Identity sender, long offset, long limit) throws RelationshipStorageException {
-    return convertRelationshipEntitiesToIdentities(connectionDAO.getConnections(sender, Relationship.Type.OUTGOING, NULL_CHARACTER, offset, limit, DEFAULT_SORTING), sender.getId());
+    return convertRelationshipEntitiesToIdentities(connectionDAO.getConnections(sender, Relationship.Type.OUTGOING, null, NULL_CHARACTER, offset, limit, null), sender.getId());
   }
 
   @Override
@@ -178,7 +176,7 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
 
   @Override
   public List<Identity> getIncomingRelationships(Identity receiver, long offset, long limit) throws RelationshipStorageException {
-    return searchConnections(receiver, Relationship.Type.INCOMING, NULL_CHARACTER, offset, limit, DEFAULT_SORTING);
+    return searchConnections(receiver, Relationship.Type.INCOMING, null, NULL_CHARACTER, offset, limit, null);
   }
 
   @Override
@@ -237,7 +235,7 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
 
   @Override
   public List<Identity> getRelationships(Identity identity, long offset, long limit) throws RelationshipStorageException {
-    return convertRelationshipEntitiesToIdentities(connectionDAO.getConnections(identity, Type.ALL, NULL_CHARACTER, offset, limit, DEFAULT_SORTING), identity.getId());
+    return convertRelationshipEntitiesToIdentities(connectionDAO.getConnections(identity, Type.ALL, null, NULL_CHARACTER, offset, limit, null), identity.getId());
   }
 
   @Override
@@ -378,7 +376,7 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
   private List<Identity> searchConnectionByFilter(Identity owner, Relationship.Type status, ProfileFilter profileFilter, long offset, long limit) {
     ExtendProfileFilter xFilter = new ExtendProfileFilter(profileFilter);
     if(xFilter.isEmpty()) {
-      return searchConnections(owner, status, xFilter.getFirstCharacterOfName(), offset, limit, DEFAULT_SORTING);
+      return searchConnections(owner, status, xFilter.getFirstCharFieldName(), xFilter.getFirstCharacterOfName(), offset, limit, profileFilter.getSorting());
     }
     xFilter.setConnection(owner);
     xFilter.setConnectionStatus(status);
@@ -392,9 +390,9 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
     }
   }
 
-  private List<Identity> searchConnections(Identity owner, Type status, char firstCharacter, long offset, long limit, Sorting sorting) {
+  private List<Identity> searchConnections(Identity owner, Type status, String firstCharacterField, char firstCharacter, long offset, long limit, Sorting sorting) {
     long ownerId = Long.valueOf(owner.getId());
-    List<ConnectionEntity> connections = connectionDAO.getConnections(owner, status, firstCharacter, offset, limit, sorting);
+    List<ConnectionEntity> connections = connectionDAO.getConnections(owner, status, firstCharacterField, firstCharacter, offset, limit, sorting);
     List<Identity> identities = new ArrayList<Identity>();
 
     for (ConnectionEntity connectionEntity : connections) {
