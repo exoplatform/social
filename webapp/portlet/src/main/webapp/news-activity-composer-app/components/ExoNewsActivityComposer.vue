@@ -2,25 +2,28 @@
   <div id="newsActivityComposer" class="uiBox">
     <form id="newsForm" action="#" method="post" @submit="postNews">
 
-      <div class="newsFormRow newsFormTitle">
-        <label class="newsFormLabel" for="newsTitle">{{ $t("activity.composer.news.title") }} : </label>
-        <input id="newsTitle" v-model="title" :maxlength="TITLE_MAX_LENGTH" class="newsFormInput" type="text">
-      </div>
+      <div class="newsFormLabelsInputs">
+        <div class="newsFormColumn newsFormLabels">
+          <label class="newsFormLabel newsFormTitleLabel" for="newsTitle">{{ $t("activity.composer.news.title") }} : </label>
+          <label class="newsFormLabel newsFormContentLabel" for="newsContent">{{ $t("activity.composer.news.content") }} : </label>
+        </div>
 
-      <div class="newsFormRow newsFormContent">
-        <label class="newsFormLabel" for="newsContent">{{ $t("activity.composer.news.content") }} : </label>
-        <textarea id="newsContent" v-model="content" class="newsFormInput" type="text" name="newsContent"></textarea>
-      </div>
+        <div class="newsFormColumn newsFormInputs">
+          <input id="newsTitle" v-model="title" :maxlength="max" class="newsFormInput" type="text">
+          <textarea id="newsContent" v-model="content" class="newsFormInput" type="text" name="newsContent"></textarea>
 
-      <div class="newsFormRow newsFormButtons">
-        <span class="uiCheckbox">
-          <input id="pinArticle" v-model="pinArticle" type="checkbox" class="checkbox ">
-          <span>{{ $t("activity.composer.news.pinArticle") }}</span>
-        </span>
-        <button id="newsPost" :disabled="postDisabled" class="btn btn-primary">{{ $t("activity.composer.news.post") }}</button>
-        <a id="newsPlus" :data-original-title="$t('activity.composer.news.moreOptions')" class="btn btn-primary" rel="tooltip" data-placement="bottom">
-          <i class="uiIconSimplePlus"></i>
-        </a>
+          <div class="newsFormButtons">
+            <span class="uiCheckbox">
+              <input id="pinArticle" v-model="pinArticle" type="checkbox" class="checkbox ">
+              <span>{{ $t("activity.composer.news.pinArticle") }}</span>
+            </span>
+            <button id="newsPost" :disabled="postDisabled" class="btn btn-primary">{{ $t("activity.composer.news.post") }}</button>
+            <a id="newsPlus" :data-original-title="$t('social.space.news.form.moreOption')" class="btn btn-primary"
+               rel="tooltip" data-placement="bottom">
+              <i class="uiIconSimplePlus"></i>
+            </a>
+          </div>
+        </div>
       </div>
 
     </form>
