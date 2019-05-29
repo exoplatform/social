@@ -401,13 +401,11 @@ public class UIInvitations extends UIContainer {
       try {
         uiInvitations.setSelectedChar(charSearch);
         if (charSearch != null) { // search by alphabet
-          filter.setName(charSearch);
           filter.setPosition("");
           filter.setSkills("");
           filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
           if (UIProfileUserSearch.ALL_FILTER.equals(charSearch)) {
             filter.setFirstCharacterOfName(UIProfileUserSearch.EMPTY_CHARACTER);
-            filter.setName("");
           }
           uiSearch.setRawSearchConditional("");
         } else if (UIProfileUserSearch.ALL_FILTER.equals(uiSearch.getRawSearchConditional())) {

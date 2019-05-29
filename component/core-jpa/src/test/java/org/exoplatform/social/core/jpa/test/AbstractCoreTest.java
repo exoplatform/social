@@ -31,8 +31,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -51,6 +50,8 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.webui.exception.MessageException;
+
 import org.jboss.byteman.contrib.bmunit.BMUnit;
 import org.mockito.Mockito;
 
@@ -225,8 +226,27 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     }
   }
 
+  protected Identity createUserAndIdentity(String username) throws Exception {
+    OrganizationService organizationService = getContainer().getComponentInstanceOfType(OrganizationService.class);
+    UserHandler userHandler = organizationService.getUserHandler();
+    User user = userHandler.findUserByName(username);
+    if (user == null) {
+      user = userHandler.createUserInstance(username);
+      user.setFirstName(username);
+      user.setLastName(username);
+      user.setEmail(username + "@test.com");
+      userHandler.createUser(user, true);
+    }
+    return createIdentity(username);
+  }
+
   protected Identity createIdentity(String username) {
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.FIRST_NAME, username);
+    profile.setProperty(Profile.LAST_NAME, username);
+    identity.setProfile(profile);
+    identityManager.saveProfile(profile);
     if(identity.isDeleted() || !identity.isEnable()) {
       identity.setDeleted(false);
       identity.setEnable(true);
@@ -236,13 +256,19 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     return identity;
   }
 
-  protected Identity createIdentity(String username, String email) {
+  protected Identity createIdentity(String username, String email) throws MessageException {
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.FIRST_NAME, username);
+    profile.setProperty(Profile.LAST_NAME, username);
+    identity.setProfile(profile);
     if(identity.isDeleted() || !identity.isEnable()) {
       identity.setDeleted(false);
       identity.setEnable(true);
       identity.getProfile().setProperty(Profile.EMAIL, email);
       identity = identityManager.updateIdentity(identity);
+      identityManager.updateProfile(profile);
+      identity.setProfile(profile);
     }
 
     return identity;

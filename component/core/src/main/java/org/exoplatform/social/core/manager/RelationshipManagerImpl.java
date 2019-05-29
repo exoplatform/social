@@ -177,14 +177,14 @@ public class RelationshipManagerImpl implements RelationshipManager {
    * {@inheritDoc}
    */
   public List<Relationship> getAll(Identity identity) throws RelationshipStorageException {
-    return getRelationships(identity, null, null);
+    return getRelationships(identity, Type.ALL, null);
   }
 
   /**
    * {@inheritDoc}
    */
   public List<Relationship> getAll(Identity identity, List<Identity> identities) throws RelationshipStorageException {
-    return getRelationships(identity, null, identities);
+    return getRelationships(identity, Type.ALL, identities);
   }
 
   /**
