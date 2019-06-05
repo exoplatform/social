@@ -597,6 +597,8 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle(model.getTitle());
+    activity.setBody(model.getBody());
+    activity.setType(model.getType());
     activity.setUserId(poster.getId());
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
     

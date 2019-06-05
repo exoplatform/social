@@ -129,6 +129,15 @@ public class ActivityEntity extends BaseEntity {
     return getString("priority");
   }
 
+  public ActivityEntity setRead(String read) {
+    setProperty("read", read);
+    return this;
+  }
+
+  public String getRead() {
+    return getString("read");
+  }
+
   public ActivityEntity setMentions(List<DataEntity> mentions) {
     setProperty("mentions", mentions);
     return this;

@@ -1,6 +1,6 @@
 <template>
   <div id="newsActivityComposer" class="uiBox">
-    <form id="newsForm" action="#" method="post" @submit="postNews">
+    <form id="newsForm" @submit.prevent="postNews">
 
       <div class="newsFormLabelsInputs">
         <div class="newsFormColumn newsFormLabels">
@@ -9,16 +9,15 @@
         </div>
 
         <div class="newsFormColumn newsFormInputs">
-          <input id="newsTitle" v-model="title" :maxlength="max" class="newsFormInput" type="text">
-          <textarea id="newsContent" v-model="content" class="newsFormInput" type="text" name="newsContent"></textarea>
-
+          <input id="newsTitle" v-model="newsActivity.title" :maxlength="max" class="newsFormInput" type="text">
+          <textarea id="newsContent" v-model="newsActivity.content" class="newsFormInput" type="text" name="newsContent"></textarea>
           <div class="newsFormButtons">
             <span class="uiCheckbox">
               <input id="pinArticle" v-model="pinArticle" type="checkbox" class="checkbox ">
               <span>{{ $t("activity.composer.news.pinArticle") }}</span>
             </span>
             <button id="newsPost" :disabled="postDisabled" class="btn btn-primary">{{ $t("activity.composer.news.post") }}</button>
-            <a id="newsPlus" :data-original-title="$t('social.space.news.form.moreOption')" class="btn btn-primary"
+            <a id="newsPlus" :data-original-title="$t('activity.composer.news.moreOptions')" class="btn btn-primary"
                rel="tooltip" data-placement="bottom">
               <i class="uiIconSimplePlus"></i>
             </a>
@@ -31,19 +30,22 @@
 </template>
 
 <script>
+import * as  newsActivityComposerServices  from '../newsActivityComposerServices';
 export default {
   data() {
     return {
+      newsActivity: {
+        title: '',
+        content: '',
+      },
+      pinArticle: false,
       SMARTPHONE_LANDSCAPE_WIDTH: 768,
       TITLE_MAX_LENGTH: 150,
-      title: '',
-      content: '',
-      pinArticle: false
     };
   },
   computed: {
     postDisabled: function() {
-      return !this.title || !this.content;
+      return !this.newsActivity.title || !this.newsActivity.content;
     }
   },
   created() {
@@ -89,14 +91,30 @@ export default {
           change: function(evt) {
             const newData = evt.editor.getData();
             const pureText = newData ? newData.replace(/<[^>]*>/g, '').replace(/&nbsp;/g,'').trim() : '';
-            self.content = pureText;
+            self.newsActivity.content = pureText;
           }
         }
       });
     },
-    postNews: function(e) {
-      e.preventDefault();
-    }
+    postNews: function() {
+      newsActivityComposerServices.saveNewsActivity({
+        title: this.newsActivity.title,
+        body:  this.newsActivity.content,
+        type: 'news'
+      }).then(() => {
+        // reset form
+        this.newsActivity.title = '';
+        this.newsActivity.content = '';
+        CKEDITOR.instances['newsContent'].setData('');
+        this.pinArticle = false;
+
+        // refresh activity stream
+        const refreshButton = document.querySelector('.uiActivitiesDisplay #RefreshButton');
+        if(refreshButton) {
+          refreshButton.click();
+        }
+      });
+    },
   }
 };
 </script>
