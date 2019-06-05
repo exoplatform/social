@@ -12,6 +12,7 @@ import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.news.UINewsActivity;
@@ -45,9 +46,12 @@ public class UINewsActivityComposer extends UIActivityComposer {
 
   private static final String MANAGER_MEMBERSHIP_NAME = "manager";
 
+  private IdentityManager identityManager;
+
   private ExoFeatureService featureService;
 
   public UINewsActivityComposer() {
+    identityManager = CommonsUtils.getService(IdentityManager.class);
     featureService = CommonsUtils.getService(ExoFeatureService.class);
 
     setReadyForPostingActivity(true);
@@ -131,10 +135,14 @@ public class UINewsActivityComposer extends UIActivityComposer {
 
   @Override
   protected void onActivate(Event<UIActivityComposer> event) {
-    String userId = null;
+    String userIdentityId = null;
     ConversationState conversationState = ConversationState.getCurrent();
     if (conversationState != null && conversationState.getIdentity() != null) {
-      userId = conversationState.getIdentity().getUserId();
+      String userId = conversationState.getIdentity().getUserId();
+      Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+      if(identity != null) {
+        userIdentityId = identity.getId();
+      }
     }
 
     Space space = null;
@@ -143,10 +151,10 @@ public class UINewsActivityComposer extends UIActivityComposer {
       space = ((UISpaceActivitiesDisplay) uiContainer).getSpace();
     }
 
-    LOG.info("service=news operation=display_news_composer parameters=\"space_name:{},space_id:{},username:{}\"",
+    LOG.info("service=news operation=display_news_composer parameters=\"space_name:{},space_id:{},user_id:{}\"",
             space != null ? space.getPrettyName() : null,
             space != null ? space.getId() : null,
-            userId);
+            userIdentityId);
 
     setReadyForPostingActivity(true);
   }
