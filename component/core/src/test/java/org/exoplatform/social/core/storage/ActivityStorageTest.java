@@ -2033,7 +2033,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     // root save on root's stream
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("blabla");
-    activity.setUpdated(new Date());
+    activity.setUpdated(new Date().getTime());
     activity.setUserId(demoIdentity.getId());
     activityStorage.saveActivity(demoIdentity, activity);
 
@@ -2132,7 +2132,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("blabla");
     activity.setUserId(rootIdentity.getId());
-    activity.setUpdated(new Date());
+    activity.setUpdated(new Date().getTime());
 
     Map<String, String> templateParams = new HashMap<String, String>();
     templateParams.put(URL_PARAMS, "http://xxxxxxxxxxxxxxxx/xxxx=xxxxx");

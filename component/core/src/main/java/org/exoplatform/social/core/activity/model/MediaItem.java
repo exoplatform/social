@@ -16,12 +16,38 @@
  */
 package org.exoplatform.social.core.activity.model;
 
-import org.apache.shindig.social.opensocial.model.Address;
-
 /**
  * The Class MediaItem represent MediaItem in opensocial.
  */
-public class MediaItem implements org.apache.shindig.social.opensocial.model.MediaItem {
+public class MediaItem {
+
+  public enum Type {
+    AUDIO("audio"),
+    IMAGE("image"),
+    VIDEO("video");
+
+    /**
+     * The field type.
+     */
+    private final String jsonString;
+
+    /**
+     * Construct a field type based on the name.
+     *
+     * @param jsonString
+     */
+    Type(String jsonString) {
+      this.jsonString = jsonString;
+    }
+
+    /**
+     * @return a string representation of the enum.
+     */
+    @Override
+    public String toString() {
+      return this.jsonString;
+    }
+  }
 
   /** The mime type. */
   private String mimeType;
@@ -157,14 +183,6 @@ public class MediaItem implements org.apache.shindig.social.opensocial.model.Med
   }
 
   public void setLastUpdated(final String lastUpdated) {
-    throw new RuntimeException();
-  }
-
-  public Address getLocation() {
-    throw new RuntimeException();
-  }
-
-  public void setLocation(final Address location) {
     throw new RuntimeException();
   }
 

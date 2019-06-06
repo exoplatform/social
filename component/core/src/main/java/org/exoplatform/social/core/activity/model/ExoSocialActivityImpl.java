@@ -19,9 +19,10 @@ package org.exoplatform.social.core.activity.model;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.shindig.social.core.model.ActivityImpl;
 
 /**
  * Implementation of {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}.
@@ -29,7 +30,12 @@ import org.apache.shindig.social.core.model.ActivityImpl;
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since 1.2.0-GA
  */
-public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActivity {
+public class ExoSocialActivityImpl implements ExoSocialActivity {
+
+  private String id;
+
+  private String externalId;
+
   /**
    * The activity stream.
    */
@@ -70,10 +76,28 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
    */
   private String name;
 
+  private String title;
+
+  private String titleId;
+
   /**
    * Summary of an activity for further information displayed.
    */
   private String summary;
+
+  private String body;
+
+  private String bodyId;
+
+  private String appId;
+
+  private Long postedTime;
+
+  private Date updated;
+
+  private String url;
+
+  private Map<String, String> templateParams;
 
   /**
    * The link to the activity object.
@@ -99,6 +123,10 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   private String parentId;
 
   private List<ActivityFile> files;
+
+  private String userId;
+
+  private Float priority;
 
   /**
    * constructor.
@@ -163,6 +191,22 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     this(userId, activityType, activityTitle);
     setBody(activityBody);
     this.isAComment = isAComment;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getExternalId() {
+    return externalId;
+  }
+
+  public void setExternalId(String externalId) {
+    this.externalId = externalId;
   }
 
   /**
@@ -357,6 +401,22 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     name = activityName;
   }
 
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getTitleId() {
+    return titleId;
+  }
+
+  public void setTitleId(String titleId) {
+    this.titleId = titleId;
+  }
+
   /**
    * {@inheritDoc}
    *
@@ -373,6 +433,54 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
    */
   public final void setSummary(final String activitySummary) {
     summary = activitySummary;
+  }
+
+  public String getBody() {
+    return body;
+  }
+
+  public void setBody(String body) {
+    this.body = body;
+  }
+
+  public String getBodyId() {
+    return bodyId;
+  }
+
+  public void setBodyId(String bodyId) {
+    this.bodyId = bodyId;
+  }
+
+  public String getAppId() {
+    return appId;
+  }
+
+  public void setAppId(String appId) {
+    this.appId = appId;
+  }
+
+  public Long getPostedTime() {
+    return postedTime;
+  }
+
+  public void setPostedTime(Long postedTime) {
+    this.postedTime = postedTime;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public Map<String, String> getTemplateParams() {
+    return templateParams;
+  }
+
+  public void setTemplateParams(Map<String, String> templateParams) {
+    this.templateParams = templateParams;
   }
 
   /**
@@ -471,14 +579,18 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     commentedIds = Arrays.copyOf(identityIds, identityIds.length);
   }
 
+  public Date getUpdated() {
+    return updated;
+  }
+
   /**
    * {@inheritDoc}
    */
   public void setUpdated(Long updated) {
     if (updated != null) {
-      setUpdated(new Date(updated));
+      this.updated = new Date(updated);
     } else {
-      setUpdated(getPostedTime());
+      this.updated  = new Date(getPostedTime());
     }
   }
   
@@ -488,7 +600,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   private void init() {
     Date date = new Date();
     setPostedTime(date.getTime());
-    setUpdated(date);
+    setUpdated(date.getTime());
     activityStream = new ActivityStreamImpl();
   }
 
@@ -531,11 +643,26 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   }
 
   @Override
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  public Float getPriority() {
+    return priority;
+  }
+
+  public void setPriority(Float priority) {
+    this.priority = priority;
+  }
+
   public String toString() {
     return "ExoSocialActivity[id = " + getId() + ",title=" + getTitle() + ",lastModified= " + getUpdated().getTime() + " ]";
   }
   
-  @Override
   public boolean equals(final Object o) {
     if (this == o) {
       return true;
@@ -553,10 +680,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     return true;
   }
 
-  @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (getId() != null ? getId().hashCode() : 0);
-    return result;
+    return Objects.hash(id);
   }
 }

@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
-import com.google.caja.util.Lists;
-import com.google.caja.util.Maps;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
@@ -34,9 +32,7 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -1605,12 +1601,12 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
     profile.setProperty(Profile.FULL_NAME, fullName);
     profile.setProperty(Profile.POSITION, position);
     profile.setProperty(Profile.GENDER, gender);
-    Map<String, String> xp = Maps.newHashMap();
-    List<Map<String, String>> xps = Lists.newArrayList();
+    Map<String, String> xp = new HashMap();
+    List<Map<String, String>> xps = new ArrayList();
     xp.put(Profile.EXPERIENCES_COMPANY, company);
     xps.add(xp);
     profile.setProperty(Profile.EXPERIENCES, xps);
-    profile.setListUpdateTypes(Lists.newArrayList(Profile.UpdateType.CONTACT));
+    profile.setListUpdateTypes(Arrays.asList(Profile.UpdateType.CONTACT));
     identityManager.updateProfile(profile);
     identity.setProfile(profile);
     identityManager.updateIdentity(identity);
