@@ -33,7 +33,6 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
-import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
@@ -53,7 +52,6 @@ import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.page.PageState;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.pom.config.Utils;
-import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.pom.spi.portlet.Portlet;
 import org.exoplatform.portal.pom.spi.portlet.PortletBuilder;
 import org.exoplatform.portal.webui.portal.UIPortal;
@@ -412,20 +410,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     }
     String appInstanceId = PortalConfig.GROUP_TYPE + "#" + space.getGroupId() + ":/" + contentId
             + "/" + app.getApplicationName() + System.currentTimeMillis();
-    org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication = null;
-    org.exoplatform.portal.config.model.Application<Portlet> portletApplication = null;
-
-    if (app.getType() == ApplicationType.GADGET) {
-      TransientApplicationState<Gadget> gadgetState = new TransientApplicationState<Gadget>(app.getApplicationName());
-      gadgetApplication = org.exoplatform.portal.config.model.Application.createGadgetApplication();
-      gadgetApplication.setState(gadgetState);
-      gadgetApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
-      gadgetApplication.setShowInfoBar(false);
-    } else {
-      portletApplication = createPortletApplication(appInstanceId, space, isRoot);
-      portletApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
-      portletApplication.setShowInfoBar(false);
-    }
+    org.exoplatform.portal.config.model.Application<Portlet> portletApplication = createPortletApplication(appInstanceId, space, isRoot);
+    portletApplication.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+    portletApplication.setShowInfoBar(false);
 
     String pageTitle = space.getDisplayName() + " - " + app.getDisplayName();
     String pageName = app.getApplicationName();
@@ -446,7 +433,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
                 PortalConfig.GROUP_TYPE,
                 space.getGroupId());
         //setting some data to page.
-        setPage(space, app, gadgetApplication, portletApplication, page);
+        setPage(space, app, portletApplication, page);
       }
       page.setName(pageName);
       page.setTitle(pageTitle);
@@ -537,7 +524,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   @SuppressWarnings("unchecked")
   private void setPage(Space space,
                        Application app,
-                       org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication,
                        org.exoplatform.portal.config.model.Application<Portlet> portletApplication,
                        Page page) {
     
@@ -546,12 +532,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     //
     Container container = SpaceUtils.findContainerById(pageChilds, SpaceUtils.APPLICATION_CONTAINER);
     ArrayList<ModelObject> children = container.getChildren();
-    
-    if (app.getType() == ApplicationType.GADGET) {
-      children.add(gadgetApplication);
-    } else {
-      children.add(portletApplication);
-    }
+
+    children.add(portletApplication);
+
     container.setChildren(children);
     pageChilds = setContainerById(pageChilds, container);
     page.setChildren(pageChilds);

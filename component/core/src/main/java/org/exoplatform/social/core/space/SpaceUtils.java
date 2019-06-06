@@ -57,7 +57,6 @@ import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.user.*;
-import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -209,8 +208,7 @@ public class SpaceUtils {
         continue;
       }
       ApplicationType<org.exoplatform.portal.pom.spi.portlet.Portlet> portletType = ApplicationType.PORTLET;
-      ApplicationType<Gadget> gadgetType = ApplicationType.GADGET;
-      List<Application> applications = appRegistrySrc.getApplications(cate, portletType, gadgetType);
+      List<Application> applications = appRegistrySrc.getApplications(cate, portletType);
       Iterator<Application> appIterator = applications.iterator();
       while (appIterator.hasNext()) {
         Application app = appIterator.next();
@@ -1444,9 +1442,6 @@ public class SpaceUtils {
     int length = appDisplayName.length();
     if (appDisplayName.toLowerCase().endsWith("portlet")) {
       return appDisplayName.substring(0, length - 7).trim();
-    }
-    if (appDisplayName.toLowerCase().endsWith("gadget")) {
-      return appDisplayName.substring(0, length - 6).trim();
     }
     return appDisplayName;
   }
