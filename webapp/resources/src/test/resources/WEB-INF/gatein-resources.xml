@@ -97,13 +97,6 @@
   </module>
   
   <module>
-    <name>socialGadgetsUtil</name>
-    <script>
-       <path>/javascript/eXo/social/SocialGadgetsUtil.js</path>
-    </script>
-  </module>
-  
-  <module>
     <name>social-ui-user-search</name>
     <script>
        <path>/javascript/eXo/social/webui/UIProfileUserSearch.js</path>

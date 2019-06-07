@@ -109,23 +109,6 @@
             }
     ],
     
-    /**
-     * Adjust height belong to browser
-     */
-    adjustHeight : function(contentContainer) {
-      var browser = this.getCurrentBrowser();
-      
-      if (browser != null) {
-        if ((browser == "Safari")   || (browser == "Chrome")) {
-            gadgets.window.adjustHeight(contentContainer.offsetHeight + this.ADDED_MARGIN_BOTTOM);
-        } else {
-            gadgets.window.adjustHeight();
-        }
-      } else {
-        gadgets.window.adjustHeight();
-      }
-    },
-    
     applyConfirmPopup : function(id) { 
       $('#' + id).find('.confirmPopup').on('click', function() {
           var thizz = $(this);
