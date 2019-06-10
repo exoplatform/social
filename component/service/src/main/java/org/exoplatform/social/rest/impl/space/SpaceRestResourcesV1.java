@@ -600,6 +600,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     activity.setBody(model.getBody());
     activity.setType(model.getType());
     activity.setUserId(poster.getId());
+    activity.setTemplateParams(model.getTemplateParams());
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
     
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
