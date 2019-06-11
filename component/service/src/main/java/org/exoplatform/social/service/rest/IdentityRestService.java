@@ -71,7 +71,7 @@ public class IdentityRestService implements ResourceContainer {
       _identityManager = getIdentityManager(portalName);
       MediaType mediaType = Util.getMediaType("json");
       String id = null;
-      String viewerId = Util.getViewerId(uriInfo);
+      String viewerId = Util.getViewerId();
       if (viewerId != null) {
         if(getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true) == null ) {
            LOG.error("No id is found for this username. You should enter a valid and a correct value for the username parameter.");

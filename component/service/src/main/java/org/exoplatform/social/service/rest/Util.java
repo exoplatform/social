@@ -18,7 +18,6 @@ package org.exoplatform.social.service.rest;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -161,32 +160,16 @@ public final class Util {
 
   
   /**
-   * Get viewerId from servlet request data information provided by OpenSocial signed request.
-   *  
-   * @param uriInfo
+   * Get current user id
+   *
    * @return
    */
-  public static String getViewerId (UriInfo uriInfo) {
+  public static String getViewerId () {
     String viewerId = null;
 
-    URI uri = uriInfo.getRequestUri();
-    String requestString = uri.getQuery();
-    if (requestString != null) {
-      String[] queryParts = requestString.split("&");
-    
-      for (String queryPart : queryParts) {
-        if (queryPart.startsWith("opensocial_viewer_id")) {
-          viewerId = queryPart.substring(queryPart.indexOf("=") + 1, queryPart.length());
-          break;
-        }
-      }
-    }
-    
-    if (viewerId == null) {
-      ConversationState state = ConversationState.getCurrent();
-      if (state != null) {
-        viewerId = state.getIdentity().getUserId();
-      }
+    ConversationState state = ConversationState.getCurrent();
+    if (state != null) {
+      viewerId = state.getIdentity().getUserId();
     }
 
     return viewerId;

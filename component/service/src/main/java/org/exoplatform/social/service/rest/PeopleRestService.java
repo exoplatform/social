@@ -638,7 +638,7 @@ public class PeopleRestService implements ResourceContainer{
     identityManager = Util.getIdentityManager(portalName);
     
     Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                                   Util.getViewerId(uriInfo), true);
+                                                                                   Util.getViewerId(), true);
     Identity[] identities;
     List<HashMap<String, Object>> entitys = new ArrayList<HashMap<String,Object>>();
     if (nameToSearch == null) { 
@@ -976,8 +976,6 @@ public class PeopleRestService implements ResourceContainer{
     if(userId == null || userId.isEmpty() || IdentityConstants.ANONIM.equals(userId)) {
       if (securityContext != null && securityContext.getUserPrincipal() != null) {
         return securityContext.getUserPrincipal().getName();
-      } else if (uriInfo != null) {
-        return Util.getViewerId(uriInfo);
       }
     }
     return userId;

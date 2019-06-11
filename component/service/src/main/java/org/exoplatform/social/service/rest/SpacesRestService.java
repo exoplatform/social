@@ -176,11 +176,6 @@ public class SpacesRestService implements ResourceContainer {
     String userId = null;
     if (state != null) {
       userId = state.getIdentity().getUserId();
-    } 
-    
-    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
-    if (identity == null) {
-      userId = Util.getViewerId(uriInfo);
     }
     
     SpaceList mySpaceList = showMySpaceList(userId);
@@ -232,11 +227,6 @@ public class SpacesRestService implements ResourceContainer {
     String userId = null;
     if (state != null) {
       userId = state.getIdentity().getUserId();
-    } 
-    
-    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
-    if (identity == null) {
-      userId = Util.getViewerId(uriInfo);
     }
     
     //
@@ -325,9 +315,7 @@ public class SpacesRestService implements ResourceContainer {
     MediaType mediaType = Util.getMediaType(format);
     String userId = ConversationState.getCurrent().getIdentity().getUserId();
     portalContainerName = portalName;
-    if (!userId.equals(Util.getViewerId(uriInfo))) {
-      return null;
-    }
+
     SpaceList pendingSpaceList = showPendingSpaceList(userId);
     return Util.getResponse(pendingSpaceList, uriInfo, mediaType, Response.Status.OK);
   }
