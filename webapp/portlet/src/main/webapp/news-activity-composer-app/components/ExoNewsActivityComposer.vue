@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     postDisabled: function() {
-      return !this.newsActivity.title || !this.newsActivity.content;
+      return !this.newsActivity.title || !this.newsActivity.title.trim() || !this.newsActivity.content || !this.newsActivity.content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g,'').trim();
     }
   },
   created() {
@@ -89,9 +89,7 @@ export default {
         extraAllowedContent: 'img[style,class,src,referrerpolicy,alt,width,height]',
         on: {
           change: function(evt) {
-            const newData = evt.editor.getData();
-            const pureText = newData ? newData.replace(/<[^>]*>/g, '').replace(/&nbsp;/g,'').trim() : '';
-            self.newsActivity.content = pureText;
+            self.newsActivity.content = evt.editor.getData();
           }
         }
       });
