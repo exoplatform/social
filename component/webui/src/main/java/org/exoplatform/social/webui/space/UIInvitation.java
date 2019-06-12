@@ -37,11 +37,13 @@ import java.util.List;
 public class UIInvitation extends UIContainer {
   private final String USERS_SPACES = "users-spaces";
   private final String SPACE_PREFIX = "space::";
+  private List<String> notFoundInvitees;
 
   /**
    * constructor
    */
   public UIInvitation() {
+    notFoundInvitees = new ArrayList<>();
     UIFormStringInput uiFormStringInput = new UIFormStringInput(USERS_SPACES, null, null);
     addChild(uiFormStringInput);
   }
@@ -50,6 +52,7 @@ public class UIInvitation extends UIContainer {
    * gets selected identities from input
    */
   public List<Identity> getSelectedIdentities() {
+    notFoundInvitees = new ArrayList<>();
     UIFormStringInput uiFormStringInput = getChild(UIFormStringInput.class);
     String input = uiFormStringInput.getValue();
     return getIdentities(input);
@@ -61,6 +64,10 @@ public class UIInvitation extends UIContainer {
     builder.append("currentUser=").append(RequestContext.getCurrentInstance().getRemoteUser());
     builder.append("&typeOfRelation=").append("user_to_invite");
     return builder.toString();
+  }
+
+  public List<String> getNotFoundInvitees() {
+    return notFoundInvitees;
   }
 
   private List<Identity> getIdentities(String input) {
@@ -76,6 +83,10 @@ public class UIInvitation extends UIContainer {
           identityList.add(spaceIdentity);
         } else {
           Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, invited, false);
+          if (identity == null) {
+            notFoundInvitees.add(invited);
+            continue;
+          }
           identityList.add(identity);
         }
       }

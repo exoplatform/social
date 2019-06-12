@@ -1,5 +1,6 @@
 package org.exoplatform.social.rest.impl.spacetemplates;
 
+import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ObjectParameter;
 import org.exoplatform.services.rest.impl.ContainerResponse;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 public class SpaceTemplatesRestResourcesTest extends AbstractResourceTest {
   private SpaceTemplateService spaceTemplateService;
+  private ConfigurationManager configurationManager;
 
   private SpaceTemplatesRestResourcesV1 spaceTemplatesRestResourcesV1;
 
@@ -24,8 +26,9 @@ public class SpaceTemplatesRestResourcesTest extends AbstractResourceTest {
     System.setProperty("gatein.email.domain.url", "localhost:8080");
 
     spaceTemplateService = getContainer().getComponentInstanceOfType(SpaceTemplateService.class);
+    configurationManager = getContainer().getComponentInstanceOfType(ConfigurationManager.class);
 
-    spaceTemplatesRestResourcesV1 = new SpaceTemplatesRestResourcesV1(spaceTemplateService);
+    spaceTemplatesRestResourcesV1 = new SpaceTemplatesRestResourcesV1(spaceTemplateService, configurationManager);
     registry(spaceTemplatesRestResourcesV1);
   }
 
@@ -53,6 +56,7 @@ public class SpaceTemplatesRestResourcesTest extends AbstractResourceTest {
     spaceTemplate.setName("custom");
     spaceTemplate.setVisibility("private");
     spaceTemplate.setRegistration("open");
+    spaceTemplate.setPermissions("*:/platform/administrators");
     spaceTemplate.setHomeApplication(homeApplication);
     spaceTemplate.setSpaceApplicationList(applicationList);
     InitParams params = new InitParams();
@@ -83,5 +87,37 @@ public class SpaceTemplatesRestResourcesTest extends AbstractResourceTest {
     List<SpaceApplication> customApps = customTemplate.get(0).getSpaceApplicationList();
     assertNotNull(customApps);
     assertEquals(3, customApps.size());
+  }
+
+  public void testShouldReturnSpaceTemplateBannerStream() throws Exception {
+    // Given
+    SpaceApplication homeApplication = new SpaceApplication();
+    homeApplication.setAppTitle("fakeHome");
+    homeApplication.setPortletApp("fakeHomeApp");
+    homeApplication.setPortletName("fakeHomeName");
+    SpaceTemplate spaceTemplate = new SpaceTemplate();
+    spaceTemplate.setName("custom");
+    spaceTemplate.setVisibility("private");
+    spaceTemplate.setRegistration("open");
+    spaceTemplate.setBannerPath("classpath:/conf/social-extension/social/space-template/custom/banner.png");
+    spaceTemplate.setHomeApplication(homeApplication);
+    InitParams params = new InitParams();
+    ObjectParameter objParam = new ObjectParameter();
+    objParam.setName("template");
+    objParam.setObject(spaceTemplate);
+    params.addParameter(objParam);
+    SpaceTemplateConfigPlugin spaceTemplateConfigPlugin = new SpaceTemplateConfigPlugin(params);
+    spaceTemplateService.registerSpaceTemplatePlugin(spaceTemplateConfigPlugin);
+
+    startSessionAs("root");
+
+    // When
+    ContainerResponse response = service("GET", getURLResource("spaceTemplates/bannerStream?templateName=custom"), "", null, null, "root");
+
+    // Then
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    assertEquals("image", response.getContentType().getType());
+    assertEquals("png", response.getContentType().getSubtype());
   }
 }
