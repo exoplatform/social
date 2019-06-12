@@ -440,13 +440,12 @@ public class UIMembersPortlet extends UIPortletApplication {
       try {
         uiMembersPortlet.setSelectedChar(charSearch);
         if (charSearch != null) { // search by alphabet
-          filter.setName(charSearch);
+          filter.setName("");
           filter.setPosition("");
           filter.setSkills("");
           filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
           if (ALL_FILTER.equals(charSearch)) {
             filter.setFirstCharacterOfName(EMPTY_CHARACTER);
-            filter.setName("");
           }
           uiSearch.setRawSearchConditional("");
         } 

@@ -67,7 +67,7 @@ public class ProfileFilter implements Cloneable {
 
   private Sorting sorting;
 
-  private String firstCharFieldName = SortBy.LASTNAME.getFieldName();
+  private String firstCharFieldName = null;
 
   public ProfileFilter() {
     this.name = "";

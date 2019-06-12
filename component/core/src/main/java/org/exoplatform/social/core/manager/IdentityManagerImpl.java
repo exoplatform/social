@@ -112,7 +112,7 @@ public class IdentityManagerImpl implements IdentityManager {
         this.defaultSorting = configuredSorting;
       }
 
-      String firstCharacterFilteringField = this.firstCharacterFiltering;
+      String firstCharacterFilteringField = DEFAULT_FIRST_CHAR_FILTERING;
       if (initParams.containsKey("firstChar.field.name")) {
         firstCharacterFilteringField = initParams.getValueParam("firstChar.field.name").getValue();
       }
