@@ -425,8 +425,8 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     profileFilter.setFirstCharFieldName("NotExistingField");
     profileFilter.setFirstCharacterOfName('J');
     connections = relationshipStorage.getConnectionsByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
-    assertEquals("Returned connections must be 1 event if filtering on not existing field (lastname is used as fallback)",
-                 1,
+    assertEquals("Returned connections must be 0 if filtering on not existing field",
+                 0,
                  connections.size());
   }
 
@@ -479,8 +479,8 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     profileFilter.setFirstCharFieldName("NotExistingField");
     profileFilter.setFirstCharacterOfName('J');
     connections = relationshipStorage.getIncomingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
-    assertEquals("Returned connections must be 1 event if filtering on not existing field (lastname is used as fallback)",
-                 1,
+    assertEquals("Returned connections must be 0 if filtering on not existing field",
+                 0,
                  connections.size());
   }
 
@@ -533,8 +533,8 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     profileFilter.setFirstCharFieldName("NotExistingField");
     profileFilter.setFirstCharacterOfName('J');
     connections = relationshipStorage.getOutgoingByFilter(rootIdentity, profileFilter, 0, Integer.MAX_VALUE);
-    assertEquals("Returned connections must be 1 event if filtering on not existing field (lastname is used as fallback)",
-                 1,
+    assertEquals("Returned connections must be 0 if filtering on not existing field",
+                 0,
                  connections.size());
   }
 

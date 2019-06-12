@@ -21,11 +21,8 @@ package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
 import java.lang.reflect.Array;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -292,24 +289,31 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
       connectionsQuery.setParameter("ids", idsLong);
       connectionsQuery.setMaxResults(Integer.MAX_VALUE);
       List<ConnectionEntity> connectionsList = connectionsQuery.getResultList();
-      Map<IdentityEntity, ConnectionEntity> map = new LinkedHashMap<IdentityEntity, ConnectionEntity>();
-      for (Long identityId : idsLong) {
-        IdentityEntity identityEntity = identitiesMap.get(identityId);
+      Map<IdentityEntity, ConnectionEntity> map = new LinkedHashMap<>();
+      for (Long identityIdLong : idsLong) {
+        IdentityEntity identityEntity = identitiesMap.get(identityIdLong);
         if (identityEntity == null) {
-          LOG.error("Can't find identity with id '{}'", identityId);
+          LOG.error("Can't find identity with id '{}'", identityIdLong);
           continue;
         }
-        CONN: for (ConnectionEntity connectionEntity : connectionsList) {
+        for (ConnectionEntity connectionEntity : connectionsList) {
           if(connectionEntity.getReceiver().getId() == identityEntity.getId() || connectionEntity.getSender().getId() == identityEntity.getId()) {
             map.put(identityEntity, connectionEntity);
-            break CONN;
+            break;
           }
         }
         if (!map.containsKey(identityEntity)) {
           map.put(identityEntity, null);
         }
       }
-      return map.entrySet().toArray(new Map.Entry[0]);
+      List<Entry<IdentityEntity, ConnectionEntity>> identities = new ArrayList<>(map.entrySet());
+      identities.sort(new Comparator<Entry<IdentityEntity, ConnectionEntity>>() {
+        @Override
+        public int compare(Entry<IdentityEntity, ConnectionEntity> o1, Entry<IdentityEntity, ConnectionEntity> o2) {
+          return idsLong.indexOf(o1.getKey().getId()) - idsLong.indexOf(o2.getKey().getId());
+        }
+      });
+      return identities.toArray(new Map.Entry[0]);
     }
 
     @Override
