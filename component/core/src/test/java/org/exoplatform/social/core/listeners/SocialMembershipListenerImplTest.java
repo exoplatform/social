@@ -112,27 +112,29 @@ public class SocialMembershipListenerImplTest extends AbstractCoreTest {
     //
     sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(1, sFoo.getManagers().length);
-    assertEquals(2, sFoo.getMembers().length);
+    assertEquals(1, sFoo.getMembers().length);
 
     addUserToGroupWithMembership("john", sFoo.getGroupId(), "member");
     sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(1, sFoo.getManagers().length);
-    assertEquals(3, sFoo.getMembers().length);
+    assertEquals(2, sFoo.getMembers().length);
     //
     sFoo.setEditor("mary");
     membershipHandler.removeMembershipByUser("john", true);
     sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(sFoo.getEditor(), "mary");
     assertEquals(1, sFoo.getManagers().length);
-    assertEquals(2, sFoo.getMembers().length);
+    assertEquals(1, sFoo.getMembers().length);
 
     addUserToGroupWithMembership("john", sFoo.getGroupId(), "manager");
+    sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(2, sFoo.getManagers().length);
-    assertEquals(3, sFoo.getMembers().length);
+    assertEquals(2, sFoo.getMembers().length);
     //
     membershipHandler.removeMembershipByUser("john", true);
+    sFoo = spaceService.getSpaceById(sFoo.getId());
     assertEquals(1, sFoo.getManagers().length);
-    assertEquals(2, sFoo.getMembers().length);
+    assertEquals(1, sFoo.getMembers().length);
 
     // update space Editor when it's null
     addUserToGroupWithMembership("john", sFoo.getGroupId(), "manager");

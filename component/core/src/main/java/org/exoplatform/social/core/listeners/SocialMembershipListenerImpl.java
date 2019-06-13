@@ -61,15 +61,18 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
         if(state != null && state.getIdentity() != null && space.getEditor() == null) {
           space.setEditor(state.getIdentity().getUserId());
         }
-        if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType()) ||
-            MembershipTypeHandler.ANY_MEMBERSHIP_TYPE.equalsIgnoreCase(m.getMembershipType())) {
+        boolean hasAllMembership = SpaceUtils.isUserHasMembershipTypesInGroup(m.getUserName(), m.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+        boolean hasManagerMembership = hasAllMembership || SpaceUtils.isUserHasMembershipTypesInGroup(m.getUserName(), m.getGroupId(), acl.getAdminMSType());
+        boolean hasMemberMembership = hasManagerMembership || SpaceUtils.isUserHasMembershipTypesInGroup(m.getUserName(), m.getGroupId(), SpaceUtils.MEMBER);
+
+        if (!hasManagerMembership) {
           spaceService.setManager(space, m.getUserName(), false);
-          SpaceUtils.refreshNavigation();
-        } else if (SpaceUtils.MEMBER.equalsIgnoreCase(m.getMembershipType())) {
-          spaceService.removeMember(space, m.getUserName());
-          spaceService.setManager(space, m.getUserName(), false);
-          SpaceUtils.refreshNavigation();
         }
+        if (!hasMemberMembership) {
+          spaceService.removeMember(space, m.getUserName());
+        }
+
+        SpaceUtils.refreshNavigation();
       }
     } else if (m.getGroupId().startsWith(SpaceUtils.PLATFORM_USERS_GROUP)) {
       clearIdentityCaching();
