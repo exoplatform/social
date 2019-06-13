@@ -219,7 +219,6 @@
   </div><!--end activityTimeLine-->
   <div class="boxContainer" id="boxContainer">
 	<div id="ContextBox${activity.id}" class="uiBox contentBox">
-		<div class="newsRibbon"></div>
 		<div id="ActivityContextBox${activity.id}">
 		  <div class="heading">
 				<span class="arrowLeft"></span>
@@ -319,6 +318,7 @@
                         <span class="seeMore"><a href="javascript:void(0);">${labelSeeMore}</a></span>
                     </div>
                 </div>
+		        <div class="newsRibbon"></div>
             </div>
             <div class="desktop-input clearfix">
                 <div class="blastInputPeople hideEffect">
