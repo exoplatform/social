@@ -36,14 +36,14 @@ import java.util.Date;
 public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
 
   private static final String FORMAT_CREATION = "local_service={} operation={} " +
-      "parameters=\"date:{},space_name:{},space_id:{},username:{},user_social_id:{},template_name:{}\"";
+      "parameters=\"date:{},space_name:{},space_id:{},user_social_id:{},template_name:{}\"";
 
   private static final String FORMAT_MODIFICATION = "local_service={} operation={} " +
-      "parameters=\"date:{},space_name:{},space_id:{},username:{},user_social_id:{},template_name:{},modification_type:{}\"";
+      "parameters=\"date:{},space_name:{},space_id:{},user_social_id:{},template_name:{},modification_type:{}\"";
 
   private static final String SPACE_TEMPLATES_SERVICE = "space_templates";
 
-  private static final DateFormat DATE_FORMAT = new SimpleDateFormat("YYYY-MM-dd");
+  private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   private static final String CREATE_SPACE_OPERATION = "create_space";
 
@@ -77,7 +77,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
     String templateName = space.getTemplate();
     String dateString = DATE_FORMAT.format(new Date());
     LOG.info(FORMAT_CREATION, SPACE_TEMPLATES_SERVICE, CREATE_SPACE_OPERATION,
-        dateString, spaceName, spaceId, creator, creatorId, templateName);
+        dateString, spaceName, spaceId, creatorId, templateName);
   }
 
   @Override
@@ -97,7 +97,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
       LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creator, creatorId, templateName, "application");
+          dateString, spaceName, spaceId, creatorId, templateName, "application");
     }
   }
 
@@ -113,7 +113,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
       LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creator, creatorId, templateName, "application");
+          dateString, spaceName, spaceId, creatorId, templateName, "application");
     }
   }
 
@@ -129,7 +129,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
       LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creator, creatorId, templateName, "application");
+          dateString, spaceName, spaceId, creatorId, templateName, "application");
     }
   }
 
@@ -145,7 +145,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
       LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creator, creatorId, templateName, "application");
+          dateString, spaceName, spaceId, creatorId, templateName, "application");
     }
   }
 
@@ -196,7 +196,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
       LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creator, creatorId, templateName, "visibility");
+          dateString, spaceName, spaceId, creatorId, templateName, "visibility");
     }
   }
 
@@ -222,7 +222,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
       LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creator, creatorId, templateName, "registration");
+          dateString, spaceName, spaceId, creatorId, templateName, "registration");
     }
   }
 
@@ -238,7 +238,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
       LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creator, creatorId, templateName, "banner");
+          dateString, spaceName, spaceId, creatorId, templateName, "banner");
     }
   }
 }
