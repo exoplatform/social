@@ -10,10 +10,10 @@
     <td>
       <span>{{ applications }}</span>
     </td>
-    <td class="center">
-      <a :href="bannerImage" target="_blank">{{ $t('social.spaces.templates.link') }}</a>
-    </td>
     <td>{{ template.permissionsLabels }}</td>
+    <td class="center">
+      <a @click="showBannerImage"><i class="uiIconWatch"></i></a>
+    </td>
   </tr>
 </template>
 
@@ -39,6 +39,11 @@ export default {
     },
     bannerImage() {
       return `${spacesConstants.SPACES_TEMPLATES_API}/bannerStream?templateName=${this.template.name}`;
+    }
+  },
+  methods: {
+    showBannerImage(){
+      eXo.commons.MaskLayerControl.showPicture(this.bannerImage);
     }
   }
 };

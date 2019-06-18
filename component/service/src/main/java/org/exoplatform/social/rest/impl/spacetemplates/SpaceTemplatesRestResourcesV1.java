@@ -106,20 +106,24 @@ public class SpaceTemplatesRestResourcesV1 implements SocialRest {
       EntityTag eTag = new EntityTag(Integer.toString(templateName.hashCode()));
       Response.ResponseBuilder builder = request.evaluatePreconditions(eTag);
       if (builder == null) {
+        InputStream bannerStream = null;
         try {
-          InputStream bannerStream = configurationManager.getInputStream(bannerPath);
-          builder = Response.ok(bannerStream, "image/png");
-          builder.tag(eTag);
-          CacheControl cc = new CacheControl();
-          cc.setMaxAge(86400);
-          builder.cacheControl(cc);
-          return builder.cacheControl(cc).build();
+           bannerStream = configurationManager.getInputStream(bannerPath);
         } catch (Exception e) {
           LOG.warn("Error retrieving banner image of template {}", templateName, e);
           return EntityBuilder.getResponse(new ErrorResource("inputStream could not be extracted from path: " + bannerPath, "inputStream not extracted"),
               uriInfo, RestUtils.getJsonMediaType(), Response.Status.INTERNAL_SERVER_ERROR);
         }
+        if (bannerStream == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        builder = Response.ok(bannerStream, "image/png");
+        builder.tag(eTag);
       }
+      CacheControl cc = new CacheControl();
+      cc.setMaxAge(86400);
+      builder.cacheControl(cc);
+      return builder.cacheControl(cc).build();
     }
     return EntityBuilder.getResponse(new ErrorResource("image does not exist in path: " + bannerPath, "banner not found"),
         uriInfo, RestUtils.getJsonMediaType(), Response.Status.NOT_FOUND);

@@ -17,11 +17,11 @@
         <th width="25%">
           {{ $t('social.spaces.templates.applications') }}
         </th>
-        <th width="2%">
-          {{ $t('social.spaces.templates.banner') }}
-        </th>
         <th width="20%">
           {{ $t('social.spaces.templates.permissions') }}
+        </th>
+        <th width="2%">
+          {{ $t('social.spaces.templates.banner') }}
         </th>
       </tr>
       <tr v-if="templates.length === 0">

@@ -20,6 +20,8 @@
 */
 %>
 <%
+import org.json.JSONObject;
+
 String placeholder = _ctx.appRes("UISpaceGroup.input.placeholder");
 String restUrl = uicomponent.getRestURL();
 %>
@@ -38,5 +40,11 @@ def rcontext = _ctx.getRequestContext();
 def jsManager = rcontext.getJavascriptManager();
 def requireJs = jsManager.getRequireJS();
 requireJs.require("SHARED/userInvitation", "invite");
-requireJs.addScripts("invite.build('users-spaces', '$restUrl', '$placeholder');");
+Map<String,String> invitees = uicomponent.getInvitees();
+if (invitees.isEmpty()) {
+  requireJs .addScripts ("invite.build('users-spaces', '$restUrl', '$placeholder');");
+} else {
+  JSONObject object = new JSONObject(invitees);
+  requireJs.addScripts("invite.buildInitialized('users-spaces', '$restUrl', '$placeholder', '$object');");
+}
 %>

@@ -32,6 +32,7 @@ public class SpaceTemplate implements Cloneable {
   private String bannerPath;
   private String permissions;
   private String permissionsLabels;
+  private String invitees;
   private SpaceApplication homePageApplication;
   private List<SpaceApplication> applications;
 
@@ -141,6 +142,24 @@ public class SpaceTemplate implements Cloneable {
    */
   public String getPermissionsLabels() {
     return permissionsLabels;
+  }
+
+  /**
+   * Sets space template invitees to invite.
+   *
+   * @param invitees
+   */
+  public void setInvitees(String invitees) {
+    this.invitees = invitees;
+  }
+
+  /**
+   * Gets the space template invitees to invite.
+   *
+   * @return invitees
+   */
+  public String getInvitees() {
+    return invitees;
   }
 
   /**
