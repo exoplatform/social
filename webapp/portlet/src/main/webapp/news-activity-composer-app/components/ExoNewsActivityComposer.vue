@@ -156,15 +156,20 @@ export default {
       });
     },
     postNews: function () {
-      newsActivityComposerServices.saveNewsActivity({
+      const activity = {
         title: this.newsActivity.title,
         body: this.newsActivity.content,
         type: 'news',
         templateParams: {
-          summary: this.newsActivity.summary,
-          uploadId: this.newsActivity.illustration.length > 0 ? this.newsActivity.illustration[0].uploadId : ''
+          summary: this.newsActivity.summary
         }
-      }).then(() => {
+      };
+
+      if(this.newsActivity.illustration.length > 0) {
+        activity.files = [{ uploadId: this.newsActivity.illustration[0].uploadId }];
+      }
+
+      newsActivityComposerServices.saveNewsActivity(activity).then(() => {
         // reset form
         this.newsActivity.title = '';
         this.newsActivity.content = '';

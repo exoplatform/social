@@ -16,10 +16,13 @@
  */
 package org.exoplatform.social.core.jpa.storage;
 
+import org.exoplatform.commons.file.services.FileService;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -48,6 +51,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.upload.UploadService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
@@ -89,6 +93,10 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
   public void testActivityEditable() {
     ActivityStorage storage = Mockito.mock(ActivityStorage.class);
     IdentityManager identityManager = Mockito.mock(IdentityManager.class);
+    FileService fileService = Mockito.mock(FileService.class);
+    UploadService uploadService = Mockito.mock(UploadService.class);
+    RepositoryService repositoryService = Mockito.mock(RepositoryService.class);
+    NodeHierarchyCreator nodeHierarchyCreator = Mockito.mock(NodeHierarchyCreator.class);
     UserACL acl = Mockito.mock(UserACL.class);
     Mockito.when(acl.getAdminGroups()).thenReturn("/platform/administrators");
 
@@ -115,7 +123,7 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
 
     //no configuration
     //by default: edit activity/comment are all enabled
-    ActivityManager manager = new ActivityManagerImpl(storage, identityManager, acl, null);
+    ActivityManager manager = new ActivityManagerImpl(storage, identityManager, acl, fileService, uploadService, repositoryService, nodeHierarchyCreator, null);
     //owner
     assertTrue(manager.isActivityEditable(activity, owner));
     assertTrue(manager.isActivityEditable(comment, owner));
@@ -137,7 +145,7 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     //not enable edit comment
     Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_MANAGER_EDIT_COMMENT)).thenReturn(falseVal);
     Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_EDIT_COMMENT)).thenReturn(falseVal);
-    manager = new ActivityManagerImpl(storage, identityManager, acl, params);
+    manager = new ActivityManagerImpl(storage, identityManager, acl, fileService, uploadService, repositoryService, nodeHierarchyCreator, params);
     //
     Mockito.when(comment.getType()).thenReturn(SpaceActivityPublisher.SPACE_APP_ID);
     assertFalse(manager.isActivityEditable(comment, admin));
@@ -150,7 +158,7 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
     Mockito.when(params.containsKey(ActivityManagerImpl.ENABLE_EDIT_ACTIVITY)).thenReturn(true);
     Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_MANAGER_EDIT_ACTIVITY)).thenReturn(falseVal);
     Mockito.when(params.getValueParam(ActivityManagerImpl.ENABLE_EDIT_ACTIVITY)).thenReturn(falseVal);
-    manager = new ActivityManagerImpl(storage, identityManager, acl, params);
+    manager = new ActivityManagerImpl(storage, identityManager, acl, fileService, uploadService, repositoryService, nodeHierarchyCreator, params);
     //
     assertFalse(manager.isActivityEditable(activity, owner));
     assertFalse(manager.isActivityEditable(activity, admin));

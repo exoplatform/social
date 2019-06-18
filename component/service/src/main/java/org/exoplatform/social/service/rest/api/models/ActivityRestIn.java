@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.service.rest.api.models;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,6 +56,11 @@ public class ActivityRestIn {
    * The template parameters.
    */
   private Map<String, String> templateParams;
+
+  /**
+   * The activity files
+   */
+  private List<ActivityFileRestIn> files;
 
   /**
    * Gets the activity title, required value.
@@ -161,6 +167,24 @@ public class ActivityRestIn {
    */
   public void setTemplateParams(Map<String, String> templateParams) {
     this.templateParams = templateParams;
+  }
+
+  /**
+   * Gets activity files.
+   *
+   * @return the activity files
+   */
+  public List<ActivityFileRestIn> getFiles() {
+    return files;
+  }
+
+  /**
+   * Sets activity files.
+   *
+   * @param files the activity files
+   */
+  public void setFiles(List<ActivityFileRestIn> files) {
+    this.files = files;
   }
 
   /**

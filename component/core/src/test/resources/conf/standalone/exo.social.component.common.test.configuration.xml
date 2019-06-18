@@ -31,4 +31,13 @@
     <type>org.exoplatform.commons.persistence.impl.EntityManagerService</type>
   </component>
 
+  <component>
+    <key>org.exoplatform.commons.file.services.FileService</key>
+    <type>org.exoplatform.social.core.mock.MockFileService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.upload.UploadService</type>
+  </component>
+
 </configuration>

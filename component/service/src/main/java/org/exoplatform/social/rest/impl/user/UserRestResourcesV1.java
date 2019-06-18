@@ -33,6 +33,7 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.user.UserStateModel;
 import org.exoplatform.services.user.UserStateService;
 import org.exoplatform.social.common.RealtimeListAccess;
+import org.exoplatform.social.core.activity.model.ActivityFile;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -50,6 +51,8 @@ import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.api.UserRestResources;
 import org.exoplatform.social.rest.entity.*;
 import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.rest.api.models.ActivityFileRestIn;
+import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -59,6 +62,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -630,8 +634,8 @@ public class UserRestResourcesV1 implements UserRestResources {
   public Response addActivityByUser(@Context UriInfo uriInfo,
                                     @ApiParam(value = "User name", required = true) @PathParam("id") String id,
                                     @ApiParam(value = "Asking for a full representation of a specific subresource, ex: <em>comments</em> or <em>likes</em>", required = false) @QueryParam("expand") String expand,
-                                    @ApiParam(value = "Activity object to be created, in which the title of activity is required, ex: <br/>{\"title\": \"act4 posted\"}", required = true) ActivityEntity model) throws Exception {
-    if (model == null || model.getTitle() == null || model.getTitle().length() ==0) {
+                                    @ApiParam(value = "Activity object to be created, in which the title of activity is required, ex: <br/>{\"title\": \"act4 posted\"}", required = true) ActivityRestIn model) throws Exception {
+    if (model == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //Check if the given user doesn't exist
@@ -642,8 +646,17 @@ public class UserRestResourcesV1 implements UserRestResources {
     
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle(model.getTitle());
+    activity.setBody(model.getBody());
+    activity.setType(model.getType());
+    activity.setUserId(target.getId());
+    if(model.getFiles() != null) {
+      activity.setFiles(model.getFiles()
+              .stream()
+              .map(fileModel -> new ActivityFile(fileModel.getUploadId(), fileModel.getStorage(), null))
+              .collect(Collectors.toList()));
+    }
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(target, activity);
-    
+
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
   

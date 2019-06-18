@@ -16,23 +16,34 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 
+import org.exoplatform.commons.file.model.FileItem;
+import org.exoplatform.commons.file.services.FileService;
+import org.exoplatform.commons.file.services.FileStorageException;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.core.ManageableRepository;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.services.jcr.impl.Constants;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
@@ -42,14 +53,25 @@ import org.exoplatform.social.core.activity.ActivityLifeCycle;
 import org.exoplatform.social.core.activity.ActivityListener;
 import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.CommentsRealtimeListAccess;
+import org.exoplatform.social.core.activity.model.ActivityFile;
+import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.query.JCRProperties;
+import org.exoplatform.upload.UploadResource;
+import org.exoplatform.upload.UploadService;
+
+import javax.jcr.Node;
+import javax.jcr.Session;
 
 /**
  * Class ActivityManagerImpl implements ActivityManager without caching.
@@ -73,6 +95,14 @@ public class ActivityManagerImpl implements ActivityManager {
 
   /** spaceService */
   protected SpaceService                 spaceService;
+
+  private FileService fileService;
+
+  private UploadService uploadService;
+
+  private RepositoryService repositoryService;
+
+  private NodeHierarchyCreator nodeHierarchyCreator;
   
   protected ActivityLifeCycle            activityLifeCycle = new ActivityLifeCycle();
 
@@ -123,16 +153,31 @@ public class ActivityManagerImpl implements ActivityManager {
                                                                                       "space_renamed",
                                                                                       "manager_role_revoked",
                                                                                       "manager_role_granted");
+
+  public static final String FILE_STORAGE_JCR = "jcr";
+
+  private final static String USER_FOLDER_PUBLIC_ALIAS = "userPublic";
+
+  private final static String ACTIVITY_FOLDER_UPLOAD_NAME = "Activity Stream Documents";
+
+  public static final String TEMPLATE_PARAMS_SEPARATOR = "|@|";
+
   /**
    * Instantiates a new activity manager.
    *
    * @param activityStorage
    * @param identityManager
    */
-  public ActivityManagerImpl(ActivityStorage activityStorage, IdentityManager identityManager, UserACL userACL, InitParams params) {
+  public ActivityManagerImpl(ActivityStorage activityStorage, IdentityManager identityManager, UserACL userACL,
+                             FileService fileService, UploadService uploadService, RepositoryService repositoryService,
+                             NodeHierarchyCreator nodeHierarchyCreator, InitParams params) {
     this.activityStorage = activityStorage;
     this.identityManager = identityManager;
     this.userACL = userACL;
+    this.fileService = fileService;
+    this.uploadService = uploadService;
+    this.repositoryService = repositoryService;
+    this.nodeHierarchyCreator = nodeHierarchyCreator;
     initActivityTypes();
 
     if (params != null) {
@@ -174,11 +219,150 @@ public class ActivityManagerImpl implements ActivityManager {
       }
       return;
     }
-    activityStorage.saveActivity(streamOwner, newActivity);
-    //if there is any the listener to get the activity's title to do something for example: show message, send mail ...
-    //Just call the Social API to get the activity by Id and then to do by yourself.
-    //SOC-5209
-    activityLifeCycle.saveActivity(newActivity);
+
+    try {
+      if (CollectionUtils.isNotEmpty(newActivity.getFiles())) {
+        for (ActivityFile activityFile : newActivity.getFiles()) {
+          if (!StringUtils.isBlank(activityFile.getStorage()) && activityFile.getStorage().equals(FILE_STORAGE_JCR)) {
+            newActivity = storeFileInJCR(newActivity, streamOwner, activityFile);
+          } else {
+            newActivity = storeFile(newActivity, activityFile);
+          }
+        }
+
+        newActivity.getTemplateParams().put("MESSAGE", newActivity.getTitle());
+      }
+
+      activityStorage.saveActivity(streamOwner, newActivity);
+      //if there is any the listener to get the activity's title to do something for example: show message, send mail ...
+      //Just call the Social API to get the activity by Id and then to do by yourself.
+      //SOC-5209
+      activityLifeCycle.saveActivity(newActivity);
+    } catch (Exception e) {
+      LOG.error("Cannot save activity", e);
+    }
+  }
+
+  /**
+   * Store activity file in file service
+   * @param activity
+   * @param file
+   * @return
+   * @throws Exception
+   */
+  private ExoSocialActivity storeFile(ExoSocialActivity activity, ActivityFile file) throws Exception {
+    UploadResource uploadedResource = uploadService.getUploadResource(file.getUploadId());
+    if (uploadedResource == null) {
+      throw new Exception("Cannot attach uploaded file " + file.getUploadId() + ", it may not exist");
+    }
+
+    FileItem fileItem;
+    String fileDiskLocation = uploadedResource.getStoreLocation();
+    try(InputStream inputStream = new FileInputStream(fileDiskLocation)) {
+      fileItem = fileService.writeFile(new FileItem(null,
+              uploadedResource.getFileName(),
+              uploadedResource.getMimeType(),
+              "social",
+              Double.doubleToLongBits(uploadedResource.getUploadedSize()),
+              new Date(),
+              activity.getPosterId(),
+              false,
+              inputStream));
+    }
+
+    if(fileItem != null) {
+      if(activity.getTemplateParams() == null) {
+        activity.setTemplateParams(new HashMap<>());
+      }
+      concatenateParam(activity.getTemplateParams(), "storage", "file");
+      concatenateParam(activity.getTemplateParams(), "id", String.valueOf(fileItem.getFileInfo().getId()));
+    }
+
+    uploadService.removeUploadResource(file.getUploadId());
+
+    return activity;
+  }
+
+  /**
+   * Store activity file in JCR
+   * @param activity
+   * @param streamOwner
+   * @param file
+   * @return
+   * @throws Exception
+   */
+  private ExoSocialActivity storeFileInJCR(ExoSocialActivity activity, Identity streamOwner, ActivityFile file) throws Exception {
+    UploadResource uploadedResource = uploadService.getUploadResource(file.getUploadId());
+    if (uploadedResource == null) {
+      throw new Exception("Cannot attach uploaded file " + file.getUploadId() + ", it may not exist");
+    }
+
+    Node parentNode;
+
+    SessionProvider sessionProvider = CommonsUtils.getSystemSessionProvider();
+    ManageableRepository currentRepository = repositoryService.getCurrentRepository();
+    String workspaceName = currentRepository.getConfiguration().getDefaultWorkspaceName();
+    Session session = sessionProvider.getSession(workspaceName, currentRepository);
+
+    if(streamOwner.getProviderId().equals(SpaceIdentityProvider.NAME)) {
+      Space space = spaceService.getSpaceById(streamOwner.getId());
+      String groupPath = nodeHierarchyCreator.getJcrPath("groupsPath");
+      String spaceParentPath = groupPath + space.getGroupId() + "/Documents";
+      if (!session.itemExists(spaceParentPath)) {
+        throw new IllegalStateException("Root node of space '" + spaceParentPath + "' doesn't exist");
+      }
+      parentNode = (Node) session.getItem(spaceParentPath);
+    } else {
+      String remoteUser = ConversationState.getCurrent().getIdentity().getUserId();
+      if (org.apache.commons.lang.StringUtils.isBlank(remoteUser)) {
+        throw new IllegalStateException("Remote user is empty");
+      }
+      Node userNode = nodeHierarchyCreator.getUserNode(sessionProvider, remoteUser);
+      String publicPath = nodeHierarchyCreator.getJcrPath(USER_FOLDER_PUBLIC_ALIAS);
+      if (userNode == null || !userNode.hasNode(publicPath)) {
+        throw new IllegalStateException("User '" + remoteUser + "' hasn't public folder");
+      }
+      parentNode = userNode.getNode(publicPath);
+
+      if (!parentNode.hasNode(ACTIVITY_FOLDER_UPLOAD_NAME)) {
+        parentNode.addNode(ACTIVITY_FOLDER_UPLOAD_NAME);
+        session.save();
+      }
+    }
+
+    Node parentUploadNode = parentNode.getNode(ACTIVITY_FOLDER_UPLOAD_NAME);
+    Node node = parentUploadNode.addNode(uploadedResource.getFileName(), "nt:file");
+    node.setProperty("exo:title", uploadedResource.getFileName());
+    Node resourceNode = node.addNode("jcr:content", "nt:resource");
+    resourceNode.setProperty("jcr:mimeType", uploadedResource.getMimeType());
+    resourceNode.setProperty("jcr:lastModified", Calendar.getInstance());
+    String fileDiskLocation = uploadedResource.getStoreLocation();
+    try(InputStream inputStream = new FileInputStream(fileDiskLocation)) {
+      resourceNode.setProperty("jcr:data", inputStream);
+      session.save();
+      node = (Node) session.getItem(node.getPath());
+    }
+
+    if(activity.getTemplateParams() == null) {
+      activity.setTemplateParams(new HashMap<>());
+    }
+    concatenateParam(activity.getTemplateParams(), "REPOSITORY", "repository");
+    concatenateParam(activity.getTemplateParams(), "WORKSPACE", "collaboration");
+    concatenateParam(activity.getTemplateParams(), "DOCPATH", node.getPath());
+    concatenateParam(activity.getTemplateParams(), "id", node.isNodeType("mix:referenceable") ? node.getUUID() : "");
+
+    uploadService.removeUploadResource(file.getUploadId());
+
+    return activity;
+  }
+
+  public void concatenateParam(Map<String, String> activityParams, String paramName, String paramValue) {
+    String oldParamValue = activityParams.get(paramName);
+    if (oldParamValue == null) {
+      activityParams.put(paramName, paramValue);
+    } else {
+      activityParams.put(paramName, oldParamValue + TEMPLATE_PARAMS_SEPARATOR + paramValue);
+    }
   }
 
   /**

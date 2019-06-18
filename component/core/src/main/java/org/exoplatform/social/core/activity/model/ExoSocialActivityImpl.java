@@ -18,6 +18,7 @@ package org.exoplatform.social.core.activity.model;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.shindig.social.core.model.ActivityImpl;
@@ -96,7 +97,9 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   
   //
   private String parentId;
-  
+
+  private List<ActivityFile> files;
+
   /**
    * constructor.
    */
@@ -515,6 +518,16 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
 
   public void setParentCommentId(String parentCommentId) {
     this.parentCommentId = parentCommentId;
+  }
+
+  @Override
+  public List<ActivityFile> getFiles() {
+    return files;
+  }
+
+  @Override
+  public void setFiles(List<ActivityFile> files) {
+    this.files = files;
   }
 
   @Override

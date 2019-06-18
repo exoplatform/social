@@ -27,6 +27,10 @@
     <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
   </component>
 
+  <component>
+    <type>org.exoplatform.upload.UploadService</type>
+  </component>
+
   <!-- Notifications plugins required for IntranetNotificationsRestServiceTest -->
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>
