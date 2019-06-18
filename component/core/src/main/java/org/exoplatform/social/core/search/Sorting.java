@@ -48,7 +48,7 @@ public class Sorting implements Serializable, Cloneable {
   public static final Sorting valueOf(String sortByField, String orderByField) {
     if (StringUtils.isNotBlank(sortByField)) {
       SortBy sortBy = SortBy.valueOf(sortByField.toUpperCase());
-      OrderBy orderBy = StringUtils.isBlank(orderByField) ? OrderBy.valueOf(orderByField) : OrderBy.ASC;
+      OrderBy orderBy = StringUtils.isBlank(orderByField) ? OrderBy.ASC : OrderBy.valueOf(orderByField.toUpperCase());
       return new Sorting(sortBy, orderBy);
     }
     return null;
