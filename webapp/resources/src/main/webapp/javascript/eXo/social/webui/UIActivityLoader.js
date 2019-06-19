@@ -139,13 +139,16 @@
         UIActivityLoader.monitoredActivities.forEach(function(element) {
           if(UIActivityLoader.isInViewport(element)) {
             // The element is visible
-            const foundElement = UIActivityLoader.visibleActivities.find(visibleElement => visibleElement.id === element.id);
-            if(foundElement) {
-              var now = new Date().getTime();
-              var readTime = ((now-foundElement.time)/1000).toFixed(1);
-              if(readTime > UIActivityLoader.markAsReadTimeInSeconds) {
-                let activityId = foundElement.id.substring('activityContainer'.length, foundElement.id.length);
-                UIActivityLoader.markActivityAsRead(activityId);
+            const activityContainer = element.closest('.uiNewsActivity');
+            if(activityContainer) {
+              const foundElement = UIActivityLoader.visibleActivities.find(visibleElement => visibleElement.id === activityContainer.id);
+              if(foundElement) {
+                var now = new Date().getTime();
+                var readTime = ((now-foundElement.time)/1000).toFixed(1);
+                if(readTime > UIActivityLoader.markAsReadTimeInSeconds) {
+                  let activityId = foundElement.id.substring('activityContainer'.length, foundElement.id.length);
+                  UIActivityLoader.markActivityAsRead(activityId);
+                }
               }
             }
           } else {
@@ -157,7 +160,7 @@
       }, UIActivityLoader.readingCheckDelayInSeconds * 1000);
     },
     findActivitiesToMonitor: function() {
-      UIActivityLoader.monitoredActivities = document.querySelectorAll('.uiActivityLoader .uiNewsActivity');
+      UIActivityLoader.monitoredActivities = document.querySelectorAll('.uiActivityLoader .uiNewsActivity .description');
     },
     scrollHandler: function() {
       UIActivityLoader.scrolling = true;
@@ -171,11 +174,14 @@
           if(UIActivityLoader.isInViewport(element)) {
 
             // Check if it's already logged in the visibleActivities array
-            var found = UIActivityLoader.visibleActivities.some(visibleElement => visibleElement.id === element.id);
+            const activityContainer = element.closest('.uiNewsActivity');
+            if(activityContainer) {
+              var found = UIActivityLoader.visibleActivities.some(visibleElement => visibleElement.id === activityContainer.id);
 
-            if(!found){
-              // Push an object with the visible element id and the actual time
-              UIActivityLoader.visibleActivities.push({id: element.id, time: new Date().getTime()});
+              if(!found){
+                // Push an object with the visible element id and the actual time
+                UIActivityLoader.visibleActivities.push({id: activityContainer.id, time: new Date().getTime()});
+              }
             }
           }
         });
