@@ -783,10 +783,6 @@
             hideComposer($(this));
           });
         }
-        //
-        if ($('.activityDisplay').length === 0) {
-          $('.inputContainer').addClass('hidden-phone');
-        }
       }
     },
 
