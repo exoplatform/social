@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -48,6 +49,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
+import org.exoplatform.social.core.activity.model.ActivityFile;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -600,6 +602,13 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     activity.setBody(model.getBody());
     activity.setType(model.getType());
     activity.setUserId(poster.getId());
+    activity.setTemplateParams(model.getTemplateParams());
+    if(model.getFiles() != null) {
+      activity.setFiles(model.getFiles()
+              .stream()
+              .map(fileModel -> new ActivityFile(fileModel.getUploadId(), fileModel.getStorage(), null))
+              .collect(Collectors.toList()));
+    }
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
     
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);

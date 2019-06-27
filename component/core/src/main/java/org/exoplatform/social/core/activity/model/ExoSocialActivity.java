@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.activity.model;
 
+import java.util.List;
+
 /**
  * ExoSocialActivity interface extends {@link org.apache.shindig.social.opensocial.model.Activity}}.
  *
@@ -288,4 +290,18 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param parentId
    */
   void setParentId(String parentId);
+
+  /**
+   * Get files of the activity.
+   *
+   * @return Files of the activity
+   */
+  List<ActivityFile> getFiles();
+
+  /**
+   * Set activity files
+   *
+   * @param files
+   */
+  void setFiles(List<ActivityFile> files);
 }

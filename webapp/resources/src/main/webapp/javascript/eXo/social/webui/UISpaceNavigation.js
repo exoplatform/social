@@ -198,8 +198,13 @@ var UISpaceNavigation = {
   },
 
   initStickyBanner: function() {
+    const spaceMenu = $('#UISpaceMenu');
     $(window).off('scroll.uiSpaceMenu').on('scroll.uiSpaceMenu', function() {
-      var $rightBody = $('#RightBody');
+      const $rightBody = $('#RightBody');
+      if(spaceMenu.css('display') === 'none') {
+        $rightBody.removeClass('sticky');
+        return;
+      }
       if ($(window).scrollTop() > 130) {
         if (!$rightBody.hasClass('sticky')) {
           $rightBody.addClass('sticky');

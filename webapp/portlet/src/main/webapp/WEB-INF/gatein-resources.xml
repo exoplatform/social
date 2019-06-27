@@ -288,6 +288,9 @@
       <as>$</as>
     </depends>
     <depends>
+      <module>filedrop</module>
+    </depends>
+    <depends>
       <module>extensionRegistry</module>
     </depends>
   </module>
