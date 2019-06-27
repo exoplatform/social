@@ -25,7 +25,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -39,7 +38,6 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.jpa.search.ExtendProfileFilter;
 import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
@@ -54,6 +52,8 @@ import org.exoplatform.social.core.relationship.model.Relationship.Type;
 public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> implements IdentityDAO {
   
   private static final Log LOG = ExoLogger.getLogger(IdentityDAOImpl.class);
+
+  private static final int MAX_ITEMS_PER_IN_CLAUSE = 1000;
 
   @Override
   public IdentityEntity create(IdentityEntity entity) {
@@ -164,11 +164,16 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
       delete(entity);
     }
   }
-
-  public List<IdentityEntity> findIdentitiesByIDs(List<?> ids) {
+  
+  public List<IdentityEntity> findIdentitiesByIDs(List<Long> ids) {
     TypedQuery<IdentityEntity> query = getEntityManager().createNamedQuery("SocIdentity.findIdentitiesByIDs", IdentityEntity.class);
-    query.setParameter("ids", ids);
-    return query.getResultList();
+    if (isOrcaleDialect()) {
+      return getFromOracleDB(query, ids);
+    } else {
+      query.setParameter("ids", ids);
+      return query.getResultList();
+    }
+
   }
 
   @SuppressWarnings("unchecked")
@@ -286,14 +291,19 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
       List<IdentityEntity> identitiesList = findIdentitiesByIDs(idsLong);
       Map<Long, IdentityEntity> identitiesMap = identitiesList.stream().collect(Collectors.toMap(identity -> identity.getId(), Function.identity()));
       connectionsQuery.setParameter("identityId", identityId);
-      connectionsQuery.setParameter("ids", idsLong);
       connectionsQuery.setMaxResults(Integer.MAX_VALUE);
-      List<ConnectionEntity> connectionsList = connectionsQuery.getResultList();
+      List<ConnectionEntity> connectionsList = new ArrayList<>();
+      if (isOrcaleDialect()) {
+        connectionsList = getFromOracleDB(connectionsQuery, idsLong);
+      } else {
+        connectionsQuery.setParameter("ids", idsLong);
+        connectionsList = connectionsQuery.getResultList();
+      }
       Map<IdentityEntity, ConnectionEntity> map = new LinkedHashMap<>();
-      for (Long identityIdLong : idsLong) {
-        IdentityEntity identityEntity = identitiesMap.get(identityIdLong);
+      for (Long identityId : idsLong) {
+        IdentityEntity identityEntity = identitiesMap.get(identityId);
         if (identityEntity == null) {
-          LOG.error("Can't find identity with id '{}'", identityIdLong);
+          LOG.warn("Can't find identity with id '{}'", identityId);
           continue;
         }
         for (ConnectionEntity connectionEntity : connectionsList) {
@@ -383,6 +393,44 @@ public class IdentityDAOImpl extends GenericDAOJPAImpl<IdentityEntity, Long> imp
       result.add((T) resultObject);
     }
     return result;
+  }
+
+  /**
+   *  in ORACLE, maximum number of expressions in a list is 1000.
+   *  so we need to send more than one request if the number of ids is more than 1000 (1000 ids per request).
+   *  @param <T> This is the type parameter
+   * @param query The query.
+   * @param ids The ids of users.
+   * @return
+*/
+  public <T> List<T> getFromOracleDB(TypedQuery<T> query, List<Long> ids) {
+    if (ids.size() <= MAX_ITEMS_PER_IN_CLAUSE) {
+      query.setParameter("ids", ids);
+      return query.getResultList();
+    } else {
+      List<Long> selectedIds = new ArrayList<>(ids);
+
+      List<T> usersList = new ArrayList<>();
+
+      // Retrieve identities by page of 1000
+      int startIndex = 0;
+      int endIndex = 0;
+      while (endIndex < ids.size()) {
+        // Compute sub list end index
+        endIndex += MAX_ITEMS_PER_IN_CLAUSE;
+        if (endIndex > ids.size()) {
+          endIndex = ids.size();
+        }
+        // Compute identities entities for the subset
+        List<Long> includedIds = selectedIds.subList(startIndex, endIndex);
+        query.setParameter("ids", includedIds);
+        usersList.addAll(query.getResultList());
+
+        // Increment sub list start index
+        startIndex = endIndex;
+      }
+      return usersList;
+    }
   }
 
 }
