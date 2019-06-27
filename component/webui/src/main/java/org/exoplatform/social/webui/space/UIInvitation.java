@@ -16,19 +16,21 @@
  */
 package org.exoplatform.social.webui.space;
 
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @ComponentConfig(
     template = "war:/groovy/social/webui/space/UIInvitation.gtmpl"
@@ -38,14 +40,48 @@ public class UIInvitation extends UIContainer {
   private final String USERS_SPACES = "users-spaces";
   private final String SPACE_PREFIX = "space::";
   private List<String> notFoundInvitees;
+  private Map<String, String> invitees;
+  private SpaceService spaceService;
+  private IdentityManager identityManager;
 
   /**
    * constructor
    */
   public UIInvitation() {
     notFoundInvitees = new ArrayList<>();
+    invitees = new HashMap<>();
     UIFormStringInput uiFormStringInput = new UIFormStringInput(USERS_SPACES, null, null);
     addChild(uiFormStringInput);
+  }
+
+  public void setInvitees(String invitees) {
+    SpaceService spaceService = getSpaceService();
+    IdentityManager identityManager = getIdentityManager();
+    String[] invitedList = invitees.split(",");
+    Map<String, String> inviteeNames = new HashMap<>();
+    String userId = ConversationState.getCurrent().getIdentity().getUserId();
+    for (String invited : invitedList) {
+      if (invited.equals(userId)) {
+        continue;
+      }
+      Space space = spaceService.getSpaceByDisplayName(invited);
+      if (space != null) {
+        inviteeNames.putIfAbsent(SPACE_PREFIX + space.getPrettyName(), invited);
+      } else {
+        Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, invited, true);
+        if (identity == null) {
+          notFoundInvitees.add(invited);
+        } else {
+          Profile profile = identity.getProfile();
+          inviteeNames.putIfAbsent(invited, profile.getFullName());
+        }
+      }
+    }
+    this.invitees = inviteeNames;
+  }
+
+  public Map<String,String> getInvitees() {
+    return invitees;
   }
 
   /**
@@ -74,7 +110,7 @@ public class UIInvitation extends UIContainer {
     List<Identity> identityList = new ArrayList<>();
     if (input != null) {
       String[] invitedList = input.split(",");
-      IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+      IdentityManager identityManager = getIdentityManager();
       for (String invited : invitedList) {
         // If it's a space
         if (invited.startsWith(SPACE_PREFIX)) {
@@ -92,5 +128,31 @@ public class UIInvitation extends UIContainer {
       }
     }
     return identityList;
+  }
+
+  /**
+   * Gets spaceService.
+   *
+   * @return spaceService
+   * @see SpaceService
+   */
+  private SpaceService getSpaceService() {
+    if (spaceService == null) {
+      spaceService = getApplicationComponent(SpaceService.class);
+    }
+    return spaceService;
+  }
+
+  /**
+   * Gets identityManager.
+   *
+   * @return identityManager
+   * @see IdentityManager
+   */
+  private IdentityManager getIdentityManager() {
+    if (identityManager == null) {
+      identityManager = getApplicationComponent(IdentityManager.class);
+    }
+    return identityManager;
   }
 }

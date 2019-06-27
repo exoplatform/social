@@ -18,6 +18,7 @@ package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -26,6 +27,7 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
@@ -39,6 +41,11 @@ import org.exoplatform.webui.form.UIFormRadioBoxInput;
 public class UISpaceVisibility extends UIFormInputSet {
   public static final String UI_SPACE_REGISTRATION = "UIRegistration";
   private static final String REGISTRATION_BINDING  = "registration";
+  private static final String VISIBLE_SPACE  = "UISpaceVisibility.label.VisibleSpace";
+  private static final String HIDDEN_SPACE  = "UISpaceVisibility.label.HiddenSpace";
+  private static final String OPEN_SPACE  = "UISpaceVisibility.label.OpenSpace";
+  private static final String VALIDATION_SPACE  = "UISpaceVisibility.label.ValidationSpace";
+  private static final String CLOSE_SPACE  = "UISpaceVisibility.label.CloseSpace";
   private String visibility;
 
   /**
@@ -68,6 +75,16 @@ public class UISpaceVisibility extends UIFormInputSet {
                                                                       spaceRegistration);
     uiRadioRegistration.setValue(Space.OPEN);
     addUIFormInput(uiRadioRegistration);
+    UIFormInputInfo visibilityInfo = new UIFormInputInfo("Visibility", null, null);
+    WebuiRequestContext webReqCtx = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resApp = webReqCtx.getApplicationResourceBundle();
+    String visible = resApp.getString(VISIBLE_SPACE);
+    visibilityInfo.setValue(visible);
+    addUIFormInput(visibilityInfo);
+    UIFormInputInfo registrationInfo = new UIFormInputInfo("Registration", null, null);
+    String validation = resApp.getString(VALIDATION_SPACE);
+    registrationInfo.setValue(validation);
+    addUIFormInput(registrationInfo);
   }
 
   public void setVisibility(String visibility) {
@@ -78,6 +95,26 @@ public class UISpaceVisibility extends UIFormInputSet {
     return visibility;
   }
 
+  public void setVisibilityInfo(ResourceBundle resourceBundle, String visibility) {
+    UIFormInputInfo uiFormInputInfo = getUIFormInputInfo("Visibility");
+    String visibilityInfo = resourceBundle.getString(VISIBLE_SPACE);
+    if (Space.HIDDEN.equals(visibility)) {
+      visibilityInfo = resourceBundle.getString(HIDDEN_SPACE);
+    }
+    uiFormInputInfo.setValue(visibilityInfo);
+  }
+
+  public void setRegistrationInfo(ResourceBundle resourceBundle, String registration) {
+    UIFormInputInfo uiFormInputInfo = getUIFormInputInfo("Registration");
+    String registrationInfo = resourceBundle.getString(VALIDATION_SPACE);
+    if (Space.OPEN.equals(registration)) {
+      registrationInfo = resourceBundle.getString(OPEN_SPACE);
+    } else if (Space.CLOSE.equals(registration)) {
+      registrationInfo = resourceBundle.getString(CLOSE_SPACE);
+    }
+    uiFormInputInfo.setValue(registrationInfo);
+  }
+
   static public class ChangeVisibilityActionListener extends EventListener<UISpaceVisibility> {
     public void execute(Event<UISpaceVisibility> event) throws Exception {
       UISpaceVisibility uiSpaceVisibility = event.getSource();
@@ -85,6 +122,8 @@ public class UISpaceVisibility extends UIFormInputSet {
       String visibility = Space.HIDDEN.equals(oldVisibility) ? Space.PRIVATE : Space.HIDDEN;
       uiSpaceVisibility.setVisibility(visibility);
       WebuiRequestContext ctx = event.getRequestContext();
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
+      uiSpaceVisibility.setVisibilityInfo(resApp, visibility);
       ctx.addUIComponentToUpdateByAjax(uiSpaceVisibility);
     }
   }

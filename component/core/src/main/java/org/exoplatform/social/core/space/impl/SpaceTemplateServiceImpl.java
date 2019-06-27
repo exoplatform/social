@@ -252,7 +252,7 @@ public class SpaceTemplateServiceImpl implements SpaceTemplateService, Startable
       if (spaceTemplateExtension.getSpaceHomeApplication() != null) {
         LOG.warn("Space home defined in extension of space template {} isn't extensible", spaceTemplateExtensionName);
       }
-      if (apps != null) {
+      if (apps != null && toExtendSpaceTemplate != null) {
         for (SpaceApplication application : apps) {
           toExtendSpaceTemplate.addToSpaceApplicationList(application);
         }

@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -66,7 +67,8 @@ import static org.exoplatform.social.webui.space.UISpaceSettings.SPACE_TEMPLATE;
   template = "system:/groovy/webui/form/UIFormWithTitle.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceAddForm.CreateActionListener.class),
-    @EventConfig(listeners = UISpaceAddForm.ChangeTemplateActionListener.class, phase = Phase.DECODE)
+    @EventConfig(listeners = UISpaceAddForm.ChangeTemplateActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UISpaceAddForm.ChangeOptionActionListener.class, phase = Phase.DECODE)
   }
 )
 
@@ -108,6 +110,29 @@ public class UISpaceAddForm extends UIForm {
     addChild(UIInvitation.class, null, null);
 
     setActions(new String[]{"Create"});
+  }
+
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    UIInvitation uiInvitation = getChild(UIInvitation.class);
+    UIFormSelectBox uiFormSelectBox = getUIFormSelectBox(SPACE_TEMPLATE);
+    UISpaceVisibility uiSpaceVisibility = getChild(UISpaceVisibility.class);
+    SpaceTemplateService spaceTemplateService = PortalContainer.getInstance().getComponentInstanceOfType(SpaceTemplateService.class);
+    String selectedTemplate = uiFormSelectBox.getValue();
+    SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(selectedTemplate);
+    String invitees = spaceTemplate.getInvitees();
+    if (StringUtils.isNotBlank(invitees)) {
+      uiInvitation.setInvitees(invitees);
+    }
+    ResourceBundle resourceBundle = context.getApplicationResourceBundle();
+    String visibility = spaceTemplate.getVisibility();
+    String registration = spaceTemplate.getRegistration();
+    uiSpaceVisibility.setVisibility(visibility);
+    uiSpaceVisibility.setVisibilityInfo(resourceBundle, visibility);
+    UIFormRadioBoxInput selectRegistration = uiSpaceVisibility.getChildById(UISpaceVisibility.UI_SPACE_REGISTRATION);
+    selectRegistration.setValue(registration);
+    uiSpaceVisibility.setRegistrationInfo(resourceBundle, registration);
+    super.processRender(context);
   }
 
   @Override
@@ -234,6 +259,19 @@ public class UISpaceAddForm extends UIForm {
     }
   }
 
+  static public class ChangeOptionActionListener extends EventListener<UISpaceAddForm> {
+    public void execute(Event<UISpaceAddForm> event) throws Exception {
+      UISpaceAddForm uiSpaceAddForm = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
+      UISpaceVisibility uiSpaceVisibility = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_VISIBILITY);
+      UIFormRadioBoxInput selectRegistration = uiSpaceVisibility.getChildById(UISpaceVisibility.UI_SPACE_REGISTRATION);
+      String currentRegistration = selectRegistration.getValue();
+      uiSpaceVisibility.setRegistrationInfo(resApp, currentRegistration);
+      ctx.addUIComponentToUpdateByAjax(uiSpaceVisibility);
+    }
+  }
+
   static public class ChangeTemplateActionListener extends EventListener<UISpaceAddForm> {
     public void execute(Event<UISpaceAddForm> event) throws Exception {
       UISpaceAddForm uiSpaceAddForm = event.getSource();
@@ -243,13 +281,24 @@ public class UISpaceAddForm extends UIForm {
       SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(templateName);
       String visibility = spaceTemplate.getVisibility();
       String registration = spaceTemplate.getRegistration();
+      String invitees = spaceTemplate.getInvitees();
       UISpaceVisibility uiSpaceVisibility = uiSpaceAddForm.findFirstComponentOfType(UISpaceVisibility.class);
       UISpaceTemplateDescription uiSpaceTemplateDescription = uiSpaceSettings.getChild(UISpaceTemplateDescription.class);
       UIFormRadioBoxInput uiRegistration = uiSpaceVisibility.findComponentById(UISpaceVisibility.UI_SPACE_REGISTRATION);
       uiSpaceTemplateDescription.setTemplateName(templateName);
-      uiSpaceVisibility.setVisibility(visibility);
-      uiRegistration.setValue(registration);
       WebuiRequestContext ctx = event.getRequestContext();
+      ResourceBundle resourceBundle = ctx.getApplicationResourceBundle();
+      uiSpaceVisibility.setVisibility(visibility);
+      uiSpaceVisibility.setVisibilityInfo(resourceBundle, visibility);
+      uiRegistration.setValue(registration);
+      uiSpaceVisibility.setRegistrationInfo(resourceBundle, registration);
+      UIInvitation uiInvitation = uiSpaceAddForm.findFirstComponentOfType(UIInvitation.class);
+      if (StringUtils.isNotBlank(invitees)) {
+        uiInvitation.setInvitees(invitees);
+      } else {
+        uiInvitation.setInvitees("");
+      }
+      ctx.addUIComponentToUpdateByAjax(uiInvitation);
       ctx.addUIComponentToUpdateByAjax(uiSpaceTemplateDescription);
       ctx.addUIComponentToUpdateByAjax(uiSpaceVisibility);
     }

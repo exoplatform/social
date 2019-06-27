@@ -25,6 +25,7 @@ jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addS
                 </div>
             </div>
         </div>
+        <%uicomponent.renderUIComponent(uicomponent.getUIFormInputInfo("Visibility"))%>
 		    <%
 		      for(inputEntry in uicomponent.getChildren()) {
 		        if(inputEntry.isRendered()) {
@@ -48,6 +49,7 @@ jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addS
         </div>
 	              <% }
 	      } %>
+      <%uicomponent.renderUIComponent(uicomponent.getUIFormInputInfo("Registration"))%>
     </div>
 <script type="text/javascript">
     require(["SHARED/jquery", "SHARED/iphoneStyleCheckbox"], function (gj) {

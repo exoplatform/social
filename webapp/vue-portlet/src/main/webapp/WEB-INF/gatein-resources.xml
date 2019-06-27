@@ -44,6 +44,9 @@
             <depends>
                 <module>extensionRegistry</module>
             </depends>
+            <depends>
+                <module>mask-layer</module>
+            </depends>
         </module>
     </portlet>
 

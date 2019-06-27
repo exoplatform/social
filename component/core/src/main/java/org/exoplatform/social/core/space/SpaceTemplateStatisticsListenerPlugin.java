@@ -41,6 +41,9 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
   private static final String FORMAT_MODIFICATION = "local_service={} operation={} " +
       "parameters=\"date:{},space_name:{},space_id:{},user_social_id:{},template_name:{},modification_type:{}\"";
 
+  private static final String FORMAT_APPLICATION = "local_service={} operation={} " +
+      "parameters=\"date:{},space_name:{},space_id:{},user_social_id:{},template_name:{},modification_type:{},application_id:{}\"";
+
   private static final String SPACE_TEMPLATES_SERVICE = "space_templates";
 
   private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -89,6 +92,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
   public void applicationAdded(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     String spaceId = space.getId();
+    String appId = event.getTarget();
     if (spaceId != null) {
       String spaceName = space.getPrettyName();
       String creator = space.getManagers()[0];
@@ -96,8 +100,8 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String creatorId = creatorIdentity.getId();
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
-      LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creatorId, templateName, "application");
+      LOG.info(FORMAT_APPLICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
+          dateString, spaceName, spaceId, creatorId, templateName, "application_added", appId);
     }
   }
 
@@ -105,6 +109,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
   public void applicationRemoved(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     String spaceId = space.getId();
+    String appId = event.getTarget();
     if (spaceId != null) {
       String spaceName = space.getPrettyName();
       String creator = space.getManagers()[0];
@@ -112,8 +117,8 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String creatorId = creatorIdentity.getId();
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
-      LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creatorId, templateName, "application");
+      LOG.info(FORMAT_APPLICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
+          dateString, spaceName, spaceId, creatorId, templateName, "application_removed", appId);
     }
   }
 
@@ -121,6 +126,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
   public void applicationActivated(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     String spaceId = space.getId();
+    String appId = event.getTarget();
     if (spaceId != null) {
       String spaceName = space.getPrettyName();
       String creator = space.getManagers()[0];
@@ -128,8 +134,8 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String creatorId = creatorIdentity.getId();
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
-      LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creatorId, templateName, "application");
+      LOG.info(FORMAT_APPLICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
+          dateString, spaceName, spaceId, creatorId, templateName, "application_activated", appId);
     }
   }
 
@@ -137,6 +143,7 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
   public void applicationDeactivated(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     String spaceId = space.getId();
+    String appId = event.getTarget();
     if (spaceId != null) {
       String spaceName = space.getPrettyName();
       String creator = space.getManagers()[0];
@@ -144,8 +151,8 @@ public class SpaceTemplateStatisticsListenerPlugin extends SpaceListenerPlugin {
       String creatorId = creatorIdentity.getId();
       String templateName = space.getTemplate();
       String dateString = DATE_FORMAT.format(new Date());
-      LOG.info(FORMAT_MODIFICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
-          dateString, spaceName, spaceId, creatorId, templateName, "application");
+      LOG.info(FORMAT_APPLICATION, SPACE_TEMPLATES_SERVICE, MODIFY_SPACE_OPERATION,
+          dateString, spaceName, spaceId, creatorId, templateName, "application_deactivated", appId);
     }
   }
 
