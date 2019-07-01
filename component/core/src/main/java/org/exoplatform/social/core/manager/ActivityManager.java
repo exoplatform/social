@@ -22,6 +22,7 @@ import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.ActivityListenerPlugin;
+import org.exoplatform.social.core.activity.model.ActivityFile;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -521,4 +522,8 @@ public interface ActivityManager {
   List<ExoSocialActivity> getActivities(List<String> activityIdList);
 
   boolean isActivityEditable(ExoSocialActivity activity, org.exoplatform.services.security.Identity viewer);
+
+  List<String> getActivityFilesIds(ExoSocialActivity activity);
+
+  ActivityFile getActivityFileById(long fileId) throws Exception;
 }

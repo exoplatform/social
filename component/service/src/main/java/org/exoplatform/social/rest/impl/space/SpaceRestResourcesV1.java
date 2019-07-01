@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,9 +42,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.*;
 
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.commons.file.model.FileItem;
+import org.exoplatform.commons.file.services.FileService;
+import org.exoplatform.commons.file.services.FileStorageException;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
@@ -76,6 +79,7 @@ import org.exoplatform.social.rest.entity.BaseEntity;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.SpaceEntity;
+import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 
@@ -470,7 +474,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     if (space == null || (! spaceService.isMember(space, authenticatedUser) && ! spaceService.isSuperManager(authenticatedUser))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    
+
     String[] users = (role != null && role.equals("manager")) ? space.getManagers() : space.getMembers();
     int size = users.length;
     //
@@ -606,7 +610,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     if(model.getFiles() != null) {
       activity.setFiles(model.getFiles()
               .stream()
-              .map(fileModel -> new ActivityFile(fileModel.getUploadId(), fileModel.getStorage(), null))
+              .map(fileModel -> new ActivityFile(fileModel.getUploadId(), fileModel.getStorage()))
               .collect(Collectors.toList()));
     }
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
@@ -646,6 +650,73 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     } else if (space.getRegistration() == null || space.getRegistration().length() == 0) {
       space.setRegistration(Space.VALIDATION);
     }
+  }
+
+  /**
+   * @param uriInfo
+   * @param request
+   * @param id
+   * @param fileId
+   * @return
+   * @throws IOException
+   */
+  @GET
+  @Path("{id}/files/{fileId}")
+  @RolesAllowed("users")
+  @ApiOperation(value = "Gets an activity file by its activity id and file id", httpMethod = "GET", response = Response.class, notes = "This can only be done by the logged in user.")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
+      @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 400, message = "Invalid query input"),
+      @ApiResponse(code = 404, message = "Resource not found") })
+  public Response getSpaceActivityFileByFileId(@Context UriInfo uriInfo,
+                                                       @Context Request request,
+                                                       @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
+                                                       @ApiParam(value = "File id", required = true) @PathParam("fileId") String fileId) throws IOException {
+
+    String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
+    ActivityManager activityManager = CommonsUtils.getService(ActivityManager.class);
+    ExoSocialActivity activity = activityManager.getActivity(id);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    Identity currentUser = CommonsUtils.getService(IdentityManager.class)
+                                       .getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUser, true);
+    if (EntityBuilder.getActivityStream(activity, currentUser) == null
+        && !Util.hasMentioned(activity, currentUser.getRemoteId())) { // current user doesn't have permission to view activity
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+    boolean hasFile=activityManager.getActivityFilesIds(activity).stream()
+            .filter(fId -> fileId.equals(fId))
+            .findAny()
+            .isPresent();
+    if (!hasFile) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    ActivityFile file = null;
+    try {
+      file = activityManager.getActivityFileById(Long.valueOf(fileId));
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    if (file == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    EntityTag eTag = null;
+    eTag = new EntityTag(Integer.toString(((Long)file.getLastModified()).hashCode()));
+    //
+    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+    if (builder == null) {
+      InputStream stream = file.getInputStream();
+      if (stream == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        builder = Response.ok(stream, "image/png");
+        builder.tag(eTag);
+      }
+    }
+    CacheControl cc = new CacheControl();
+    cc.setMaxAge(86400);
+    builder.cacheControl(cc);
+    return builder.cacheControl(cc).build();
   }
 
   private InputStream getDefaultAvatarBuilder() {

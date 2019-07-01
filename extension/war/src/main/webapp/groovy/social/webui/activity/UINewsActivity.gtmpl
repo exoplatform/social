@@ -8,6 +8,7 @@
   import org.exoplatform.social.webui.Utils;
 
   import org.apache.commons.lang.StringEscapeUtils;
+  import org.apache.commons.lang.StringUtils
 
   import static org.exoplatform.social.webui.activity.BaseUIActivity.TEMPLATE_PARAM_COMMENT;
 
@@ -205,6 +206,17 @@
   if(activityBody.length() > 300) {
     activityBody = activityBody.substring(0, 300) + '...';
   }
+   def illustrationFileId= Utils.getActivityManager().getActivityFilesIds(activity).stream()
+                                       .findAny().orElse(null);
+   StringBuffer illustrationURL = new StringBuffer();
+   if(StringUtils.isBlank(illustrationFileId)){
+       illustrationURL.append("/eXoSkin/skin/images/system/newsImageDefault.png");
+   }
+   else{
+       illustrationURL.append("/rest/v1/social/spaces/")
+       .append(activity.id).append("/files/")
+       .append(illustrationFileId);
+   }
 %>
 
 <div class="activityStream uiNewsActivity" id="activityContainer${activity.id}">
@@ -295,7 +307,7 @@
 				</div>
 			</div><!--end heading-->
 			<div class="description">
-                <img src="/eXoSkin/skin/images/system/newsImageDefault.png" class="newsImage" alt="News"/>
+                <img src="$illustrationURL" class="newsImage" alt="News"/>
                 <div class="newsDetails">
                     <div class="newsTitle">
                         <a href="javascript:void(0);">$activity.title</a>

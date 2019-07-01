@@ -652,7 +652,7 @@ public class UserRestResourcesV1 implements UserRestResources {
     if(model.getFiles() != null) {
       activity.setFiles(model.getFiles()
               .stream()
-              .map(fileModel -> new ActivityFile(fileModel.getUploadId(), fileModel.getStorage(), null))
+              .map(fileModel -> new ActivityFile(fileModel.getUploadId(), fileModel.getStorage()))
               .collect(Collectors.toList()));
     }
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(target, activity);
