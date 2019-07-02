@@ -20,6 +20,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
@@ -57,6 +58,7 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -378,46 +380,10 @@ public class BaseUIActivity extends UIForm {
    * @return String
    */
   public String getPostedTimeString(WebuiBindingContext resourceBundle, long postedTime) throws Exception {
-    long time = (new Date().getTime() - postedTime) / 1000;
-    long value;
-    if (time < 60) {
-      return resourceBundle.appRes("UIActivity.label.Less_Than_A_Minute");
-    } else {
-      if (time < 120) {
-        return resourceBundle.appRes("UIActivity.label.About_A_Minute");
-      } else {
-        if (time < 3600) {
-          value = Math.round(time / 60);
-          return resourceBundle.appRes("UIActivity.label.About_?_Minutes").replaceFirst("\\{0\\}", String.valueOf(value));
-        } else {
-          if (time < 7200) {
-            return resourceBundle.appRes("UIActivity.label.About_An_Hour");
-          } else {
-            if (time < 86400) {
-              value = Math.round(time / 3600);
-              return resourceBundle.appRes("UIActivity.label.About_?_Hours").replaceFirst("\\{0\\}", String.valueOf(value));
-            } else {
-              if (time < 172800) {
-                return resourceBundle.appRes("UIActivity.label.About_A_Day");
-              } else {
-                if (time < 2592000) {
-                  value = Math.round(time / 86400);
-                  return resourceBundle.appRes("UIActivity.label.About_?_Days").replaceFirst("\\{0\\}", String.valueOf(value));
-                } else {
-                  if (time < 5184000) {
-                    return resourceBundle.appRes("UIActivity.label.About_A_Month");
-                  } else {
-                    value = Math.round(time / 2592000);
-                    return resourceBundle.appRes("UIActivity.label.About_?_Months")
-                                         .replaceFirst("\\{0\\}", String.valueOf(value));
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    Date date = new Date(postedTime);
+    Locale currentLocale = Util.getPortalRequestContext().getLocale();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMM yyyy hh:mm aaa", currentLocale);
+    return sdf.format(date);
   }
 
   /**
