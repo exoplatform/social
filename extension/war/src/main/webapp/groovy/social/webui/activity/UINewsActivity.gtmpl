@@ -302,7 +302,9 @@
                     </div>
                     <div class="newsBody">
                         $activityBody
-                        <span class="readMore"><a href="javascript:void(0);">${labelReadMore}</a></span>
+                        <% if(activityBody.length() > 300) { %>
+                            <span class="readMore"><a href="javascript:void(0);">${labelReadMore}</a></span>
+                        <% } %>
                     </div>
                 </div>
 		        <div class="newsRibbon"></div>
