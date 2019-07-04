@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.space;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -55,25 +56,27 @@ public class UIInvitation extends UIContainer {
   }
 
   public void setInvitees(String invitees) {
-    SpaceService spaceService = getSpaceService();
-    IdentityManager identityManager = getIdentityManager();
-    String[] invitedList = invitees.split(",");
     Map<String, String> inviteeNames = new HashMap<>();
-    String userId = ConversationState.getCurrent().getIdentity().getUserId();
-    for (String invited : invitedList) {
-      if (invited.equals(userId)) {
-        continue;
-      }
-      Space space = spaceService.getSpaceByDisplayName(invited);
-      if (space != null) {
-        inviteeNames.putIfAbsent(SPACE_PREFIX + space.getPrettyName(), invited);
-      } else {
-        Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, invited, true);
-        if (identity == null) {
-          notFoundInvitees.add(invited);
+    if (StringUtils.isNotBlank(invitees)) {
+      SpaceService spaceService = getSpaceService();
+      IdentityManager identityManager = getIdentityManager();
+      String[] invitedList = invitees.split(",");
+      String userId = ConversationState.getCurrent().getIdentity().getUserId();
+      for (String invited : invitedList) {
+        if (invited.equals(userId)) {
+          continue;
+        }
+        Space space = spaceService.getSpaceByDisplayName(invited);
+        if (space != null) {
+          inviteeNames.putIfAbsent(SPACE_PREFIX + space.getPrettyName(), invited);
         } else {
-          Profile profile = identity.getProfile();
-          inviteeNames.putIfAbsent(invited, profile.getFullName());
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, invited, true);
+          if (identity == null) {
+            notFoundInvitees.add(invited);
+          } else {
+            Profile profile = identity.getProfile();
+            inviteeNames.putIfAbsent(invited, profile.getFullName());
+          }
         }
       }
     }

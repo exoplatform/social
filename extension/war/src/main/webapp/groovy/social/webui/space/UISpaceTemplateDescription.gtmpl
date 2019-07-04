@@ -1,3 +1,10 @@
-<div id="<%=uicomponent.id%>">
-    <%=_ctx.appRes("space.template.description." + uicomponent.getTemplateName())%>
-</div>
+<%
+import org.apache.commons.lang.StringUtils;
+
+def templateName = uicomponent.getTemplateName();
+def label = _ctx.appRes("space.template.description." + templateName);
+%>
+<% if (StringUtils.isBlank(templateName) || templateName.equals(label)) {
+    label = "";
+} %>
+<div id="<%=uicomponent.id%>">$label</div>
