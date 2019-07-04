@@ -202,8 +202,8 @@
   def viewerId = Utils.getViewerIdentity().getId();
 
   def activityBody = activity.body;
-  if(activityBody.length() > 400) {
-    activityBody = activityBody.substring(0, 400) + '...';
+  if(activityBody.length() > 300) {
+    activityBody = activityBody.substring(0, 300) + '...';
   }
 %>
 
