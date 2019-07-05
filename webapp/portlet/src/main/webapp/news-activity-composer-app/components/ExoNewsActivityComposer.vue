@@ -42,7 +42,7 @@
             <button id="newsPost" :disabled="postDisabled" class="btn btn-primary"> {{ $t("activity.composer.news.post")
             }}
             </button>
-            <a id="newsPlus" :data-original-title="$t('activity.composer.news.moreOptions')" class="btn btn-primary"
+            <a id="newsPlus" :data-original-title="extendFormButtonTooltip" class="btn btn-primary"
                rel="tooltip" data-placement="bottom"
                @click="extendedForm = !extendedForm;">
               <i :class="extendFormButtonClass"></i>
@@ -76,6 +76,7 @@ export default {
       TITLE_MAX_LENGTH: 150,
       extendedForm: false,
       extendFormButtonClass: 'uiIconSimplePlus',
+      extendFormButtonTooltip: this.$t('activity.composer.news.moreOptions'),
       newsFormExtendedClass: '',
       newsFormContentHeight: '',
     };
@@ -88,6 +89,7 @@ export default {
   watch: {
     extendedForm: function() {
       this.extendFormButtonClass = this.extendedForm ? 'uiIconMinimize' : 'uiIconSimplePlus';
+      this.extendFormButtonTooltip = this.extendedForm ? this.$t('activity.composer.news.lessOptions') : this.$t('activity.composer.news.moreOptions');
       document.getElementById('UISpaceMenu').style.display = this.extendedForm ? 'none' : '';
       document.getElementById('ActivityComposerExt').style.display = this.extendedForm ? 'none' : '';
       document.getElementById('UISpaceActivitiesDisplay').style.display = this.extendedForm ? 'none' : '';
