@@ -209,6 +209,7 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
     //
+    spaceService.addMember(space, userId);
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
 
@@ -224,8 +225,6 @@ public class IntranetNotificationRestService extends AbstractStorage implements 
     if (messageInfo == null) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-
-    spaceService.addMember(space, userId);
     return Util.getResponse(messageInfo, uriInfo, mediaType, Response.Status.OK);
   }
   
