@@ -292,6 +292,7 @@
             inputContainer.show('fast', function () {
               var thiz = $(this);
               thiz.addClass('inputContainerShow');
+              thiz.removeClass('hidden-phone');
               thiz.find('div.replaceTextArea:first').focus();
 
               if($('#cke_CommentTextarea' + currentActivityId + ' .cke_contents').length) {
@@ -307,14 +308,15 @@
                 var thiz = $(this);
                 thiz.removeClass('inputContainerShow');
               });
-            } else {
+          }
+          else {
               var thiz = $(this);
               var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
               if(blockInput.length > 0) {
                 blockInput.removeClass('inputContainerShow').hide();
               }
             }
-          }
+		}
           commentLinkEl.closest('.activityStream').click();
         });
         }
@@ -457,13 +459,8 @@
             }
             thiz.addClass('inputContainerShow');
             thiz.find('div.replaceTextArea:first').focus();
-            var ctTop = ($(window).height()- thiz.height())/2;
-            var nTop = thiz.offset().top - ctTop - 20;
-            nTop = (nTop > 0) ? nTop : 0;
-
-            $('html, body').animate({scrollTop:nTop}, 'slow');
           } else {
-            thiz.removeClass('inputContainerShow')
+            thiz.removeClass('inputContainerShow');
           }
 
         });
@@ -786,19 +783,6 @@
             hideComposer($(this));
           });
         }
-        //
-        if ($('.activityDisplay').length === 0) {
-          $('.inputContainer').addClass('hidden-phone');
-        }
-        //activityStream
-        var activities = root.find('.activityStream');
-        if(activities.length === 0) {
-          activities = root.find('.uiActivityLoader');
-        }
-        //
-        activities.off('click').click(function(evt) {
-          eXo.social.SocialUtil.onViewActivity(UIActivity.responsiveId);
-        });
       }
     },
 

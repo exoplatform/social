@@ -986,7 +986,7 @@ public class BaseUIActivity extends UIForm {
       String inputContainerId = "InputContainer" + activityId;
       StringBuffer script = new StringBuffer("(function($) {");
       script.append("var inputContainer = $('#").append(inputContainerId).append("');");
-      script.append("inputContainer.addClass('inputContainerShow').show();");
+      script.append("inputContainer.addClass('inputContainerShow hidden-phone').show();");
       script.append("})(jq);");
 
       JavascriptManager jm = event.getRequestContext().getJavascriptManager();
