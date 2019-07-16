@@ -4,10 +4,14 @@ export const spacesConstants = {
   PORTAL_REST: eXo.env.portal.rest,
   SOCIAL_SPACE_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/spaces/`,
   SOCIAL_USER_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/users`,
+  SOCIAL_SPACES_API: `/${eXo.env.portal.rest}${eXo.env.portal.context}/social/spaces/`,
   SPACE_ID: eXo.env.portal.spaceId,
   HOST_NAME: window.location.host,
   MANAGERS_ROLE: '/users?role=manager',
   UPLOAD_API: `${eXo.env.portal.context}/upload`,
   MAX_UPLOAD_SIZE: 10,
-  MAX_UPLOAD_FILES: 1
+  MAX_UPLOAD_FILES: 1,
+  userName: eXo.env.portal.userName,
+  format: 'json',
+  typeOfRelation: 'confirmed',
 };
