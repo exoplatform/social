@@ -295,21 +295,9 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
       newsActivity.setTemplateParams(newsTemplateParams);
       activityManager.saveActivityNoReturn(spaceIdentity, newsActivity);
 
-      /*URL resource = getClass().getResource("/news.png");
-      uploadService.createUploadResource("10", resource.getPath(), "news.png", "image/png");
-      ActivityFile activityFile = new ActivityFile("10",
-                                                   "file",
-                                                   "news.png",
-                                                   "image/png",
-                                                   new ByteArrayInputStream("news.png".getBytes()),
-                                                   new Date().getTime());
-      List<ActivityFile> files = new ArrayList<>();
-      files.add(activityFile);
-      newsActivity.setFiles(files);*/
-
       // When
       activityManager.saveActivityNoReturn(spaceIdentity, newsActivity);
-      assertEquals(activityManager.getActivityFilesIds(newsActivity).size(), 0);
+      assertEquals(0 , activityManager.getActivityFilesIds(newsActivity).size());
       ExoSocialActivity createdNews = activityManager.getActivity(newsActivity.getId());
       // Then
       ContainerResponse response = service("GET",

@@ -1090,26 +1090,26 @@
     },
     
     clickOnNews: function (activityId) {
-    	var env = eXo.social.portal;
-    	var baseRestUrl = env.context + '/' + env.rest + '/v1/social/news/'+ activityId+'/click';
-    	$("#seeMoreId"+activityId).click(function() { 
-    		$.ajax({
-    			url : baseRestUrl,
-    			contentType: "application/json",
-    			type : 'POST',
-    			data: JSON.stringify({"name": "readMore"}),
-    			cache: false,
-    		});
-    	});
-    	$("#titleId"+activityId).click(function() { 
-    		$.ajax({
-    			url : baseRestUrl,
-    			contentType: "application/json",
-    			type : 'POST',
-    			data: JSON.stringify({"name": "title"}),
-    			cache: false,
-    		});   
-    	});
+      var env = eXo.social.portal;
+      var baseRestUrl = env.context + '/' + env.rest + '/v1/social/news/' + activityId + '/click';
+      $("#seeMoreId" + activityId).click(function () {
+        $.ajax({
+          url: baseRestUrl,
+          contentType: "application/json",
+          type: 'POST',
+          data: JSON.stringify({"name": "readMore"}),
+          cache: false,
+        });
+      });
+      $("#titleId" + activityId).click(function () {
+        $.ajax({
+          url: baseRestUrl,
+          contentType: "application/json",
+          type: 'POST',
+          data: JSON.stringify({"name": "title"}),
+          cache: false,
+        });
+      });
 
     },
 };

@@ -50,6 +50,8 @@ import org.exoplatform.commons.file.services.FileStorageException;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ActivityFile;
@@ -88,6 +90,7 @@ import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 public class SpaceRestResourcesV1 implements SpaceRestResources {
 
   private IdentityManager identityManager;
+  private static final Log LOG = ExoLogger.getLogger(SpaceRestResourcesV1.class);
 
 
   public SpaceRestResourcesV1(IdentityManager identityManager) {
@@ -663,7 +666,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
   @GET
   @Path("{id}/files/{fileId}")
   @RolesAllowed("users")
-  @ApiOperation(value = "Gets an activity file by its activity id and file id", httpMethod = "GET", response = Response.class, notes = "This can only be done by the logged in user.")
+  @ApiOperation(value = "Gets an activity file by its activity id and file id", httpMethod = "GET", response = Response.class, notes = "returns the associated activity file.")
   @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
       @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 400, message = "Invalid query input"),
       @ApiResponse(code = 404, message = "Resource not found") })
@@ -695,6 +698,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     try {
       file = activityManager.getActivityFileById(Long.valueOf(fileId));
     } catch (Exception e) {
+      LOG.error("An error occurred while retrieving activity file by id",e);
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     if (file == null) {

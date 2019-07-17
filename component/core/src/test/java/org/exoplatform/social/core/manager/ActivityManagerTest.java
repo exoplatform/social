@@ -72,7 +72,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
   private ActivityManager activityManager;
   private SpaceService spaceService;
   private MockUploadService uploadService;
- // private FileService fileService;
 
   @Override
   public void setUp() throws Exception {
@@ -1544,7 +1543,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     files.add(activityFile);
     demoActivity.setFiles(files);
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    assertEquals(activityManager.getActivityFilesIds(demoActivity).size(),1);
+    assertEquals(1 , activityManager.getActivityFilesIds(demoActivity).size());
 
   }
 
@@ -1565,11 +1564,11 @@ public class ActivityManagerTest extends AbstractCoreTest {
     files.add(activityFile);
     demoActivity.setFiles(files);
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
-    assertEquals(activityManager.getActivityFilesIds(demoActivity).size(),1);
+    assertEquals(1 , activityManager.getActivityFilesIds(demoActivity).size());
     String  fileID =activityManager.getActivityFilesIds(demoActivity).stream().findAny().orElse(null);
     assertNotNull(fileID);
     ActivityFile activityGotFile=activityManager.getActivityFileById(Long.valueOf(fileID));
-    assertEquals(activityGotFile.getName(),"test.png");
+    assertEquals("test.png" , activityGotFile.getName());
 
   }
 

@@ -42,12 +42,10 @@ public class NewsRestRessourcesV1 implements NewsRestRessources {
 
   @POST
   @Path("{id}/click")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
   @ApiOperation(value = "Click on read more or news title", httpMethod = "POST", response = Response.class, notes = "This will display a log message when the user click on read more or the title of a news")
-  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
-      @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 400, message = "Invalid query input") })
+  @ApiResponses(value = { @ApiResponse(code = 204, message = "Request fulfilled"),
+      @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 403, message = "Invalid query input") })
   public Response clickOnNews(@Context UriInfo uriInfo,
                               @ApiParam(value = "Activity id", required = true) @PathParam("id") String id,
                               @ApiParam(value = "The target cliked field", required = true) Map<String, String> targetField) {

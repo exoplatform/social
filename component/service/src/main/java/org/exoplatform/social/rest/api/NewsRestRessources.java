@@ -11,7 +11,5 @@ import javax.ws.rs.core.UriInfo;
 
 public interface NewsRestRessources extends SocialRest {
 
-  @POST
-  @Path("{id}/click")
   public Response clickOnNews(@Context UriInfo uriInfo, @PathParam("id") String id, Map<String, String> tragetField);
 }

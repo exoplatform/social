@@ -523,7 +523,23 @@ public interface ActivityManager {
 
   boolean isActivityEditable(ExoSocialActivity activity, org.exoplatform.services.security.Identity viewer);
 
-  List<String> getActivityFilesIds(ExoSocialActivity activity);
+  /**
+   * Get all files ids of an activity
+   * @param activity
+   * @return
+   */
+  default List<String> getActivityFilesIds(ExoSocialActivity activity){
+    return null;
+  }
 
-  ActivityFile getActivityFileById(long fileId) throws Exception;
+  /**
+   * Get activity file by its id
+   * @param fileId
+   * @return
+   * @throws Exception
+   */
+
+  default ActivityFile getActivityFileById(long fileId) throws Exception{
+    return null;
+  }
 }
