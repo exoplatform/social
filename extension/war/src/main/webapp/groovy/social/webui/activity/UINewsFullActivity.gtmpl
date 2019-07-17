@@ -123,29 +123,29 @@
   <div id="ContextBox${activity.id}" class="uiBox contentBox">
     <div id="ActivityContextBox${activity.id}">
       <div class="description">
-                <img src="$illustrationURL" class="newsImage" alt="News" style="width:165px; height: 150px;"/>
-                <div class="newsDetails" style="padding-left:18%; ">
+                <img src="$illustrationURL" class="newsImage illustrationPicture" alt="News"/>
+                <div class="newsDetails">
                     <div class="newsTitle">
-                        <a href="$activityLink" style="color:#578dc9;">$activity.title</a>
+                        <a href="$activityLink" class="activityLinkColor">$activity.title</a>
                     </div>
                     <div id="newsShareActivity"></div>
                     <div>
                         <span>
-                          <span style="font-style: italic;">${labelWrittenBy}</span>
-                          <span style="font-weight:bold;"> $ownerName</span>
-                           <span style="">   ---   </span>
-                           <span style="font-style: italic;"> ${labelPublicationDate} :</span>
-                           <span style="font-weight:bold;"> $postedActivityDate</span>
+                            <span class="italicLabel">${labelWrittenBy} :</span>
+                            <span class="boldText"> $ownerName</span>
+                            <span>   ---   </span>
+                            <span class="italicLabel"> ${labelPublicationDate}</span>
+                            <span class="boldText"> $postedActivityDate</span>
                         </span>
                     </div>
                       <% if (summary != null) { %>
-                    <div style="margin-top: 1%;height: 74px;padding: 1%;text-align: justify; width:90%; border: 1px solid #ccc !important;cursor: auto;overflow: auto;">
+                    <div class="summary">
                         <span>$summary</span>
                     </div>
                       <% } %>
                  
                 </div>
-                 <div class="newsBody" style="border: 2px solid #ccc !important;margin-top: 2%;padding: 1%;text-align: justify; width: 91%;height: 300px;cursor: auto;overflow: auto;">
+                 <div class="newsBody" class="fullDetailsBody">
                         $activityBody
                   </div>
       </div>
