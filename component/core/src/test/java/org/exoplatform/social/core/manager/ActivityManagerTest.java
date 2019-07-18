@@ -16,6 +16,10 @@
  */
 package org.exoplatform.social.core.manager;
 
+
+import org.exoplatform.social.core.activity.model.ActivityFile;
+import org.exoplatform.social.core.mock.MockUploadService;
+import org.exoplatform.upload.UploadService;
 import org.junit.Test;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -41,12 +45,10 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Unit Test for {@link ActivityManager}, including cache tests.
@@ -69,12 +71,14 @@ public class ActivityManagerTest extends AbstractCoreTest {
   private RelationshipManager relationshipManager;
   private ActivityManager activityManager;
   private SpaceService spaceService;
+  private MockUploadService uploadService;
 
   @Override
   public void setUp() throws Exception {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     activityManager =  (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
+    uploadService = (MockUploadService) getContainer().getComponentInstanceOfType(UploadService.class);
     relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
@@ -1521,6 +1525,53 @@ public class ActivityManagerTest extends AbstractCoreTest {
     
     tearDownActivityList.add(activity);
   }
+
+  /**
+   * Test {@link ActivityManager#getActivityFilesIds(ExoSocialActivity))}
+   * @throws Exception
+   */
+  public void testGetActivityFilesIds() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("title");
+    demoActivity.setUserId(demoActivity.getId());
+    Map<String, String> templateParams = new HashMap<String, String>();
+    demoActivity.setTemplateParams(templateParams);
+    URL resource = getClass().getResource("/test.png");
+    uploadService.createUploadResource("10", resource.getPath(), "test.png", "image/png");
+    ActivityFile activityFile = new  ActivityFile( "10", "file", "test.png", "image/png", new ByteArrayInputStream("test.png".getBytes()), new Date().getTime());
+    List<ActivityFile> files = new ArrayList<>();
+    files.add(activityFile);
+    demoActivity.setFiles(files);
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+    assertEquals(1 , activityManager.getActivityFilesIds(demoActivity).size());
+
+  }
+
+  /**
+   * Test {@link ActivityManager#getActivityFileById(long)} (ExoSocialActivity))}
+   * @throws Exception
+   */
+  public void testGetActivityFileById() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("title");
+    demoActivity.setUserId(demoActivity.getId());
+    Map<String, String> templateParams = new HashMap<String, String>();
+    demoActivity.setTemplateParams(templateParams);
+    URL resource = getClass().getResource("/test.png");
+    uploadService.createUploadResource("10", resource.getPath(), "test.png", "image/png");
+    ActivityFile activityFile = new  ActivityFile( "10", "file", "test.png", "image/png", new ByteArrayInputStream("test.png".getBytes()), new Date().getTime());
+    List<ActivityFile> files = new ArrayList<>();
+    files.add(activityFile);
+    demoActivity.setFiles(files);
+    activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
+    assertEquals(1 , activityManager.getActivityFilesIds(demoActivity).size());
+    String  fileID =activityManager.getActivityFilesIds(demoActivity).stream().findAny().orElse(null);
+    assertNotNull(fileID);
+    ActivityFile activityGotFile=activityManager.getActivityFileById(Long.valueOf(fileID));
+    assertEquals("test.png" , activityGotFile.getName());
+
+  }
+
   
   /**
    * Test {@link ActivityManager#getActivitiesCount(Identity)}

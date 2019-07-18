@@ -73,7 +73,7 @@ export default {
       },
       pinArticle: false,
       SMARTPHONE_LANDSCAPE_WIDTH: 768,
-      TITLE_MAX_LENGTH: 150,
+      max: 150,
       extendedForm: false,
       extendFormButtonClass: 'uiIconSimplePlus',
       extendFormButtonTooltip: this.$t('activity.composer.news.moreOptions'),

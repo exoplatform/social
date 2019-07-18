@@ -1,0 +1,161 @@
+<!-- Full details news Activity -->
+<%
+  import org.apache.commons.lang.ArrayUtils;
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.webui.form.UIFormTextAreaInput;
+  import org.exoplatform.social.core.service.LinkProvider;
+  import org.exoplatform.social.core.space.model.Space;
+  import org.exoplatform.social.webui.Utils;
+  
+  import java.time.format.DateTimeFormatter;
+  import java.time.LocalDateTime;
+  import java.util.TimeZone;
+
+  import org.apache.commons.lang.StringEscapeUtils;
+  import org.apache.commons.lang.StringUtils
+  
+  import java.util.Date;
+
+  import static org.exoplatform.social.webui.activity.BaseUIActivity.TEMPLATE_PARAM_COMMENT;
+
+  def pcontext = Util.getPortalRequestContext();
+  def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
+  def activity = uicomponent.getActivity();
+  def streamOwner = activity.getStreamOwner();
+  def posetdDate = new Date(activity.postedTime);
+  def ldt = LocalDateTime.ofInstant(posetdDate.toInstant(),TimeZone.getDefault().toZoneId());
+  Locale locale = pcontext.getLocale();
+  def mediumDateFormat = DateTimeFormatter.ofPattern("d MMM yyyy", locale);
+  def postedActivityDate = ldt.format(mediumDateFormat);
+  
+  
+%>
+
+<% if (activity) { //process if not null
+
+  def jsManager = pcontext.getJavascriptManager().require("SHARED/uiForm");
+
+  def labelReadMore = _ctx.appRes("UIActivity.label.ReadMore");
+  def labelWrittenBy = _ctx.appRes("UIActivity.label.writtenBy");
+  def labelPublicationDate = _ctx.appRes("UIActivity.label.publicationDate");
+  def spaceURL = uicomponent.getSpaceURL();
+  def spaceGroupId = uicomponent.getSpaceGroupId();
+ 
+  def activityLink = uicomponent.getActivityPermalink(activity.id);
+  def summary = activity.templateParams.summary;
+  def illustrationFileId= Utils.getActivityManager().getActivityFilesIds(activity).stream()
+                                       .findAny().orElse(null);
+   StringBuffer illustrationURL = new StringBuffer();
+   if(StringUtils.isBlank(illustrationFileId)){
+       illustrationURL.append("/eXoSkin/skin/images/system/newsImageDefault.png");
+   }
+   else {
+       illustrationURL.append("/rest/v1/social/spaces/")
+       .append(activity.id).append("/files/")
+       .append(illustrationFileId);
+   }
+
+  //params for init UIActivity javascript object
+  def params = """ {
+    activityId: '${activity.id}',
+    spaceURL:'$spaceURL',
+    spaceGroupId: '$spaceGroupId'
+  } """
+
+  jsManager.require("SHARED/jquery", "jq")
+           .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+           .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);")
+           .require("SHARED/NewsShareActivity", "newsShareActivity").addScripts("newsShareActivity.init();");
+
+  def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime;
+
+  activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
+  def postedTimeTooltip = _ctx.appRes("UIActivity.label.PostedFrom").replace("{0}",activityPostedTime);
+  activityUpdatedTime =uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
+  activityUpdatedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",activityUpdatedTime);
+  def spaceID;
+  def ownerIdentity = uicomponent.ownerIdentity;
+  if (uicomponent.isUserActivity()) {
+    ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
+    ownerAvatar = ownerIdentity.profile.avatarUrl;
+    ownerName = StringEscapeUtils.escapeHtml(ownerIdentity.profile.fullName);
+    if (!ownerAvatar) ownerAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+  } else if(uicomponent.isSpaceActivity()){
+    Space space = Utils.getSpaceService().getSpaceByPrettyName(ownerIdentity.remoteId);
+    ownerUri = Utils.getSpaceHomeURL(space);
+    ownerAvatar = space.avatarUrl;
+    ownerName = space.displayName;
+    if (!ownerAvatar) ownerAvatar = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+  } else {
+    ownerUri = ownerIdentity.profile.url;
+    ownerAvatar = ownerIdentity.profile.avatarUrl;
+    ownerName = StringEscapeUtils.escapeHtml(ownerIdentity.profile.fullName);
+  }
+  def currentTime = System.currentTimeMillis();
+  String viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
+  def deleteActivityTip = _ctx.appRes("UIActivity.msg.DeleteActivity");
+
+  def spaceSourceURI, spaceName, spaceImageSource;
+  if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
+          Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+          spaceID = spaceSource.getId();
+          if (spaceSource != null) {
+            spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
+             spaceName = spaceSource.displayName;
+          spaceImageSource = spaceSource.getAvatarUrl();
+          if (spaceImageSource == null) {
+            spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+          }
+            } else {
+                spaceSourceURI = LinkProvider.getActivityUriForSpace(streamOwner, streamOwner);
+                spaceName = StringEscapeUtils.escapeHtml(Utils.getSpaceIdentity(streamOwner, false).profile.fullName);
+                spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+            }
+   }
+  def viewerId = Utils.getViewerIdentity().getId();
+
+  def activityBody = activity.body; 
+%>
+
+<div class="activityStream uiNewsActivity" id="activityContainer${activity.id}">
+  <% uiform.begin() %>
+  <div class="boxContainer" id="boxContainer">
+  <div id="ContextBox${activity.id}" class="uiBox contentBox">
+    <div id="ActivityContextBox${activity.id}">
+      <div class="description">
+                <img src="$illustrationURL" class="newsImage illustrationPicture" alt="News"/>
+                <div class="newsDetails">
+                    <div class="newsTitle">
+                        <a href="$activityLink" class="activityLinkColor">$activity.title</a>
+                    </div>
+                    <div id="newsShareActivity"></div>
+                    <div>
+                        <span>
+                            <span class="italicLabel">${labelWrittenBy} :</span>
+                            <span class="boldText"> $ownerName</span>
+                            <span>   ---   </span>
+                            <span class="italicLabel"> ${labelPublicationDate}</span>
+                            <span class="boldText"> $postedActivityDate</span>
+                        </span>
+                    </div>
+                      <% if (summary != null) { %>
+                    <div class="summary">
+                        <span>$summary</span>
+                    </div>
+                      <% } %>
+                 
+                </div>
+                 <div class="newsBody" class="fullDetailsBody">
+                        $activityBody
+                  </div>
+      </div>
+    </div><!--end #ActivityContextBox${activity.id}-->
+  </div> <!--end ContextBox${activity.id}-->
+  </div> <!-- #boxContainer-->
+  <% uiform.end() %>
+</div><!--activityStream-->
+<% } else { %> <!-- activity deleted -->
+<% uiform.begin() %>
+<div class="activityStream deleted">$labelActivityHasBeenDeleted</div>
+<% uiform.end() %>
+<% } %>
