@@ -122,28 +122,33 @@
   <div class="boxContainer" id="boxContainer">
   <div id="ContextBox${activity.id}" class="uiBox contentBox">
     <div id="ActivityContextBox${activity.id}">
-      <div class="description">
+      <div class="newsDetails-description">
+        <div class="newsDetails-header">
+            <div class="news-illustration">
                 <img src="$illustrationURL" class="newsImage illustrationPicture" alt="News"/>
+            </div>
                 <div class="newsDetails">
-                    <div class="newsTitle">
-                        <a href="$activityLink" class="activityLinkColor">$activity.title</a>
-                    </div>
+                 <div class="news-top-information">
+                    <div class="news-header-content">
+                        <div class="newsTitle">
+                            <a href="$activityLink" class="activityLinkColor newsTitleLink">$activity.title</a>
+                        </div>
+                        <div class="news-informtions">
+                             <span class="news-informationsLabel newsAuthor">${labelWrittenBy} :</span>
+                             <span class="news-informationsValue newsOwnerName"> $ownerName</span>
+                             <span class="newsInformationSeparator">---</span>
+                             <span class="news-informationsLabel newsDate"> ${labelPublicationDate}</span>
+                             <span class="news-informationsValue newsPostedDate"> $postedActivityDate</span>
+                         </div>
+                       </div>
                     <div id="newsShareActivity"></div>
-                    <div>
-                        <span>
-                            <span class="italicLabel">${labelWrittenBy} :</span>
-                            <span class="boldText"> $ownerName</span>
-                            <span>   ---   </span>
-                            <span class="italicLabel"> ${labelPublicationDate}</span>
-                            <span class="boldText"> $postedActivityDate</span>
-                        </span>
                     </div>
                       <% if (summary != null) { %>
                     <div class="summary">
                         <span>$summary</span>
                     </div>
                       <% } %>
-                 
+                 </div>
                 </div>
                  <div class="newsBody" class="fullDetailsBody">
                         $activityBody
