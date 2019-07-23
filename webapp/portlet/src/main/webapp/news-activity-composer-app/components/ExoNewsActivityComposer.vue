@@ -15,9 +15,9 @@
 
         <div class="newsFormColumn newsFormInputs">
           <div class="newsInputsRows">
-            <input id="newsTitle" v-model="newsActivity.title" :maxlength="max"
+            <input id="newsTitle" v-model="newsActivity.title" :maxlength="titleMaxLength"
                    :placeholder="$t('activity.composer.news.placeholderTitleInput')" class="newsFormInput" type="text">
-            <textarea v-show="extendedForm" id="newsSummary" v-model="newsActivity.summary" :maxlength="max"
+            <textarea v-show="extendedForm" id="newsSummary" v-model="newsActivity.summary" :maxlength="summaryMaxLength"
                       :placeholder="$t('activity.composer.news.placeholderSummaryInput')"
                       class="newsFormInput" type="text"/>
             <div v-show="extendedForm" class="control-group attachments">
@@ -73,7 +73,8 @@ export default {
       },
       pinArticle: false,
       SMARTPHONE_LANDSCAPE_WIDTH: 768,
-      max: 150,
+      titleMaxLength: 150,
+      summaryMaxLength: 1000,
       extendedForm: false,
       extendFormButtonClass: 'uiIconSimplePlus',
       extendFormButtonTooltip: this.$t('activity.composer.news.moreOptions'),
