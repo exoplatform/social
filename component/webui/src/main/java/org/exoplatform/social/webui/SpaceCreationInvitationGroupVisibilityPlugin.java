@@ -24,11 +24,8 @@ import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.MembershipEntry;
-import org.exoplatform.social.core.space.SpacesAdministrationService;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of GroupVisibilityPlugin for space creation which allows to
@@ -46,13 +43,8 @@ public class SpaceCreationInvitationGroupVisibilityPlugin extends GroupVisibilit
 
   private UserACL                     userACL;
 
-  private SpacesAdministrationService spacesAdministrationService;
-
-  private List<String>                spacesAdministratorsGroups;
-
-  public SpaceCreationInvitationGroupVisibilityPlugin(UserACL userACL, SpacesAdministrationService spacesAdministrationService) {
+  public SpaceCreationInvitationGroupVisibilityPlugin(UserACL userACL) {
     this.userACL = userACL;
-    this.spacesAdministrationService = spacesAdministrationService;
   }
 
   @Override
@@ -65,17 +57,10 @@ public class SpaceCreationInvitationGroupVisibilityPlugin extends GroupVisibilit
     }
 
     Collection<MembershipEntry> userMemberships = userIdentity.getMemberships();
-    if (spacesAdministratorsGroups == null) {
-      spacesAdministratorsGroups = spacesAdministrationService.getSpacesAdministratorsMemberships()
-                                                              .stream()
-                                                              .map(membershipEntry -> membershipEntry.getGroup())
-                                                              .collect(Collectors.toList());
-    }
     return userMemberships.stream()
                           .anyMatch(userMembership -> ((group.getId().startsWith("/spaces/")
                               || group.getId().equals("/spaces"))
-                              && (spacesAdministratorsGroups.contains(userMembership.getGroup())
-                                  || userMembership.getGroup().equals(group.getId())
+                              && (userMembership.getGroup().equals(group.getId())
                                   || userMembership.getGroup().startsWith(group.getId() + "/")))
                               || ((userMembership.getGroup().equals(group.getId())
                                   || userMembership.getGroup().startsWith(group.getId() + "/"))

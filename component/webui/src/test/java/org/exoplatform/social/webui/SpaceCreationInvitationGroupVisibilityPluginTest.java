@@ -6,7 +6,6 @@ import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.impl.GroupImpl;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.MembershipEntry;
-import org.exoplatform.social.core.space.SpacesAdministrationService;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -21,10 +20,7 @@ public class SpaceCreationInvitationGroupVisibilityPluginTest {
     // Given
     UserACL userACL = mock(UserACL.class);
     when(userACL.getSuperUser()).thenReturn("john");
-    SpacesAdministrationService spacesAdministrationService = mock(SpacesAdministrationService.class);
-    when(spacesAdministrationService.getSpacesAdministratorsMemberships()).thenReturn(Arrays.asList(new MembershipEntry("/platform/spacesadmins",
-                                                                                                                        "*")));
-    GroupVisibilityPlugin plugin = new SpaceCreationInvitationGroupVisibilityPlugin(userACL, spacesAdministrationService);
+    GroupVisibilityPlugin plugin = new SpaceCreationInvitationGroupVisibilityPlugin(userACL);
 
     Identity userIdentity = new Identity("john", Arrays.asList(new MembershipEntry("/platform/users", "manager")));
     Group groupPlatform = new GroupImpl();
@@ -42,48 +38,12 @@ public class SpaceCreationInvitationGroupVisibilityPluginTest {
   }
 
   @Test
-  public void shouldHasPermissionOnSpacesGroupsWhenUserIsSpaceAdministrator() {
-    // Given
-    UserACL userACL = mock(UserACL.class);
-    when(userACL.getSuperUser()).thenReturn("root");
-    SpacesAdministrationService spacesAdministrationService = mock(SpacesAdministrationService.class);
-    when(spacesAdministrationService.getSpacesAdministratorsMemberships()).thenReturn(Arrays.asList(new MembershipEntry("/platform/spacesadmins",
-                                                                                                                        "*")));
-    GroupVisibilityPlugin plugin = new SpaceCreationInvitationGroupVisibilityPlugin(userACL, spacesAdministrationService);
-
-    Identity userIdentity = new Identity("john", Arrays.asList(new MembershipEntry("/platform/spacesadmins", "manager")));
-    Group groupSpaces = new GroupImpl();
-    groupSpaces.setId("/spaces");
-    Group groupSpacesMarketing = new GroupImpl();
-    groupSpacesMarketing.setId("/spaces/marketing");
-    Group groupSpacesSales = new GroupImpl();
-    groupSpacesSales.setId("/spaces/sales");
-    Group groupSpacesEngineering = new GroupImpl();
-    groupSpacesEngineering.setId("/spaces/engineering");
-
-    // When
-    boolean hasPermissionOnSpaces = plugin.hasPermission(userIdentity, groupSpaces);
-    boolean hasPermissionOnSpacesMarketing = plugin.hasPermission(userIdentity, groupSpacesMarketing);
-    boolean hasPermissionOnSpacesSales = plugin.hasPermission(userIdentity, groupSpacesSales);
-    boolean hasPermissionOnSpacesEngineering = plugin.hasPermission(userIdentity, groupSpacesEngineering);
-
-    // Then
-    assertTrue(hasPermissionOnSpaces);
-    assertTrue(hasPermissionOnSpacesMarketing);
-    assertTrue(hasPermissionOnSpacesSales);
-    assertTrue(hasPermissionOnSpacesEngineering);
-  }
-
-  @Test
   public void shouldHasPermissionWhenUserIsInGivenGroup() {
     // Given
     UserACL userACL = mock(UserACL.class);
     when(userACL.getSuperUser()).thenReturn("root");
     when(userACL.getAdminGroups()).thenReturn("/platform/administrators");
-    SpacesAdministrationService spacesAdministrationService = mock(SpacesAdministrationService.class);
-    when(spacesAdministrationService.getSpacesAdministratorsMemberships()).thenReturn(Arrays.asList(new MembershipEntry("/platform/spacesadmins",
-                                                                                                                        "*")));
-    GroupVisibilityPlugin plugin = new SpaceCreationInvitationGroupVisibilityPlugin(userACL, spacesAdministrationService);
+    GroupVisibilityPlugin plugin = new SpaceCreationInvitationGroupVisibilityPlugin(userACL);
 
     Identity userIdentity = new Identity("john",
                                          Arrays.asList(new MembershipEntry("/platform/developers", "manager"),
