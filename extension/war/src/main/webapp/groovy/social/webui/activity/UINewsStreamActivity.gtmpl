@@ -204,6 +204,9 @@
    }
   def viewerId = Utils.getViewerIdentity().getId();
 
+    Map<String, String> templateParams = activity.getTemplateParams();
+    def activitySummary = templateParams.get("summary");
+
   def activityBody = activity.body;
   if(activityBody.length() > 300) {
     activityBody = activityBody.substring(0, 300) + '...';
@@ -315,7 +318,17 @@
                         <a href="$activityLink" id="titleId${activity.id}">$activity.title</a>
                     </div>
                     <div class="newsBody">
-                        $activityBody
+                         <%
+                           if (activitySummary){
+                         %>
+                            $activitySummary
+                         <%
+                          } else {
+                          %>
+                             $activityBody
+                          <%
+                             }
+                          %>
                         <% if(activityBody.length() > 300) { %>
                             <span class="readMore"><a href="$activityLink" id="seeMoreId${activity.id}">${labelReadMore}</a></span>
                         <% } %>
