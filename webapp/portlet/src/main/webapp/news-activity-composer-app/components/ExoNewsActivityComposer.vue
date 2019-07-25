@@ -3,50 +3,58 @@
     <p v-show="extendedForm" class="createNews">{{ $t("activity.composer.news.createNews") }}</p>
     <form id="newsForm" :class="newsFormExtendedClass" class="newsForm" @submit.prevent="postNews">
 
-      <div class="newsFormLabelsInputs">
-        <div class="newsFormColumn newsFormLabels">
-          <label class="newsFormLabel newsFormTitleLabel" for="newsTitle">{{ $t("activity.composer.news.title") }}
-            * : </label>
-          <label v-show="extendedForm" class="newsFormLabel newsFormSummaryLabel" for="newsSummary"> {{
-          $t("activity.composer.news.summary") }} : </label>
-          <label class="newsFormLabel newsFormContentLabel" for="newsContent">{{ $t("activity.composer.news.content") }}
-            * : </label>
-        </div>
+      <div class="newsFormWrapper">
+        <div class="newsFormInputAttachement">
+          <div class="newsFormInput">
+            <div class="formInputGroup">
+              <label class="newsFormLabel newsFormTitleLabel" for="newsTitle">{{ $t("activity.composer.news.title") }}
+                * : </label>
+              <input id="newsTitle" v-model="newsActivity.title" :maxlength="max" :placeholder="$t('activity.composer.news.placeholderTitleInput')" class="newsFormInput" type="text">
+            </div>
 
-        <div class="newsFormColumn newsFormInputs">
-          <div class="newsInputsRows">
-            <input id="newsTitle" v-model="newsActivity.title" :maxlength="titleMaxLength"
-                   :placeholder="$t('activity.composer.news.placeholderTitleInput')" class="newsFormInput" type="text">
-            <textarea v-show="extendedForm" id="newsSummary" v-model="newsActivity.summary" :maxlength="summaryMaxLength"
-                      :placeholder="$t('activity.composer.news.placeholderSummaryInput')"
-                      class="newsFormInput" type="text"/>
-            <div v-show="extendedForm" class="control-group attachments">
+            <div v-show="extendedForm" class="formInputGroup"><label class="newsFormLabel newsFormSummaryLabel" for="newsSummary"> {{ $t("activity.composer.news.summary") }} : </label>
+              <textarea id="newsSummary" v-model="newsActivity.summary" :maxlength="max" :placeholder="$t('activity.composer.news.placeholderSummaryInput')" class="newsFormInput" type="text"/>
+            </div>
+          </div>
+
+          <div v-show="extendedForm" class="newsFormAttachement">
+            <div class="control-group attachments">
               <div class="controls">
                 <filedrop v-model="newsActivity.illustration"/>
               </div>
             </div>
           </div>
-          <div v-show="extendedForm" id="UINewsSummaryDescription" class="UINewsSummaryDescription">
-            <i class="uiIconInformation"></i>
-            {{ $t("activity.composer.news.summaryDescription") }}
-          </div>
+        </div>
+        <p v-show="extendedForm" id="UINewsSummaryDescription" class="UINewsSummaryDescription">
+          <i class="uiIconInformation"></i>
+          {{ $t("activity.composer.news.summaryDescription") }}
+        </p>
+        <div class="formInputGroup formNewsContent">
+          <label class="newsFormLabel newsFormContentLabel" for="newsContent">{{ $t("activity.composer.news.content") }}
+            * : </label>
           <textarea id="newsContent" v-model="newsActivity.content"
                     :placeholder="$t('activity.composer.news.placeholderContentInput')" type="text"
                     class="newsFormInput" name="newsContent"></textarea>
+        </div>
 
+
+        <div class="newsFormColumn newsFormInputs">
           <div class="newsFormButtons">
-            <span class="uiCheckbox">
-              <input id="pinArticle" v-model="pinArticle" type="checkbox" class="checkbox ">
-              <span>{{ $t("activity.composer.news.pinArticle") }}</span>
-            </span>
-            <button id="newsPost" :disabled="postDisabled" class="btn btn-primary"> {{ $t("activity.composer.news.post")
-            }}
-            </button>
-            <a id="newsPlus" :data-original-title="extendFormButtonTooltip" class="btn btn-primary"
-               rel="tooltip" data-placement="bottom"
-               @click="extendedForm = !extendedForm;">
-              <i :class="extendFormButtonClass"></i>
-            </a>
+            <div class="pinArticleContent">
+              <span class="uiCheckbox">
+                <input id="pinArticle" v-model="pinArticle" type="checkbox" class="checkbox ">
+                <span class="pinArticleLabel">{{ $t("activity.composer.news.pinArticle") }}</span>
+              </span>
+            </div>
+            <div class="newsFormActions">
+              <button id="newsPost" :disabled="postDisabled" class="btn btn-primary"> {{ $t("activity.composer.news.post") }}
+              </button>
+              <a id="newsPlus" :data-original-title="$t('activity.composer.news.moreOptions')" class="btn btn-primary"
+                 rel="tooltip" data-placement="bottom"
+                 @click="extendedForm = !extendedForm;">
+                <i :class="extendFormButtonClass"></i>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -73,11 +81,9 @@ export default {
       },
       pinArticle: false,
       SMARTPHONE_LANDSCAPE_WIDTH: 768,
-      titleMaxLength: 150,
-      summaryMaxLength: 1000,
+      TITLE_MAX_LENGTH: 150,
       extendedForm: false,
       extendFormButtonClass: 'uiIconSimplePlus',
-      extendFormButtonTooltip: this.$t('activity.composer.news.moreOptions'),
       newsFormExtendedClass: '',
       newsFormContentHeight: '',
     };
@@ -90,7 +96,6 @@ export default {
   watch: {
     extendedForm: function() {
       this.extendFormButtonClass = this.extendedForm ? 'uiIconMinimize' : 'uiIconSimplePlus';
-      this.extendFormButtonTooltip = this.extendedForm ? this.$t('activity.composer.news.lessOptions') : this.$t('activity.composer.news.moreOptions');
       document.getElementById('UISpaceMenu').style.display = this.extendedForm ? 'none' : '';
       document.getElementById('ActivityComposerExt').style.display = this.extendedForm ? 'none' : '';
       document.getElementById('UISpaceActivitiesDisplay').style.display = this.extendedForm ? 'none' : '';

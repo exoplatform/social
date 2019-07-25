@@ -6,10 +6,6 @@
       </label>
       <input id="uploadedFile" :value="selectedFile" type="file" class="attachFile"/>
 
-      <div v-show="error" class="uploadError alert alert-error v-content">
-        {{ error }}
-      </div>
-
       <div v-if="files.length > 0" class="abortFile pull-right">
         <a :title="$t('activity.composer.news.btn.cancel')" class="removeButton" href="#" rel="tooltip"
            data-placement="top" @click="abortUpload(files[0].name)">
@@ -18,6 +14,11 @@
       </div>
       <img v-if="files.length > 0" :src="files[0].src">
     </div>
+
+    <div v-show="error" class="uploadError alert alert-error v-content">
+      {{ error }}
+    </div>
+
   </div>
 </template>
 
