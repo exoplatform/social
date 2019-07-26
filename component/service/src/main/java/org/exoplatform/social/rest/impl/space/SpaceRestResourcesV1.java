@@ -589,7 +589,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
                                       @ApiParam(value = "Space id", required = true) @PathParam("id") String id,
                                       @ApiParam(value = "Asking for a full representation of a specific subresource, ex: comments or likes", required = false) @QueryParam("expand") String expand,
                                       @ApiParam(value = "Activity object to be created", required = true) ActivityRestIn model) throws Exception {
-    if (model == null || model.getTitle() == null || model.getTitle().length() == 0) {
+    if (model == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //

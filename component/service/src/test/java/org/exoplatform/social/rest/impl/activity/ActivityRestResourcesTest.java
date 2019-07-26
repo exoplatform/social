@@ -204,57 +204,6 @@ public class ActivityRestResourcesTest extends AbstractResourceTest {
     }
   }
 
-  public void testCreateNewsActivity() throws Exception {
-    // Given
-    startSessionAs("root");
-
-    Space space = getSpaceInstance("test", "root");
-    testSpaceIdentity = new Identity(SpaceIdentityProvider.NAME, "test");
-    identityStorage.saveIdentity(testSpaceIdentity);
-    try {
-      ExoSocialActivity newsActivity = new ExoSocialActivityImpl();
-      Map<String, String> newsTemplateParams = new HashMap<>();
-      newsActivity.setType("news");
-      newsActivity.setTitle("Activity news Title");
-      newsActivity.setBody("Activity news Content");
-
-      newsTemplateParams.put("summary", "Activity news summary");
-      newsTemplateParams.put("uploadId", String.valueOf(123455655));
-      newsActivity.setTemplateParams(newsTemplateParams);
-
-      activityManager.saveActivityNoReturn(testSpaceIdentity, newsActivity);
-      ExoSocialActivity createdNews = activityManager.getActivity(newsActivity.getId());
-
-      assertNotNull(testSpaceIdentity.getId());
-
-      // When
-      ContainerResponse response = service("GET",
-                                           "/" + VersionResources.VERSION_ONE + "/social/activities/" + newsActivity.getId(),
-                                           "",
-                                           null,
-                                           null);
-
-      // Then
-      assertNotNull(response);
-      assertEquals(200, response.getStatus());
-      ActivityEntity activityEntity = getBaseEntity(response.getEntity(), ActivityEntity.class);
-      assertNotNull(activityEntity);
-      assertNotNull(activityEntity.getBody());
-      assertEquals("Activity news Title", activityEntity.getTitle());
-      assertEquals("Activity news Content", activityEntity.getBody());
-
-      assertEquals(newsTemplateParams.get("summary"), createdNews.getTemplateParams().get("summary"));
-      assertEquals(newsTemplateParams.get("uploadId"), createdNews.getTemplateParams().get("uploadId"));
-
-      assertNotNull(activityEntity.getOwner());
-      assertTrue(activityEntity.getOwner().contains("/social/spaces/" + space.getId()));
-    } finally {
-      if (space != null) {
-        spaceService.deleteSpace(space);
-      }
-    }
-  }
-
   public void testGetActivitiesOfCurrentUser() throws Exception {
     startSessionAs("root");
 

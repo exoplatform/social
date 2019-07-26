@@ -1,9 +1,0 @@
-<%
-import org.exoplatform.social.webui.Utils;
-def isFullViewMode = (Utils.getActivityID() != null);
-if(isFullViewMode) {
-  _ctx.include("war:/groovy/social/webui/activity/UINewsFullActivity.gtmpl");
-} else {
-  _ctx.include("war:/groovy/social/webui/activity/UINewsStreamActivity.gtmpl");
-} 
-%>

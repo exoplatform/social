@@ -271,47 +271,5 @@
 			</depends>
 		</module>
 	</portlet>
-  <module>
-    <name>NewsActivityComposer</name>
-    <script>
-      <minify>false</minify>
-      <path>/js/newsActivityComposer.bundle.js</path>
-    </script>
-    <depends>
-      <module>vue</module>
-    </depends>
-    <depends>
-      <module>eXoVueI18n</module>
-    </depends>
-    <depends>
-      <module>jquery</module>
-      <as>$</as>
-    </depends>
-    <depends>
-      <module>filedrop</module>
-    </depends>
-    <depends>
-      <module>extensionRegistry</module>
-    </depends>
-  </module>
-  <module>
-    <name>NewsShareActivity</name>
-    <script>
-      <minify>false</minify>
-      <path>/js/newsShareActivity.bundle.js</path>
-    </script>
-    <depends>
-      <module>vue</module>
-    </depends>
-    <depends>
-      <module>eXoVueI18n</module>
-    </depends>
-    <depends>
-      <module>jquery</module>
-      <as>$</as>
-    </depends>
-    <depends>
-      <module>extensionRegistry</module>
-    </depends>
-  </module>
+
 </gatein-resources>
