@@ -124,10 +124,8 @@
     <div id="ActivityContextBox${activity.id}">
       <div class="newsDetails-description">
         <div class="newsDetails-header">
-            <div class="news-illustration">
-                <img src="$illustrationURL" class="newsImage illustrationPicture" alt="News"/>
-            </div>
                 <div class="newsDetails">
+                <img src="$illustrationURL" class="newsImage illustrationPicture" alt="News"/>
                  <div class="news-top-information">
                     <div class="news-header-content">
                         <div class="newsTitle">
@@ -135,7 +133,7 @@
                         </div>
                         <div class="news-informtions">
                              <span class="news-informationsLabel newsAuthor">${labelWrittenBy} :</span>
-                             <span class="news-informationsValue newsOwnerName"> $ownerName</span>
+                             <a href="$ownerUri" class="news-informationsValue newsOwnerName"> $ownerName</a>
                              <span class="newsInformationSeparator">---</span>
                              <span class="news-informationsLabel newsDate"> ${labelPublicationDate}</span>
                              <span class="news-informationsValue newsPostedDate"> $postedActivityDate</span>
