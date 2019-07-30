@@ -82,6 +82,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
 
     TypedQuery<Tuple> query = getEntityManager().createNamedQuery("SocActivity.getActivityIdsByOwner", Tuple.class);
     query.setParameter("owners", Collections.singleton(ownerId));
+    query.setParameter("streamTypes", Arrays.asList(StreamType.POSTER,StreamType.SPACE));
     if (limit > 0) {
       query.setFirstResult(offset > 0 ? (int)offset : 0);
       query.setMaxResults((int)limit);
@@ -147,9 +148,10 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     TypedQuery<Tuple> query = getEntityManager().createNamedQuery(queryName, Tuple.class);
     if (!connections.isEmpty()) {
       query.setParameter("connections", connections);
-      query.setParameter("connStreamType", StreamType.POSTER);
+      query.setParameter("streamType", StreamType.POSTER);
     }
     query.setParameter("owners", owners);
+    query.setParameter("streamTypes", Arrays.asList(StreamType.POSTER,StreamType.SPACE));
 
     if (limit > 0) {
       query.setFirstResult(offset > 0 ? offset : 0);
@@ -370,6 +372,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     long ownerId = Long.parseLong(spaceIdentity.getId());
     TypedQuery<Tuple> query = getEntityManager().createNamedQuery("SocActivity.getActivityIdsByOwner", Tuple.class);
     query.setParameter("owners", Collections.singleton(ownerId));
+    query.setParameter("streamTypes", Collections.singleton(StreamType.SPACE));
     if (limit > 0) {
       query.setFirstResult(offset > 0 ? (int)offset : 0);
       query.setMaxResults((int)limit);
@@ -442,6 +445,7 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
       TypedQuery<Tuple> query = getEntityManager().createNamedQuery("SocActivity.getActivityIdsByOwner", Tuple.class);
 
       query.setParameter("owners", ids);
+      query.setParameter("streamTypes", Collections.singleton(StreamType.SPACE));
       if (limit > 0) {
         query.setFirstResult(offset > 0 ? (int)offset : 0);
         query.setMaxResults((int)limit);
