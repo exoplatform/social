@@ -6,14 +6,16 @@
       <div class="newsFormWrapper">
         <div class="newsFormInputAttachement">
           <div class="newsFormInput">
+
             <div class="formInputGroup">
               <label class="newsFormLabel newsFormTitleLabel" for="newsTitle">{{ $t("activity.composer.news.title") }}
                 * : </label>
-              <input id="newsTitle" v-model="newsActivity.title" :maxlength="max" :placeholder="$t('activity.composer.news.placeholderTitleInput')" class="newsFormInput" type="text">
+              <input id="newsTitle" v-model="newsActivity.title" :maxlength="titleMaxLength" :placeholder="$t('activity.composer.news.placeholderTitleInput')" class="newsFormInput" type="text">
             </div>
 
-            <div v-show="extendedForm" class="formInputGroup"><label class="newsFormLabel newsFormSummaryLabel" for="newsSummary"> {{ $t("activity.composer.news.summary") }} : </label>
-              <textarea id="newsSummary" v-model="newsActivity.summary" :maxlength="max" :placeholder="$t('activity.composer.news.placeholderSummaryInput')" class="newsFormInput" type="text"/>
+            <div v-show="extendedForm" class="formInputGroup">
+              <label class="newsFormLabel newsFormSummaryLabel" for="newsSummary"> {{ $t("activity.composer.news.summary") }} : </label>
+              <textarea id="newsSummary" v-model="newsActivity.summary" :maxlength="summaryMaxLength" :placeholder="$t('activity.composer.news.placeholderSummaryInput')" class="newsFormInput" type="text"/>
             </div>
           </div>
 
@@ -47,13 +49,13 @@
               </span>
             </div>
             <div class="newsFormActions">
-              <button id="newsPost" :disabled="postDisabled" class="btn btn-primary"> {{ $t("activity.composer.news.post") }}
-              </button>
-              <a id="newsPlus" :data-original-title="$t('activity.composer.news.moreOptions')" class="btn btn-primary"
+              <a id="newsPlus" :data-original-title="extendFormButtonTooltip" class="btn btn-primary"
                  rel="tooltip" data-placement="bottom"
                  @click="extendedForm = !extendedForm;">
                 <i :class="extendFormButtonClass"></i>
               </a>
+              <button id="newsPost" :disabled="postDisabled" class="btn btn-primary"> {{ $t("activity.composer.news.post") }}
+              </button>
             </div>
           </div>
         </div>
@@ -81,9 +83,11 @@ export default {
       },
       pinArticle: false,
       SMARTPHONE_LANDSCAPE_WIDTH: 768,
-      TITLE_MAX_LENGTH: 150,
+      titleMaxLength: 150,
+      summaryMaxLength: 1000,
       extendedForm: false,
       extendFormButtonClass: 'uiIconSimplePlus',
+      extendFormButtonTooltip: this.$t('activity.composer.news.moreOptions'),
       newsFormExtendedClass: '',
       newsFormContentHeight: '',
     };
@@ -96,6 +100,7 @@ export default {
   watch: {
     extendedForm: function() {
       this.extendFormButtonClass = this.extendedForm ? 'uiIconMinimize' : 'uiIconSimplePlus';
+      this.extendFormButtonTooltip = this.extendedForm ? this.$t('activity.composer.news.lessOptions') : this.$t('activity.composer.news.moreOptions');
       document.getElementById('UISpaceMenu').style.display = this.extendedForm ? 'none' : '';
       document.getElementById('ActivityComposerExt').style.display = this.extendedForm ? 'none' : '';
       document.getElementById('UISpaceActivitiesDisplay').style.display = this.extendedForm ? 'none' : '';
