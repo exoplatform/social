@@ -204,8 +204,11 @@
    }
   def viewerId = Utils.getViewerIdentity().getId();
 
-    Map<String, String> templateParams = activity.getTemplateParams();
-    def activitySummary = templateParams.get("summary");
+  Map<String, String> templateParams = activity.getTemplateParams();
+  def activitySummary = templateParams.get("summary");
+  if(activitySummary.length() > 300) {
+    activitySummary = activitySummary.substring(0, 300) + '...';
+  }
 
   def activityBody = activity.body;
   if(activityBody.length() > 300) {
