@@ -186,6 +186,8 @@ export default {
         // reset form
         this.newsActivity.title = '';
         this.newsActivity.content = '';
+        this.newsActivity.summary = '';
+        this.newsActivity.illustration = [];
         CKEDITOR.instances['newsContent'].setData('');
         this.pinArticle = false;
         this.extendedForm = false;

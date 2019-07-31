@@ -332,7 +332,7 @@
                           <%
                              }
                           %>
-                        <% if(activityBody.length() > 300) { %>
+                        <% if(activityBody.length() > 300 || activitySummary) { %>
                             <span class="readMore"><a href="$activityLink" id="seeMoreId${activity.id}">${labelReadMore}</a></span>
                         <% } %>
                     </div>
