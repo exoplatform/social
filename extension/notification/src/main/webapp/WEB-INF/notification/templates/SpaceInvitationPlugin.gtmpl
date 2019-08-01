@@ -23,11 +23,11 @@
                                         <tr>
                                             <!--[if mso]>
                                                 <td valign="top" width="90">
-                                                    <img width="70" height="70" border="1" style="margin-top: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;" src="$SPACE_AVATAR" alt="<%=_ctx.escapeHTML(USER)%>" />
+                                                    <img width="70" height="70" border="1" style="margin-top: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;" src="$SPACE_AVATAR" alt="<%=_ctx.escapeHTML(SPACE)%>" />
                                                 </td>
                                             <![endif]-->
                                             <td valign="top" width="90px" style="mso-hide:all;">
-                                                <img width="70px" height="70px" style="margin-top: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;" src="$SPACE_AVATAR" alt="<%=_ctx.escapeHTML(USER)%>" />
+                                                <img width="70px" height="70px" style="margin-top: 5px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;" src="$SPACE_AVATAR" alt="<%=_ctx.escapeHTML(SPACE)%>" />
                                             </td>
                                             <td  valign="top">
                                                 <p style="margin:0 0 12px; color: #333333; line-height: 20px; font-size:13px; font-family: HelveticaNeue,Helvetica,Arial,sans-serif;">
