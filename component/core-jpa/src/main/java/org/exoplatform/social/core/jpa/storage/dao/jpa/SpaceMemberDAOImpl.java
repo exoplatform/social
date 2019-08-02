@@ -25,6 +25,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -45,49 +46,68 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
   }
 
   @Override
-  public List<String> sortSpaceMembers(List<String> usernames, String sortField) {
-    if (usernames == null || usernames.isEmpty()) {
+  public List<String> sortSpaceMembers(List<String> userNames,
+                                       String firstCharacterFieldName,
+                                       char firstCharacter,
+                                       String sortField,
+                                       String sortDirection) {
+    if (userNames == null || userNames.isEmpty()) {
       return Collections.emptyList();
     }
 
-    // Oracle Dialect in Hibernate 4 is not registering NVARCHAR correctly, see HHH-10495
-    StringBuilder queryStringBuilder =
-                                     isOrcaleDialect() ? new StringBuilder("SELECT to_char(identity_1.remote_id) , to_char(identity_prop.value) \n")
-                                     :isMSSQLDialect() ? new StringBuilder("SELECT try_convert(varchar(200), identity_1.remote_id) as remote_id , try_convert(varchar(200), identity_prop.value) as identity_prop_value \n")
-                                                       : new StringBuilder("SELECT (identity_1.remote_id) , (identity_prop.value) \n");
+    // Oracle and MSSQL support only 1/0 for boolean, Postgresql supports only
+    // TRUE/FALSE, MySQL supports both
+    String dbBoolFalse = isOrcaleDialect() || isMSSQLDialect() ? "0" : "FALSE";
+    String dbBoolTrue = isOrcaleDialect() || isMSSQLDialect() ? "1" : "TRUE";
+    // Oracle Dialect in Hibernate 4 is not registering NVARCHAR correctly, see
+    // HHH-10495
+    StringBuilder queryStringBuilder = null;
+    if (isOrcaleDialect()) {
+      queryStringBuilder = new StringBuilder("SELECT to_char(identity_1.remote_id), identity_1.identity_id \n");
+    } else if (isMSSQLDialect()) {
+      queryStringBuilder =
+                         new StringBuilder("SELECT try_convert(varchar(200), identity_1.remote_id) as remote_id , identity_1.identity_id, try_convert(varchar(200) \n");
+    } else {
+      queryStringBuilder = new StringBuilder("SELECT identity_1.remote_id, identity_1.identity_id \n");
+    }
     queryStringBuilder.append(" FROM SOC_IDENTITIES identity_1 \n");
-    queryStringBuilder.append(" LEFT JOIN SOC_IDENTITY_PROPERTIES identity_prop \n");
-    queryStringBuilder.append("   ON identity_1.identity_id = identity_prop.identity_id \n");
-    queryStringBuilder.append("       AND identity_prop.name = '").append(sortField).append("' \n");
+    if (StringUtils.isNotBlank(firstCharacterFieldName) && firstCharacter > 0) {
+      queryStringBuilder.append(" INNER JOIN SOC_IDENTITY_PROPERTIES identity_prop_first_char \n");
+      queryStringBuilder.append("   ON identity_1.identity_id = identity_prop_first_char.identity_id \n");
+      queryStringBuilder.append("       AND identity_prop_first_char.name = '").append(firstCharacterFieldName).append("' \n");
+      queryStringBuilder.append("       AND (lower(identity_prop_first_char.value) like '" + Character.toLowerCase(firstCharacter)
+          + "%')\n");
+    }
+    if (StringUtils.isNotBlank(sortField) && StringUtils.isNotBlank(sortDirection)) {
+      queryStringBuilder.append(" LEFT JOIN SOC_IDENTITY_PROPERTIES identity_prop \n");
+      queryStringBuilder.append("   ON identity_1.identity_id = identity_prop.identity_id \n");
+      queryStringBuilder.append("       AND identity_prop.name = '").append(sortField).append("' \n");
+    }
     queryStringBuilder.append(" WHERE identity_1.remote_id IN (");
-    for (int i = 0; i < usernames.size(); i++) {
+    for (int i = 0; i < userNames.size(); i++) {
       if (i > 0) {
         queryStringBuilder.append(",");
       }
-      queryStringBuilder.append("'").append(usernames.get(i)).append("'");
+      queryStringBuilder.append("'").append(userNames.get(i)).append("'");
     }
     queryStringBuilder.append(")\n");
-    queryStringBuilder.append("       AND identity_1.provider_id = '").append(OrganizationIdentityProvider.NAME).append("' \n");
-    queryStringBuilder.append(" ORDER BY identity_prop.value ASC, identity_1.remote_id ASC");
+    queryStringBuilder.append(" AND identity_1.deleted = ").append(dbBoolFalse).append(" \n");
+    queryStringBuilder.append(" AND identity_1.enabled = ").append(dbBoolTrue).append(" \n");
+
+    if (StringUtils.isNotBlank(sortField) && StringUtils.isNotBlank(sortDirection)) {
+      queryStringBuilder.append(" ORDER BY lower(identity_prop.value) " + sortDirection);
+    }
 
     Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
     List<?> resultList = query.getResultList();
+
     List<String> result = new ArrayList<>();
-
-    // Make sure that the list is modifiable
-    List<String> addedUsernames = new ArrayList<>(usernames);
-
     for (Object object : resultList) {
       Object[] resultEntry = (Object[]) object;
       if (resultEntry[0] == null) {
         continue;
       }
       String username = resultEntry[0].toString();
-      result.add(username);
-      addedUsernames.remove(username);
-    }
-    // Add usernames that don't have identities in SOC_IDENTITIES
-    for (String username : addedUsernames) {
       result.add(username);
     }
     return result;

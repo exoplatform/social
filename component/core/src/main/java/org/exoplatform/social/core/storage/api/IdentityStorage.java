@@ -408,9 +408,16 @@ public interface IdentityStorage {
    * Sorts a list of user identities using a field
    * 
    * @param identityRemoteIds
+   * @param firstCharacterFieldName
+   * @param firstCharacter
    * @param sortField
+   * @param sortDirection
    * @return
    */
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);
+  public List<String> sortIdentities(List<String> identityRemoteIds,
+                                     String firstCharacterFieldName,
+                                     char firstCharacter,
+                                     String sortField,
+                                     String sortDirection);
 
 }
