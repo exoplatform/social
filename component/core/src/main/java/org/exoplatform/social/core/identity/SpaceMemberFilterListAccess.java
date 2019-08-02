@@ -18,9 +18,12 @@ package org.exoplatform.social.core.identity;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.common.ListAccessValidator;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -91,7 +94,14 @@ public class SpaceMemberFilterListAccess implements ListAccess<Identity> {
    */
   public Identity[] load(int offset, int limit) throws Exception, IllegalArgumentException {
     ListAccessValidator.validateIndex(offset, limit, getSize());
-    List<Identity> identities = null;
+    IdentityManager manager = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
+    if (profileFilter.isSortingEmpty()) {
+      profileFilter.setSorting(manager.getDefaultSorting());
+    }
+    if (StringUtils.isBlank(profileFilter.getFirstCharFieldName())) {
+      profileFilter.setFirstCharFieldName(manager.getFirstCharacterFiltering());
+    }
+    List<Identity> identities;
     identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, type, offset, limit);    
     return identities.toArray(new Identity[identities.size()]);
   }

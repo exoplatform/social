@@ -575,10 +575,13 @@ public interface IdentityManager {
    * Sorts a list of user identities using a field
    * 
    * @param identityRemoteIds
+   * @param firstCharacterFieldName
+   * @param firstCharacter
    * @param sortField
-   * @return
+   * @param sortDirection
+   * @return {@link List} of userNames sorted by sortField
    */
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);
+  public List<String> sortIdentities(List<String> identityRemoteIds, String firstCharacterFieldName, char firstCharacter, String sortField, String sortDirection);
 
   /**
    * @return default sorting to apply when listing

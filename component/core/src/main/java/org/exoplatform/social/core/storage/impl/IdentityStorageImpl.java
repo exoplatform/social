@@ -1652,7 +1652,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   }
 
   @Override
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+  public List<String> sortIdentities(List<String> identityRemoteIds, String firstCharacterFieldName, char firstCharacter, String sortField, String sortDirection) {
     throw new UnsupportedOperationException("JCR implementation is no more used");
   }
 

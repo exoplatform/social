@@ -229,7 +229,10 @@ public class MigrationIdentityStorage implements IdentityStorage {
   }
 
   @Override
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
-    return jpaStorage.sortIdentities(identityRemoteIds, sortField);
+  public List<String> sortIdentities(List<String> identityRemoteIds, String firstCharacterFieldName,
+                                     char firstCharacter,
+                                     String sortField,
+                                     String sortDirection) {
+    return jpaStorage.sortIdentities(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection);
   }
 }

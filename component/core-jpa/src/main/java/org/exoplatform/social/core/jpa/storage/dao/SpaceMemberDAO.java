@@ -42,15 +42,21 @@ public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
      */
     List<String> getSpaceMembers(Long spaceId, Status status, int offset, int limit);
 
-    /**
-     * Sort user identity remote ids
-     * 
-     * @param usernames
-     * @param sortField
-     *
-     * @return {@link List} of usernames sorted by sortField
-     */
-    List<String> sortSpaceMembers(List<String> usernames, String sortField);
+  /**
+   * Sort user identity remote ids
+   * 
+   * @param userNames
+   * @param firstCharacterFieldName
+   * @param firstCharacter
+   * @param sortField
+   * @param sortDirection
+   * @return {@link List} of userNames sorted by sortField
+   */
+  List<String> sortSpaceMembers(List<String> userNames,
+                                String firstCharacterFieldName,
+                                char firstCharacter,
+                                String sortField,
+                                String sortDirection);
 
     /**
      * Count space members switch status

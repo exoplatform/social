@@ -29,6 +29,7 @@ import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.search.Sorting.OrderBy;
 import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -613,6 +614,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
   @MaxQueryNumber(2635)
   public void testGetSpaceMemberByProfileFilter() throws Exception {
     populateData();
+    populateSpaceData();
     populateUser("username4");
     populateUser("username1");
 
@@ -628,7 +630,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     space.setGroupId(SpaceUtils.createGroup(space.getPrettyName(), "username4"));
     space.setUrl(space.getPrettyName());
     String[] managers = new String[] {};
-    String[] members = new String[] {"username1", "username2", "username3"};
+    String[] members = new String[] {"username1", "username2", "username3", "abc", "acb", "bac", "bca", "cab", "cba"};
     String[] invitedUsers = new String[] {};
     String[] pendingUsers = new String[] {};
     space.setInvitedUsers(invitedUsers);
@@ -640,15 +642,60 @@ public class IdentityStorageTest extends AbstractCoreTest {
     tearDownSpaceList.add(space);
     
     ProfileFilter profileFilter = new ProfileFilter();
+    ProfileFilter firstProfileFilter = new ProfileFilter();
+
+    // Test on first character field choice
+    profileFilter.setFirstCharFieldName(Sorting.SortBy.FIRSTNAME.getFieldName());
+    profileFilter.setFirstCharacterOfName('C');
+    profileFilter.setSorting(new Sorting(SortBy.FULLNAME, Sorting.OrderBy.ASC));
+    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 9);
+    assertEquals(2, identities.size());
+    assertEquals("First member in list should be 'cab'", "cab", identities.get(0).getRemoteId());
+    assertEquals("Second member in list should be 'cba'", "cba", identities.get(1).getRemoteId());
+    // reset first character field name to default
+    profileFilter.setFirstCharFieldName(Sorting.SortBy.LASTNAME.getFieldName());
+
+    // Test on Sort field
+    profileFilter.setSorting(new Sorting(Sorting.SortBy.FULLNAME, Sorting.OrderBy.ASC));
+    profileFilter.setFirstCharacterOfName('A');
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 9);
+    assertEquals(2, identities.size());
+    assertEquals("First member in list should be 'bca'", "bca", identities.get(0).getRemoteId());
+    assertEquals("Second member in list should be 'cba'", "cba", identities.get(1).getRemoteId());
+
+    // Test on Sort direction
+    profileFilter.setSorting(new Sorting(Sorting.SortBy.FIRSTNAME, Sorting.OrderBy.DESC));
+    profileFilter.setFirstCharacterOfName('B');
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 9);
+    assertEquals(2, identities.size());
+    assertEquals("First member in list should be 'cab'", "cab", identities.get(0).getRemoteId());
+    assertEquals("Second member in list should be 'acb'", "acb", identities.get(1).getRemoteId());
+
+    // Test by combining Sort direction, field and first character
+    profileFilter.setFirstCharFieldName(Sorting.SortBy.FULLNAME.getFieldName());
+    profileFilter.setFirstCharacterOfName('A');
+    profileFilter.setSorting(new Sorting(Sorting.SortBy.LASTNAME, Sorting.OrderBy.DESC));
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 9);
+    assertEquals(2, identities.size());
+    assertEquals("First member in list should be 'abc'", "abc", identities.get(0).getRemoteId());
+    assertEquals("Second member in list should be 'acb'", "acb", identities.get(1).getRemoteId());
+
+    profileFilter.setFirstCharFieldName(Sorting.SortBy.FIRSTNAME.getFieldName());
+    profileFilter.setFirstCharacterOfName('B');
+    profileFilter.setSorting(new Sorting(Sorting.SortBy.LASTNAME, Sorting.OrderBy.ASC));
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 9);
+    assertEquals(2, identities.size());
+    assertEquals("First member in list should be 'bca'", "bca", identities.get(0).getRemoteId());
+    assertEquals("Second member in list should be 'bac'", "bac", identities.get(1).getRemoteId());
     
-    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, firstProfileFilter, Type.MEMBER, 0, 2);
     assertEquals(2, identities.size());
 
     Identity username1Identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "username1", true);
     tearDownIdentityList.add(username1Identity);
     tearDownIdentityList.add(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "username4", true));
-    profileFilter.setViewerIdentity(username1Identity);
-    assertEquals(2, identityStorage.countSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER));
+    firstProfileFilter.setViewerIdentity(username1Identity);
+    assertEquals(8, identityStorage.countSpaceMemberIdentitiesByProfileFilter(space, firstProfileFilter, Type.MEMBER));
 
     addUserToGroupWithMembership("username4", space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
     identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, new ProfileFilter(), Type.MANAGER, 0, 10);
@@ -919,6 +966,28 @@ public class IdentityStorageTest extends AbstractCoreTest {
       profile.setProperty("position", "developer");
       profile.setProperty("gender", "male");
       identity.setProfile(profile);
+      identityStorage.saveProfile(profile);
+    }
+  }
+
+  private void populateSpaceData() {
+    String providerId = "organization";
+    String[] spaceMembers = new String[] {"ABC", "ACB", "BAC", "BCA", "CAB", "CBA"};
+    for (String member: spaceMembers) {
+      String remoteId = member.toLowerCase();
+      Identity identity = new Identity(providerId, remoteId);
+      identityStorage.saveIdentity(identity);
+      StringBuilder sb = new StringBuilder(member).reverse();
+      String lastName = sb.toString();
+
+      Profile profile = new Profile(identity);
+      profile.setProperty(Profile.FIRST_NAME, member);
+      profile.setProperty(Profile.LAST_NAME, lastName);
+      profile.setProperty(Profile.FULL_NAME, member + " " + lastName);
+      profile.setProperty("position", "developer");
+      profile.setProperty("gender", "male");
+      identity.setProfile(profile);
+      tearDownIdentityList.add(identity);
       identityStorage.saveProfile(profile);
     }
   }
