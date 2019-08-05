@@ -66,10 +66,15 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
                     + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
                     + " ) "),
         @NamedQuery(name = "SocActivity.getActivityIdsByOwner",
-                query = "SELECT distinct item.activity.id, item.updatedDate FROM SocStreamItem item WHERE "
+                query = "SELECT item.activity.id, max(item.updatedDate) as updatedDate FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
-                    + " item.ownerId in (:owners) "
-                    + " ORDER BY item.updatedDate DESC"),
+                    + " item.ownerId = :owner "
+                    + " GROUP BY item.activity.id ORDER BY updatedDate DESC"),
+        @NamedQuery(name = "SocActivity.getSpacesActivityIds",
+                query = "SELECT distinct item.activity.id, item.updatedDate FROM SocStreamItem item WHERE "
+                        + " item.activity.hidden = false AND "
+                        + " item.ownerId in (:owners) "
+                        + " AND item.streamType = :streamType ORDER BY item.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getNumberOfActivitiesByPoster",
                 query = "SELECT count(distinct a.id) FROM SocActivity a WHERE "
                     + " a.posterId = :owner AND "
@@ -138,12 +143,12 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
                 query = "SELECT distinct item.activity.id as activityId, item.updatedDate as updatedDate FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
                     + " item.ownerId in (:owners) "
-                    + " ORDER BY item.updatedDate DESC"),
+                    + " AND item.streamType in (:streamTypes) ORDER BY item.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getActivityIdsFeed",
                 query = "SELECT distinct item.activity.id as activityId, item.updatedDate as updatedDate FROM SocStreamItem item WHERE "
                     + " item.activity.hidden = false AND "
-                    + " ( item.ownerId in (:owners) OR "
-                    + "   ( item.ownerId in (:connections) AND item.streamType = :connStreamType ) "
+                    + " ( (item.ownerId in (:owners) AND item.streamType in (:streamTypes)) OR "
+                    + "   (item.ownerId in (:connections) AND item.streamType = :streamType)"
                     + " ) ORDER BY item.updatedDate DESC"),
         @NamedQuery(name = "SocActivity.getActivityFeedNoConnections",
                 query = "SELECT distinct item.activity.id, item.updatedDate FROM SocStreamItem item WHERE "

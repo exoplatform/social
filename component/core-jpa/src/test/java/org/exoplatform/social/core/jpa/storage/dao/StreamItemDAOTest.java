@@ -123,12 +123,17 @@ public class StreamItemDAOTest extends BaseCoreTest {
     ExoSocialActivity activity = createActivity("post on my stream", demoIdentity.getId());
     activityStorage.saveActivity(demoIdentity, activity);
     tearDownActivityList.add(activity);
+
+    Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
     
     ExoSocialActivity comment = createActivity("comment on demo's activity", maryIdentity.getId());
     activityStorage.saveComment(activity, comment);
     
     List<String> ids = activityStorage.getActivityIdsFeed(maryIdentity, 0, 10);
     assertEquals(1, ids.size());
+
+    relationshipManager.delete(demoMaryConnection);
   }
   
   public void testGetFeedWithCommentOnOtherActivity() {
@@ -162,6 +167,9 @@ public class StreamItemDAOTest extends BaseCoreTest {
     ExoSocialActivity activity = createActivity("post on my stream", demoIdentity.getId());
     activityStorage.saveActivity(demoIdentity, activity);
     tearDownActivityList.add(activity);
+
+    Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
     
     ExoSocialActivity comment = createActivity("comment on demo's activity 1", maryIdentity.getId());
     activityStorage.saveComment(activity, comment);
@@ -171,6 +179,8 @@ public class StreamItemDAOTest extends BaseCoreTest {
     
     List<String> ids = activityStorage.getActivityIdsFeed(maryIdentity, 0, 10);
     assertEquals(1, ids.size());
+
+    relationshipManager.delete(demoMaryConnection);
   }
   
   public void testGetFeedWithConnections() throws Exception {
@@ -200,7 +210,7 @@ public class StreamItemDAOTest extends BaseCoreTest {
     ids = activityStorage.getActivityIdsOfConnections(maryIdentity, 0, 10);
     assertEquals(1, ids.size());
     
-    ids = activityStorage.getUserIdsActivities(maryIdentity, 0, 10);
+    ids = activityStorage.getUserIdsActivities(demoIdentity, 0, 10);
     assertEquals(1, ids.size());
     
     relationshipManager.delete(demoMaryConnection);
@@ -234,12 +244,17 @@ public class StreamItemDAOTest extends BaseCoreTest {
     ExoSocialActivity activity = createActivity("post on my stream @mary", demoIdentity.getId());
     activityStorage.saveActivity(demoIdentity, activity);
     tearDownActivityList.add(activity);
+
+    Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
     
     ExoSocialActivity comment = createActivity("comment on demo's activity", maryIdentity.getId());
     activityStorage.saveComment(activity, comment);
     
     List<String> ids = activityStorage.getActivityIdsFeed(maryIdentity, 0, 10);
     assertEquals(1, ids.size());
+
+    relationshipManager.delete(demoMaryConnection);
   }
   
   public void testPostActivityAndMention() {
@@ -289,7 +304,7 @@ public class StreamItemDAOTest extends BaseCoreTest {
     
     tearDownActivityList.add(activity);
   }
-  
+
   public void testPostOnSpaceAndMention() throws Exception {
     Space space = this.getSpaceInstance(spaceService, 0);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
@@ -302,7 +317,7 @@ public class StreamItemDAOTest extends BaseCoreTest {
     
     tearDownActivityList.add(activity);
   }
-  
+
   public void testDeleteActivity() {
     ExoSocialActivity activity = createActivity("post on stream and mary liker", demoIdentity.getId());
     activityStorage.saveActivity(demoIdentity, activity);
@@ -311,7 +326,239 @@ public class StreamItemDAOTest extends BaseCoreTest {
     List<StreamItemEntity> items = streamItemDAO.findStreamItemByActivityId(Long.valueOf(activity.getId()));
     assertEquals(0, items.size());
   }
-  
+
+  public void testAddPlusTenActivitiesWithComment() {
+    ExoSocialActivity activity = createActivity("Post on my stream", maryIdentity.getId());
+    activityStorage.saveActivity(maryIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    ExoSocialActivity socialActivity;
+    for (int i=1; i<=11; i++) {
+      socialActivity = createActivity("Post on my stream " + i, maryIdentity.getId());
+      activityStorage.saveActivity(maryIdentity, socialActivity);
+      tearDownActivityList.add(socialActivity);
+    }
+
+    // comment on first activity to make it appear at first position in activity stream
+    ExoSocialActivity comment = createActivity("Comment on first activity", maryIdentity.getId());
+    activityStorage.saveComment(activity, comment);
+
+    List<String> ids;
+    ids = activityStorage.getActivityIdsFeed(maryIdentity, 0, 10);
+    assertEquals(10, ids.size());
+    assertEquals("First activity should be at first position", activity.getId(), ids.get(0));
+
+    ids = activityStorage.getActivityIdsFeed(maryIdentity, 10, 10);
+    assertEquals(2, ids.size());
+
+    //Test returned ids for My activities filter
+    ids = activityStorage.getUserIdsActivities(maryIdentity,0,10);
+    assertEquals(10, ids.size());
+    ids = activityStorage.getUserIdsActivities(maryIdentity,10,10);
+    assertEquals(2, ids.size());
+  }
+
+  public void testWithRelationAddPlusTenActivitiesWithComment() {
+    ExoSocialActivity activity = createActivity("Post on my stream", maryIdentity.getId());
+    activityStorage.saveActivity(maryIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+
+    ExoSocialActivity socialActivity;
+    for (int i=1; i<=11; i++) {
+      socialActivity = createActivity("Post on my stream " + i, demoIdentity.getId());
+      activityStorage.saveActivity(demoIdentity, socialActivity);
+      tearDownActivityList.add(socialActivity);
+    }
+
+    // comment on first activity to make it appear at first position in activity stream
+    ExoSocialActivity comment = createActivity("Comment on first activity", demoIdentity.getId());
+    activityStorage.saveComment(activity, comment);
+
+    List<String> ids;
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 0, 10);
+    assertEquals(10, ids.size());
+    assertEquals("First activity should be at first position", activity.getId(), ids.get(0));
+
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 10, 10);
+    assertEquals(2, ids.size());
+    
+    //Make sure the count of all activities is right
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 0, 20);
+    assertEquals(12, ids.size());
+
+    //Test returned ids for My activities filter
+    ids = activityStorage.getUserIdsActivities(demoIdentity,0,10);
+    assertEquals(10, ids.size());
+    ids = activityStorage.getUserIdsActivities(demoIdentity,10,10);
+    assertEquals(2, ids.size());
+
+    relationshipManager.delete(demoMaryConnection);
+  }
+
+  public void testPostPlusTenActivitiesOnSpaceWithComment() throws Exception {
+    Space space = this.getSpaceInstance(spaceService, 0);
+    Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    space.setMembers(new String[]{maryIdentity.getRemoteId(),demoIdentity.getRemoteId()});
+    //
+    ExoSocialActivity activity = createActivity("Post on the space", maryIdentity.getId());
+    activityStorage.saveActivity(spaceIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    ExoSocialActivity socialActivity;
+    for (int i=1; i<=11; i++) {
+      socialActivity = createActivity("Post on the space " + i, demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, socialActivity);
+      tearDownActivityList.add(socialActivity);
+    }
+
+    // comment on first activity to make it appear at first position in activity stream
+    ExoSocialActivity comment = createActivity("Comment on first activity", demoIdentity.getId());
+    activityStorage.saveComment(activity, comment);
+
+    List<String> ids;
+    ids = activityStorage.getActivityIdsFeed(maryIdentity, 0, 10);
+    assertEquals(1, ids.size());
+    assertEquals("First activity should be at first position since it is commented", activity.getId(), ids.get(0));
+
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 0, 10);
+    assertEquals(10, ids.size());
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 10, 10);
+    assertEquals(2, ids.size());
+
+    //Test returned ids for My activities filter
+    ids = activityStorage.getUserIdsActivities(maryIdentity,0,10);
+    assertEquals(1, ids.size());
+
+    //Test returned ids for a Space
+    ids = activityStorage.getSpaceActivityIds(spaceIdentity,0,10);
+    assertEquals(10, ids.size());
+    ids = activityStorage.getSpaceActivityIds(spaceIdentity,10,10);
+    assertEquals(2, ids.size());
+
+    //Test returned ids for My Spaces filter with no relation
+    ids = activityStorage.getUserSpacesActivityIds(demoIdentity,0,10);
+    assertEquals(10, ids.size());
+    ids = activityStorage.getUserSpacesActivityIds(demoIdentity,10,10);
+    assertEquals(2, ids.size());
+
+    space.setMembers(new String[]{demoIdentity.getRemoteId()});
+  }
+
+  public void testWithRelationPostPlusTenActivitiesOnSpaceWithComment() throws Exception {
+    Space space = this.getSpaceInstance(spaceService, 0);
+    Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    space.setMembers(new String[]{maryIdentity.getRemoteId(),demoIdentity.getRemoteId()});
+    //
+    
+    ExoSocialActivity activity = createActivity("Post on the space", maryIdentity.getId());
+    activityStorage.saveActivity(spaceIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+
+    ExoSocialActivity socialActivity;
+    for (int i=1; i<=11; i++) {
+      socialActivity = createActivity("Post on the space " + i, demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, socialActivity);
+      tearDownActivityList.add(socialActivity);
+    }
+
+    // comment on first activity to make it appear at first position in activity stream
+    ExoSocialActivity comment = createActivity("Comment on first activity", demoIdentity.getId());
+    activityStorage.saveComment(activity, comment);
+
+    List<String> ids;
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 0, 10);
+    assertEquals(10, ids.size());
+    assertEquals("First activity should be at first position since it is commented", activity.getId(), ids.get(0));
+
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 10, 10);
+    assertEquals(2, ids.size());
+
+    //Make sure the count of all activities is right
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 0, 20);
+    assertEquals(12, ids.size());
+    
+    //Test returned ids for My activities filter
+    ids = activityStorage.getUserIdsActivities(demoIdentity,0,10);
+    assertEquals(10, ids.size());
+    ids = activityStorage.getUserIdsActivities(demoIdentity,10,10);
+    assertEquals(1, ids.size());
+
+    //Test returned ids for a Space
+    ids = activityStorage.getSpaceActivityIds(spaceIdentity,0,10);
+    assertEquals(10, ids.size());
+    ids = activityStorage.getSpaceActivityIds(spaceIdentity,10,10);
+    assertEquals(2, ids.size());
+
+    //Test returned ids for My Spaces filter
+    ids = activityStorage.getUserSpacesActivityIds(demoIdentity,0,10);
+    assertEquals(10, ids.size());
+    ids = activityStorage.getUserSpacesActivityIds(demoIdentity,10,10);
+    assertEquals(2, ids.size());
+
+    relationshipManager.delete(demoMaryConnection);
+    space.setMembers(new String[]{demoIdentity.getRemoteId()});
+  }
+
+  public void testWithRelationInteractOnActivities() {
+    // Mary post activities to interact with by Demo
+    ExoSocialActivity activityToComment = createActivity("Post on my stream", maryIdentity.getId());
+    activityStorage.saveActivity(maryIdentity, activityToComment);
+    tearDownActivityList.add(activityToComment);
+
+    ExoSocialActivity activityToLike = createActivity("Post on my stream", maryIdentity.getId());
+    activityStorage.saveActivity(maryIdentity, activityToLike);
+    tearDownActivityList.add(activityToLike);
+
+    ExoSocialActivity activityToMentionIn = createActivity("Post on my stream", maryIdentity.getId());
+    activityStorage.saveActivity(maryIdentity, activityToMentionIn);
+    tearDownActivityList.add(activityToMentionIn);
+
+    Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+
+    // comment on activity
+    ExoSocialActivity comment = createActivity("Comment on first activity", demoIdentity.getId());
+    activityStorage.saveComment(activityToComment, comment);
+
+    // Like activity
+    activityManager.saveLike(activityToLike, demoIdentity);
+    
+    // Mention in activity
+    ExoSocialActivity MentionComment = createActivity("comment on demo's activity @mary", demoIdentity.getId());
+    activityStorage.saveComment(activityToMentionIn, MentionComment);
+
+    // Get Activities on Activity Stream for user demo
+    List<String> ids;
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 0, 10);
+    assertEquals(3, ids.size());
+    assertEquals("Last activity commented should be at first position", activityToMentionIn.getId(), ids.get(0));
+
+    // Get Activities on Activity Stream for user mary
+    ids = activityStorage.getActivityIdsFeed(maryIdentity, 0, 10);
+    assertEquals(3, ids.size());
+    assertEquals("Last activity commented should be at first position", activityToMentionIn.getId(), ids.get(0));
+
+    //Make sure the count of all activities is right
+    ids = activityStorage.getActivityIdsFeed(demoIdentity, 0, 10);
+    assertEquals(3, ids.size());
+
+    //Test returned ids for My activities filter of user demo
+    ids = activityStorage.getUserIdsActivities(demoIdentity,0,10);
+    assertEquals(3, ids.size());
+
+    //Test returned ids for My activities filter of user mary
+    ids = activityStorage.getUserIdsActivities(maryIdentity,0,10);
+    assertEquals(3, ids.size());
+
+    relationshipManager.delete(demoMaryConnection);
+  }
+
   private Space getSpaceInstance(SpaceService spaceService, int number) throws Exception {
     Space space = new Space();
     space.setDisplayName("my space " + number);
