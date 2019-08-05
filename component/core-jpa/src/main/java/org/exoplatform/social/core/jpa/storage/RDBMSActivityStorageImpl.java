@@ -621,7 +621,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
   private void createStreamItem(StreamType streamType, ActivityEntity activity, Long ownerId){
     StreamItemEntity streamItem = new StreamItemEntity(streamType);
     streamItem.setOwnerId(ownerId);
-    if (streamType == StreamType.POSTER || streamType == StreamType.SPACE || streamType == StreamType.MENTIONER) {
+    if (streamType == StreamType.POSTER || streamType == StreamType.SPACE || streamType == StreamType.MENTIONER || streamType == StreamType.COMMENTER) {
       streamItem.setUpdatedDate(activity.getUpdatedDate());
     } else {
       streamItem.setUpdatedDate(null);
@@ -1317,7 +1317,8 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
               .filter(item -> item.getStreamType() == StreamType.POSTER || item.getStreamType() == StreamType.SPACE)
               .collect(Collectors.toList());
       if (!items.isEmpty()) {
-        items.get(0).setUpdatedDate(new Date());
+        Date now = new Date();
+        items.stream().forEach(item -> item.setUpdatedDate(now));
       }
     }
     return activityEntity;
