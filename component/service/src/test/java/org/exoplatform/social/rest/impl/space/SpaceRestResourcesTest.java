@@ -287,21 +287,22 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     Space space = getSpaceInstance(1, "root");
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     try {
-      ExoSocialActivity newsActivity = new ExoSocialActivityImpl();
-      Map<String, String> newsTemplateParams = new HashMap<>();
-      newsActivity.setType("news");
-      newsActivity.setTitle("Activity news Title");
-      newsActivity.setBody("Activity news Content");
-      newsActivity.setTemplateParams(newsTemplateParams);
-      activityManager.saveActivityNoReturn(spaceIdentity, newsActivity);
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      Map<String, String> templateParams = new HashMap<>();
+      activity.setType("DOC_ACTIVITY");
+      activity.setTitle("Activity Title");
+      activity.setBody("Activity Content");
+      activity.setTemplateParams(templateParams);
+      activityManager.saveActivityNoReturn(spaceIdentity, activity);
 
       // When
-      activityManager.saveActivityNoReturn(spaceIdentity, newsActivity);
-      assertEquals(0 , activityManager.getActivityFilesIds(newsActivity).size());
-      ExoSocialActivity createdNews = activityManager.getActivity(newsActivity.getId());
+      activityManager.saveActivityNoReturn(spaceIdentity, activity);
+      ExoSocialActivity createdActivity = activityManager.getActivity(activity.getId());
+
       // Then
+      assertEquals(0 , activityManager.getActivityFilesIds(activity).size());
       ContainerResponse response = service("GET",
-                                           getURLResource("spaces/" + createdNews.getId() + "/files/" + "/1"),
+                                           getURLResource("spaces/" + createdActivity.getId() + "/files/1"),
                                            "",
                                            null,
                                            null);

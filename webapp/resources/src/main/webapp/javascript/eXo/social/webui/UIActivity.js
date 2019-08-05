@@ -1091,7 +1091,7 @@
     
     clickOnNews: function (activityId) {
       var env = eXo.social.portal;
-      var baseRestUrl = env.context + '/' + env.rest + '/v1/social/news/' + activityId + '/click';
+      var baseRestUrl = env.context + '/' + env.rest + '/v1/news/' + activityId + '/click';
       $("#seeMoreId" + activityId).click(function () {
         $.ajax({
           url: baseRestUrl,
