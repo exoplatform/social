@@ -16,20 +16,10 @@
  */
 package org.exoplatform.social.rest.impl.activity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -59,11 +49,7 @@ import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 
 @Path(VersionResources.VERSION_ONE + "/social/activities")
 @Api(tags = VersionResources.VERSION_ONE + "/social/activities", value = VersionResources.VERSION_ONE + "/social/activities", description = "Managing activities together with comments and likes")
@@ -195,17 +181,28 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
               activityStream.getId(),
               currentUser.getId());
     }
+    checkPermissionToModifyActivity(activity, currentUser);
 
-    if(model.getTitle() != null && !model.getTitle().isEmpty()) {
-      checkPermissionToModifyActivity(activity, currentUser);
+    if (model.getTitle() != null && !model.getTitle().equals(activity.getTitle())) {
       activity.setTitle(model.getTitle());
-      activityManager.updateActivity(activity);
     }
-    
+    if (model.getBody() != null && !model.getBody().equals(activity.getBody())) {
+      activity.setBody(model.getBody());
+    }
+    if(model.getTemplateParams() != null) {
+      Map<String, String> templateParams = new HashMap<>();
+      model.getTemplateParams().forEach((name, value) -> templateParams.put(name, (String) value));
+      activity.setTemplateParams(templateParams);
+    }
+    if (model.getUpdateDate() != null) {
+      activity.setUpdated(Long.parseLong(model.getUpdateDate()));
+    }
+    activityManager.updateActivity(activity);
+
     DataEntity as = EntityBuilder.getActivityStream(activity, currentUser);
     ActivityEntity activityInfo = EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand);
     activityInfo.setActivityStream(as);
-    
+
     return EntityBuilder.getResponse(activityInfo.getDataEntity(), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 
@@ -488,7 +485,7 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
   private void checkPermissionToModifyActivity(ExoSocialActivity activity, Identity currentUser) {
     if (activity.getActivityStream().getType().toString().equalsIgnoreCase(TYPE)) {
       SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
-      String spaceGroupId = SPACE_PREFIX + activity.getActivityStream().getPrettyId();;
+      String spaceGroupId = SPACE_PREFIX + activity.getActivityStream().getPrettyId();
       Space space = spaceService.getSpaceByGroupId(spaceGroupId);
       if (space == null) {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
@@ -502,4 +499,5 @@ public class ActivityRestResourcesV1 implements ActivityRestResources {
       }
     }
   }
+
 }
