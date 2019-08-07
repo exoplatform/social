@@ -51,6 +51,8 @@ public interface IdentityManager {
 
   public static final String  DEFAULT_FIRST_CHAR_FILTERING = SortBy.LASTNAME.getFieldName();
 
+  public static final char    EMPTY_CHARACTER              = '\u0000';
+
   /**
    * Gets the last identities that have been created.
    *
@@ -575,13 +577,39 @@ public interface IdentityManager {
    * Sorts a list of user identities using a field
    * 
    * @param identityRemoteIds
+   * @param sortField
+   * @return
+   * @deprecated use {@link #sortIdentities(List, String, char, String, String)}
+   */
+  @Deprecated
+  default List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+    Sorting defaultSorting = getDefaultSorting();
+    String firstCharacterFieldName = getFirstCharacterFiltering();
+    return sortIdentities(identityRemoteIds,
+                          firstCharacterFieldName,
+                          EMPTY_CHARACTER,
+                          defaultSorting.sortBy.getFieldName(),
+                          defaultSorting.orderBy.name());
+  }
+
+  /**
+   * Sorts a list of user identities using a field
+   *
+   * @param identityRemoteIds
    * @param firstCharacterFieldName
    * @param firstCharacter
    * @param sortField
    * @param sortDirection
    * @return {@link List} of userNames sorted by sortField
    */
-  public List<String> sortIdentities(List<String> identityRemoteIds, String firstCharacterFieldName, char firstCharacter, String sortField, String sortDirection);
+  default List<String> sortIdentities(List<String> identityRemoteIds,
+                                             String firstCharacterFieldName,
+                                             char firstCharacter,
+                                             String sortField,
+                                             String sortDirection) {
+    // No sorting to apply
+    return identityRemoteIds;
+  }
 
   /**
    * @return default sorting to apply when listing
