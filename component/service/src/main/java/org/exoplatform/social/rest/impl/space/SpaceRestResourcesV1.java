@@ -613,6 +613,7 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
     if(model.getFiles() != null) {
       activity.setFiles(model.getFiles()
               .stream()
+              .filter(fileModel -> fileModel.getUploadId() != null)
               .map(fileModel -> new ActivityFile(fileModel.getUploadId(), fileModel.getStorage()))
               .collect(Collectors.toList()));
     }

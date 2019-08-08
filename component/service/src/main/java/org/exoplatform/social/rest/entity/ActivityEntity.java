@@ -18,12 +18,12 @@
 package org.exoplatform.social.rest.entity;
 
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 public class ActivityEntity extends BaseEntity {
   private static final long serialVersionUID = 8770364706590680865L;
-
   public ActivityEntity() {
   }
 
@@ -37,6 +37,7 @@ public class ActivityEntity extends BaseEntity {
     setBody(activity.getBody());
     setLink(activity.getPermaLink());
     setType(activity.getType());
+    setTemplateParams(activity.getTemplateParams());
   }
 
   public ActivityEntity setDatIdentity(LinkEntity identity) {
@@ -169,4 +170,16 @@ public class ActivityEntity extends BaseEntity {
   public DataEntity getActivityStream() {
     return (DataEntity) getProperty("activityStream");
   }
+  
+  public ActivityEntity setTemplateParams(Map<String, String> templateParamsIn) {
+    DataEntity templateParams = new DataEntity();
+    templateParamsIn.forEach((name, value) -> templateParams.setProperty(name, value));
+    setProperty("templateParams", templateParams);
+    return this;
+  }
+
+  public DataEntity getTemplateParams() {
+    return (DataEntity) getProperty("templateParams");
+  }
+  
 }
