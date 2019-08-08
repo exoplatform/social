@@ -23,7 +23,7 @@ var UISpaceNavigation = {
     var editedTab = $("#" + id);
   
     function autoMoveApps(){
-      var _w = $(window).outerWidth();
+      var _w = $(window).width();
       if ( _w  < 1025) {
         var uiSpaceMenu = $('#UISpaceMenu');
         var tabContainer = uiSpaceMenu.find('ul#spaceMenuTab');
@@ -38,7 +38,7 @@ var UISpaceNavigation = {
       if ($rightBody.hasClass('sticky')) {
         var $avt = $('.uiSpaceMenu .userAvt');
         var $navHeader = $('.uiSpaceMenu .spaceMenuNavHeader');
-        delta = $avt.outerWidth() + $navHeader.outerWidth() + 20;
+        delta = $avt.width() + $navHeader.width() + 20;
       }
 
 	    var index = calculateIndex(ul, delta);
@@ -53,7 +53,7 @@ var UISpaceNavigation = {
       var liElements = ul.find('li.item');
       var w = 0, index = 0;
       for (var i = 0; i < liElements.length; ++i) {
-        var wElm = liElements.eq(i).outerWidth();
+        var wElm = liElements.eq(i).width();
         if((w + wElm) < maxWith) {
           w += wElm;
           index++;
@@ -187,13 +187,15 @@ var UISpaceNavigation = {
     UISpaceNavigation.initStickyBanner();
     var $tab = $('.uiSpaceMenu .spaceMenuTab');
     var $selectedTab = $tab.find('.active');
-    var left = $selectedTab.position().left;
-    var screenWidth = $(window).width();
+    if ($selectedTab && $selectedTab.length) {
+      var left = $selectedTab.position().left;
+      var screenWidth = $(window).width();
 
-    if (left > (screenWidth / 2) && left < ($tab[0].scrollWidth - screenWidth / 2)) {
-      $tab.scrollLeft(left - screenWidth / 2);
-    } else if (left > $tab.width() - screenWidth / 2) {
-      $tab.scrollLeft(left);
+      if (left > (screenWidth / 2) && left < ($tab[0].scrollWidth - screenWidth / 2)) {
+        $tab.scrollLeft(left - screenWidth / 2);
+      } else if (left > $tab.width() - screenWidth / 2) {
+        $tab.scrollLeft(left);
+      }
     }
   },
 
