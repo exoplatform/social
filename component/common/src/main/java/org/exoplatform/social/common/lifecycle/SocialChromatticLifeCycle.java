@@ -20,7 +20,6 @@ package org.exoplatform.social.common.lifecycle;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
 import org.exoplatform.commons.chromattic.SessionContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 
 /**
@@ -37,8 +36,8 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
   public static final String SOCIAL_LIFECYCLE_NAME = "soc";
 
   public ChromatticSession getSession() {
-    if (invalidSession()) {
-      reCreateSession();
+    if(session.get() == null || session.get().isClosed() || !session.get().getJCRSession().isLive()){
+      onOpenSession(getContext());
     }
     
     return session.get();
@@ -72,36 +71,11 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
   }
 
   public ThreadLocal getProviderRoot() {
-    if (invalidSession()) {
-      reCreateSession();
-    }
     return providerRoot;
   }
 
   public ThreadLocal getSpaceRoot() {
-    if (invalidSession()) {
-      reCreateSession();
-    }
     return spaceRoot;
-  }
-  
-  private boolean invalidSession() {
-    boolean invalid = (session.get() == null);
-    if(invalid) return invalid;
-    return session.get().getJCRSession().isLive() == false || session.get().isClosed();
-  }
-  
-  private void reCreateSession() {
-    try {
-      onOpenSession(openContext());
-    } catch (IllegalStateException e) {
-      this.closeContext(false);
-      if(this.getManager().getSynchronization() != null) {
-        this.getManager().endRequest(false);
-      }
-      this.getManager().startRequest(PortalContainer.getInstance());
-      session.set(this.getChromattic().openSession());
-    }
   }
 
 

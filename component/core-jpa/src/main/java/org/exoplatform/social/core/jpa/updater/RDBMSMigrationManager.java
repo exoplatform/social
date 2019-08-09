@@ -22,6 +22,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.exoplatform.commons.file.services.NameSpaceService;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
@@ -136,11 +137,16 @@ public class RDBMSMigrationManager implements Startable {
     Runnable migrateTask = new Runnable() {
       @Override
       public void run() {
+        boolean start = false;
 
-        boolean start = checkCanStartMigration();
-        if (!start || MigrationContext.isDone()) return;
-
+        RequestLifeCycle.begin(PortalContainer.getInstance());
         try {
+          start = checkCanStartMigration();
+          if (!start || MigrationContext.isDone()) {
+            migrater.countDown();
+            return;
+          }
+
           // Check JCR data is existing or not
           ProviderRootEntity providerRoot = getRelationshipMigration().getProviderRoot();
           if (providerRoot == null || (providerRoot != null && providerRoot.getProviders().get(SpaceIdentityProvider.NAME) == null &&
@@ -151,10 +157,12 @@ public class RDBMSMigrationManager implements Startable {
             return;
           }
         } catch (Exception ex) {
-          LOG.info("no JCR data, stopping JCR to RDBMS migration");
+          LOG.warn("Error checking JCR data to migrate", ex);
           updateMigrationSettings(start);
           migrater.countDown();
           return;
+        } finally {
+          RequestLifeCycle.end();
         }
 
 
@@ -173,6 +181,7 @@ public class RDBMSMigrationManager implements Startable {
 
         //
         Field field =  null;
+        RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
         try {
 
           // Set FORCE_USE_GET_NODES_LAZILY in JCR
@@ -369,6 +378,8 @@ public class RDBMSMigrationManager implements Startable {
 
 
           migrater.countDown();
+
+          RequestLifeCycle.end();
         }
       }
     };

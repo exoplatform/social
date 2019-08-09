@@ -78,6 +78,7 @@ public class SpaceActivityStreamMigration extends AbstractStorage {
     Node node = null;
     int batchIndex = 0;
     int offset = 0;
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     try {
       while (it.hasNext()) {
         node = (Node) it.next();
@@ -99,7 +100,7 @@ public class SpaceActivityStreamMigration extends AbstractStorage {
       LOG.warn("Failed to migration for Space Activity Stream.");
     } finally {
       StorageUtils.persistJCR(false);
-      StorageUtils.endRequest();
+      RequestLifeCycle.end();
     }
   }
   
