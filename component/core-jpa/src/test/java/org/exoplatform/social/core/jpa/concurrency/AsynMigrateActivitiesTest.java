@@ -37,6 +37,7 @@ public class AsynMigrateActivitiesTest extends AbstractAsynMigrationTest {
   public void testMigrationActivities() throws Exception {
     // create jcr data
     LOG.info("Create connection for root,john,mary and demo");
+    begin();
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);

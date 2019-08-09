@@ -94,8 +94,8 @@ public abstract class AbstractMigrationService<T>  extends AbstractStorage {
 
    public void start() {
     forceStop = false;
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     try {
-      RequestLifeCycle.begin(PortalContainer.getInstance());
       beforeMigration();
       //
       doMigration();

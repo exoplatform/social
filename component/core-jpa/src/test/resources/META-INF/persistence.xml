@@ -25,7 +25,7 @@
              version="2.0">
     <persistence-unit name="exo-pu" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <jta-data-source>exo-jpa_portal</jta-data-source>
+        <jta-data-source>java:/comp/env/exo-jpa_portal</jta-data-source>
 
         <class>org.exoplatform.commons.search.domain.IndexingOperation</class>
 

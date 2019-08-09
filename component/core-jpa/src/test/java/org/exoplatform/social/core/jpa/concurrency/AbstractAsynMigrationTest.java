@@ -49,9 +49,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
-import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
-import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
+import org.exoplatform.social.core.storage.impl.*;
+
 import org.jboss.byteman.contrib.bmunit.BMUnit;
 import org.junit.FixMethodOrder;
 
@@ -95,7 +94,6 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
 
   @Override
   public void setUp() throws Exception {
-    begin();
     // If is query number test, init byteman
     hasByteMan = getClass().isAnnotationPresent(QueryNumberTest.class);
     if (hasByteMan) {
@@ -126,6 +124,7 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
 
     // Switch to use JCRIdentityStorage
     ((IdentityManagerImpl)identityManager).setIdentityStorage(identityJCRStorage);
+    begin();
   }
 
   @Override
@@ -201,6 +200,7 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
         LOG.error("can not save activity.", e);
       }
     }
+    StorageUtils.persist();
   }
 
   protected void createActivityEmoji(Identity posterIdentity, Identity targetIdentity) {
@@ -224,5 +224,6 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
     } catch (Exception e) {
       LOG.error("can not save activity.", e);
     }
+    StorageUtils.persist();
   }
 }
