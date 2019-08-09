@@ -29,6 +29,7 @@ import org.exoplatform.social.core.identity.model.IdentityWithRelationship;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 
@@ -37,6 +38,10 @@ import org.exoplatform.social.core.storage.IdentityStorageException;
  * @version $Revision$
  */
 public interface IdentityStorage {
+
+  public static final Sorting DEFAULT_SORTING = new Sorting(Sorting.SortBy.FULLNAME, Sorting.OrderBy.ASC);
+
+  public static final char    EMPTY_CHARACTER = '\u0000';
 
   /**
    * Saves identity.
@@ -410,7 +415,30 @@ public interface IdentityStorage {
    * @param identityRemoteIds
    * @param sortField
    * @return
+   * @deprecated use {@link #sortIdentities(List, String, char, String, String)}
    */
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField);
+  @Deprecated
+  default List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
+    return sortIdentities(identityRemoteIds, null, EMPTY_CHARACTER, sortField, DEFAULT_SORTING.orderBy.name());
+  }
+
+  /**
+   * Sorts a list of user identities using a field
+   *
+   * @param identityRemoteIds
+   * @param firstCharacterFieldName
+   * @param firstCharacter
+   * @param sortField
+   * @param sortDirection
+   * @return
+   */
+  default List<String> sortIdentities(List<String> identityRemoteIds,
+                                      String firstCharacterFieldName,
+                                      char firstCharacter,
+                                      String sortField,
+                                      String sortDirection) {
+    // No default sorting to apply
+    return identityRemoteIds;
+  }
 
 }

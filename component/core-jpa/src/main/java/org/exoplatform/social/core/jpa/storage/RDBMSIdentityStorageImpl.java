@@ -734,6 +734,12 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
     if (space == null) {
       throw new IllegalArgumentException("Space shouldn't be null");
     }
+
+    String firstCharFieldName = profileFilter.getFirstCharFieldName();
+    char firstCharacter = profileFilter.getFirstCharacterOfName();
+    Sorting sorting = profileFilter.getSorting();
+    String sortFieldName = sorting == null || sorting.sortBy == null ? null : sorting.sortBy.getFieldName();
+    String sortDirection = sorting == null || sorting.sortBy == null ? null : sorting.orderBy.name();
     List<String> excludedMembers = new ArrayList<>();
     if (profileFilter != null && profileFilter.getExcludedIdentityList() != null) {
       for (Identity identity : profileFilter.getExcludedIdentityList()) {
@@ -770,10 +776,8 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       // Retrive space members from DB
 
       List<Identity> identities = new ArrayList<>();
-      if (profileFilter != null && profileFilter.getSorting() != null
-          && Sorting.SortBy.TITLE.equals(profileFilter.getSorting().sortBy)) {
-        spaceMembers = sortIdentities(spaceMembers, Profile.FULL_NAME);
-      }
+      spaceMembers = sortIdentities(spaceMembers, firstCharFieldName, firstCharacter, sortFieldName, sortDirection);
+      
       int i = (int) offset;
       long indexLimit = offset + limit;
       while (i < spaceMembers.size() && i < indexLimit) {
@@ -1081,7 +1085,11 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   }
 
   @Override
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
-    return spaceMemberDAO.sortSpaceMembers(identityRemoteIds, sortField);
+  public List<String> sortIdentities(List<String> identityRemoteIds,
+                                     String firstCharacterFieldName,
+                                     char firstCharacter,
+                                     String sortField,
+                                     String sortDirection) {
+    return spaceMemberDAO.sortSpaceMembers(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection);
   }
 }

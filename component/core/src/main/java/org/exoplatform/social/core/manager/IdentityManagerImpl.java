@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
@@ -623,7 +624,20 @@ public class IdentityManagerImpl implements IdentityManager {
   }
 
   @Override
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
-    return identityStorage.sortIdentities(identityRemoteIds, sortField);
+  public List<String> sortIdentities(List<String> identityRemoteIds,
+                                     String firstCharacterFieldName,
+                                     char firstCharacter,
+                                     String sortField,
+                                     String sortDirection) {
+    if (StringUtils.isBlank(firstCharacterFieldName)) {
+      firstCharacterFieldName = this.getFirstCharacterFiltering();
+    }
+    if (StringUtils.isBlank(sortField)) {
+      sortField = this.getDefaultSorting().sortBy.getFieldName();
+    }
+    if (StringUtils.isBlank(sortDirection)) {
+      sortDirection = this.getDefaultSorting().orderBy.name();
+    }
+    return identityStorage.sortIdentities(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection);
   }
 }

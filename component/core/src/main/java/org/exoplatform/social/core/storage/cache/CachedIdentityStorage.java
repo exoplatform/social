@@ -736,7 +736,11 @@ public class CachedIdentityStorage implements IdentityStorage {
   }
 
   @Override
-  public List<String> sortIdentities(List<String> identityRemoteIds, String sortField) {
-    return storage.sortIdentities(identityRemoteIds, sortField);
+  public List<String> sortIdentities(List<String> identityRemoteIds,
+                                     String firstCharacterFieldName,
+                                     char firstCharacter,
+                                     String sortField,
+                                     String sortDirection) {
+    return storage.sortIdentities(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection);
   }
 }

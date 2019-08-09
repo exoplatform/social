@@ -87,6 +87,7 @@ public class UISpaceMember extends UIContainer {
    * The first page.
    */
   private static final int FIRST_PAGE = 1;
+  private static final char EMPTY_CHARACTER = '\u0000';
 
   private String spaceId;
   private SpaceService spaceService = null;
@@ -328,7 +329,7 @@ public class UISpaceMember extends UIContainer {
   }
 
   private String[] sortUsers(String[] users) {
-    List<String> sortedIdentities = identityManager.sortIdentities(Arrays.asList(users), Profile.FULL_NAME);
+    List<String> sortedIdentities = identityManager.sortIdentities(Arrays.asList(users), null, EMPTY_CHARACTER, Profile.FULL_NAME, null);
     users = sortedIdentities.toArray(new String[0]);
     return users;
   }
