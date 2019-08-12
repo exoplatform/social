@@ -1043,16 +1043,22 @@
     <external-component-plugins>
         <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
         <component-plugin>
-            <name>binding.group.event.listener</name>
+            <name>space.binding.group.event.listener</name>
             <set-method>addListenerPlugin</set-method>
-            <type>org.exoplatform.social.core.binding.listener.BindGroupEventListener</type>
+            <type>org.exoplatform.social.core.binding.listener.SpaceBindingGroupEventListener</type>
             <description>Remove group binding when group is deleted</description>
         </component-plugin>
         <component-plugin>
-            <name>binding.membership.event.listener</name>
+            <name>space.binding.membership.event.listener</name>
             <set-method>addListenerPlugin</set-method>
-            <type>org.exoplatform.social.core.binding.listener.BindMembershipGroupEventListener</type>
+            <type>org.exoplatform.social.core.binding.listener.SpaceBindingMembershipGroupEventListener</type>
             <description>Add remove user space binding when user join/leave a group</description>
+        </component-plugin>
+        <component-plugin>
+            <name>space.binding.user.event.listener</name>
+            <set-method>addListenerPlugin</set-method>
+            <type>org.exoplatform.social.core.binding.listener.SpaceBindingUserEventListener</type>
+            <description>Remove user space binding when user is deleted</description>
         </component-plugin>
     </external-component-plugins>
 </configuration>

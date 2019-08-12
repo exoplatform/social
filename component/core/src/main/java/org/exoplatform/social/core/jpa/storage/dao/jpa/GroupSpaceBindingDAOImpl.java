@@ -28,9 +28,17 @@ import java.util.List;
 public class GroupSpaceBindingDAOImpl extends GenericDAOJPAImpl<GroupSpaceBindingEntity, Long> implements GroupSpaceBindingDAO {
 
     @Override
-    public List<GroupSpaceBindingEntity> findSpaceBindings(Long spaceId, String role) {
-        TypedQuery<GroupSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocGroupSpaceBinding.findSpaceBindings", GroupSpaceBindingEntity.class);
+    public List<GroupSpaceBindingEntity> findGroupSpaceBindingsBySpace(Long spaceId, String role) {
+        TypedQuery<GroupSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocGroupSpaceBinding.findGroupSpaceBindingsBySpace", GroupSpaceBindingEntity.class);
         query.setParameter("spaceId",spaceId);
+        query.setParameter("role",role);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<GroupSpaceBindingEntity> findGroupSpaceBindingsByGroup(String group, String role) {
+        TypedQuery<GroupSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocGroupSpaceBinding.findGroupSpaceBindingsByGroup", GroupSpaceBindingEntity.class);
+        query.setParameter("group",group);
         query.setParameter("role",role);
         return query.getResultList();
     }

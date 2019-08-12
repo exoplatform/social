@@ -31,7 +31,7 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @param userName Member in the space
    * @return A list of group+membership bindings
    */
-  List<UserSpaceBindingEntity> findUserBindingsByMember(Long spaceId, String userName);
+  List<UserSpaceBindingEntity> findUserBindingsBySpace(Long spaceId, String userName);
 
   /**
    * Get user bindings of a user for a membership (group+role) in space
@@ -41,7 +41,7 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @param userName Member in the space
    * @return A list of group+membership bindings
    */
-  List<UserSpaceBindingEntity> findUserBindingsbyGroup(String group, String groupRole, String userName);
+  List<UserSpaceBindingEntity> findUserBindingsByGroup(String group, String groupRole, String userName);
 
   /**
    * Get all user bindings for a membership (group+role)
@@ -50,7 +50,15 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @param groupRole the role in group
    * @return A list of group+membership bindings
    */
-  List<UserSpaceBindingEntity> findUserAllBindingsbyGroupMembership(String group, String groupRole);
+  List<UserSpaceBindingEntity> findUserAllBindingsByGroupMembership(String group, String groupRole);
+
+  /**
+   * Get user bindings of a user
+   *
+   * @param userName the user
+   * @return A list of group+membership bindings
+   */
+  List<UserSpaceBindingEntity> findUserAllBindingsByUser(String userName);
 
   /**
    * Delete all the bindings of the user
@@ -66,4 +74,5 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @param userName The space Id.
    */
   boolean hasUserBindings(Long spaceId, String userName);
+
 }

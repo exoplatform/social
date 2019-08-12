@@ -85,7 +85,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
 
         List<GroupSpaceBinding> list = null;
 
-        list = groupSpaceBindingService.findSpaceBindings(spaceId,spaceRole);
+        list = groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId,spaceRole);
 
         List<DataEntity> bindings = new ArrayList<DataEntity>();
 
@@ -125,6 +125,10 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
+        if (spaceId == null) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
         List<GroupSpaceBinding> groupSpaceBindings = groupSpaceBindingEntityList.stream().
                 map(binding -> new GroupSpaceBinding(binding.getId(),binding.getSpaceId(),binding.getSpaceRole(),binding.getGroup(),binding.getGroupRole())).
                 collect(Collectors.toList());
@@ -157,7 +161,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
         if(!spaceService.isSuperManager(authenticatedUser)) {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
-        groupSpaceBindingService.deleteAllSpaceBindings(spaceId,spaceRole);
+        groupSpaceBindingService.deleteAllSpaceBindingsBySpace(spaceId,spaceRole);
 
         return Response.ok().build();
     }

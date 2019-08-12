@@ -19,23 +19,38 @@ package org.exoplatform.social.core.binding.listener;
 
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipEventListener;
+import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 
-public class BindMembershipGroupEventListener extends MembershipEventListener {
+import java.util.LinkedList;
+import java.util.List;
+
+public class SpaceBindingMembershipGroupEventListener extends MembershipEventListener {
 
   private GroupSpaceBindingService groupSpaceBindingService;
 
-  public BindMembershipGroupEventListener(GroupSpaceBindingService groupSpaceBindingService) {
+  public SpaceBindingMembershipGroupEventListener(GroupSpaceBindingService groupSpaceBindingService) {
     this.groupSpaceBindingService = groupSpaceBindingService;
   }
 
+  @Override
   public void postSave(Membership m, boolean isNew) throws Exception {
-
+      for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindingService.findGroupSpaceBindingsByGroup(m.getGroupId(),
+              m.getMembershipType())) {
+           List<UserSpaceBinding> userSpaceBindings = new LinkedList<>();
+           UserSpaceBinding ub1 = new UserSpaceBinding();
+           ub1.setGroupBinding(groupSpaceBinding);
+           ub1.setSpaceId(groupSpaceBinding.getSpaceId());
+           ub1.setUser(m.getUserName());
+           userSpaceBindings.add(ub1);
+           groupSpaceBindingService.saveUserBindings(m.getUserName(), userSpaceBindings);
+    }
   }
 
+  @Override
   public void postDelete(Membership m) throws Exception {
-    for (UserSpaceBinding userSpaceBinding : groupSpaceBindingService.findUserBindingsbyGroup(m.getGroupId(),
+    for (UserSpaceBinding userSpaceBinding : groupSpaceBindingService.findUserBindingsByGroup(m.getGroupId(),
                                                                                               m.getMembershipType(),
                                                                                               m.getUserName())) {
       groupSpaceBindingService.deleteUserBinding(userSpaceBinding);
