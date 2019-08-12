@@ -60,22 +60,30 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     this.spaceDAO = spaceDAO;
   }
 
-  public List<GroupSpaceBinding> findSpaceBindings(String spaceId, String role) throws GroupSpaceBindingStorageException {
-    return buildGroupBindingListFromEntities(groupSpaceBindingDAO.findSpaceBindings(Long.parseLong(spaceId), role));
+  public List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId, String role) throws GroupSpaceBindingStorageException {
+    return buildGroupBindingListFromEntities(groupSpaceBindingDAO.findGroupSpaceBindingsBySpace(Long.parseLong(spaceId), role));
   }
 
-  public List<UserSpaceBinding> findUserSpaceBindings(String spaceId, String username) throws GroupSpaceBindingStorageException {
-    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsByMember(Long.parseLong(spaceId), username));
+  public List<GroupSpaceBinding> findGroupSpaceBindingsByGroup(String group, String role) throws GroupSpaceBindingStorageException {
+    return buildGroupBindingListFromEntities(groupSpaceBindingDAO.findGroupSpaceBindingsByGroup(group, role));
+  }
+
+  public List<UserSpaceBinding> findUserSpaceBindingsBySpace(String spaceId, String username) throws GroupSpaceBindingStorageException {
+    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsBySpace(Long.parseLong(spaceId), username));
   }
 
   public List<UserSpaceBinding> findUserSpaceBindingsByGroup(String group,
                                                              String groupRole,
                                                              String userName) throws GroupSpaceBindingStorageException {
-    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsbyGroup(group, groupRole, userName));
+    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsByGroup(group, groupRole, userName));
   }
 
   public List<UserSpaceBinding> findUserAllBindingsbyGroupMembership(String group, String groupRole) {
-    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserAllBindingsbyGroupMembership(group, groupRole));
+    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserAllBindingsByGroupMembership(group, groupRole));
+  }
+
+  public List<UserSpaceBinding> findUserSpaceBindingsByUser(String userName) throws GroupSpaceBindingStorageException {
+    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserAllBindingsByUser(userName));
   }
 
   @ExoTransactional

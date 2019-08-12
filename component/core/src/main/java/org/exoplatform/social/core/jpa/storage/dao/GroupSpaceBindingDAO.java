@@ -31,6 +31,14 @@ public interface GroupSpaceBindingDAO extends GenericDAO<GroupSpaceBindingEntity
    * @param role role in the space
    * @return A list of group+membership bindings
    */
-  List<GroupSpaceBindingEntity> findSpaceBindings(Long spaceId, String role);
+  List<GroupSpaceBindingEntity> findGroupSpaceBindingsBySpace(Long spaceId, String role);
 
+  /**
+  * Get groups binding for a specific role(member or manager) in space
+  *
+  * @param group group
+  * @param role role in the group
+  * @return A list of group+membership bindings
+  */
+  List<GroupSpaceBindingEntity> findGroupSpaceBindingsByGroup(String group, String role);
 }
