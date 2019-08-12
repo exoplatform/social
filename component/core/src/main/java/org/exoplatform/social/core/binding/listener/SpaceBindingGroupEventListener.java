@@ -23,11 +23,11 @@ import org.exoplatform.services.organization.Group;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 
-public class BindGroupEventListener extends GroupEventListener {
+public class SpaceBindingGroupEventListener extends GroupEventListener {
 
     private GroupSpaceBindingService groupSpaceBindingService ;
 
-    public BindGroupEventListener(GroupSpaceBindingService groupSpaceBindingService) throws Exception {
+    public SpaceBindingGroupEventListener(GroupSpaceBindingService groupSpaceBindingService) throws Exception {
         this.groupSpaceBindingService = groupSpaceBindingService;
     }
 
@@ -37,6 +37,6 @@ public class BindGroupEventListener extends GroupEventListener {
     // delete all bindings for this group and remove member
     public void postDelete(Group group) throws Exception {
         // To do
-        //groupSpaceBindingService.deleteSpaceBinding(groupSpaceBinding);
+        //groupSpaceBindingService.deleteAllSpaceBindingsByGroup(groupSpaceBinding);
     }
 }

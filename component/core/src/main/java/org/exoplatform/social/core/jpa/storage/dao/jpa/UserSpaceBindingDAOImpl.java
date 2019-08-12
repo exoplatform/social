@@ -29,8 +29,8 @@ import org.exoplatform.social.core.jpa.storage.entity.UserSpaceBindingEntity;
 public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingEntity, Long> implements UserSpaceBindingDAO {
 
   @Override
-  public List<UserSpaceBindingEntity> findUserBindingsByMember(Long spaceId, String userName) {
-    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserBindingsbyMember",
+  public List<UserSpaceBindingEntity> findUserBindingsBySpace(Long spaceId, String userName) {
+    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserBindingsBySpace",
                                                                                    UserSpaceBindingEntity.class);
     query.setParameter("spaceId", spaceId);
     query.setParameter("userName", userName);
@@ -38,8 +38,8 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
   }
 
   @Override
-  public List<UserSpaceBindingEntity> findUserBindingsbyGroup(String group, String groupRole, String userName) {
-    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserBindingsbyGroup",
+  public List<UserSpaceBindingEntity> findUserBindingsByGroup(String group, String groupRole, String userName) {
+    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserBindingsByGroup",
                                                                                    UserSpaceBindingEntity.class);
     query.setParameter("group", group);
     query.setParameter("groupRole", groupRole);
@@ -48,11 +48,19 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
   }
 
   @Override
-  public List<UserSpaceBindingEntity> findUserAllBindingsbyGroupMembership(String group, String groupRole) {
-    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserAllBindingsbyGroupMembership",
+  public List<UserSpaceBindingEntity> findUserAllBindingsByGroupMembership(String group, String groupRole) {
+    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserAllBindingsByGroupMembership",
                                                                                    UserSpaceBindingEntity.class);
     query.setParameter("group", group);
     query.setParameter("groupRole", groupRole);
+    return query.getResultList();
+  }
+
+  @Override
+  public List<UserSpaceBindingEntity> findUserAllBindingsByUser(String userName) {
+    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserAllBindingsByUser",
+                UserSpaceBindingEntity.class);
+    query.setParameter("userName", userName);
     return query.getResultList();
   }
 

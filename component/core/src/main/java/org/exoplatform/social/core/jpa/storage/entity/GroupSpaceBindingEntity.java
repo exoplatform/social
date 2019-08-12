@@ -44,9 +44,12 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
 @Entity(name = "SocGroupSpaceBinding")
 @ExoEntity
 @Table(name = "SOC_GROUP_SPACE_BINDING")
-@NamedQueries({ @NamedQuery(name = "SocGroupSpaceBinding.findSpaceBindings", query = "SELECT groupSpacebinding "
-    + " FROM SocGroupSpaceBinding groupSpacebinding "
-    + " WHERE groupSpacebinding.space.id = :spaceId and groupSpacebinding.spaceRole = :role") })
+@NamedQueries({ @NamedQuery(name = "SocGroupSpaceBinding.findGroupSpaceBindingsBySpace", query = "SELECT groupSpacebinding "
+                    + " FROM SocGroupSpaceBinding groupSpacebinding "
+                    + " WHERE groupSpacebinding.space.id = :spaceId and groupSpacebinding.spaceRole = :role") ,
+                @NamedQuery(name = "SocGroupSpaceBinding.findGroupSpaceBindingsByGroup", query = "SELECT groupSpacebinding "
+                    + " FROM SocGroupSpaceBinding groupSpacebinding "
+                    + " WHERE groupSpacebinding.group = :group and groupSpacebinding.groupRole = :role") })
 public class GroupSpaceBindingEntity implements Serializable {
 
   private static final long      serialVersionUID = -1901782610164740670L;

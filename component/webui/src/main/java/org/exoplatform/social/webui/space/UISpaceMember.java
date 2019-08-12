@@ -705,7 +705,7 @@ public class UISpaceMember extends UIContainer {
      */
     public String getGroupbindingTooltips(String userId) {
         String groups = "";
-        for (UserSpaceBinding userSpaceBinding:groupSpaceBindingService.findUserBindings(spaceId,userId))
+        for (UserSpaceBinding userSpaceBinding:groupSpaceBindingService.findUserBindingsBySpace(spaceId,userId))
         {
             groups += " " + userSpaceBinding.getGroupBinding().getGroup() + ",";
         }

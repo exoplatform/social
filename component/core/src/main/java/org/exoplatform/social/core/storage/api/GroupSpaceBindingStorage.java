@@ -30,25 +30,34 @@ import org.exoplatform.social.core.storage.GroupSpaceBindingStorageException;
 public interface GroupSpaceBindingStorage {
 
   /**
-   * Gets a list containing all the groups binding for a space/role.
+   * Get a list containing all the groups binding for a space/role.
    *
    * @param spaceId The space Id.
    * @param role The role in the space (manager or member).
    * @return The list of binding.
    */
-  List<GroupSpaceBinding> findSpaceBindings(String spaceId, String role) throws GroupSpaceBindingStorageException;
+  List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId, String role) throws GroupSpaceBindingStorageException;
 
   /**
-   * Gets a list containing all the group binding for a space member.
+  * Get a list containing all the groups binding for a space/role.
+  *
+  * @param group The group Id.
+  * @param role The role in the group (manager or member).
+  * @return The list of binding.
+  */
+  List<GroupSpaceBinding> findGroupSpaceBindingsByGroup(String group, String role) throws GroupSpaceBindingStorageException;
+
+  /**
+   * Get a list containing all the group binding for a space member.
    *
    * @param spaceId The space Id.
    * @param userName The space member.
    * @return The list of binding.
    */
-  List<UserSpaceBinding> findUserSpaceBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
+  List<UserSpaceBinding> findUserSpaceBindingsBySpace(String spaceId, String userName) throws GroupSpaceBindingStorageException;
 
   /**
-   * Gets a list containing all the group binding for a membership
+   * Get a list containing all the group binding for a membership
    * (user/group/role).
    *
    * @param group The group.
@@ -60,6 +69,16 @@ public interface GroupSpaceBindingStorage {
                                                       String groupRole,
                                                       String userName) throws GroupSpaceBindingStorageException;
 
+
+  /**
+   * Get a all the group binding for a user
+   * (user/group/role).
+   *
+   * @param userName The group.
+   * @return The list of binding.
+  */
+  List<UserSpaceBinding> findUserSpaceBindingsByUser(String userName) throws GroupSpaceBindingStorageException;
+
   /**
    * Get all user bindings for a membership (group+role)
    *
@@ -67,7 +86,7 @@ public interface GroupSpaceBindingStorage {
    * @param groupRole the role in group
    * @return A list of group+membership bindings
    */
-  List<UserSpaceBinding> findUserAllBindingsbyGroupMembership(String group, String groupRole);
+  List<UserSpaceBinding> findUserAllBindingsbyGroupMembership(String group, String groupRole) throws GroupSpaceBindingStorageException;
 
   /**
    * Saves a binding. If isNew is true, creates new binding. If not only updates
@@ -118,5 +137,6 @@ public interface GroupSpaceBindingStorage {
    * @param userName
    * @throws GroupSpaceBindingStorageException
    */
-  boolean hasUserBindings(String spaceId, String userName);
+  boolean hasUserBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
+
 }

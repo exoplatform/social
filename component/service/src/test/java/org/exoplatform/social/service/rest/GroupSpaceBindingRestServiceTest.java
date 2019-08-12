@@ -17,11 +17,8 @@
 package org.exoplatform.social.service.rest;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
-import org.exoplatform.social.core.binding.impl.GroupSpaceBindingServiceImpl;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -72,11 +69,11 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
   }
 
     protected void deleteAllBindings() {
-        for (GroupSpaceBinding binding : groupSpaceBindingService.findSpaceBindings(spaceId1,"member")) {
-            groupSpaceBindingService.deleteSpaceBinding(binding);
+        for (GroupSpaceBinding binding : groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId1,"member")) {
+            groupSpaceBindingService.deleteAllSpaceBindingsByGroup(binding);
         }
-        for (GroupSpaceBinding binding : groupSpaceBindingService.findSpaceBindings(spaceId1,"manager")) {
-            groupSpaceBindingService.deleteSpaceBinding(binding);
+        for (GroupSpaceBinding binding : groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId1,"manager")) {
+            groupSpaceBindingService.deleteAllSpaceBindingsByGroup(binding);
         }
     }
 
@@ -89,7 +86,7 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
       // Given
       List<GroupSpaceBinding> groupSpaceBindings = new LinkedList<>();
       GroupSpaceBinding binding1 = new GroupSpaceBinding();
-      binding1.setId(1);
+      binding1.setId(-1);
       binding1.setGroupRole("any");
       binding1.setSpaceRole("member");
       binding1.setGroup("/platform/administrators");
@@ -98,7 +95,7 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
       tearDownbindingList.add(binding1);
 
       GroupSpaceBinding binding2 = new GroupSpaceBinding();
-      binding2.setId(2);
+      binding2.setId(-1);
       binding2.setGroupRole("any");
       binding2.setSpaceRole("member");
       binding2.setGroup("/platform/web-contributors");
@@ -107,7 +104,7 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
       tearDownbindingList.add(binding2);
 
       GroupSpaceBinding binding3 = new GroupSpaceBinding();
-      binding3.setId(3);
+      binding3.setId(-1);
       binding3.setGroupRole("any");
       binding3.setSpaceRole("manager");
       binding3.setGroup("/platform/web-contributors");
@@ -138,7 +135,7 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
         // Given
         List<GroupSpaceBinding> groupSpaceBindings = new LinkedList<>();
         GroupSpaceBinding binding1 = new GroupSpaceBinding();
-        binding1.setId(1);
+        binding1.setId(-1);
         binding1.setGroupRole("any");
         binding1.setSpaceRole("member");
         binding1.setGroup("/platform/administrators");
