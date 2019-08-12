@@ -25,6 +25,9 @@
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td v-html="space.description"></td>
         <td class="center actionContainer" >
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" class="actionIcon" @click="openSpaceBindingModal(space.id, index)">
+            <i class="uiIconSpaceBinding uiIconGroup"></i>
+          </a>
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName,space.groupId)" class="actionIcon" target="_blank">
             <i class="uiIconEdit uiIconLightGray"></i>
           </a>
@@ -74,6 +77,7 @@
         <div class="btn" @click="closeModal">{{ $t('social.spaces.administration.delete.spaces.button.cancel') }}</div>
       </div>
     </exo-modal>
+    <exo-spaces-binding-modal v-show="showSpaceBindingModal" :title="$t('social.spaces.administration.binding.modal.title')" @modal-closed="closeSpaceBindingModal"/>
   </div>  
 </template>
 <script>
@@ -83,8 +87,11 @@ import { spacesConstants } from '../../js/spacesConstants';
 export default {
   data() {
     return {
+      showSpaceBindingModal: false,
       showConfirmMessageModal: false,
       spaces: [],
+      spaceToBindId: null,
+      spaceToBindIndex: null,
       spaceToDeleteId: null,
       spaceToDeleteIndex: null,
       totalPages: 1,
@@ -185,6 +192,14 @@ export default {
     },
     closeModal(){
       this.showConfirmMessageModal = false;
+    },
+    closeSpaceBindingModal(){
+      this.showSpaceBindingModal = false;
+    },
+    openSpaceBindingModal(id, index){
+      this.showSpaceBindingModal = true;
+      this.spaceToBindId = id;
+      this.spaceToBindIndex = index;
     }
   }
 };
