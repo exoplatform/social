@@ -27,7 +27,12 @@
                     <div class="uiBindingInput">
                       <h5 v-exo-tooltip.bottom.body="binding.groupRole+':'+binding.group" v-show="index != indexBindingManagerEditing"><b>{{ binding.groupRole }} in {{ binding.group }}</b></h5>
                       <div v-show="index == indexBindingManagerEditing" class="inputUser">
-                        <input :id="`group-suggester-manager${index}`" type="text"/>
+                        <span class="uiSelectbox">
+                          <select v-model="binding.groupRole" class="selectbox" name="template">
+                            <option v-for="(membership) in memberships" :key="membership" :value="membership">{{ membership }}</option>
+                          </select>
+                        </span>
+                        <input :id="`group-suggester-manager${index}`" class="uiGroupBindingInput" type="text"/>
                       </div>
                     </div>
                     <div class="uiBindingAction">
@@ -48,7 +53,7 @@
                 </tr>
               </table>
               <div v-show="indexBindingManagerEditing == -1" class="center actionContainer" >
-                <div class="btn" @click="addBinding()">{{ $t('social.spaces.administration.binding.actions.addBinding') }}</div>
+                <div class="btn" @click="addBinding('manager')">{{ $t('social.spaces.administration.binding.actions.addBinding') }}</div>
               </div>
             </td>
           </tr>
@@ -64,7 +69,12 @@
                     <div class="uiBindingInput">
                       <h5 v-exo-tooltip.bottom.body="binding.groupRole+':'+binding.group" v-show="index != indexBindingMemberEditing"><b>{{ binding.groupRole }} in {{ binding.group }}</b></h5>
                       <div v-show="index == indexBindingMemberEditing" class="inputUser">
-                        <input :id="`group-suggester-member${index}`" type="text"/>
+                        <span class="uiSelectbox">
+                          <select v-model="binding.groupRole" class="selectbox" name="template">
+                            <option v-for="(membership) in memberships" :key="membership" :value="membership">{{ membership }}</option>
+                          </select>
+                        </span>
+                        <input :id="`group-suggester-member${index}`" class="uiGroupBindingInput" type="text"/>
                       </div>
                     </div>
                     <div class="uiBindingAction">
@@ -85,7 +95,7 @@
                 </tr>
               </table>
               <div v-show="indexBindingMemberEditing == -1" class="center actionContainer" >
-                <div class="btn" @click="addBinding()">{{ $t('social.spaces.administration.binding.actions.addBinding') }}</div>
+                <div class="btn" @click="addBinding('member')">{{ $t('social.spaces.administration.binding.actions.addBinding') }}</div>
               </div>
             </td>
           </tr>
@@ -112,6 +122,11 @@ export default {
     return{
       indexBindingManagerEditing : -1,
       indexBindingMemberEditing : -1,
+      groupBindingManagerEditing : '',
+      groupBindingMemberEditing : '',
+      roleBindingManagerEditing : '',
+      roleBindingMemberEditing : '',
+      memberships : ['*','member','manager'],
       bindingsManager:[{
         id:'-1',
         group:'/platform/administrators',
@@ -168,6 +183,7 @@ export default {
           hideSelected: true,
           maxItems: 1,
           mode: 'multi',
+          allowEmptyOption : false,
           renderMenuItem (item, escape) {
             return component.renderMenuItem(item, escape);
           },
@@ -239,30 +255,51 @@ export default {
       if (type === 'member')
       {
         this.indexBindingMemberEditing = index;
+        this.groupBindingMemberEditing = this.bindingsMember[this.indexBindingMemberEditing].group;
+        this.roleBindingMemberEditing = this.bindingsMember[this.indexBindingMemberEditing].groupRole;
       }
       else
       {
         this.indexBindingManagerEditing = index;
+        this.groupBindingManagerEditing = this.bindingsManager[this.indexBindingManagerEditing].group;
+        this.roleBindingManagerEditing = this.bindingsManager[this.indexBindingManagerEditing].groupRole;
       }
       this.initSuggesterGroup(index,type);
     },
     saveBinding: function(index,type) {
-      index = -1;
-      if (type === 'member') {this.indexBindingMemberEditing = index;}
-      else {this.indexBindingManagerEditing = index;}
+      if (type === 'member') {this.indexBindingMemberEditing = -1;}
+      else {this.indexBindingManagerEditing = -1;}
     },
     deleteBinding: function(index,type) {
-      index = -1;
-      if (type === 'member') {this.indexBindingMemberEditing = index;}
-      else {this.indexBindingManagerEditing = index;}
+      if (type === 'member'){this.bindingsMember.splice(index,1);}
+      else {this.bindingsManager.splice(index,1);}
     },
     cancelBinding: function(index,type) {
-      index = -1;
-      if (type === 'member') {this.indexBindingMemberEditing = index;}
-      else {this.indexBindingManagerEditing = index;}
+      if (type === 'member')
+      {
+        this.bindingsMember[this.indexBindingMemberEditing].group = this.groupBindingMemberEditing;
+        this.bindingsMember[this.indexBindingMemberEditing].groupRole = this.roleBindingMemberEditing;
+        this.indexBindingMemberEditing = -1;
+      }
+      else
+      {
+        this.bindingsManager[this.indexBindingManagerEditing].group = this.groupBindingManagerEditing;
+        this.bindingsManager[this.indexBindingManagerEditing].groupRole = this.roleBindingManagerEditing;
+        this.indexBindingManagerEditing = -1;
+      }
     },
-    addBinding: function() {
-      this.$emit('addBinding');
+    addBinding: function(type) {
+      if (type === 'member')
+      {
+        this.bindingsMember.push({});
+        this.editBinding(this.bindingsMember.length-1,type);
+      }
+      else
+      {
+        this.bindingsManager.push({});
+        this.editBinding(this.bindingsManager.length-1,type);
+      }
+
     }
   }
 };
