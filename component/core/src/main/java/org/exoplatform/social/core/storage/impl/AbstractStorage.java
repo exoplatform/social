@@ -75,17 +75,11 @@ public abstract class AbstractStorage extends BaseComponentPlugin {
   }
 
   private <T> T getRoot(String nodetypeName, Class<T> t) {
-    boolean created = startSynchronization();
-    try {
-      T got = getSession().findByPath(t, nodetypeName);
-      if (got == null) {
-        got = getSession().insert(t, nodetypeName);
-      }
-      return got;
+    T got = getSession().findByPath(t, nodetypeName);
+    if (got == null) {
+      got = getSession().insert(t, nodetypeName);
     }
-    finally {
-      stopSynchronization(created);
-    }
+    return got;
   }
 
   public ProviderRootEntity getProviderRoot() {

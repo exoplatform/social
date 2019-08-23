@@ -22,6 +22,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.service.AsyncCallback;
@@ -128,6 +129,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
     Node node = null;
     int batchIndex = 0;
     int offset = 0;
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     try {
       while (it.hasNext()) {
         node = (Node) it.next();
@@ -150,7 +152,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
     } finally {
       
       StorageUtils.persistJCR(false);
-      StorageUtils.endRequest();
+      RequestLifeCycle.end();
     }
   }
   

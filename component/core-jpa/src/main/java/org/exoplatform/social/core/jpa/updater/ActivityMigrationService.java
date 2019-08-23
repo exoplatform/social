@@ -105,12 +105,12 @@ public class ActivityMigrationService extends AbstractMigrationService<ExoSocial
   @ManagedDescription("Manual to start run miguration data of activities from JCR to RDBMS.")
   public void doMigration() throws Exception {
     RequestLifeCycle.end();
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+
     superUserIdentityId = getSuperUserIdentityId();
     numberFailed += migrateUserActivities();
     // migrate activities from space
     numberFailed += migrateSpaceActivities();
-
-    RequestLifeCycle.begin(PortalContainer.getInstance());
   }
 
   private long migrateUserActivities() throws Exception {
