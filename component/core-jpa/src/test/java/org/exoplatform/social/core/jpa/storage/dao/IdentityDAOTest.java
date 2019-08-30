@@ -78,7 +78,7 @@ public class IdentityDAOTest extends BaseCoreTest {
 
     // Then
     assertNotNull(allIds);
-    assertEquals(3, allIds.size());
+    assertEquals(7, allIds.size());
     assertTrue(allIds.contains(identityUser1.getId()));
     assertTrue(allIds.contains(identityUser2.getId()));
     assertTrue(allIds.contains(identitySpace1.getId()));
@@ -236,7 +236,7 @@ public class IdentityDAOTest extends BaseCoreTest {
 
     // Then
     assertNotNull(allOrganizationIds);
-    assertEquals(2, allOrganizationIds.size());
+    assertEquals(6, allOrganizationIds.size());
     assertTrue(allOrganizationIds.contains(identityUser1.getId()));
     assertTrue(allOrganizationIds.contains(identityUser2.getId()));
     assertNotNull(allSpaceIds);
