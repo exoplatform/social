@@ -2,6 +2,7 @@ package org.exoplatform.social.rest.impl.spacemembership;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.rest.impl.ContainerResponse;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -10,6 +11,7 @@ import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 import javax.ws.rs.core.Response;
+import java.util.stream.Stream;
 
 public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
   private IdentityManager identityManager;
@@ -24,12 +26,17 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
 
     identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
     spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
-    
-    identityManager.getOrCreateIdentity("organization", "root", true);
-    identityManager.getOrCreateIdentity("organization", "john", true);
-    identityManager.getOrCreateIdentity("organization", "mary", true);
-    identityManager.getOrCreateIdentity("organization", "demo", true);
 
+    Identity rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
+    Identity johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
+    Identity maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
+    Identity demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
+
+    Stream.of(rootIdentity, johnIdentity, maryIdentity, demoIdentity).forEach(identity -> {
+      identity.setDeleted(false);
+      identity.setEnable(true);
+      identityManager.updateIdentity(identity);
+    });
     //root creates 2 spaces, john 1 and mary 1
     createSpaceIfNotExist(1, "root");
     createSpaceIfNotExist(2, "root");

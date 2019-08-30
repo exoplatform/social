@@ -127,10 +127,15 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
     if (limit <= 0) {
       throw new IllegalArgumentException("limit must be > 0");
     }
-    TypedQuery<String> query = getEntityManager().createNamedQuery("SpaceMember.getSpaceMembersByStatus",
-                                                                   String.class);
-    query.setParameter("status", status);
-    query.setParameter("spaceId", spaceId);
+    StringBuilder queryStringBuilder = new StringBuilder("SELECT spaceMember.USER_ID \n");
+    queryStringBuilder.append(" FROM SOC_SPACES_MEMBERS spaceMember \n");
+    queryStringBuilder.append(" INNER JOIN SOC_IDENTITIES identity \n");
+    queryStringBuilder.append("   ON spaceMember.USER_ID = identity.REMOTE_ID \n");
+    queryStringBuilder.append("       AND identity.ENABLED = TRUE ");
+    queryStringBuilder.append("       AND identity.DELETED = FALSE ");
+    queryStringBuilder.append("       WHERE spaceMember.STATUS = '").append(status.ordinal()).append("' \n");
+    queryStringBuilder.append("       AND spaceMember.SPACE_ID = '").append(spaceId).append("' \n");
+    Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
     query.setFirstResult(offset);
     query.setMaxResults(limit);
     return query.getResultList();
@@ -144,10 +149,16 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
     if (spaceId == null || spaceId == 0) {
       throw new IllegalArgumentException("spaceId is null or equals to 0");
     }
-    TypedQuery<Long> query = getEntityManager().createNamedQuery("SpaceMember.countSpaceMembersByStatus", Long.class);
-    query.setParameter("status", status);
-    query.setParameter("spaceId", spaceId);
-    return query.getSingleResult().intValue();
+    StringBuilder queryStringBuilder = new StringBuilder("SELECT count(*) \n");
+    queryStringBuilder.append(" FROM SOC_SPACES_MEMBERS spaceMember \n");
+    queryStringBuilder.append(" INNER JOIN SOC_IDENTITIES identity \n");
+    queryStringBuilder.append("   ON spaceMember.USER_ID = identity.REMOTE_ID \n");
+    queryStringBuilder.append("       AND identity.DELETED = FALSE ");
+    queryStringBuilder.append("       AND identity.ENABLED = TRUE ");
+    queryStringBuilder.append("       WHERE spaceMember.STATUS = '").append(status.ordinal()).append("' \n");
+    queryStringBuilder.append("       AND spaceMember.SPACE_ID = '").append(spaceId).append("' \n");
+    Query query = getEntityManager().createNativeQuery(queryStringBuilder.toString());
+    return ((Number) query.getSingleResult()).intValue();
   }
 
   @Override
