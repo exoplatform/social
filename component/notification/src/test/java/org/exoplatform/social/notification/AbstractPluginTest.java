@@ -103,7 +103,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   /**
    * Validates the Message's subject
    * @param message
-   * @param includedString
+   * @param validatedString
    */
   protected void assertSubject(MessageInfo message, String validatedString) {
     assertEquals(validatedString, message.getSubject());
@@ -246,6 +246,21 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
     ExoSocialActivity comment = new ExoSocialActivityImpl();
     comment.setTitle(commentTitle);
     comment.setUserId(commenter.getId());
+    activityManager.saveComment(activity, comment);
+
+    return comment;
+  }
+
+  /**
+   * Edit the comment for Test Case
+   * 
+   * @param activity
+   * @param comment
+   * @param commentTitle
+   * @return
+   */
+  protected ExoSocialActivity editComment(ExoSocialActivity activity, ExoSocialActivity comment, String commentTitle) {
+    comment.setTitle(commentTitle);
     activityManager.saveComment(activity, comment);
 
     return comment;

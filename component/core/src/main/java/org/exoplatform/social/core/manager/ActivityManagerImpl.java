@@ -16,12 +16,11 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.*;
+
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
@@ -231,7 +230,21 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public void updateActivity(ExoSocialActivity existingActivity) {
+    String activityId = existingActivity.getId();
+
+    // In order to get the added mentions in the ActivityMentionPlugin we need to
+    // pass the previous mentions in the activity, since there is no way to do so,
+    // as a solution we pass them throw the activity's template params
+    String[] previousMentions = getActivity(activityId).getMentionedIds();
     activityStorage.updateActivity(existingActivity);
+
+    if (previousMentions.length > 0) {
+      String mentions = String.join(",", previousMentions);
+      Map<String, String> mentionsTemplateParams = existingActivity.getTemplateParams();
+      mentionsTemplateParams.put("PreviousMentions", mentions);
+
+      existingActivity.setTemplateParams(mentionsTemplateParams);
+    }
     activityLifeCycle.updateActivity(existingActivity);
   }
 
@@ -270,14 +283,23 @@ public class ActivityManagerImpl implements ActivityManager {
       return;
     }
 
+    // In order to get the added mentions in the ActivityMentionPlugin we need to
+    // pass the previous mentions in the activity, since there is no way to do so,
+    // as a solution we pass them throw the activity's template params
+    String[] previousMentions = StringUtils.isEmpty(commentId) ? new String[0] : getActivity(commentId).getMentionedIds();
     activityStorage.saveComment(existingActivity, newComment);
-    //if there is any the listener to get the activity's title to do something for example: show message, send mail ...
-    //Just call the Social API to get the activity by Id and then to do by yourself.
-    //SOC-5209
-    if ( StringUtils.isEmpty(commentId)) {
+
+    if (StringUtils.isEmpty(commentId)) {
       activityLifeCycle.saveComment(newComment);
-    }
-    else {
+    } else {
+      if (previousMentions.length > 0) {
+        String mentions = String.join(",", previousMentions);
+        Map<String, String> mentionsTemplateParams = newComment.getTemplateParams() != null ? newComment.getTemplateParams()
+                                                                                            : new HashMap<>();
+        mentionsTemplateParams.put("PreviousMentions", mentions);
+
+        newComment.setTemplateParams(mentionsTemplateParams);
+      }
       activityLifeCycle.updateComment(newComment);
     }
   }

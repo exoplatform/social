@@ -79,7 +79,7 @@ public class EditCommentWebBuilderTest extends AbstractPluginTest {
         ctx.setNotificationInfo(editNotification.setTo("root"));
         MessageInfo info = buildMessageInfo(ctx);
         assertBody(info, "edited comment");
-        assertBody(info, "data-link=\"/portal/classic/activity?id=" + activity.getId() + "#comment-comment63\"");
+        assertBody(info, "data-link=\"/portal/classic/activity?id=" + activity.getId() + "#comment-comment69\"");
     }
 
 }
