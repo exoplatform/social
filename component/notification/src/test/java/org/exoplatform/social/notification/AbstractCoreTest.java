@@ -238,4 +238,34 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
 
     return activity;
   }
+
+  /**
+   * Makes the activity for Test Case
+   * @param owner
+   * @param activityTitle
+   * @return
+   */
+  protected ExoSocialActivity makeActivityOnStream(Identity owner, String activityTitle) {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(owner.getId());
+    activityManager.saveActivityNoReturn(activity);
+    tearDownActivityList.add(activity);
+
+    return activity;
+  }
+
+  /**
+   * Edit the activity for Test Case
+   * 
+   * @param activity
+   * @param activityTitle
+   * @return
+   */
+  protected ExoSocialActivity editActivity(ExoSocialActivity activity, String activityTitle) {
+    activity.setTitle(activityTitle);
+    activityManager.updateActivity(activity);
+
+    return activity;
+  }
 }

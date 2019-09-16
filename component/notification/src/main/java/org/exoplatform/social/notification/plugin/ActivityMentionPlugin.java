@@ -16,9 +16,8 @@
  */
 package org.exoplatform.social.notification.plugin;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.model.NotificationInfo;
@@ -43,19 +42,27 @@ public class ActivityMentionPlugin extends BaseNotificationPlugin {
   @Override
   public NotificationInfo makeNotification(NotificationContext ctx) {
     ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
-    
-    Set<String> receivers = new HashSet<String>();
-    if (activity.getMentionedIds().length > 0) {
-      Utils.sendToMentioners(receivers, activity.getMentionedIds(), activity.getPosterId());
+    // We retrieve the previous mentions from the activity's template params in
+    // order to get the added mention ids to notify
+    Map<String, String> templateParams = activity.getTemplateParams() != null ? activity.getTemplateParams() : new HashMap<>();
+    String[] actualMentions = activity.getMentionedIds();
+    String[] previousMentions = templateParams.containsKey("PreviousMentions") ? templateParams.get("PreviousMentions").split(",")
+                                                                               : new String[0];
+    String[] mentionedIds = getAddedMentions(previousMentions, actualMentions);
+
+    Set<String> receivers = new HashSet<>();
+    if (actualMentions.length > 0) {
+      Utils.sendToMentioners(receivers, mentionedIds, activity.getPosterId());
     } else {
       receivers = Utils.getMentioners(activity.getTemplateParams().get("comment"), activity.getPosterId());
     }
 
-    return NotificationInfo.instance().key(getKey())
-           .to(new ArrayList<String>(receivers))
-           .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(activity.getPosterId()))
-           .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
-           .end();
+    return NotificationInfo.instance()
+                           .key(getKey())
+                           .to(new ArrayList<String>(receivers))
+                           .with(SocialNotificationUtils.POSTER.getKey(), Utils.getUserId(activity.getPosterId()))
+                           .with(SocialNotificationUtils.ACTIVITY_ID.getKey(), activity.getId())
+                           .end();
   }
 
   @Override
@@ -75,5 +82,12 @@ public class ActivityMentionPlugin extends BaseNotificationPlugin {
     }
 
     return false;
+  }
+
+  private String[] getAddedMentions(String[] previousMentions, String[] actualMentions) {
+    List<String> previousMentionsList = Arrays.asList(previousMentions);
+    List<String> actualMentionsList = Arrays.asList(actualMentions);
+    List<String> addedMentionsList = actualMentionsList.stream().filter(s -> !previousMentionsList.contains(s)).collect(Collectors.toList());
+    return addedMentionsList.toArray(new String[addedMentionsList.size()]);
   }
 }

@@ -205,16 +205,19 @@ public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
     assertMadeMailDigestNotifications(3);
     List<NotificationInfo> list2 = assertMadeMailDigestNotifications(rootIdentity.getRemoteId(), 1);
     toRoot.add(list2.get(0));
+
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfos(toRoot);
+    Writer writer = new StringWriter();
+    buildDigest(ctx, writer);
+    assertDigest(writer, "Demo gtn, John Anthony have commented on your activity: my activity&#39;s title post today.demo : demo add comment...");
+    
     notificationService.clearAll();
     
     //john delete his comment
     activityManager.deleteComment(maryActivity, johnComment);
-
-    NotificationContext ctx = NotificationContextImpl.cloneInstance();
-    toRoot.set(0, toRoot.get(0).setTo(rootIdentity.getRemoteId()));
-    ctx.setNotificationInfos(toRoot);
-    Writer writer = new StringWriter();
-    buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn has commented on your activity: my activity&#39;s title post today.demo add comment");
+    
+    assertMadeMailDigestNotifications(0);
+    
   }
 }

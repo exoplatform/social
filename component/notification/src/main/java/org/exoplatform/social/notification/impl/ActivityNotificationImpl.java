@@ -26,6 +26,9 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.notification.plugin.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ActivityNotificationImpl extends ActivityListenerPlugin {
 
   @Override
@@ -40,15 +43,27 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
                                  .execute(ctx);
   }
 
-    @Override
+  @Override
   public void updateActivity(ActivityLifeCycleEvent event) {
-      ExoSocialActivity activity = event.getSource();
-      activity = CommonsUtils.getService(ActivityManager.class).getActivity(activity.getId());
-      NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
+    ExoSocialActivity activity = event.getSource();
+    Map<String, String> mentionsTemplateParams = activity.getTemplateParams() != null ? activity.getTemplateParams()
+                                                                                      : new HashMap<>();
+    activity = CommonsUtils.getService(ActivityManager.class).getActivity(activity.getId());
 
-      ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(EditActivityPlugin.ID)))
-              .with(ctx.makeCommand(PluginKey.key(ActivityMentionPlugin.ID)))
-              .execute(ctx);
+    // We check for the previous mentions in the event activity's template params
+    // and retrieve them to be included in the activity to proceed the notification
+    if (mentionsTemplateParams.containsKey("PreviousMentions")) {
+      Map<String, String> templateParams = activity.getTemplateParams() != null ? activity.getTemplateParams() : new HashMap<>();
+      templateParams.put("PreviousMentions", mentionsTemplateParams.get("PreviousMentions"));
+      activity.setTemplateParams(templateParams);
+    }
+
+    NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
+
+    ctx.getNotificationExecutor()
+       .with(ctx.makeCommand(PluginKey.key(EditActivityPlugin.ID)))
+       .with(ctx.makeCommand(PluginKey.key(ActivityMentionPlugin.ID)))
+       .execute(ctx);
   }
 
   @Override
@@ -66,12 +81,24 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
   @Override
   public void updateComment(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();
+    Map<String, String> mentionsTemplateParams = activity.getTemplateParams() != null ? activity.getTemplateParams()
+                                                                                      : new HashMap<>();
     activity = CommonsUtils.getService(ActivityManager.class).getActivity(activity.getId());
+
+    // We check for the previous mentions in the event activity's template params
+    // and retrieve them to be included in the activity to proceed the notification
+    if (mentionsTemplateParams.containsKey("PreviousMentions")) {
+      Map<String, String> templateParams = activity.getTemplateParams() != null ? activity.getTemplateParams() : new HashMap<>();
+      templateParams.put("PreviousMentions", mentionsTemplateParams.get("PreviousMentions"));
+      activity.setTemplateParams(templateParams);
+    }
+
     NotificationContext ctx = NotificationContextImpl.cloneInstance().append(SocialNotificationUtils.ACTIVITY, activity);
 
-    ctx.getNotificationExecutor().with(ctx.makeCommand(PluginKey.key(EditCommentPlugin.ID)))
-            .with(ctx.makeCommand(PluginKey.key(ActivityMentionPlugin.ID)))
-            .execute(ctx);
+    ctx.getNotificationExecutor()
+       .with(ctx.makeCommand(PluginKey.key(EditCommentPlugin.ID)))
+       .with(ctx.makeCommand(PluginKey.key(ActivityMentionPlugin.ID)))
+       .execute(ctx);
   }
 
   @Override

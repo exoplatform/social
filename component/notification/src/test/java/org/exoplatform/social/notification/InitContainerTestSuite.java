@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+  ActivityMentionWebBuilderTest.class,
   ActivityMentionMailBuilderTest.class,
   ActivityCommentMailBuilderTest.class,
   ActivityCommentReplyWebBuilderTest.class,
