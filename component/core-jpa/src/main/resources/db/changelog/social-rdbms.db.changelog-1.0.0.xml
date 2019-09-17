@@ -555,4 +555,22 @@
     <renameColumn tableName="SOC_SPACES" oldColumnName="TYPE" newColumnName="TEMPLATE" columnDataType="NVARCHAR(200)"/>
   </changeSet>
 
+  <changeSet author="social" id="1.0.0-62" dbms="mysql">
+    <sql>
+      ALTER TABLE SOC_ACTIVITIES MODIFY COLUMN TITLE longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT
+      NULL;
+      ALTER TABLE SOC_ACTIVITIES MODIFY COLUMN BODY longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      ALTER TABLE SOC_ACTIVITY_TEMPLATE_PARAMS MODIFY COLUMN TEMPLATE_PARAM_VALUE longtext CHARACTER SET utf8mb4
+      COLLATE utf8mb4_unicode_ci;
+      ALTER TABLE SOC_SPACES MODIFY COLUMN DESCRIPTION varchar(2000) CHARACTER SET utf8mb4 COLLATE
+      utf8mb4_unicode_ci;
+      ALTER TABLE SOC_IDENTITY_PROPERTIES MODIFY COLUMN VALUE varchar(2000) CHARACTER SET utf8mb4 COLLATE
+      utf8mb4_unicode_ci;
+      ALTER TABLE SOC_IDENTITY_EXPERIENCES MODIFY COLUMN SKILLS varchar(2000) CHARACTER SET utf8mb4 COLLATE
+      utf8mb4_unicode_ci;
+      ALTER TABLE SOC_IDENTITY_EXPERIENCES MODIFY COLUMN DESCRIPTION longtext CHARACTER SET utf8mb4 COLLATE
+      utf8mb4_unicode_ci;
+    </sql>
+  </changeSet>
+
 </databaseChangeLog>
