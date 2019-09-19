@@ -1,12 +1,16 @@
 package org.exoplatform.social.rest.impl.space;
 
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import java.util.stream.Stream;
+import java.io.ByteArrayInputStream;
+import java.net.URL;
+
 
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MultivaluedMap;
@@ -55,7 +59,12 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
-    
+
+    Stream.of(rootIdentity, johnIdentity, maryIdentity, demoIdentity).forEach(identity -> {
+      identity.setDeleted(false);
+      identity.setEnable(true);
+      identityManager.updateIdentity(identity);
+    });
     spaceRestResources = new SpaceRestResourcesV1(identityManager);
     registry(spaceRestResources);
   }

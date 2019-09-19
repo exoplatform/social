@@ -124,7 +124,12 @@ public abstract class BaseCoreTest extends BaseExoTestCase {
       identityManager.deleteIdentity(maryIdentity);
       identityManager.deleteIdentity(demoIdentity);
     }
-    //
+    // Reinitialize the user identities to deleted=false since they will be re-used by other tests
+    Arrays.asList(rootIdentity, johnIdentity, maryIdentity, demoIdentity).forEach(identity -> {
+      identity.setDeleted(false);
+      identity.setEnable(true);
+      identityManager.updateIdentity(identity);
+    });
     end();
   }  
   

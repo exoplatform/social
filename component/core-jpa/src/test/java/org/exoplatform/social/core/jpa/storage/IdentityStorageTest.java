@@ -33,11 +33,14 @@ import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.search.Sorting.OrderBy;
 import org.exoplatform.social.core.search.Sorting.SortBy;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
+import org.picketlink.idm.common.exception.IdentityException;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,6 +62,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
   private SpaceStorage spaceStorage;
   private List<Identity> tearDownIdentityList;
   private List<Space> tearDownSpaceList;
+  private OrganizationService organizationService;
 
   public void setUp() throws Exception {
     super.setUp();
@@ -66,6 +71,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertNotNull("identityStorage must not be null", identityStorage);
     tearDownIdentityList = new ArrayList<Identity>();
     tearDownSpaceList = new ArrayList<Space>();
+    organizationService = (OrganizationService) getContainer().getComponentInstanceOfType(OrganizationService.class);
   }
 
   /**
@@ -609,6 +615,120 @@ public class IdentityStorageTest extends AbstractCoreTest {
       identityStorage.processEnabledIdentity(identity, false);
     }
     assertEquals(numberUser - numberDisableUser, identityStorage.getIdentitiesCount(OrganizationIdentityProvider.NAME));
+  }
+
+  public Space initSpaceSetting(String spaceName, String[] membersList) throws SpaceException {
+    try {
+      Space space = new Space();
+      space.setDisplayName(spaceName);
+      space.setPrettyName(spaceName);
+      space.setGroupId("/spaces/" + space.getPrettyName());
+      space.setRegistration(Space.OPEN);
+      space.setDescription("description of space" + spaceName);
+      space.setType(DefaultSpaceApplicationHandler.NAME);
+      space.setVisibility(Space.PRIVATE);
+      space.setRegistration(Space.OPEN);
+      space.setPriority(Space.INTERMEDIATE_PRIORITY);
+      String[] managers = new String[] {};
+      String[] members = membersList;
+      String[] invitedUsers = new String[] {};
+      String[] pendingUsers = new String[] {};
+      space.setInvitedUsers(invitedUsers);
+      space.setPendingUsers(pendingUsers);
+      space.setManagers(managers);
+      space.setMembers(members);
+      space = spaceService.createSpace(space, "root");
+      return space;
+    } finally {
+      StorageUtils.persist();
+    }
+  }
+
+
+  public void testGetSpaceMemberByProfileFilterWhenUserDisabled() throws Exception {
+    Space space = initSpaceSetting("spacefortestwo", new String[]{"userfive", "usersix", "userseven"});
+    populateUser("userfive");
+    populateUser("usersix");
+    populateUser("userseven");
+    populateUser("usereight");
+    Stream.of("userfive", "usersix", "userseven", "usereight").forEach(s -> {
+      Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, s, true);
+      if (identity == null) {
+        throw new RuntimeException("error while getting the identity of the user: " + s);
+      } else {
+        identity.setDeleted(false);
+        identity.setEnable(true);
+        identityManager.updateIdentity(identity);
+      }
+    });
+    ProfileFilter profileFilter = new ProfileFilter();
+
+    updateSpaceMembersStatus("userfive", false, false);
+    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 3);
+    assertEquals(2, identities.size());
+
+    profileFilter = new ProfileFilter();
+    updateSpaceMembersStatus("userfive", false, true);
+    addUserToGroupWithMembership("userfive", space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MANAGER, 0, 3);
+    assertEquals(1, identities.size());
+
+    updateSpaceMembersStatus("userfive", false, false);
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MANAGER, 0, 3);
+    assertEquals(0, identities.size());
+  }
+
+  public void testGetSpaceMemberByProfileFilterWhenUserIsDeleted() throws Exception {
+    Space space = initSpaceSetting("spacefortestone", new String[]{"userone", "usertwo", "userthree"});
+    populateUser("userone");
+    populateUser("usertwo");
+    populateUser("userthree");
+    populateUser("userfour");
+    Stream.of("userone", "usertwo", "userthree", "userfour").forEach(s -> {
+      Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, s, true);
+      if (identity == null) {
+        throw new RuntimeException("error while getting the identity of the user: " + s);
+      } else {
+        identity.setDeleted(false);
+        identity.setEnable(true);
+        identityManager.updateIdentity(identity);
+      }
+    });
+    ProfileFilter profileFilter = new ProfileFilter();
+    updateSpaceMembersStatus("userone", true, false);
+
+    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 3);
+    assertEquals(2, identities.size());
+
+
+    profileFilter = new ProfileFilter();
+    populateUser("userone");
+    addUserToGroupWithMembership("userone", space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+    updateSpaceMembersStatus("userone", false, true);
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MANAGER, 0, 3);
+    assertEquals(1, identities.size());
+
+    updateSpaceMembersStatus("userone", true, false);
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MANAGER, 0, 4);
+    assertEquals(0, identities.size());
+  }
+
+
+  private void updateSpaceMembersStatus(String userID, boolean isDeleted, boolean isEnabled) throws Exception {
+    UserHandler userHandler = organizationService.getUserHandler();
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userID, true);
+    if (identity == null) {
+      throw new IdentityException("error while getting the identity of the user: " + userID);
+    } else {
+      if (isDeleted) {
+        userHandler.removeUser(userID, true);
+      } else {
+        userHandler.setEnabled(userID, isEnabled, true);
+      }
+      identity.setDeleted(isDeleted);
+      identity.setEnable(isEnabled);
+      identityManager.updateIdentity(identity);
+    }
   }
 
   @MaxQueryNumber(2635)
