@@ -147,7 +147,8 @@ public class ActivityMentionWebBuilderTest extends AbstractPluginTest {
     ExoSocialActivity maryComment = makeComment(ghostActivity, maryIdentity, "hello @john and @demo");
 
     // 2 messages to john and demo for mention
-    assertMadeWebNotifications(2);
+    assertMadeWebNotifications("john",1);
+    assertMadeWebNotifications("demo",1);
     List<NotificationInfo> toJohn = assertMadeWebNotifications(johnIdentity.getRemoteId(), 1);
     NotificationInfo mentionNotification = toJohn.get(0);
 
