@@ -573,4 +573,10 @@
     </sql>
   </changeSet>
 
+  <changeSet author="social" id="1.0.0-63">
+    <modifyDataType columnName="GROUP_ID"
+                    newDataType="NVARCHAR(250)"
+                    tableName="SOC_SPACES"/>
+  </changeSet>
+
 </databaseChangeLog>
