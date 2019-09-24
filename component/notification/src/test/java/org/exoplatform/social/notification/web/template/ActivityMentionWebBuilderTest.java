@@ -173,7 +173,7 @@ public class ActivityMentionWebBuilderTest extends AbstractPluginTest {
     editComment(ghostActivity, maryComment, "hello @root @john and @demo");
 
     // Only 1 message to root for mention
-    assertMadeWebNotifications(1);
+    assertMadeWebNotifications(2);
     assertMadeWebNotifications(johnIdentity.getRemoteId(), 0);
     assertMadeWebNotifications(demoIdentity.getRemoteId(), 0);
     List<NotificationInfo> toRoot = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
