@@ -48,10 +48,10 @@ public class ExoSocialActivityImplTest extends TestCase {
     assertEquals("bar", activity.getAppId());
 
     Date date = new GregorianCalendar(2010, 04, 06, 21, 55).getTime();
-    activity.setUpdated(date);
+    activity.setUpdated(date.getTime());
     assertEquals(date, activity.getUpdated());
 
-    activity.setUpdated(date);
+    activity.setUpdated(date.getTime());
     assertEquals(activity.getUpdated().getTime(), date.getTime());
 
     assertNull(activity.getStreamFaviconUrl());

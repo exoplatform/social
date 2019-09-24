@@ -57,7 +57,6 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 
-import java.net.URLDecoder;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -472,7 +471,7 @@ public class BaseUIActivity extends UIForm {
    */
   protected void editActivity(String message){
     getActivity().setTitle(message);
-    getActivity().setUpdated(new Date());
+    getActivity().setUpdated(new Date().getTime());
     Utils.getActivityManager().updateActivity(getActivity());
   }
 
@@ -484,7 +483,7 @@ public class BaseUIActivity extends UIForm {
    */
   protected ExoSocialActivity editCommentMessage(ExoSocialActivity commentActivity, String message){
     commentActivity.setTitle(message);
-    commentActivity.setUpdated(new Date());
+    commentActivity.setUpdated(new Date().getTime());
     Utils.getActivityManager().saveComment(getActivity(), commentActivity);
     activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity(), true);
     commentSize = activityCommentsListAccess.getSize();

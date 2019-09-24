@@ -136,14 +136,7 @@
       <as>gj</as>
     </depends>
   </module>
-  
-  <module>
-    <name>socialGadgetsUtil</name>
-    <script>
-       <path>/javascript/eXo/social/SocialGadgetsUtil.js</path>
-    </script>
-  </module>
-  
+
   <module>
     <name>social-ui-user-search</name>
       <as>socialUiUserSearch</as>

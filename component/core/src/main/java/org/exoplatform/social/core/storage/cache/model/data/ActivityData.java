@@ -124,7 +124,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     activity.isHidden(isHidden);
     activity.isLocked(isLocked);
     activity.setPostedTime(postedTime);
-    activity.setUpdated(new Date(lastUpdated));
+    activity.setUpdated(lastUpdated);
     activity.setUserId(userId);
     activity.setAppId(appId);
     activity.setTitleId(titleId);

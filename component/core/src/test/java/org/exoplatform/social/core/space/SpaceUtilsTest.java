@@ -96,12 +96,8 @@ public class SpaceUtilsTest extends AbstractCoreTest {
     final String inputPortlet2 = "hello world portlet";
     final String outputPortlet2 = "hello world";
 
-    final String inputGadget = "abc def gadget";
-    final String outputGadget = "abc def";
-
     assertEquals(outputPortlet, SpaceUtils.getDisplayAppName(inputPortlet));
     assertEquals(outputPortlet2, SpaceUtils.getDisplayAppName(inputPortlet2));
-    assertEquals(outputGadget, SpaceUtils.getDisplayAppName(inputGadget));
 
   }
   /**

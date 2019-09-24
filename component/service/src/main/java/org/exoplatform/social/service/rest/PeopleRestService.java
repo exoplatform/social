@@ -19,7 +19,6 @@ package org.exoplatform.social.service.rest;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.shindig.social.opensocial.model.Activity;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -156,7 +155,7 @@ public class PeopleRestService implements ResourceContainer{
     identityFilter.setPosition("");
     identityFilter.setSkills("");
     Space currentSpace = getSpaceService().getSpaceByUrl(spaceURL);
-    Activity currentActivity = getActivityManager().getActivity(activityId);
+    ExoSocialActivity currentActivity = getActivityManager().getActivity(activityId);
 
     List<Identity> excludedIdentityList = identityFilter.getExcludedIdentityList();
     if (excludedIdentityList == null) {
@@ -639,7 +638,7 @@ public class PeopleRestService implements ResourceContainer{
     identityManager = Util.getIdentityManager(portalName);
     
     Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                                   Util.getViewerId(uriInfo), true);
+                                                                                   Util.getViewerId(), true);
     Identity[] identities;
     List<HashMap<String, Object>> entitys = new ArrayList<HashMap<String,Object>>();
     if (nameToSearch == null) { 
@@ -854,7 +853,7 @@ public class PeopleRestService implements ResourceContainer{
       this.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
     }
     
-    public ConnectionInfoRestOut(Identity identity, Activity lastestActivity, String lang){
+    public ConnectionInfoRestOut(Identity identity, ExoSocialActivity lastestActivity, String lang){
       this.setDisplayName(identity.getProfile().getFullName());
       this.setAvatarUrl(Util.buildAbsoluteAvatarURL(identity));
       this.setProfileUrl(identity.getProfile().getUrl());
@@ -977,8 +976,6 @@ public class PeopleRestService implements ResourceContainer{
     if(userId == null || userId.isEmpty() || IdentityConstants.ANONIM.equals(userId)) {
       if (securityContext != null && securityContext.getUserPrincipal() != null) {
         return securityContext.getUserPrincipal().getName();
-      } else if (uriInfo != null) {
-        return Util.getViewerId(uriInfo);
       }
     }
     return userId;
@@ -990,7 +987,7 @@ public class PeopleRestService implements ResourceContainer{
     if(activityRealtimeListAccess.getSize() == 0 ){
       return null;
     }
-    Activity lastestActivity =  activityRealtimeListAccess.load(0, 1)[0];
+    ExoSocialActivity lastestActivity =  activityRealtimeListAccess.load(0, 1)[0];
     return new ConnectionInfoRestOut(existingIdentity, lastestActivity, lang);
   }
   

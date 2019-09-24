@@ -18,8 +18,6 @@ package org.exoplatform.social.portlet;
 
 import javax.portlet.PortletRequest;
 
-import org.exoplatform.dashboard.webui.component.DashboardParent;
-import org.exoplatform.dashboard.webui.component.UIDashboard;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -33,22 +31,12 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
     lifecycle = UIApplicationLifecycle.class,
     template = "app:/groovy/social/portlet/UIHomeSpacePortlet.gtmpl"
 )
-public class UIHomeSpacePortlet extends UIPortletApplication implements DashboardParent {
-
-  private String DEFAULT_TEMPLATE = "home-spaces";
-  private String DEFAULT_RSSFETCH_ID = "rssFetch";
+public class UIHomeSpacePortlet extends UIPortletApplication {
   /**
    * constructor
    * @throws Exception
    */
   public UIHomeSpacePortlet() throws Exception {
-    UIDashboard uiDashboard = addChild(UIDashboard.class, null, null);
-    PortletRequestContext context = (PortletRequestContext)  WebuiRequestContext.getCurrentInstance() ;
-    PortletRequest prequest = context.getRequest() ;
-    String template =  prequest.getPreferences().getValue("template", DEFAULT_TEMPLATE) ;
-    String rssFetchId = prequest.getPreferences().getValue("aggregatorId", DEFAULT_RSSFETCH_ID) ;
-    uiDashboard.setContainerTemplate(template);
-    uiDashboard.setAggregatorId(rssFetchId);
   }
 
   public boolean canEdit() {

@@ -17,19 +17,29 @@
 package org.exoplatform.social.core.activity.model;
 
 import java.util.List;
+import java.util.Date;
+import java.util.Map;
 
 /**
- * ExoSocialActivity interface extends {@link org.apache.shindig.social.opensocial.model.Activity}}.
+ * ExoSocialActivity interface
  *
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Nov 9, 2010
  * @since 1.2.0-GA
  */
-public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.model.Activity {
+public interface ExoSocialActivity {
   /**
    * The  Constant label comment.
    */
   String IS_COMMENT = "IS_COMMENT";
+
+  String getId();
+
+  void setId(String id);
+
+  String getExternalId();
+
+  void setExternalId(String externalId);
 
   /**
    * Gets activity stream associated with this activity.
@@ -182,6 +192,14 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    */
   void setName(String name);
 
+  String getTitle();
+
+  void setTitle(String title);
+
+  String getTitleId();
+
+  void setTitleId(String titleId);
+
   /**
    * This string value provides a human readable description or summary of the
    * activity object.
@@ -196,6 +214,30 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param summary the activity summary
    */
   void setSummary(String summary);
+
+  String getBody();
+
+  void setBody(String body);
+
+  String getBodyId();
+
+  void setBodyId(String bodyId);
+
+  String getAppId();
+
+  void setAppId(String appId);
+
+  Long getPostedTime();
+
+  void setPostedTime(Long postedTime);
+
+  String getUrl();
+
+  void setUrl(String url);
+
+  Map<String, String> getTemplateParams();
+
+  void setTemplateParams(Map<String, String> templateParams);
 
   /**
    * Gets the permanent link.
@@ -213,6 +255,14 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param permaLink the permalink link
    */
   void setPermanLink(String permaLink);
+
+  String getStreamFaviconUrl();
+
+  String getStreamSourceUrl();
+
+  String getStreamTitle();
+
+  String getStreamUrl();
   
   /**
    * Gets array of identityIds who like this activity.
@@ -242,12 +292,14 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    */
   void setCommentedIds(String[] identityIds);
 
+  Date getUpdated();
+
   /**
      * Set the last update datetime
      *
      * @param updated last update datetime
      */
-  public void setUpdated(Long updated);
+  void setUpdated(Long updated);
   
   /**
    * Gets id of identity who is poster.
@@ -304,4 +356,12 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param files
    */
   void setFiles(List<ActivityFile> files);
+
+  String getUserId();
+
+  void setUserId(String userId);
+
+  Float getPriority();
+
+  void setPriority(Float priority);
 }

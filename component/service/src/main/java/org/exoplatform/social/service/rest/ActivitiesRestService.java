@@ -360,7 +360,7 @@ public class ActivitiesRestService implements ResourceContainer {
       model.setTotalNumberOfLikes(null);
     }
     
-    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
+    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(),
                                                                   true).getId(),activity)){
       model.setLiked(true);
     } else {
@@ -449,7 +449,7 @@ public class ActivitiesRestService implements ResourceContainer {
     MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
 
     Identity currentIdentity = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                                       Util.getViewerId(uriInfo), false);
+                                                                                       Util.getViewerId(), false);
     ActivityManager activityManager = Util.getActivityManager(portalName);
     ExoSocialActivity activity = null;
     
@@ -681,12 +681,6 @@ public class ActivitiesRestService implements ResourceContainer {
     String userId = null;
     if (state != null) {
       userId = state.getIdentity().getUserId();
-    } else {
-      try {
-        userId = Util.getViewerId(uriInfo);
-      } catch (Exception e) {
-        LOG.warn(e.getMessage(), e);
-      }
     }
     Identity identity = null;
     try {
@@ -696,7 +690,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     
     if (identity == null) {
-      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
+      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(),
                                                                     false);
     }
     

@@ -33,7 +33,6 @@
     <module>core</module>
     <module>core-jpa</module>
     <module>service</module>
-    <module>opensocial</module>
     <module>webui</module>
     <module>notification</module>
   </modules>
