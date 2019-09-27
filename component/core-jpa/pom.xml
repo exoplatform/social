@@ -16,7 +16,7 @@
   <parent>
     <artifactId>social-component</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>5.3.x-SNAPSHOT</version>
+    <version>6.0.x-SNAPSHOT</version>
   </parent>
   <artifactId>social-component-core-jpa</artifactId>
   <packaging>jar</packaging>
