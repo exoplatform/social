@@ -137,13 +137,12 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
           begunTx = startTx();
           transactionList = new ArrayList<>();
           NodeIterator nodeIter = getIdentityNodes(offset, LIMIT_THRESHOLD);
-          batchSize = nodeIter.getSize();
 
-          if (nodeIter == null || batchSize == 0) {
+          if (nodeIter == null || nodeIter.getSize() == 0) {
             cont = false;
 
           } else {
-
+            batchSize = nodeIter.getSize();
             while (nodeIter.hasNext() && !forceStop) {
               offset++;
               Node identityNode = nodeIter.nextNode();
@@ -189,7 +188,7 @@ public class IdentityMigrationService extends AbstractMigrationService<Identity>
           RequestLifeCycle.end();
         }
       } catch (Exception ex) {
-        LOG.error(ex);
+        LOG.error("Exception while migrating identity ", ex);
       }
     }
 
