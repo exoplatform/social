@@ -140,7 +140,7 @@
 
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
-  def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime;
+  def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime, absolutePostedTime;
   def listPeopleLikeBlockClass = "", listPeopleBGClass = "";
 
   if (!likesDisplayed) {
@@ -176,10 +176,11 @@
    listPeopleBGClass = "displayNone";
   }
 
-  activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
+  activityPostedTime = uicomponent.getRelativeTimeLabel(_ctx, activity.postedTime);
   def postedTimeTooltip =	_ctx.appRes("UIActivity.label.PostedFrom").replace("{0}",activityPostedTime);
-  activityUpdatedTime =uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
+  activityUpdatedTime =uicomponent.getRelativeTimeLabel(_ctx,activity.updated.getTime());
   activityUpdatedTime =	_ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",activityUpdatedTime);
+  absolutePostedTime = uicomponent.getAbsolutePostedTime(activity.postedTime);
   def spaceID;
   def ownerIdentity = uicomponent.ownerIdentity;
   if (uicomponent.isUserActivity()) {
@@ -289,7 +290,7 @@
 					<%}%>
 				</div>
 				<div class="dataInfor">
-					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(activity.postedTime != activity.updated.getTime() ){%> title="$postedTimeTooltip"> $activityUpdatedTime <%} else {%> >$activityPostedTime <%}%></a></span>
+					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" title="$absolutePostedTime" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(activity.postedTime != activity.updated.getTime() ){%>> $activityUpdatedTime <%} else {%> >$activityPostedTime <%}%></a></span>
 
 					<%
 					if(activityEditable || activityDeletable ) {
@@ -460,8 +461,8 @@
                    }
               }
 			  commentMessage = it.title;
-			  commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
-              commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
+			  commentPostedTime = uicomponent.getRelativeTimeLabel(_ctx, it.postedTime);
+              commentEditedTime = uicomponent.getRelativeTimeLabel(_ctx, it.updated.getTime());
 			  commentEditedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime);
 			  commenterAvatarImgSrc = id.profile.avatarUrl;
 			  if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
