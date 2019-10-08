@@ -20,6 +20,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.commons.utils.DateUtils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -374,70 +375,15 @@ public class BaseUIActivity extends UIForm {
     return b.toString();
   }
 
-  /**
-   * Gets prettyTime by timestamp.
-   *
-   * @param resourceBundle
-   * @param postedTime
-   * @return String
-   */
-  public String getPostedTimeString(WebuiBindingContext resourceBundle, long postedTime) throws Exception {
-      Locale currentLocale = Util.getPortalRequestContext().getLocale();
-      DateTimeFormatter df = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).withLocale(currentLocale).withZone(ZoneId.systemDefault());
-      return df.format(Instant.ofEpochMilli(postedTime));
+  public String getAbsolutePostedTime(Long postedTime) {
+    Locale currentLocale = Util.getPortalRequestContext().getLocale();
+    DateTimeFormatter df = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).withLocale(currentLocale).withZone(ZoneId.systemDefault());
+    return df.format(Instant.ofEpochMilli(postedTime));
   }
 
-  /**
-   * Gets prettyTime by timestamp of activities in space.
-   *
-   * @param resourceBundle
-   * @param postedTime
-   * @return String
-   */
-  public String getPostedTimeInSpaceString(WebuiBindingContext resourceBundle, long postedTime) throws Exception {
-    long time = (new Date().getTime() - postedTime) / 1000;
-    long value;
-    if (time < 60) {
-      return resourceBundle.appRes("UIActivity.label.Less_Than_A_Minute_In_Space");
-    } else {
-      if (time < 120) {
-        return resourceBundle.appRes("UIActivity.label.About_A_Minute_In_Space");
-      } else {
-        if (time < 3600) {
-          value = Math.round(time / 60);
-          return resourceBundle.appRes("UIActivity.label.About_?_Minutes_In_Space")
-                               .replaceFirst("\\{0\\}", String.valueOf(value));
-        } else {
-          if (time < 7200) {
-            return resourceBundle.appRes("UIActivity.label.About_An_Hour_In_Space");
-          } else {
-            if (time < 86400) {
-              value = Math.round(time / 3600);
-              return resourceBundle.appRes("UIActivity.label.About_?_Hours_In_Space").replaceFirst("\\{0\\}",
-                      String.valueOf(value));
-            } else {
-              if (time < 172800) {
-                return resourceBundle.appRes("UIActivity.label.About_A_Day_In_Space");
-              } else {
-                if (time < 2592000) {
-                  value = Math.round(time / 86400);
-                  return resourceBundle.appRes("UIActivity.label.About_?_Days_In_Space").replaceFirst("\\{0\\}",
-                          String.valueOf(value));
-                } else {
-                  if (time < 5184000) {
-                    return resourceBundle.appRes("UIActivity.label.About_A_Month_In_Space");
-                  } else {
-                    value = Math.round(time / 2592000);
-                    return resourceBundle.appRes("UIActivity.label.About_?_Months_In_Space").replaceFirst("\\{0\\}",
-                            String.valueOf(value));
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+  public String getRelativeTimeLabel(WebuiBindingContext webuiBindingContext, long postedTime) {
+    Locale locale = webuiBindingContext.getRequestContext().getLocale();
+    return DateUtils.getRelativeTimeLabel(locale, postedTime);
   }
 
   private String getFormId() {

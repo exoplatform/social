@@ -152,8 +152,8 @@
     }
   }
 
-  activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
-  activityUpdatedTime = uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
+  activityPostedTime = uicomponent.getRelativeTimeLabel(_ctx, activity.postedTime);
+  activityUpdatedTime = uicomponent.getRelativeTimeLabel(_ctx, activity.updated.getTime());
 
   def ownerIdentity = uicomponent.ownerIdentity;
   def profile = ownerIdentity.profile;
@@ -375,8 +375,8 @@
            }
       }
       commentMessage = it.title;
-      commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
-      commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
+      commentPostedTime = uicomponent.getRelativeTimeLabel(_ctx, it.postedTime);
+      commentEditedTime = uicomponent.getRelativeTimeLabel(_ctx, it.updated.getTime());
       commentEditedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime);
       commenterAvatarImgSrc = id.profile.avatarUrl;
       if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
