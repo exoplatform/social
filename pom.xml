@@ -27,7 +27,7 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>6.0.x-SNAPSHOT</version>
+  <version>6.0.x-dw-homepage-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo PLF:: Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -55,21 +55,21 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
-    <org.exoplatform.depmgt.version>17.x-SNAPSHOT</org.exoplatform.depmgt.version>
+    <org.exoplatform.depmgt.version>17.x-dw-homepage-SNAPSHOT</org.exoplatform.depmgt.version>
     <!-- JCR Project Dependencies -->
-    <org.exoplatform.kernel.version>6.0.x-SNAPSHOT</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>6.0.x-SNAPSHOT</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>6.0.x-SNAPSHOT</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>6.0.x-SNAPSHOT</org.exoplatform.jcr.version>
+    <org.exoplatform.kernel.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.jcr.version>
     <!-- GateIn Project Dependencies -->
     <org.gatein.common.version>2.2.2.Final</org.gatein.common.version>
     <!-- Platform Project Dependencies -->
-    <org.exoplatform.gatein.wci.version>6.0.x-SNAPSHOT</org.exoplatform.gatein.wci.version>
-    <org.exoplatform.gatein.pc.version>6.0.x-SNAPSHOT</org.exoplatform.gatein.pc.version>
-    <org.exoplatform.gatein.portal.version>6.0.x-SNAPSHOT</org.exoplatform.gatein.portal.version>
-    <org.exoplatform.commons.version>6.0.x-SNAPSHOT</org.exoplatform.commons.version>
-    <org.exoplatform.platform-ui.version>6.0.x-SNAPSHOT</org.exoplatform.platform-ui.version>
-    <org.exoplatform.doc.doc-style.version>6.0.x-SNAPSHOT</org.exoplatform.doc.doc-style.version>
+    <org.exoplatform.gatein.wci.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.gatein.wci.version>
+    <org.exoplatform.gatein.pc.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.gatein.pc.version>
+    <org.exoplatform.gatein.portal.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.gatein.portal.version>
+    <org.exoplatform.commons.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.platform-ui.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.platform-ui.version>
+    <org.exoplatform.doc.doc-style.version>6.0.x-dw-homepage-SNAPSHOT</org.exoplatform.doc.doc-style.version>
     <!-- For surefire and failsafe to be compatible with jacoco -->
     <argLine>-Xmx1024m -XX:MaxPermSize=512m</argLine>
     <!-- Elasticsearch dependencies -->
