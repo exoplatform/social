@@ -90,10 +90,6 @@ public class MigrationTest extends BaseCoreTest {
 
   private List<ExoSocialActivity> activitiesToDelete = new ArrayList<>();
 
-  public MigrationTest() {
-    setForceContainerReload(true);
-  }
-
   @Override
   public void setUp() throws Exception {
     begin();
@@ -306,10 +302,6 @@ public class MigrationTest extends BaseCoreTest {
   protected void deleteIdentities() {
     IdentityDAO identityDAO = getService(IdentityDAO.class);
     Arrays.asList("root", "john", "mary", "demo").stream().forEach(userId -> {
-      Identity identityJCRToDelete = identityJCRStorage.findIdentity(OrganizationIdentityProvider.NAME, userId);
-      if(identityJCRToDelete != null) {
-        identityJCRStorage.deleteIdentity(identityJCRToDelete);
-      }
       IdentityEntity identityEntity = identityDAO.findByProviderAndRemoteId(OrganizationIdentityProvider.NAME, userId);
       if (identityEntity != null) {
         identityDAO.delete(identityEntity);

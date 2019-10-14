@@ -78,10 +78,6 @@ public abstract class SpaceStorageTest extends AbstractCoreTest {
     space.setGroupId("/spaces/space" + number);
     String[] managers = new String[] { "demo", "tom" };
     String[] members = new String[] { "raul", "ghost", "dragon" };
-    if (number == 100 ) {
-      managers = new String[] { "demo", "jame" };
-      members = new String[] { "raul", "ghost", "john" };
-    }
     String[] invitedUsers = new String[] { "register1", "mary" };
     String[] pendingUsers = new String[] { "jame", "paul", "hacker" };
     space.setInvitedUsers(invitedUsers);
