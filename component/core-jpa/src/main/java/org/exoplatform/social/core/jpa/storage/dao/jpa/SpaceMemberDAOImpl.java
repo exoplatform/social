@@ -50,7 +50,8 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
                                        String firstCharacterFieldName,
                                        char firstCharacter,
                                        String sortField,
-                                       String sortDirection) {
+                                       String sortDirection,
+                                       boolean filterDisabled) {
     if (userNames == null || userNames.isEmpty()) {
       return Collections.emptyList();
     }
@@ -91,8 +92,11 @@ public class SpaceMemberDAOImpl extends GenericDAOJPAImpl<SpaceMemberEntity, Lon
       queryStringBuilder.append("'").append(userNames.get(i)).append("'");
     }
     queryStringBuilder.append(")\n");
-    queryStringBuilder.append(" AND identity_1.deleted = ").append(dbBoolFalse).append(" \n");
-    queryStringBuilder.append(" AND identity_1.enabled = ").append(dbBoolTrue).append(" \n");
+
+    if (filterDisabled) {
+      queryStringBuilder.append(" AND identity_1.deleted = ").append(dbBoolFalse).append(" \n");
+      queryStringBuilder.append(" AND identity_1.enabled = ").append(dbBoolTrue).append(" \n");
+    }
 
     if (StringUtils.isNotBlank(sortField) && StringUtils.isNotBlank(sortDirection)) {
       queryStringBuilder.append(" ORDER BY lower(identity_prop.value) " + sortDirection);

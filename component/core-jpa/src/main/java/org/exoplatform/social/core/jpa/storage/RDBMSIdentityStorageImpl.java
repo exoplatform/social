@@ -776,8 +776,8 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
       // Retrive space members from DB
 
       List<Identity> identities = new ArrayList<>();
-      spaceMembers = sortIdentities(spaceMembers, firstCharFieldName, firstCharacter, sortFieldName, sortDirection);
-      
+      spaceMembers = sortIdentities(spaceMembers, firstCharFieldName, firstCharacter, sortFieldName, sortDirection, false);
+
       int i = (int) offset;
       long indexLimit = offset + limit;
       while (i < spaceMembers.size() && i < indexLimit) {
@@ -1090,6 +1090,21 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
                                      char firstCharacter,
                                      String sortField,
                                      String sortDirection) {
-    return spaceMemberDAO.sortSpaceMembers(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection);
+    return sortIdentities(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection, true);
+  }
+
+  @Override
+  public List<String> sortIdentities(List<String> identityRemoteIds,
+                                     String firstCharacterFieldName,
+                                     char firstCharacter,
+                                     String sortField,
+                                     String sortDirection,
+                                     boolean filterDisabled) {
+    return spaceMemberDAO.sortSpaceMembers(identityRemoteIds,
+                                           firstCharacterFieldName,
+                                           firstCharacter,
+                                           sortField,
+                                           sortDirection,
+                                           filterDisabled);
   }
 }
