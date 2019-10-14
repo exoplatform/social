@@ -329,7 +329,7 @@ public class UISpaceMember extends UIContainer {
   }
 
   private String[] sortUsers(String[] users) {
-    List<String> sortedIdentities = identityManager.sortIdentities(Arrays.asList(users), null, EMPTY_CHARACTER, Profile.FULL_NAME, null);
+    List<String> sortedIdentities = identityManager.sortIdentities(Arrays.asList(users), null, EMPTY_CHARACTER, Profile.FULL_NAME, null, false);
     users = sortedIdentities.toArray(new String[0]);
     return users;
   }

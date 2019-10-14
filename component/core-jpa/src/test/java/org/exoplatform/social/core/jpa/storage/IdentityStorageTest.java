@@ -40,10 +40,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -189,6 +186,52 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(gotIdentityByRemoteId.getRemoteId(), toSaveIdentity.getRemoteId());
     
     tearDownIdentityList.add(gotIdentityByRemoteId);
+  }
+
+  /**
+   * Tests {@link IdentityStorage#sortIdentities}
+   *
+   */
+  public void testSortIdentities() {
+    List<String> remoteUsers = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      String remoteId = "sortIdentity" + i;
+      remoteUsers.add(remoteId);
+      Identity identity = new Identity(OrganizationIdentityProvider.NAME, remoteId);
+      identityStorage.saveIdentity(identity);
+      Profile profile = new Profile(identity);
+      profile.setProperty(Profile.FIRST_NAME, "user " + i);
+      profile.setProperty(Profile.LAST_NAME, "user " + i);
+      profile.setProperty(Profile.FULL_NAME, "user " + i);
+      identityStorage.saveProfile(profile);
+      tearDownIdentityList.add(identity);
+    }
+    List<String> sortIdentities = identityStorage.sortIdentities(remoteUsers,
+                                                                 Profile.FIRST_NAME,
+                                                                 'u',
+                                                                 Profile.FULL_NAME,
+                                                                 "asc",
+                                                                 true);
+    assertEquals(remoteUsers, sortIdentities);
+
+    Identity identity1 = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "sortIdentity1");
+    identity1.setEnable(false);
+    identityStorage.saveIdentity(identity1);
+
+    sortIdentities = identityStorage.sortIdentities(remoteUsers,
+                                                    Profile.FIRST_NAME,
+                                                    'u',
+                                                    Profile.FULL_NAME,
+                                                    "asc");
+    assertEquals(9, sortIdentities.size());
+
+    sortIdentities = identityStorage.sortIdentities(remoteUsers,
+                                                    Profile.FIRST_NAME,
+                                                    'u',
+                                                    Profile.FULL_NAME,
+                                                    "asc",
+                                                    false);
+    assertEquals(10, sortIdentities.size());
   }
 
   /**
