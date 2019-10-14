@@ -381,6 +381,17 @@ public class BaseUIActivity extends UIForm {
     return df.format(Instant.ofEpochMilli(postedTime));
   }
 
+  /**
+   * @deprecated use {@link BaseUIActivity#getRelativeTimeLabel} instead. This is kept for backward compatibility
+   * @param webuiBindingContext WebUI binding context
+   * @param postedTime posted time in milliseconds
+   * @return label of relative posted time
+   */
+  @Deprecated
+  public String getPostedTimeString(WebuiBindingContext webuiBindingContext, long postedTime) throws Exception {
+    return getRelativeTimeLabel(webuiBindingContext, postedTime);
+  }
+
   public String getRelativeTimeLabel(WebuiBindingContext webuiBindingContext, long postedTime) {
     Locale locale = webuiBindingContext.getRequestContext().getLocale();
     return DateUtils.getRelativeTimeLabel(locale, postedTime);
