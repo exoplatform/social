@@ -16,6 +16,7 @@ def space = uicomponent.getSpace();
 
 String administratorLabel = _ctx.appRes("UIMembersPortlet.label.Administrator");
 String spaceMemberLabel = _ctx.appRes("UIMembersPortlet.label.SpaceMember");
+def inactiveLabel = _ctx.appRes("label.inactive");
 String visibility = space.getVisibility();
 String spaceName = space.getDisplayName();
 String position = adminName = "";
@@ -41,30 +42,39 @@ jsManager.require("SHARED/jquery", "jq")
    <% if (managerList.size() > 0) { %>
     <div class="itemList memberList clearfix">
    <%  for(user in managerList) {
+      boolean isEnabled = user.isEnable() && !user.isDeleted();
       String userName = StringEscapeUtils.escapeHtml(user.getProfile().getFullName());
       position = user.getProfile().getPosition();
       String email = user.getProfile().getEmail();
-      String profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
+      String profileURL = isEnabled ? LinkProvider.getUserProfileUri(user.getRemoteId()) : null;
       if (!position) position = "";
-      String leaderImageSource = user.profile.avatarUrl;
+      String leaderImageSource = isEnabled ? user.profile.avatarUrl : LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       leaderIdx += 1;
       //
       String connectAction = uicomponent.event("Connect", user.getId());
-      def relationship = Utils.getRelationship(user);
+      def relationship = isEnabled ? Utils.getRelationship(user) : null;
       def contactStatus = null;
       if (relationship != null) {
         contactStatus = relationship.status;
       }
-      String checkedBox = (contactStatus == Relationship.Type.CONFIRMED) ? "checkedBox" : "";
+      String checkedBox = (isEnabled && contactStatus == Relationship.Type.CONFIRMED) ? "checkedBox" : "";
+      String disabledClass = isEnabled ? "" : "muted";
     %>
       <div class="itemContainer pull-left">
         <div class="spaceBox $checkedBox">
           <a class="avatarLarge pull-left">
             <img src="$leaderImageSource" alt="$userName"/>
           </a>
-          <div class="contentBox">
-            <h4 class="spaceTitle"><a data-line="2" data-key="title" href="${profileURL}" class="limitText">$userName</a></h4>
+          <div class="contentBox $disabledClass">
+            <h4 class="spaceTitle $disabledClass">
+              <% if (isEnabled) { %>
+                <a data-line="2" data-key="title" href="${profileURL}" class="limitText">$userName</a>
+              <% } else { %>
+                <%=userName%>
+                <div>(<%= inactiveLabel %>)</div>
+              <% } %>
+            </h4>
           <% if(position != null && position.length() > 0) { %>
             <div class="position ellipsis">${StringEscapeUtils.escapeHtml(position);}</div>
           <% } %>
@@ -73,7 +83,7 @@ jsManager.require("SHARED/jquery", "jq")
           <% } %>
           </div>
           <div class="connectionBtn clearfix">
-        <% if (user.getRemoteId() != Utils.getViewerRemoteId()) { %>
+        <% if (isEnabled && user.getRemoteId() != Utils.getViewerRemoteId()) { %>
           <%
             String connectTitle = _ctx.appRes("UIMembersPortlet.label.Connect");
             String ignoreTitle = _ctx.appRes("UIMembersPortlet.label.Ignore");
@@ -152,30 +162,39 @@ jsManager.require("SHARED/jquery", "jq")
   <% if(memberList.size() > 0) { %>
     <div class="itemList clearfix">
     <% for(user in memberList) {
+      boolean isEnabled = user.isEnable() && !user.isDeleted();
       String userName = StringEscapeUtils.escapeHtml(user.getProfile().getFullName());
       String email = user.getProfile().getEmail();
       position = user.getProfile().position;
       if (!position) position = "";
-      String profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
-      String memberImageSource = user.getProfile().avatarUrl;
+      String profileURL = isEnabled ? LinkProvider.getUserProfileUri(user.getRemoteId()) : null;
+      String memberImageSource = isEnabled ? user.getProfile().avatarUrl : LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       memberIdx += 1;
       //
       String connectAction = uicomponent.event("Connect", user.getId());
-      def relationship = Utils.getRelationship(user);
+      def relationship = isEnabled ? Utils.getRelationship(user) : null;
       def contactStatus = null;
       if (relationship != null) {
         contactStatus = relationship.status;
       }
-      String checkedBox = (contactStatus == Relationship.Type.CONFIRMED) ? "checkedBox" : "";
+      String checkedBox = (isEnabled && contactStatus == Relationship.Type.CONFIRMED) ? "checkedBox" : "";
+      String disabledClass = isEnabled ? "" : "muted";
     %>
       <div class="itemContainer pull-left">
         <div class="spaceBox $checkedBox">
           <a class="avatarLarge pull-left">
             <img src="$memberImageSource" alt="$userName"/>
           </a>
-          <div class="contentBox">
-            <h4 class="spaceTitle"><a data-key="title" data-line="2" href="${profileURL}" class="limitText">$userName</a></h4>
+          <div class="contentBox $disabledClass">
+            <h4 class="spaceTitle $disabledClass">
+              <% if (isEnabled) { %>
+                <a data-key="title" data-line="2" href="${profileURL}" class="limitText">$userName</a>
+              <% } else { %>
+                <%=userName%>
+                <div>(<%= inactiveLabel %>)</div>
+              <% } %>
+            </h4>
           <% if(position != null && position.length() > 0) { %>
             <div class="position ellipsis">${StringEscapeUtils.escapeHtml(position)}</div>
           <% } %>
@@ -183,7 +202,8 @@ jsManager.require("SHARED/jquery", "jq")
             <div class="email"><a class="ellipsis" href="mailto:${email}">${email}</a></div>
           <% } %>
           </div>
-        <% if (user.getRemoteId() != Utils.getViewerRemoteId()) { %>
+          <div class="connectionBtn clearfix">
+        <% if (isEnabled && user.getRemoteId() != Utils.getViewerRemoteId()) { %>
           <%
             String connectTitle = _ctx.appRes("UIMembersPortlet.label.Connect");
             String ignoreTitle = _ctx.appRes("UIMembersPortlet.label.Ignore");
@@ -192,7 +212,6 @@ jsManager.require("SHARED/jquery", "jq")
             String removeTitle = _ctx.appRes("UIMembersPortlet.label.RemoveConnection");
             String cancelRequestTitle = _ctx.appRes("UIMembersPortlet.label.CancelRequest");
           %>
-          <div class="connectionBtn clearfix">
           <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
             <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
             <button class="btn btn-primary pull-right" onclick="<%=uicomponent.event("Confirm",user.getId())%>">$confirmTitle</button>
@@ -203,8 +222,8 @@ jsManager.require("SHARED/jquery", "jq")
           <% } else if (contactStatus == null) { %>
             <button class="btn btn-primary pull-right" onclick="$connectAction">$connectTitle</button>
           <% } %>
-          </div>
           <% } %>
+          </div>
         </div>
       </div>
     <% } %>

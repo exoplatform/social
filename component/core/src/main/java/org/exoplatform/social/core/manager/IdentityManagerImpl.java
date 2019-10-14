@@ -628,7 +628,8 @@ public class IdentityManagerImpl implements IdentityManager {
                                      String firstCharacterFieldName,
                                      char firstCharacter,
                                      String sortField,
-                                     String sortDirection) {
+                                     String sortDirection,
+                                     boolean filterDisabled) {
     if (StringUtils.isBlank(firstCharacterFieldName)) {
       firstCharacterFieldName = this.getFirstCharacterFiltering();
     }
@@ -638,6 +639,15 @@ public class IdentityManagerImpl implements IdentityManager {
     if (StringUtils.isBlank(sortDirection)) {
       sortDirection = this.getDefaultSorting().orderBy.name();
     }
-    return identityStorage.sortIdentities(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection);
+    return identityStorage.sortIdentities(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection, filterDisabled);
+  }
+
+  @Override
+  public List<String> sortIdentities(List<String> identityRemoteIds,
+                                     String firstCharacterFieldName,
+                                     char firstCharacter,
+                                     String sortField,
+                                     String sortDirection) {
+    return sortIdentities(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection, true);
   }
 }
