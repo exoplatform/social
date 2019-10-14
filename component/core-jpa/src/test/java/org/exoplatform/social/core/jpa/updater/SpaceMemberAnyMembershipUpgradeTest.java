@@ -16,7 +16,6 @@ import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -110,10 +109,6 @@ public class SpaceMemberAnyMembershipUpgradeTest extends BaseCoreTest {
 
       organizationService.getMembershipHandler().linkMembership(user, group, membershipType, false);
     }
-    Identity identity = identityManager.getOrCreateIdentity("organization", "root", false);
-    identity.setDeleted(false);
-    identity.setEnable(true);
-    identityManager.updateIdentity(identity);
     space.setMembers(members);
     space = spaceService.updateSpace(space);
     assertEquals(members.length, space.getMembers().length);
