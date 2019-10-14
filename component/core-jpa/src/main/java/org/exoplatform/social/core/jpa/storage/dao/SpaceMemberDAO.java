@@ -50,13 +50,15 @@ public interface SpaceMemberDAO extends GenericDAO<SpaceMemberEntity, Long> {
    * @param firstCharacter
    * @param sortField
    * @param sortDirection
+   * @param filterDisabled
    * @return {@link List} of userNames sorted by sortField
    */
   List<String> sortSpaceMembers(List<String> userNames,
                                 String firstCharacterFieldName,
                                 char firstCharacter,
                                 String sortField,
-                                String sortDirection);
+                                String sortDirection,
+                                boolean filterDisabled);
 
     /**
      * Count space members switch status
