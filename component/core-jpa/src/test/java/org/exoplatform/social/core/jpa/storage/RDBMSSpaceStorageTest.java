@@ -18,10 +18,7 @@ package org.exoplatform.social.core.jpa.storage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
@@ -101,8 +98,7 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
 
   public void testGetLastAccessedSpace() {
     //create a new space
-    Space space = getSpaceInstance(100);
-    resetSpaceIdentitesStatus(space);
+    Space space = getSpaceInstance(1);
     spaceStorage.saveSpace(space,true);
     tearDownSpaceList.add(space);
     // Update space accessed
@@ -180,82 +176,6 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     assertEquals("my_space_test_2", spaces.get(1).getPrettyName());
     assertEquals("my_space_test_1", spaces.get(2).getPrettyName());
     assertEquals("my_space_test_0", spaces.get(3).getPrettyName());
-  }
-
-  private void resetSpaceIdentitesStatus(Space space) {
-    String[] ids = Stream.of(space.getManagers(), space.getMembers())
-            .flatMap(Stream::of)
-            .toArray(String[]::new);
-    for (String id : ids) {
-      Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, true);
-      if (identity != null) {
-        identity.setDeleted(false);
-        identity.setEnable(true);
-        identityManager.updateIdentity(identity);
-      }
-    }
-  }
-
-  public void testDeletedSpaceMember() {
-    Space spaceFromCache = createAndInitSpace("raul", true, false);
-    assertNotNull(spaceFromCache.getMembers());
-    /**
-     * There is 5 members including 1 deleted in the store
-     * space members list members not contain deleted users **/
-    assertEquals(4, spaceFromCache.getMembers().length);
-    assertNotNull(spaceFromCache.getManagers());
-    assertEquals(2, spaceFromCache.getManagers().length);
-  }
-
-  public void testDisabledSpaceMember() {
-    Space spaceFromCache = createAndInitSpace("raul", false, true);
-    assertNotNull(spaceFromCache.getMembers());
-    /**
-     * There is 5 members including 1 disabled in the store
-     * space should members list not contain disabled users **/
-    assertEquals(4, spaceFromCache.getMembers().length);
-    assertNotNull(spaceFromCache.getManagers());
-    assertEquals(2, spaceFromCache.getManagers().length);
-  }
-
-  public void testDeletedSpaceManager() {
-    Space spaceFromCache = createAndInitSpace("demo", true, false);
-    assertNotNull(spaceFromCache.getMembers());
-    /**
-     * There is 5 members including 1 deleted user in the store
-     * space members list should not contain deleted users **/
-    assertEquals(4, spaceFromCache.getMembers().length);
-    assertNotNull(spaceFromCache.getManagers());
-    /**
-     * There is 2 managers including 1 deleted manager in the store
-     * space managers list should not contain deleted managers **/
-    assertEquals(1, spaceFromCache.getManagers().length);
-  }
-
-  public void testDisabledSpaceManager() {
-    Space spaceFromCache = createAndInitSpace("demo", false, true);
-    assertNotNull(spaceFromCache.getMembers());
-    /**
-     * There is 5 members including 1 disabled member in the store
-     * space members list should not contain disabled members **/
-    assertEquals(4, spaceFromCache.getMembers().length);
-    assertNotNull(spaceFromCache.getManagers());
-    /**
-     * There is 2 managers including 1 disabled manager in the store
-     * space managers list should not contain disabled managers **/
-    assertEquals(1, spaceFromCache.getManagers().length);
-  }
-
-  private Space createAndInitSpace(String remoteID, Boolean isDeleted, Boolean isDisabled) {
-    Space space = getSpaceInstance(100);
-    resetSpaceIdentitesStatus(space);
-    Identity spaceMemberIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteID, true);
-    if (isDisabled) spaceMemberIdentity.setEnable(!isDisabled);
-    if (isDeleted) spaceMemberIdentity.setDeleted(isDeleted);
-    identityManager.updateIdentity(spaceMemberIdentity);
-    tearDownSpaceList.add(space);
-    spaceStorage.saveSpace(space, true);
-    return spaceStorage.getSpaceById(space.getId());
   }
 
 }
