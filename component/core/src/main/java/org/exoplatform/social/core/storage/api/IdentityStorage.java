@@ -441,4 +441,26 @@ public interface IdentityStorage {
     return identityRemoteIds;
   }
 
+  /**
+   * Sorts a list of user identities using a field. Additionally, if
+   * filterDisabled is equal to true, only enabled users will be returned
+   * 
+   * @param identityRemoteIds
+   * @param firstCharacterFieldName
+   * @param firstCharacter
+   * @param sortField
+   * @param sortDirection
+   * @param filterDisabled
+   * @return
+   */
+  default List<String> sortIdentities(List<String> identityRemoteIds,
+                                      String firstCharacterFieldName,
+                                      char firstCharacter,
+                                      String sortField,
+                                      String sortDirection,
+                                      boolean filterDisabled) {
+    // No default sorting to apply
+    return identityRemoteIds;
+  }
+
 }

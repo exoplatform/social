@@ -36,6 +36,7 @@
   def labelDeclineInvitation = _ctx.appRes("${uicomponentId}.label.DeclineInvitation");
   def labelCancelRequest = _ctx.appRes("${uicomponentId}.label.CancelRequest");
   def labelRemoveMember = _ctx.appRes("${uicomponentId}.label.RemoveMember");
+  def inactiveLabel = _ctx.appRes("label.inactive");
   def pendingUsers = uicomponent.getPendingUsers();
   def invitedUsers = uicomponent.getInvitedUsers();
   def existingUsers = uicomponent.getExistingUsers();
@@ -91,11 +92,20 @@
 		String validateAction = uicomponent.event("ValidateUser", pendingUser) + "; return false;";
 		String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
+    boolean isEnabled = Utils.isEnableUser(pendingUser);
+    String disabledClass = isEnabled ? "" : "disabled";
 		%>
-		<tr>
-			<td><%= uicomponent.getFullName(pendingUser) %></td>
+    <tr class="$disabledClass">
+			<td>
+        <%= uicomponent.getFullName(pendingUser) %>
+        <% if(!isEnabled) { %>
+          (<%= inactiveLabel %>)
+        <% } %>
+      </td>
 			<td class="center" width="30%">
-					<a  onclick="$validateAction" href="javascript:void(0);" title="$labelValidateInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconValidate uiIconLightGray"></i></a>
+          <% if(isEnabled) { %>
+  					<a  onclick="$validateAction" href="javascript:void(0);" title="$labelValidateInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconValidate uiIconLightGray"></i></a>
+          <% } %>
 					<a  onclick="$declineAction" href="javascript:void(0);" title="$labelDeclineInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconRemove uiIconLightGray"></i></a>
 			</td>
 		</tr>
@@ -128,9 +138,16 @@
 		String revokeAction = uicomponent.event("RevokeInvitedUser", invitedUser) + "; return false;";
 		String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
+    boolean isEnabled = Utils.isEnableUser(invitedUser);
+    String disabledClass = isEnabled ? "" : "disabled";
 		%>
-		<tr>
-			<td><%= uicomponent.getFullName(invitedUser) %></td>
+		<tr class="$disabledClass">
+			<td>
+        <%= uicomponent.getFullName(invitedUser) %>
+        <% if(!isEnabled) { %>
+          (<%= inactiveLabel %>)
+        <% } %>
+      </td>
 			<td class="center" width="15%">
 				<a  onclick="$revokeAction" href="javascript:void(0);" title="$labelCancelRequest" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete uiIconLightGray"></i></a>
 			</td>
@@ -174,17 +191,24 @@
 
 		String rowClass = even? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
-
+    boolean isEnabled = Utils.isEnableUser(user);
+    String disabledClass = isEnabled ? "" : "disabled";
 		%>
-		<tr id="existingUsersTable">
-			<td><%= uicomponent.getFullName(user) %></td>
-		<% if(uicomponent.isMember(user) && Utils.isEnableUser(user)) { %>
+		<tr id="existingUsersTable" class="$disabledClass">
+			<td>
+        <%= uicomponent.getFullName(user) %>
+        <% if(!isEnabled) { %>
+          (<%= inactiveLabel %>)
+        <% } %>
+      </td>
 			<td class="center" width="15%">
-				<div class="spaceRole" onclick="$toggleLeadership">
-				<% if(isLeader) { %>
+				<div class="spaceRole" <%= isEnabled || isLeader ? "onclick=\""+toggleLeadership+"\"": "" %>>
+				<% if (isLeader) { %>
 					<input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;">
-				<% }else { %>
-					<input type="checkbox" class="yesno" style="visibility: hidden;">
+				<% } else if (isEnabled) { %>
+          <input type="checkbox" class="yesno" style="visibility: hidden;">
+				<% } else { %>
+					<input type="checkbox" class="yesno" style="visibility: hidden;" disabled="disabled">
 				<% } %>
 				</div>
 			</td>
@@ -195,21 +219,6 @@
 				<a  onclick="$removeAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete uiIconLightGray"></i></a>
 				<% } %>
 			</td>
-		<% } else if (uicomponent.hasWildCardMembership(user) || !Utils.isEnableUser(user)){ %>
-		  <td class="center" width="15%">
-        <div class="spaceRole">
-        <% if(isLeader) { %>
-          <input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;" disabled>
-        <% }else { %>
-          <input type="checkbox" class="yesno" style="visibility: hidden;" disabled>
-        <% } %>  
-        </div>
-      </td>
-      <td class="center" width="15%"></td>
-		<% } else { %>
-			<td class="center" width="15%"></td>
-			<td class="center" width="15%"></td>
-		<% } %>
 		</tr>
 <% } %>
 		</tbody>
