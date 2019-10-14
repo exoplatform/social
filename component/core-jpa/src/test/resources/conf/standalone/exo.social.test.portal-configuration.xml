@@ -79,11 +79,6 @@
   <external-component-plugins>
     <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
     <component-plugin>
-      <name>social.new.user.event.listener</name>
-      <set-method>addListenerPlugin</set-method>
-      <type>org.exoplatform.social.core.listeners.SocialUserEventListenerImpl</type>
-    </component-plugin>
-    <component-plugin>
       <name>init.service.listener</name>
       <set-method>addListenerPlugin</set-method>
       <type>org.exoplatform.services.organization.OrganizationDatabaseInitializer</type>

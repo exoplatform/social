@@ -18,11 +18,9 @@ package org.exoplatform.social.core.listeners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -34,17 +32,8 @@ import org.exoplatform.services.organization.UserEventListener;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.cache.CachedIdentityStorage;
-import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
-import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
-import org.exoplatform.social.core.storage.cache.model.key.ListSpaceMembersKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
 
 /**
  * Listens to user updating events.
@@ -161,7 +150,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       try {
         if(identity != null) {
           storage.hardDeleteIdentity(identity);
-          clearSpacesMembershipCache();
         }
       } catch (Exception e) {
         LOG.warn("Problem occurred when deleting user named " + identity.getRemoteId(), e);
@@ -170,6 +158,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
     } finally {
       RequestLifeCycle.end();
     }
+
   }
   
   @Override
@@ -182,17 +171,11 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       if (identity != null) {
         IdentityManager idm = CommonsUtils.getService(IdentityManager.class);
         idm.processEnabledIdentity(user.getUserName(), user.isEnabled());
-        clearSpacesMembershipCache();
       } else {
         LOG.warn(String.format("Social's Identity(%s) not found!", user.getUserName()));
       }
     } finally {
       RequestLifeCycle.end();
     }
-  }
-
-  private void clearSpacesMembershipCache() {
-    SocialStorageCacheService storageCacheService = PortalContainer.getInstance().getComponentInstanceOfType(SocialStorageCacheService.class);
-    storageCacheService.getIdentitiesCache().clearCache();
   }
 }

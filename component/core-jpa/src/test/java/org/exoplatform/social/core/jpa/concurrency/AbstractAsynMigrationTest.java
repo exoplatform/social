@@ -31,13 +31,10 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
 import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
-import org.exoplatform.social.core.jpa.storage.dao.IdentityDAO;
 import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
-import org.exoplatform.social.core.jpa.storage.entity.IdentityEntity;
 import org.exoplatform.social.core.jpa.test.BaseCoreTest;
 import org.exoplatform.social.core.jpa.test.QueryNumberTest;
 import org.exoplatform.social.core.jpa.updater.ActivityMigrationService;
@@ -57,7 +54,6 @@ import org.exoplatform.social.core.storage.impl.*;
 import org.jboss.byteman.contrib.bmunit.BMUnit;
 import org.junit.FixMethodOrder;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,19 +145,6 @@ public abstract class AbstractAsynMigrationTest extends BaseCoreTest {
       }
       spaceService.deleteSpace(space);
     }
-
-    IdentityDAO identityDAO = getService(IdentityDAO.class);
-    Arrays.asList("root", "john", "mary", "demo").stream().forEach(userId -> {
-      Identity identityJCRToDelete = identityJCRStorage.findIdentity(OrganizationIdentityProvider.NAME, userId);
-      if(identityJCRToDelete != null) {
-        identityJCRStorage.deleteIdentity(identityJCRToDelete);
-      }
-      IdentityEntity identityEntity = identityDAO.findByProviderAndRemoteId(OrganizationIdentityProvider.NAME, userId);
-      if (identityEntity != null) {
-        identityDAO.delete(identityEntity);
-      }
-    });
-
 
     // Reset value of settings
     updateSettingValue(MigrationContext.SOC_RDBMS_CONNECTION_MIGRATION_KEY, Boolean.FALSE);
