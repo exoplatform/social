@@ -374,8 +374,9 @@ public class UISpaceMenu extends UIContainer {
    */
   public String getResolvedNodeTitle(UserNode selectedNode, WebuiRequestContext context) throws Exception{
 
-    if(selectedNode != null){
-      return Utils.appRes(selectedNode.getPageRef().getName()+".label.name");
+    if (selectedNode != null) {
+      String labelName = Utils.appRes(selectedNode.getPageRef().getName() + ".label.name");
+      return StringUtils.isNotBlank(labelName) ? labelName : selectedNode.getName();
     }
 
     if(context != null){
