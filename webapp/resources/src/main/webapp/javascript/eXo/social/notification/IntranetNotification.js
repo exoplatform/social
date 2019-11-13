@@ -163,7 +163,7 @@
       },
       appendCSRFToken : function(url) {
         url.indexOf('?') >= 0 ? url += '&' : url += '?';
-        url += 'gtn:csrf=' + eXo.env.portal.csrfToken;
+        url += 'portal:csrf=' + eXo.env.portal.csrfToken;
         return url;
       }
   };
