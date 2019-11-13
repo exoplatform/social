@@ -579,4 +579,13 @@
                     tableName="SOC_SPACES"/>
   </changeSet>
 
+  <changeSet author="social" id="1.0.0-64">
+    <createIndex tableName="SOC_STREAM_ITEMS" indexName="IDX_SOC_STREAM_ITEMS_04">
+      <column name="OWNER_ID"/>
+      <column name="ACTIVITY_ID"/>
+      <column name="STREAM_TYPE"/>
+      <column name="UPDATED_DATE"/>
+    </createIndex>
+  </changeSet>
+
 </databaseChangeLog>
