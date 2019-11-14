@@ -161,4 +161,13 @@ public class ProfileEntity extends BaseEntity {
   private boolean isEmpty(String input) {
     return input == null || input.length() == 0;
   }
+
+  public ProfileEntity setEnabled(boolean enable) {
+    setProperty("enabled", enable);
+    return this;
+  }
+
+  public String isEnabled() {
+    return getString("enabled");
+  }
 }
