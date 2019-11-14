@@ -64,13 +64,16 @@ public interface IdentityManager {
   List<Identity> getLastIdentities(int limit);
 
   /**
-   * Gets or creates an identity provided by an identity provider and an identity Id.
+   * Gets or creates an identity provided by an identity provider and an identity
+   * Id.
    *
    * @param providerId Id of the identity provider.
    * @param remoteId The user remote Id.
    * @param isProfileLoaded Is profile loaded or not.
    * @return The identity.
-   * @LevelAPI Platform 
+   * @LevelAPI Platform
+   * @deprecated Use {@link #getOrCreateIdentity(String, String)}
+   *             instead. * Will be moved by 6.0.x.
    */
   Identity getOrCreateIdentity(String providerId, String remoteId, boolean isProfileLoaded);
 
@@ -268,8 +271,6 @@ public interface IdentityManager {
    * @param remoteId The remote Id.
    * @return The identity.
    * @LevelAPI Provisional
-   * @deprecated Use {@link #getOrCreateIdentity(String, String, boolean)} instead.
-   *             Will be moved by 1.3.x.
    */
   Identity getOrCreateIdentity(String providerId, String remoteId);
 

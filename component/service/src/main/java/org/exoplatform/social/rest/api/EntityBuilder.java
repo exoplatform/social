@@ -149,6 +149,7 @@ public class EntityBuilder {
     userEntity.setIms(getSubListByProperties((List<Map<String, String>>) profile.getProperty(Profile.CONTACT_IMS), getImsProperties()));
     userEntity.setUrls(getSubListByProperties((List<Map<String, String>>) profile.getProperty(Profile.CONTACT_URLS), getUrlProperties()));
     userEntity.setDeleted(profile.getIdentity().isDeleted());
+    userEntity.setEnabled(profile.getIdentity().isEnable());
     return userEntity;
   }
 
@@ -160,7 +161,7 @@ public class EntityBuilder {
    */
   public static ProfileEntity buildEntityProfile(String userName, String restPath, String expand) {
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
-    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, true);
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName);
     return buildEntityProfile(userIdentity.getProfile(), restPath, expand);
   }
   

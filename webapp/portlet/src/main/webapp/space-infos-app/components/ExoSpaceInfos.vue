@@ -52,7 +52,9 @@ export default {
               if (!el.avatar) {
                 el.avatar = `${spacesConstants.SOCIAL_USER_API}/${el.username}/avatar`;
               }
-              this.managers.push(el);
+              if(el.enabled && !el.deleted) {
+                this.managers.push(el);
+              }
             }
           }
         }

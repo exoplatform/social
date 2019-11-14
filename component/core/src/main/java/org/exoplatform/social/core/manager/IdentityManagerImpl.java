@@ -444,10 +444,9 @@ public class IdentityManagerImpl implements IdentityManager {
                  new IllegalStateException("User '" + remoteId
                      + "' should be marked as deleted since it wasn't found in IDM store"));
       }
-      if (forceLoadOrReloadProfile) {
-        Profile profile = this.getIdentityStorage().loadProfile(result.getProfile());
-        result.setProfile(profile);
-      }
+      Profile profile = this.getIdentityStorage().loadProfile(result.getProfile());
+      profile.setIdentity(result);
+      result.setProfile(profile);
     }
     returnIdentity = result;
     return returnIdentity;
