@@ -44,6 +44,7 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -634,7 +635,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
                  0, demoActivity.getLikeIdentityIds().length);
-    
+
     activityManager.saveLike(demoActivity, johnIdentity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
@@ -672,6 +673,33 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals(1, likedActivity.getLikeIdentityIds().length);
     assertEquals(templateParams.get("link"), likedActivity.getTemplateParams().get("link"));
   }
+  /**
+   * Test {@link ActivityManager#saveLike(ExoSocialActivity, Identity)}
+   *
+   * @throws Exception
+   * @since 1.2.0-Beta3s
+   */
+  public void testSaveLikeWithoutBroadcastingEvent() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("&\"demo activity");
+    demoActivity.setUserId(demoActivity.getId());
+    ActivityManager activityManagerSpy = Mockito.spy(activityManager);
+
+    activityManagerSpy.saveActivityNoReturn(demoIdentity, demoActivity);
+    tearDownActivityList.add(demoActivity);
+
+    demoActivity = activityManagerSpy.getActivity(demoActivity.getId());
+    assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
+            0, demoActivity.getLikeIdentityIds().length);
+
+    activityManagerSpy.saveLike(demoActivity, johnIdentity);
+
+    demoActivity = activityManagerSpy.getActivity(demoActivity.getId());
+    assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
+    assertEquals("&amp;&#34;demo activity", demoActivity.getTitle());
+
+    Mockito.verify(activityManagerSpy,Mockito.times(1)).updateActivity(Mockito.any(ExoSocialActivity.class),Mockito.eq(false));
+  }
   
   /**
    * Test {@link ActivityManager#deleteLike(ExoSocialActivity, Identity)}
@@ -689,26 +717,58 @@ public class ActivityManagerTest extends AbstractCoreTest {
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
                  0, demoActivity.getLikeIdentityIds().length);
-    
+
     activityManager.saveLike(demoActivity, johnIdentity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
-    
+
     activityManager.deleteLike(demoActivity, johnIdentity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 0", 0, demoActivity.getLikeIdentityIds().length);
-    
+
     activityManager.deleteLike(demoActivity, maryIdentity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 0", 0, demoActivity.getLikeIdentityIds().length);
-    
+
     activityManager.deleteLike(demoActivity, rootIdentity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 0", 0, demoActivity.getLikeIdentityIds().length);
+  }
+
+  /**
+   * Test {@link ActivityManager#deleteLike(ExoSocialActivity, Identity)}
+   *
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testDeleteLikeWithoutBroadcastingEvent() throws Exception {
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("demo activity");
+    demoActivity.setUserId(demoActivity.getId());
+
+    ActivityManager activityManagerSpy = Mockito.spy(activityManager);
+
+    activityManagerSpy.saveActivityNoReturn(demoIdentity, demoActivity);
+    tearDownActivityList.add(demoActivity);
+
+    demoActivity = activityManagerSpy.getActivity(demoActivity.getId());
+    assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
+            0, demoActivity.getLikeIdentityIds().length);
+
+    activityManagerSpy.saveLike(demoActivity, johnIdentity);
+
+    demoActivity = activityManagerSpy.getActivity(demoActivity.getId());
+    assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
+
+    activityManagerSpy.deleteLike(demoActivity, johnIdentity);
+
+    //we want the call twice, one for the saveLike, one for deleteLike
+    Mockito.verify(activityManagerSpy,Mockito.times(2)).updateActivity(Mockito.any(ExoSocialActivity.class),Mockito.eq(false));
+
   }
   
   /**

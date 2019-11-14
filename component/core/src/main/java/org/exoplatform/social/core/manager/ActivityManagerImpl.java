@@ -412,10 +412,20 @@ public class ActivityManagerImpl implements ActivityManager {
     return activityStorage.getSubComments(comment);
   }
 
+
+
   /**
    * {@inheritDoc}
    */
   public void updateActivity(ExoSocialActivity existingActivity) {
+    //by default, event is broadcasted
+    updateActivity(existingActivity,true);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void updateActivity(ExoSocialActivity existingActivity, boolean broadcast) {
     String activityId = existingActivity.getId();
 
     // In order to get the added mentions in the ActivityMentionPlugin we need to
@@ -431,7 +441,9 @@ public class ActivityManagerImpl implements ActivityManager {
 
       existingActivity.setTemplateParams(mentionsTemplateParams);
     }
-    activityLifeCycle.updateActivity(existingActivity);
+    if (broadcast) {
+      activityLifeCycle.updateActivity(existingActivity);
+    }
   }
 
   /**
@@ -531,7 +543,8 @@ public class ActivityManagerImpl implements ActivityManager {
     }
     identityIds = (String[]) ArrayUtils.add(identityIds, identity.getId());
     existingActivity.setLikeIdentityIds(identityIds);
-    updateActivity(existingActivity);
+    //broadcast is false : we don't want to launch update listeners for a like
+    updateActivity(existingActivity, false);
     if(existingActivity.isComment()){
       activityLifeCycle.likeComment(existingActivity);
     } else {
@@ -550,7 +563,8 @@ public class ActivityManagerImpl implements ActivityManager {
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());
       activity.setLikeIdentityIds(identityIds);
-      updateActivity(activity);
+      //broadcast is false : we don't want to launch update listeners for a like
+      updateActivity(activity, false);
     } else {
       LOG.warn("activity is not liked by identity: " + identity);
     }
