@@ -27,7 +27,8 @@ var UISpaceNavigation = {
       if ( _w  < 1025) {
         var uiSpaceMenu = $('#UISpaceMenu');
         var tabContainer = uiSpaceMenu.find('ul#spaceMenuTab');
-        tabContainer.css('visibility', 'visible')
+        tabContainer.css('visibility', 'visible');
+        UISpaceNavigation.initStickyBanner();
         return;
       }
 
