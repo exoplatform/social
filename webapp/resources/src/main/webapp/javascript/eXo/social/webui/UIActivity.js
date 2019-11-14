@@ -690,12 +690,15 @@
       //$('textarea#composerInput').exoMentions('reset');
       // This is work around, if we call method setData('') of ckeditor,
       // it will cancel the suggester plugin due to it replace all content in iframe
-      var editor = CKEDITOR.instances["composerInput"];
-      if (editor.mode != 'source') {
-        if (editor.document) $(editor.document.getBody().$).html('');
-      } else {
-        $(editor.container.$).find(".cke_source").html('');
+      var editor = window.CKEDITOR && window.CKEDITOR.instances && window.CKEDITOR.instances.composerInput;
+      if (editor) {
+        if (editor.mode != 'source') {
+          if (editor.document) $(editor.document.getBody().$).html('');
+        } else {
+          $(editor.container.$).find(".cke_source").html('');
+        }
       }
+
       $('.composerLimited').addClass('hide');
 
       var container = $('#ComposerContainer');
