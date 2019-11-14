@@ -67,7 +67,7 @@
         </li>
         <li class="separator"></li>
         <li class="dateTime">
-            <a id="EditCommentTime${comment.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activityID)%>" <% if(comment.postedTime != comment.updated.getTime() ){%> title="<%=_ctx.appRes("UIActivity.label.PostedFrom").replace("{0}",commentPostedTime)%>">$commentEditedTime <%} else {%> > ${commentPostedTime} <%}%></a>
+            <a id="EditCommentTime${comment.id}" rel="tooltip" data-placement="bottom" title="<%=if(comment.postedTime != comment.updated.getTime() ){ _ctx.appRes("UIActivity.label.PostedFrom").replace("{0}",commentAbsolutePostedTime) } else { commentAbsolutePostedTime }%>" href="<%=uicomponent.getActivityPermalink(activityID)%>" <% if(comment.postedTime != comment.updated.getTime() ){%>> $commentEditedTime <%} else {%> > ${commentPostedTime} <%}%></a>
         </li>
     </ul>
 
