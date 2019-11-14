@@ -415,7 +415,7 @@
 	    <% } %>
 	    <div class="commentList">
 	    <%
-	    def commenterFullName, commenterProfileUri, commentMessage, commentPostedTime, commenterAvatarImgSrc;
+	    def commenterFullName, commenterProfileUri, commentMessage, commentPostedTime, commenterAvatarImgSrc, commentAbsolutePostedTime;
 	    def first = true, commentContentClass;
 	    def commentCounter = 0;
         def subCommentSize = 0;
@@ -473,6 +473,7 @@
 	      commentPostedTime = uicomponent.getRelativeTimeLabel(_ctx, it.postedTime);
 		  commentEditedTime = uicomponent.getRelativeTimeLabel(_ctx, it.updated.getTime());
 		  commentEditedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime);
+		  commentAbsolutePostedTime = uicomponent.getAbsolutePostedTime(it.postedTime);
 	      commenterAvatarImgSrc = id.profile.avatarUrl;
 	      if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           def commentId = it.parentCommentId == null ? it.id : it.parentCommentId;
@@ -513,6 +514,7 @@
 				    _ctx.put("activityID", activity.id);
 				    _ctx.put("commentPostedTime", commentPostedTime);
 				    _ctx.put("commentEditedTime", commentEditedTime);
+				    _ctx.put("commentAbsolutePostedTime", commentAbsolutePostedTime);
                     _ctx.include("war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl");
                 %>
 	        </div><!--end commentRight-->
