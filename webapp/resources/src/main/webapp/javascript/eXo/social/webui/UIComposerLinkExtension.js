@@ -191,7 +191,7 @@
 	        });
 
 	        this.thumbnailCheckbox.on('click', function(evt) {
-	          if (UIComposerLinkExtension.thumbnailCheckbox.attr('checked') == 'checked') {
+	          if (UIComposerLinkExtension.thumbnailCheckbox.prop('checked')) {
 	            UIComposerLinkExtension.linkData.image = '';
 	            $('#UIRightBox').removeClass('contentRight');
 	            $('#UIRightBox').addClass('resetMargin');
