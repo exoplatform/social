@@ -230,7 +230,7 @@ public class Profile {
   }
 
   /** The identity. */
-  private final Identity            identity;
+  private Identity            identity;
 
   /** The id. */
   private String                    id;
@@ -282,6 +282,15 @@ public class Profile {
    */
   public final Identity getIdentity() {
     return identity;
+  }
+  
+  /**
+   * Sets the identity.
+   *
+   * @param identity the identity
+   */
+  public final void setIdentity(Identity identity) {
+    this.identity = identity;
   }
 
   /**
