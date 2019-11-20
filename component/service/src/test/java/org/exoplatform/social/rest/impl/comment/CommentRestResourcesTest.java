@@ -165,6 +165,7 @@ public class CommentRestResourcesTest extends AbstractResourceTest {
 
     try {
       ExoSocialActivity testSpaceActivity = new ExoSocialActivityImpl();
+      testSpaceActivity.setTitle("Test activity");
       activityManager.saveActivityNoReturn(testSpaceIdentity, testSpaceActivity);
       ExoSocialActivity testComment = new ExoSocialActivityImpl();
       testComment.setTitle("Test Comment");

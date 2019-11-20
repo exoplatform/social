@@ -1731,17 +1731,35 @@ public class ActivityManagerTest extends AbstractCoreTest {
     ExoSocialActivity comment = new ExoSocialActivityImpl();
     comment.setTitle(commentTitle);
     comment.setUserId(demoIdentity.getId());
-    try {
-      //add comment on disabled activity
-      activityManager.saveComment(activity, comment);
-      //OK
-      assertNull(comment.getId());
-    }
-    catch(Exception e){
-      fail();
-    }
+    //add comment on disabled activity
+    activityManager.saveComment(activity, comment);
+    //OK
+    assertNull(comment.getId());
   }
-  
+
+  public void testCommentWithDisabledCommentActivityType(){
+    String activityTitle = "disabled activity";
+    String commentTitle = "Comment title";
+    String userId = johnIdentity.getId();
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(userId);
+    activity.setType("EnableType");
+    activityManager.saveActivityNoReturn(johnIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //demo comments on john's activity
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle(commentTitle);
+    //Disabled activity Type
+    comment.setType("cs-calendar:spaces");
+    comment.setUserId(demoIdentity.getId());
+    //add comment on disabled activity
+    activityManager.saveComment(activity, comment);
+    //OK
+    assertNull(comment.getId());
+  }
+
   public void testMentionActivityOnOthersStream() throws Exception {
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
     relationshipManager.confirm(demoIdentity, rootIdentity);
