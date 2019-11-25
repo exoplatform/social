@@ -57,8 +57,12 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.rest.api.EntityBuilder;
+import org.exoplatform.social.rest.api.ErrorResource;
+import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.impl.space.SpaceRestResourcesV1;
 import org.exoplatform.social.rest.impl.user.UserRestResourcesV1;
 import org.exoplatform.social.service.rest.api.models.IdentityNameList;
@@ -274,7 +278,15 @@ public class SpacesRestService implements ResourceContainer {
     portalContainerName = portalName;
     
     Space space = getSpaceService().getSpaceByPrettyName(spaceName);
-    
+
+    if (space == null && StringUtils.isNotBlank(spaceName)) {
+      space = getSpaceService().getSpaceByGroupId(SpaceUtils.SPACE_GROUP + "/" + spaceName);
+    }
+
+    if (space == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
     Map<String, String> spaceInfo = new HashMap<>();
     spaceInfo.put("displayName", space.getDisplayName());
     //spaceInfo.put("url", LinkProvider.getSpaceUri(space.getUrl()));
