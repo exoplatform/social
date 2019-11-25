@@ -191,17 +191,10 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     space.setPrettyName("test1");
     spaceService.saveSpace(space, false);
     // Test Rest URL at org.exoplatform.social.service.rest.SpacesRestService.getSpaceInfo
-
-    String portalContainerName = "/private";
-
     ContainerResponse response = service("GET", "/portal/social/spaces/spaceInfo/?spaceName=testspace", "", null, null);
-
     assertEquals(200, response.getStatus());
-
     response = service("GET", "/portal/social/spaces/spaceInfo/?spaceName=spaceNotExist", "", null, null);
-
     assertEquals(404, response.getStatus());
-
   }
 
   public void testSuggestSpacesOfCurrentUser() throws Exception {
