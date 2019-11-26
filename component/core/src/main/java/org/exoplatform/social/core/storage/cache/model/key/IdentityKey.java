@@ -25,7 +25,7 @@ import org.exoplatform.social.core.identity.model.Identity;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityKey extends ScopeCacheKey {
+public class IdentityKey implements CacheKey {
   private static final long serialVersionUID = -5426365392037221010L;
 
   private final String id;

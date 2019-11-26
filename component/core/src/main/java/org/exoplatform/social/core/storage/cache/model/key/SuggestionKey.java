@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.core.storage.cache.model.key;
 
-public class SuggestionKey <T> extends ScopeCacheKey {
+public class SuggestionKey <T> implements CacheKey {
   
   /**
    * The serial version UID

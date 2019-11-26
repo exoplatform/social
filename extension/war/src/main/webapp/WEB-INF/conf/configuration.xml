@@ -31,7 +31,6 @@
   <import>war:/conf/social-extension/social/cache-configuration.xml</import>
   <import>war:/conf/social-extension/social/common-configuration.xml</import>
   <import>war:/conf/social-extension/social/core-configuration.xml</import>
-  <import>war:/conf/social-extension/social/rdbms-migration-configuration.xml</import>
   <import>war:/conf/social-extension/social/service-configuration.xml</import>
   <import>war:/conf/social-extension/social/webui-configuration.xml</import>
 

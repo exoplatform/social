@@ -20,12 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
-import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.commons.chromattic.SessionContext;
-import org.exoplatform.commons.chromattic.SynchronizationListener;
-import org.exoplatform.commons.chromattic.SynchronizationStatus;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
@@ -40,42 +36,26 @@ import org.exoplatform.services.log.Log;
  *         Lamarque</a>
  * @version $Revision$
  */
-public abstract class AbstractLifeCycle<T extends LifeCycleListener<E>, E extends LifeCycleEvent<?,?>> {
+public abstract class AbstractLifeCycle<T extends LifeCycleListener<E>, E extends LifeCycleEvent<?, ?>> {
 
   /** Logger */
-  private static final Log LOG = ExoLogger.getLogger(AbstractLifeCycle.class);
+  private static final Log             LOG       = ExoLogger.getLogger(AbstractLifeCycle.class);
 
-  protected Set<T> listeners = new HashSet<T>();
+  protected Set<T>                     listeners = new HashSet<>();
 
-  protected final PortalContainer container;
+  protected final PortalContainer      container;
 
   protected LifeCycleCompletionService completionService;
 
-  protected ChromatticManager manager;
-
-  protected ChromatticLifeCycle lifeCycle;
-
   protected AbstractLifeCycle() {
-
     this.container = PortalContainer.getInstance();
-    this.completionService = (LifeCycleCompletionService) container.getComponentInstanceOfType(LifeCycleCompletionService.class);
-    this.manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
-
-    if (manager != null) {
-      this.lifeCycle = manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
-    }
+    this.completionService = container.getComponentInstanceOfType(LifeCycleCompletionService.class);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public void addListener(T listener) {
     listeners.add(listener);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public void removeListener(T listener) {
     listeners.remove(listener);
   }
@@ -88,65 +68,38 @@ public abstract class AbstractLifeCycle<T extends LifeCycleListener<E>, E extend
    * @param event
    */
   protected void broadcast(final E event) {
-
-    //
-    if (completionService.isAsync()) {
-      SessionContext ctx = lifeCycle.getContext();
-      ctx.addSynchronizationListener(new SynchronizationListener() {
-
-        public void beforeSynchronization() {}
-
-        public void afterSynchronization(SynchronizationStatus status) {
-          if (status == SynchronizationStatus.SAVED) {
-
-            addTasks(event);
-
+    for (final T listener : listeners) {
+      if (completionService.isAsync()) {
+        completionService.addTask(new Callable<E>() {
+          public E call() throws Exception {
+            begin();
+            try {
+              dispatchEvent(listener, event);
+            } catch (Exception e) {
+              LOG.debug(e.getMessage(), e);
+            } finally {
+              end();
+            }
+            return event;
           }
-        }
-
-      });
-    }
-    else {
-      for (T listener : listeners) {
+        });
+      } else {
         try {
           dispatchEvent(listener, event);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           LOG.debug(e);
         }
       }
-    }
-    
-  }
 
-  protected void addTasks(final E event) {
-    for (final T listener : listeners) {
-      completionService.addTask(new Callable<E>() {
-        public E call() throws Exception {
-          try {
-            begin();
-            dispatchEvent(listener, event);
-          }
-          catch(Exception e) {
-            LOG.debug(e.getMessage(), e);
-          }
-          finally {
-            end();
-          }
-
-          return event;
-        }
-      });
     }
   }
 
   protected void begin() {
-    manager.beginRequest();
-    lifeCycle.getChromattic().openSession();
+    RequestLifeCycle.begin(container);
   }
 
   protected void end() {
-    manager.endRequest(true);
+    RequestLifeCycle.end();
   }
 
   protected abstract void dispatchEvent(final T listener, final E event);

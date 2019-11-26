@@ -16,9 +16,6 @@
  */
 package org.exoplatform.social.core.service;
 
-import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -59,21 +56,5 @@ public class LinkProviderTest extends AbstractCoreTest {
     assertEquals(expected, actualLink);
 
     identityManager.deleteIdentity(rootIdentity);
-  }
-  
-  /**
-   * Test the {@link LinkProvider#escapeJCRSpecialCharacters(String)
-   * 
-   * @throws Exception
-   */
-  public void testEscapeJCRSpecialCharacters() throws Exception {
-    assertEquals("The method escapeJCRSpecialCharacters not escape special characters as expected", "%5B%5D%3A", LinkProvider.escapeJCRSpecialCharacters("[]:"));
-  }
-  
-  private static String escapeJCRSpecialCharacters(String string) {
-    if (string == null) {
-      return null;
-    }
-    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
   }
 }

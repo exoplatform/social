@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
-import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.commons.chromattic.Synchronization;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -88,59 +86,65 @@ import com.ibm.icu.text.Transliterator;
  * SpaceUtils Utility for working with space
  */
 public class SpaceUtils {
-  
-  private static final Log LOG = ExoLogger.getLogger(SpaceUtils.class);
 
-  public static final String SPACE_GROUP = "/spaces";
+  private static final Log                                    LOG                   = ExoLogger.getLogger(SpaceUtils.class);
 
-  public static final String PLATFORM_USERS_GROUP = "/platform/users";
+  public static final String                                  SPACE_GROUP           = "/spaces";
+
+  public static final String                                  PLATFORM_USERS_GROUP  = "/platform/users";
 
   /**
-   * @deprecated Use {@link UserACL#getAdminMSType()} instead. 
-   * Will be removed by 1.2.9
+   * @deprecated Use {@link UserACL#getAdminMSType()} instead. Will be removed
+   *             by 1.2.9
    */
   @Deprecated
-  public static final String MANAGER = "manager";
-  
-  public static final String MEMBER = "member";
+  public static final String                                  MANAGER               = "manager";
 
-  public static final String MENU_CONTAINER = "Menu";
+  public static final String                                  MEMBER                = "member";
 
-  public static final String APPLICATION_CONTAINER = "Application";
+  public static final String                                  MENU_CONTAINER        = "Menu";
 
-  public static final String SPACE_URL = "SPACE_URL";
-  
+  public static final String                                  APPLICATION_CONTAINER = "Application";
+
+  public static final String                                  SPACE_URL             = "SPACE_URL";
+
   /**
    * The id of the container in plf.
    * 
    * @since 1.2.8
    */
-  private static final String SPACE_MENU = "SpaceMenu";
-  
+  private static final String                                 SPACE_MENU            = "SpaceMenu";
+
   /**
    * The id of the container in plf.
    * 
    * @since 1.2.8
    */
-  private static final String SPACE_APPLICATIONS = "SpaceApplications";
-  
-  private static final ConcurrentHashMap<String, Application> appListCache = new ConcurrentHashMap<String,
-          Application>();
+  private static final String                                 SPACE_APPLICATIONS    = "SpaceApplications";
 
-  private static final String REMOTE_CATEGORY_NAME = "remote";
+  private static final ConcurrentHashMap<String, Application> appListCache          =
+                                                                           new ConcurrentHashMap<String, Application>();
 
-  private static final Pattern SPACE_NAME_PATTERN = Pattern.compile("^([\\p{L}\\s\\d\'_&]+[\\s]?)+$");
+  private static final String                                 REMOTE_CATEGORY_NAME  = "remote";
 
+  private static final Pattern                                SPACE_NAME_PATTERN    =
+                                                                                 Pattern.compile("^([\\p{L}\\s\\d\'_&]+[\\s]?)+$");
 
-  // A {@link Transliterator} instance is stateless which has for consequences that it is Thread Safe
+  // A {@link Transliterator} instance is stateless which has for consequences
+  // that it is Thread Safe
   // and thus can be shared among several threads as mentioned in the javadoc
-  private static final Transliterator ACCENTS_CONVERTER = Transliterator.getInstance("Latin; NFD; [:Nonspacing " +
-          "Mark:] Remove; NFC;");
+  private static final Transliterator                         ACCENTS_CONVERTER     =
+                                                                                Transliterator.getInstance("Latin; NFD; [:Nonspacing "
+                                                                                    +
+                                                                                    "Mark:] Remove; NFC;");
 
-  private static String NUMBER_REG_PATTERN = "[0-9]";
-  private static String UNDER_SCORE_STR = "_";
-  private static String SPACE_STR = " ";
-  private static String CURRENT_SPACE = "CurrentSpace";
+  private static String                                       NUMBER_REG_PATTERN    = "[0-9]";
+
+  private static String                                       UNDER_SCORE_STR       = "_";
+
+  private static String                                       SPACE_STR             = " ";
+
+  private static String                                       CURRENT_SPACE         = "CurrentSpace";
 
   /**
    * Checks if Space Name is in a valid form or not.
@@ -151,10 +155,10 @@ public class SpaceUtils {
   public static boolean isValidSpaceName(String name) {
     return SPACE_NAME_PATTERN.matcher(name).matches();
   }
-  
+
   /**
-   * Creates a new group from an existing group. This new group will get all data from existing group except for group
-   * name
+   * Creates a new group from an existing group. This new group will get all
+   * data from existing group except for group name
    *
    * @param parentGroup
    * @param existingGroup
@@ -181,7 +185,7 @@ public class SpaceUtils {
       Membership membership = itr.next();
       User user = orgSrc.getUserHandler().findUserByName(membership.getUserName());
       MembershipType memberShipType = orgSrc.getMembershipTypeHandler()
-              .findMembershipType(membership.getMembershipType());
+                                            .findMembershipType(membership.getMembershipType());
       memberShipHandler.linkMembership(user, newGroup, memberShipType, true);
     }
     return newGroup;
@@ -223,9 +227,10 @@ public class SpaceUtils {
   }
 
   /**
-   * Gets appStore of HashMap type with key = ApplicationCategory and value = list of applications. appStore is filter
-   * by access permission from that group; filter by application category access permission and filtered by application
-   * permission.
+   * Gets appStore of HashMap type with key = ApplicationCategory and value =
+   * list of applications. appStore is filter by access permission from that
+   * group; filter by application category access permission and filtered by
+   * application permission.
    *
    * @param space
    * @return appStore
@@ -262,8 +267,8 @@ public class SpaceUtils {
   }
 
   /**
-   * Gets application from portal container. This is used to get application when get application by applicationRegistry
-   * return null.
+   * Gets application from portal container. This is used to get application
+   * when get application by applicationRegistry return null.
    *
    * @param appId
    * @return An application has name match input appId.
@@ -299,7 +304,7 @@ public class SpaceUtils {
         }
 
         if (categoryNames == null || categoryNames.length == 0) {
-          categoryNames = new String[]{portletApplicationName};
+          categoryNames = new String[] { portletApplicationName };
         }
 
         if (portlet.isRemote()) {
@@ -327,11 +332,11 @@ public class SpaceUtils {
           String contentId;
 
           LocalizedString descriptionLS = portlet.getInfo()
-                  .getMeta()
-                  .getMetaValue(MetaInfo.DESCRIPTION);
+                                                 .getMeta()
+                                                 .getMetaValue(MetaInfo.DESCRIPTION);
           LocalizedString displayNameLS = portlet.getInfo()
-                  .getMeta()
-                  .getMetaValue(MetaInfo.DISPLAY_NAME);
+                                                 .getMeta()
+                                                 .getMetaValue(MetaInfo.DISPLAY_NAME);
 
           getLocalizedStringValue(descriptionLS, portletName);
 
@@ -386,7 +391,7 @@ public class SpaceUtils {
     if (str == null) {
       throw new IllegalArgumentException("String argument must not be null.");
     }
-      
+
     str = ACCENTS_CONVERTER.transliterate(str);
 
     // the character ? seems to not be changed to d by the transliterate
@@ -429,13 +434,15 @@ public class SpaceUtils {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     Route route = ExoRouter.route(requestPath);
-    if (route == null) return null;
+    if (route == null)
+      return null;
 
     //
     String spacePrettyName = route.localArgs.get("spacePrettyName");
-    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer()
+                                                                  .getComponentInstanceOfType(SpaceService.class);
     Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
-    
+
     return (space != null ? space.getUrl() : null);
   }
 
@@ -465,7 +472,7 @@ public class SpaceUtils {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     Object currentSpaceObject = pcontext.getAttribute(CURRENT_SPACE);
     if (currentSpaceObject != null) {
-      if(Objects.equals(currentSpaceObject, StringUtils.EMPTY)) {
+      if (Objects.equals(currentSpaceObject, StringUtils.EMPTY)) {
         return null;
       } else {
         return (Space) currentSpaceObject;
@@ -484,12 +491,14 @@ public class SpaceUtils {
 
     //
     String spacePrettyName = route.localArgs.get("spacePrettyName");
-    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer()
+                                                                  .getComponentInstanceOfType(SpaceService.class);
 
     Space currentSpace = spaceService.getSpaceByPrettyName(spacePrettyName);
     pcontext.setAttribute(CURRENT_SPACE, currentSpace);
     return currentSpace;
   }
+
   /**
    * Remove pages and group navigation of space when delete space.
    * 
@@ -509,20 +518,19 @@ public class SpaceUtils {
     NodeContext<NodeContext<?>> homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(spaceNavCtx, groupId);
 
     for (NodeContext<?> child : homeNodeCtx.getNodes()) {
-       @SuppressWarnings("unchecked")
-       NodeContext<NodeContext<?>> childNode = (NodeContext<NodeContext<?>>) child;
-       Page page = dataStorage.getPage(childNode.getState().getPageRef().format());
-       dataStorage.remove(page);
+      @SuppressWarnings("unchecked")
+      NodeContext<NodeContext<?>> childNode = (NodeContext<NodeContext<?>>) child;
+      Page page = dataStorage.getPage(childNode.getState().getPageRef().format());
+      dataStorage.remove(page);
     }
-    
-    
-    
+
     // remove group navigation
     SpaceUtils.removeGroupNavigation(groupId);
   }
-  
+
   /**
-   * change spaceUrl preferences for all applications in a pageNode. This pageNode is the clonedPage of spacetemplate.
+   * change spaceUrl preferences for all applications in a pageNode. This
+   * pageNode is the clonedPage of spacetemplate.
    *
    * @param spacePageNode
    * @param space
@@ -534,18 +542,19 @@ public class SpaceUtils {
                                               String newSpaceName) throws Exception {
     DataStorage dataStorage = getDataStorage();
     Page page = dataStorage.getPage(spacePageNode.getPageRef().format());
-    
+
     ArrayList<ModelObject> pageChildren = page.getChildren();
-    
-    //change menu portlet preference
+
+    // change menu portlet preference
     Container menuContainer = findContainerById(pageChildren, MENU_CONTAINER);
-    
-    //This is a workaround for PLF. The workaround should be removed when issue SOC-2074 is resolved.
+
+    // This is a workaround for PLF. The workaround should be removed when issue
+    // SOC-2074 is resolved.
     if (menuContainer == null) {
       menuContainer = findContainerById(pageChildren, SPACE_MENU);
     }
 
-    //change applications portlet preference
+    // change applications portlet preference
     Container applicationContainer = findContainerById(pageChildren, APPLICATION_CONTAINER);
     if (applicationContainer == null) {
       applicationContainer = findContainerById(pageChildren, SPACE_APPLICATIONS);
@@ -553,11 +562,13 @@ public class SpaceUtils {
   }
 
   /**
-   * Change the page title of the application referring to the current spacePageNode
+   * Change the page title of the application referring to the current
+   * spacePageNode
+   * 
    * @param spacePageNode
    * @param newSpaceName
    * @throws Exception
-  */
+   */
 
   @SuppressWarnings("unchecked")
   public static void changeAppPageTitle(UserNode spacePageNode, String newSpaceName) throws Exception {
@@ -567,15 +578,15 @@ public class SpaceUtils {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     PageService pageService = (PageService) container.getComponentInstanceOfType(PageService.class);
     PageContext pageContext = pageService.loadPage(page.getPageKey());
-    if(pageContext != null && pageContext.getState() != null){
-          String dispalyname = pageContext.getState().getDisplayName();
-          if(dispalyname != null && !dispalyname.isEmpty() && dispalyname.indexOf("-") != -1) {
-                String newPageTitle = newSpaceName+" -"+dispalyname.split("-")[1];
-                pageContext.setState(pageContext.getState().builder().displayName(newPageTitle).build());
-                pageService.savePage(pageContext);
-            }
+    if (pageContext != null && pageContext.getState() != null) {
+      String dispalyname = pageContext.getState().getDisplayName();
+      if (dispalyname != null && !dispalyname.isEmpty() && dispalyname.indexOf("-") != -1) {
+        String newPageTitle = newSpaceName + " -" + dispalyname.split("-")[1];
+        pageContext.setState(pageContext.getState().builder().displayName(newPageTitle).build());
+        pageService.savePage(pageContext);
       }
-  }  
+    }
+  }
 
   /**
    * Change menu portlet preference.
@@ -587,21 +598,21 @@ public class SpaceUtils {
    */
   public static void changeMenuPortletPreference(Container menuContainer, DataStorage dataStorage, Space space) {
     org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> menuPortlet =
-      (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) menuContainer
-                .getChildren()
-                .get(0);
+                                                                                                                (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) menuContainer
+                                                                                                                                                                                                                               .getChildren()
+                                                                                                                                                                                                                               .get(0);
 
-      ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> menuState = menuPortlet.getState();
-      org.exoplatform.portal.pom.spi.portlet.Portlet menuPortletPreference;
-      try {
-        menuPortletPreference = dataStorage.load(menuState, ApplicationType.PORTLET);
-        menuPortletPreference.setValue(SPACE_URL, space.getUrl());
-        dataStorage.save(menuState, menuPortletPreference);
-      } catch (Exception e) {
-        LOG.warn("Can not save menu portlet preference!", e);
-      }
+    ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> menuState = menuPortlet.getState();
+    org.exoplatform.portal.pom.spi.portlet.Portlet menuPortletPreference;
+    try {
+      menuPortletPreference = dataStorage.load(menuState, ApplicationType.PORTLET);
+      menuPortletPreference.setValue(SPACE_URL, space.getUrl());
+      dataStorage.save(menuState, menuPortletPreference);
+    } catch (Exception e) {
+      LOG.warn("Can not save menu portlet preference!", e);
+    }
   }
-  
+
   /**
    * Change application portlet preference.
    * 
@@ -613,9 +624,9 @@ public class SpaceUtils {
   public static void changeAppPortletPreference(Container applicationContainer, DataStorage dataStorage, Space space) {
     try {
       org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> applicationPortlet =
-      (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) applicationContainer
-              .getChildren()
-              .get(0);
+                                                                                                                         (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) applicationContainer
+                                                                                                                                                                                                                                               .getChildren()
+                                                                                                                                                                                                                                               .get(0);
       ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> appState = applicationPortlet.getState();
       org.exoplatform.portal.pom.spi.portlet.Portlet appPortletPreference;
       try {
@@ -634,27 +645,20 @@ public class SpaceUtils {
       // ignore it? exception will happen when this is gadgetApplicationType
     }
   }
-  
+
   /**
    * end the request and push data to JCR.
    */
-  public static void endRequest() {
+  public static void restartRequest() {
     RequestLifeCycle.end();
-    //SOC-2124 too long wait for executing these handlers which handles when space created.
+    // SOC-2124 too long wait for executing these handlers which handles when
+    // space created.
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    //Need to begin here for RequestLifeCycle.end(); if is not existing, an exception will be appeared. 
+    // Need to begin here for RequestLifeCycle.end(); if is not existing, an
+    // exception will be appeared.
     RequestLifeCycle.begin(container);
   }
-  
-  /**
-   * end the request and push data to JCR.
-   */
-  public static void endSyn(boolean save) {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
-    Synchronization synchronization = manager.getSynchronization();
-    synchronization.setSaveOnClose(save);
-  }
+
   /**
    * Finds container by id
    *
@@ -689,12 +693,11 @@ public class SpaceUtils {
   }
 
   /**
-   * Utility for setting navigation. Set pageNavigation, if existed in portal navigations, reset; if not, added to
-   * portal navigations.
+   * Utility for setting navigation. Set pageNavigation, if existed in portal
+   * navigations, reset; if not, added to portal navigations.
    *
-   * @param nav
-   * TODO This method which uses to cache the Navigation. Maybe remove this method because it
-   * uses to cache for UI
+   * @param nav TODO This method which uses to cache the Navigation. Maybe
+   *          remove this method because it uses to cache for UI
    */
   public static void setNavigation(UserNavigation nav) {
     if (nav == null) {
@@ -729,7 +732,7 @@ public class SpaceUtils {
       LOG.warn("Failed to remove navigations", nex);
     } catch (Exception e) {
       LOG.warn("Failed to remove navigations", e);
-    } 
+    }
   }
 
   /**
@@ -747,7 +750,7 @@ public class SpaceUtils {
    * Creates new group in /Spaces node and return groupId
    *
    * @param spaceName String
-   * @param creator   String
+   * @param creator String
    * @return groupId String
    * @throws SpaceException
    */
@@ -761,7 +764,6 @@ public class SpaceUtils {
    * @param groupLabel Space Display name.
    * @param spaceName Space name.
    * @param creator Name of user who creating space.
-   * 
    * @return groupId Id of created space group.
    * @throws SpaceException
    */
@@ -778,14 +780,14 @@ public class SpaceUtils {
       newGroup = groupHandler.createGroupInstance();
       shortName = SpaceUtils.cleanString(spaceName);
       groupId = parentGroup.getId() + "/" + shortName;
-      
+
       PortalContainer portalContainer = PortalContainer.getInstance();
       SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
       if (spaceService.getSpaceByGroupId(groupId) != null) {
         shortName = buildGroupId(shortName, parentGroup.getId());
         groupId = parentGroup.getId() + "/" + shortName;
       }
-      
+
       if (isSpaceNameExisted(spaceName)) {
         throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
       }
@@ -833,15 +835,16 @@ public class SpaceUtils {
    * @param space
    */
   public static void removeMembershipFromGroup(Space space) {
-    if (space == null) return;
-    
+    if (space == null)
+      return;
+
     // remove users from group with role is member
     if (space.getMembers() != null) {
       for (String userId : space.getMembers()) {
         removeUserFromGroupWithMemberMembership(userId, space.getGroupId());
       }
     }
-    
+
     // remove users from group with role is manager
     if (space.getManagers() != null) {
       for (String userId : space.getManagers()) {
@@ -868,7 +871,8 @@ public class SpaceUtils {
   }
 
   /**
-   * When user chooses an existing group, that user will be added to that group as a manager
+   * When user chooses an existing group, that user will be added to that group
+   * as a manager
    *
    * @param creator String
    * @param groupId String
@@ -905,12 +909,13 @@ public class SpaceUtils {
       Group existingGroup = groupHandler.findGroupById(groupId);
       membershipHandler.linkMembership(user, existingGroup, membershipType, true);
     } catch (Exception e) {
-      throw new RuntimeException("Unable to add user: " + remoteId + " to group: " + groupId + " with membership: " + membership, e);
+      throw new RuntimeException("Unable to add user: " + remoteId + " to group: " + groupId + " with membership: " + membership,
+                                 e);
     }
   }
 
   /**
-   * Adds the user to group with the membership (member). 
+   * Adds the user to group with the membership (member).
    * 
    * @param remoteId
    * @param groupId
@@ -919,9 +924,9 @@ public class SpaceUtils {
   public static void addUserToGroupWithMemberMembership(String remoteId, String groupId) {
     addUserToGroupWithMembership(remoteId, groupId, MEMBER);
   }
-  
+
   /**
-   * Adds the user to group with the membership (manager). 
+   * Adds the user to group with the membership (manager).
    * 
    * @param remoteId
    * @param groupId
@@ -930,9 +935,9 @@ public class SpaceUtils {
   public static void addUserToGroupWithManagerMembership(String remoteId, String groupId) {
     addUserToGroupWithMembership(remoteId, groupId, getUserACL().getAdminMSType());
   }
-  
+
   /**
-   * Removes the user from group with the membership (member, manager). 
+   * Removes the user from group with the membership (member, manager).
    * 
    * @param remoteId
    * @param groupId
@@ -944,42 +949,45 @@ public class SpaceUtils {
       OrganizationService organizationService = getOrganizationService();
       MembershipHandler memberShipHandler = organizationService.getMembershipHandler();
       if (MEMBER.equals(membership)) {
-          Collection<Membership> memberships = memberShipHandler.findMembershipsByUserAndGroup(remoteId, groupId);
-          if (memberships.size() == 0) {
-            LOG.info("User: " + remoteId + " is not a member of group: " + groupId);
-            return;
-          }
-          Iterator<Membership> itr = memberships.iterator();
-          while (itr.hasNext()) {
-            Membership mbShip = itr.next();
-            memberShipHandler.removeMembership(mbShip.getId(), true);
-          }
+        Collection<Membership> memberships = memberShipHandler.findMembershipsByUserAndGroup(remoteId, groupId);
+        if (memberships.size() == 0) {
+          LOG.info("User: " + remoteId + " is not a member of group: " + groupId);
+          return;
+        }
+        Iterator<Membership> itr = memberships.iterator();
+        while (itr.hasNext()) {
+          Membership mbShip = itr.next();
+          memberShipHandler.removeMembership(mbShip.getId(), true);
+        }
       } else if (getUserACL().getAdminMSType().equals(membership)) {
-          Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, getUserACL().getAdminMSType());
-          Membership any = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
-          if (any != null) {
-            memberShipHandler.removeMembership(any.getId(), true);
-          }
-          if (memberShip == null) {
-            LOG.info("User: " + remoteId + " is not a manager of group: " + groupId);
-            return;
-          }
-          UserHandler userHandler = organizationService.getUserHandler();
-          User user = userHandler.findUserByName(remoteId);
-          memberShipHandler.removeMembership(memberShip.getId(), true);
+        Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId,
+                                                                                   groupId,
+                                                                                   getUserACL().getAdminMSType());
+        Membership any = memberShipHandler.findMembershipByUserGroupAndType(remoteId,
+                                                                            groupId,
+                                                                            MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
+        if (any != null) {
+          memberShipHandler.removeMembership(any.getId(), true);
+        }
+        if (memberShip == null) {
+          LOG.info("User: " + remoteId + " is not a manager of group: " + groupId);
+          return;
+        }
+        UserHandler userHandler = organizationService.getUserHandler();
+        User user = userHandler.findUserByName(remoteId);
+        memberShipHandler.removeMembership(memberShip.getId(), true);
 
-
-          MembershipType mbShipTypeMember = organizationService.getMembershipTypeHandler().findMembershipType(MEMBER);
-          GroupHandler groupHandler = organizationService.getGroupHandler();
-          memberShipHandler.linkMembership(user, groupHandler.findGroupById(groupId), mbShipTypeMember, true);
+        MembershipType mbShipTypeMember = organizationService.getMembershipTypeHandler().findMembershipType(MEMBER);
+        GroupHandler groupHandler = organizationService.getGroupHandler();
+        memberShipHandler.linkMembership(user, groupHandler.findGroupById(groupId), mbShipTypeMember, true);
       }
     } catch (Exception e) {
       LOG.warn("Failed to remove user: " + remoteId + " to group: " + groupId + " with membership: " + membership, e);
     }
   }
-  
+
   /**
-   * Removes the user from group with member membership. 
+   * Removes the user from group with member membership.
    * 
    * @param remoteId
    * @param groupId
@@ -988,7 +996,7 @@ public class SpaceUtils {
   public static void removeUserFromGroupWithMemberMembership(String remoteId, String groupId) {
     removeUserFromGroupWithMembership(remoteId, groupId, MEMBER);
   }
-  
+
   /**
    * Removes the user from group with manager membership.
    * 
@@ -999,9 +1007,10 @@ public class SpaceUtils {
   public static void removeUserFromGroupWithManagerMembership(String remoteId, String groupId) {
     removeUserFromGroupWithMembership(remoteId, groupId, getUserACL().getAdminMSType());
   }
-  
+
   /**
-   * Creates group navigation if not existed or return existing group navigation based on groupId
+   * Creates group navigation if not existed or return existing group navigation
+   * based on groupId
    *
    * @param groupId String
    * @return spaceNav PageNavigation
@@ -1010,16 +1019,16 @@ public class SpaceUtils {
   public static NavigationContext createGroupNavigation(String groupId) throws SpaceException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
-    //14-june-2011 Apply UserNavigation
-    //PageNavigation spaceNav;
+    // 14-june-2011 Apply UserNavigation
+    // PageNavigation spaceNav;
     NavigationContext navContext = navService.loadNavigation(SiteKey.group(groupId));
     try {
-      if(navContext == null) {
+      if (navContext == null) {
         // creates new space navigation
         navContext = new NavigationContext(SiteKey.group(groupId), new NavigationState(1));
         navService.saveNavigation(navContext);
       }
-      
+
       return navContext;
     } catch (Exception e) {
       // TODO:should rollback what has to be rollback here
@@ -1043,6 +1052,7 @@ public class SpaceUtils {
   /**
    * Using this method to get the UserPortal make sure that the data is latest.
    * It's will remove the caching.
+   * 
    * @return
    */
   public static UserPortal getUserPortal() {
@@ -1050,7 +1060,7 @@ public class SpaceUtils {
       PortalRequestContext prc = Util.getPortalRequestContext();
       return prc.getUserPortalConfig().getUserPortal();
     } catch (Exception e) {
-      //Makes sure that in the RestService still gets the UserPortal.
+      // Makes sure that in the RestService still gets the UserPortal.
       try {
         return getUserPortalForRest();
       } catch (Exception e1) {
@@ -1058,7 +1068,7 @@ public class SpaceUtils {
       }
     }
   }
-  
+
   /**
    * Get parent node of the current space.
    * 
@@ -1080,9 +1090,10 @@ public class SpaceUtils {
     }
     return currParent;
   }
-  
+
   /**
    * Gets the UserPortal when uses the RestService.
+   * 
    * @return
    * @throws Exception
    */
@@ -1099,8 +1110,8 @@ public class SpaceUtils {
    */
   public static UserPortalConfig getUserPortalConfig() throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)
-                                                  container.getComponentInstanceOfType(UserPortalConfigService.class);
+    UserPortalConfigService userPortalConfigSer =
+                                                (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
 
     UserPortalContext NULL_CONTEXT = new UserPortalContext() {
       public ResourceBundle getBundle(UserNavigation navigation) {
@@ -1111,13 +1122,14 @@ public class SpaceUtils {
         return Locale.ENGLISH;
       }
     };
-    
+
     String remoteId = ConversationState.getCurrent().getIdentity().getUserId();
-    UserPortalConfig userPortalCfg = userPortalConfigSer.
-                                     getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
+    UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(),
+                                                                             remoteId,
+                                                                             NULL_CONTEXT);
     return userPortalCfg;
   }
-  
+
   /**
    * Removes group navigations.
    *
@@ -1151,33 +1163,34 @@ public class SpaceUtils {
     NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
     return navService.loadNavigation(SiteKey.group(groupId));
   }
-  
-  /**
-  * Gets userNavigation by a space's groupId
-  *
-  * @param groupId
-  * @throws Exception
-  */
-    public static UserNavigation getGroupNavigation(String groupId) throws Exception {
-      UserPortal userPortal = getUserPortal();
-      if (userPortal != null) {
-        return getUserPortal().getNavigation(SiteKey.group(groupId));
-      }
-      return null;
-    }
 
   /**
-   * This related to a bug from portal. When this bug is resolved, use userNavigation.getNode(space.getUrl());
+   * Gets userNavigation by a space's groupId
+   *
+   * @param groupId
+   * @throws Exception
+   */
+  public static UserNavigation getGroupNavigation(String groupId) throws Exception {
+    UserPortal userPortal = getUserPortal();
+    if (userPortal != null) {
+      return getUserPortal().getNavigation(SiteKey.group(groupId));
+    }
+    return null;
+  }
+
+  /**
+   * This related to a bug from portal. When this bug is resolved, use
+   * userNavigation.getNode(space.getUrl());
    *
    * @param userNavigation
    * @param spaceUrl
    * @return
    */
   public static UserNode getHomeNode(UserNavigation userNavigation, String spaceUrl) {
-    //Need to get usernode base on resolvePath
+    // Need to get usernode base on resolvePath
     return getUserPortal().resolvePath(userNavigation, null, spaceUrl);
   }
-  
+
   /**
    * Retrieving the UserNode base on the UserNavigation
    *
@@ -1187,41 +1200,39 @@ public class SpaceUtils {
   public static UserNode getHomeNode(UserNavigation userNavigation) {
     return getUserPortal().getNode(userNavigation, Scope.SINGLE, null, null);
   }
-  
- 
+
   /**
-   * 
    * @param spaceNavCtx
    * @param spaceUrl
    * @return
    */
   public static NodeContext<NodeContext<?>> getHomeNodeWithChildren(NavigationContext spaceNavCtx, String spaceUrl) {
-    //Need to get usernode base on resolvePath
+    // Need to get usernode base on resolvePath
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
-    return NavigationUtils.loadNode(navService, spaceNavCtx, spaceUrl);  
+    return NavigationUtils.loadNode(navService, spaceNavCtx, spaceUrl);
   }
-  
+
   /**
-   * Retrieving the UserNode with Children base on the spaceUrl and UserNavigation.
-   * When user can use this method to get homeNode, you can not call the update node
-   *  to getChildren()
-   *  
+   * Retrieving the UserNode with Children base on the spaceUrl and
+   * UserNavigation. When user can use this method to get homeNode, you can not
+   * call the update node to getChildren()
+   * 
    * @param userNavigation
    * @param spaceUrl
    * @return
    */
   public static UserNode getHomeNodeWithChildren(UserNavigation userNavigation, String spaceUrl) {
-    //Need to get usernode base on resolvePath
+    // Need to get usernode base on resolvePath
     UserNode homeNode = getUserPortal().resolvePath(userNavigation, null, spaceUrl);
     getUserPortal().updateNode(homeNode, Scope.CHILDREN, null);
     return homeNode;
-    
+
   }
-  
+
   /**
    * Retrieving the UserNode of Space when is given Space instance
-   *  
+   * 
    * @param space space
    * @return
    */
@@ -1249,8 +1260,6 @@ public class SpaceUtils {
   public static List<UserNode> getSpaceUserNodeChildren(Space space) throws Exception {
     return new ArrayList<UserNode>(getSpaceUserNode(space).getChildren());
   }
-
-
 
   /**
    * Sorts spaces list by priority and alphabet order
@@ -1464,7 +1473,7 @@ public class SpaceUtils {
           String[] splited = app.split(":");
           if (splited.length != 4) {
             LOG.warn("appStatus is not in correct form of [appId:appNodeName:isRemovableString:status] : "
-                    + app);
+                + app);
             return null;
           }
 
@@ -1584,24 +1593,27 @@ public class SpaceUtils {
     PortalContainer portalContainer = PortalContainer.getInstance();
     return (ApplicationRegistryService) portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
   }
-  
+
   /**
-   * Filter all invalid character (anything except word, number, space and search wildcard) from Space search conditional.
+   * Filter all invalid character (anything except word, number, space and
+   * search wildcard) from Space search conditional.
+   * 
    * @since: 1.2.2
    * @param input String
    * @return
    */
 
-  public static String removeSpecialCharacterInSpaceFilter(String input){
-    //We don't remove the character "'" because it's a normal character in french 
+  public static String removeSpecialCharacterInSpaceFilter(String input) {
+    // We don't remove the character "'" because it's a normal character in
+    // french
     String result = input.replaceAll("[^\\pL\\pM\\p{Nd}\\p{Nl}\\p{Pc}[\\p{InEnclosedAlphanumerics}&&\\p{So}]\\?\\*%0-9\\']", " ");
     result = result.replaceAll("\\s+", " ");
     return result.trim();
   }
-  
+
   /**
-   * As the similarity is provided in the search term, we need to extract the keyword that user enter in 
-   * the search form
+   * As the similarity is provided in the search term, we need to extract the
+   * keyword that user enter in the search form
    * 
    * @param input the search value include the similarity
    * @return the search condition after process
@@ -1613,24 +1625,27 @@ public class SpaceUtils {
       return input.trim();
     }
     StringBuilder builder = new StringBuilder();
-    //The similarity is added for each word in the search condition, ex : space~0.5 test~0.5
-    //then we need to process each word separately 
+    // The similarity is added for each word in the search condition, ex :
+    // space~0.5 test~0.5
+    // then we need to process each word separately
     String[] tab = input.split(" ");
-    for (String s : tab){
-      if (s.isEmpty()) continue;
+    for (String s : tab) {
+      if (s.isEmpty())
+        continue;
       if (s.indexOf("~") > -1) {
         String searchTerm = s.substring(0, s.lastIndexOf("~"));
         builder.append(searchTerm).append(" ");
       } else {
         builder.append(s).append(" ");
       }
-      
+
     }
     return builder.toString().trim();
   }
 
   /**
-   * Builds pretty name base on the basic name in case create more than one space with the same name.
+   * Builds pretty name base on the basic name in case create more than one
+   * space with the same name.
    * 
    * @param prettyName
    * @param parentGroupId
@@ -1646,32 +1661,33 @@ public class SpaceUtils {
     } else {
       mainPatternGroupId = checkedGroupId;
     }
-    
+
     boolean hasNext = true;
     int extendPattern = 0;
-    
+
     while (hasNext) {
       ++extendPattern;
       checkedGroupId = cleanString(mainPatternGroupId + SPACE_STR + extendPattern);
       ExoContainer container = ExoContainerContext.getCurrentContainer();
-      
+
       SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
       if (spaceService.getSpaceByGroupId(parentGroupId + "/" + checkedGroupId) != null) {
         continue;
       }
-      
+
       IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
       Identity identity = idm.getOrCreateIdentity(SpaceIdentityProvider.NAME, checkedGroupId, true);
       if (identity == null) {
         hasNext = false;
       }
     }
-    
+
     return checkedGroupId;
   }
-  
+
   /**
-   * Builds pretty name base on the basic name in case create more than one space with the same name.
+   * Builds pretty name base on the basic name in case create more than one
+   * space with the same name.
    * 
    * @param space
    * @return
@@ -1685,10 +1701,10 @@ public class SpaceUtils {
     } else {
       mainPatternPrettyName = checkedPrettyName;
     }
-    
+
     boolean hasNext = true;
     int extendPattern = 0;
-    
+
     while (hasNext) {
       ++extendPattern;
       checkedPrettyName = cleanString(mainPatternPrettyName + SPACE_STR + extendPattern);
@@ -1699,21 +1715,23 @@ public class SpaceUtils {
         hasNext = false;
       }
     }
-    
+
     return checkedPrettyName;
   }
-  
+
   /**
    * Gets the UserACL which helps to get Membership role to avoid hard code.
+   * 
    * @return UserACL object
    */
   public static UserACL getUserACL() {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     return (UserACL) container.getComponentInstanceOfType(UserACL.class);
   }
-  
+
   /**
-   * Checks if an specific user has membership in group group with input membership type.
+   * Checks if an specific user has membership in group group with input
+   * membership type.
    * 
    * @param remoteId User to be checked.
    * @param groupId Group information.
@@ -1721,7 +1739,8 @@ public class SpaceUtils {
    * @return true if user has membership in group with input type.
    */
   public static boolean isUserHasMembershipTypesInGroup(String remoteId, String groupId, String membershipType) {
-	  if (remoteId == null || groupId == null || membershipType == null) return false;
+    if (remoteId == null || groupId == null || membershipType == null)
+      return false;
 
     ConversationState conversationState = ConversationState.getCurrent();
     if (conversationState != null && conversationState.getIdentity() != null
@@ -1734,10 +1753,11 @@ public class SpaceUtils {
 
     try {
       Collection<Membership> membershipsList = getOrganizationService()
-        .getMembershipHandler().findMembershipsByUserAndGroup(remoteId, groupId);
-      
+                                                                       .getMembershipHandler()
+                                                                       .findMembershipsByUserAndGroup(remoteId, groupId);
+
       for (Membership membership : membershipsList) {
-        if (membershipType.equals(membership.getMembershipType())) 
+        if (membershipType.equals(membership.getMembershipType()))
           return true;
       }
     } catch (Exception e) {
@@ -1745,43 +1765,47 @@ public class SpaceUtils {
     }
     return false;
   }
-  
+
   /**
    * Get users that have membership with group by input membership types.
    * 
    * @param groupId Group information.
    * @param membershipTypes membership types to be get.
-   * @return List of users that have membership with group is input membership type.
+   * @return List of users that have membership with group is input membership
+   *         type.
    */
   public static List<String> findMembershipUsersByGroupAndTypes(String groupId, String... membershipTypes) {
-    if (groupId == null || membershipTypes == null) return Collections.<String>emptyList();
-    
+    if (groupId == null || membershipTypes == null)
+      return Collections.<String> emptyList();
+
     Set<String> userNames = new HashSet<String>();
     try {
       Group group = getOrganizationService().getGroupHandler().findGroupById(groupId);
       ListAccess<Membership> membershipsListAccess = getOrganizationService()
-          .getMembershipHandler().findAllMembershipsByGroup(group);
-      
+                                                                             .getMembershipHandler()
+                                                                             .findAllMembershipsByGroup(group);
+
       Membership[] memberships = membershipsListAccess.load(0, membershipsListAccess.getSize());
-      
+
       List<String> types = Arrays.asList(membershipTypes);
-      
+
       for (Membership membership : memberships) {
-        if (!types.contains(membership.getMembershipType())) continue;
-        
+        if (!types.contains(membership.getMembershipType()))
+          continue;
+
         String userName = membership.getUserName();
         User user = getOrganizationService().getUserHandler()
-            .findUserByName(userName, UserStatus.ENABLED);
-        
+                                            .findUserByName(userName, UserStatus.ENABLED);
+
         if (user != null) {
           userNames.add(userName);
         }
       }
     } catch (Exception e) {
-      LOG.warn("Failed to get space members, groupId = " + groupId + " and roles = " + String.join(",",membershipTypes), e);
+      LOG.warn("Failed to get space members, groupId = " + groupId + " and roles = " + String.join(",", membershipTypes), e);
       return new ArrayList<String>();
     }
-    
+
     return new ArrayList<String>(userNames);
   }
 }

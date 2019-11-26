@@ -27,7 +27,7 @@ import org.exoplatform.social.core.space.SpaceFilter;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceFilterKey extends ScopeCacheKey {
+public class SpaceFilterKey implements CacheKey {
   private static final long serialVersionUID = 2363449672896832814L;
 
   private String userId;

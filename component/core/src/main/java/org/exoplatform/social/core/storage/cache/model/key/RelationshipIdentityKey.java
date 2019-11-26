@@ -24,7 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class RelationshipIdentityKey extends ScopeCacheKey {
+public class RelationshipIdentityKey implements CacheKey {
   private static final long serialVersionUID = 2636474407853506253L;
 
   private final String identityId1;

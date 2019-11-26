@@ -25,7 +25,7 @@ import org.exoplatform.social.core.identity.model.ActiveIdentityFilter;
  *          exo@exoplatform.com
  * Oct 8, 2014  
  */
-public class ActiveIdentityKey extends ScopeCacheKey {
+public class ActiveIdentityKey implements CacheKey {
   private static final long serialVersionUID = -1731263881104519519L;
 
   private final int days;

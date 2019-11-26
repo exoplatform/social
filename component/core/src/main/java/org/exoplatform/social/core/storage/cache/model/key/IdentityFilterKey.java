@@ -34,7 +34,7 @@ import org.exoplatform.social.core.search.Sorting;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityFilterKey extends ScopeCacheKey {
+public class IdentityFilterKey implements CacheKey {
 
   private static final long serialVersionUID = 6711481249085725845L;
 

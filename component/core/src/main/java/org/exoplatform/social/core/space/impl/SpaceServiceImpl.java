@@ -94,15 +94,9 @@ public class SpaceServiceImpl implements SpaceService {
 
   private ConfigurationManager configurationManager;
 
-  /**
-   * SpaceServiceImpl constructor Initialize
-   * <tt>org.exoplatform.social.space.impl.JCRStorage</tt>
-   *
-   * @throws Exception
-   */
   public SpaceServiceImpl(SpaceStorage spaceStorage, IdentityStorage identityStorage, UserACL userACL, ConfigurationManager configurationManager,
                           IdentityRegistry identityRegistry, WebNotificationService webNotificationService,
-                          SpacesAdministrationService spacesAdministrationService, SpaceTemplateService spaceTemplateService) throws Exception {
+                          SpacesAdministrationService spacesAdministrationService, SpaceTemplateService spaceTemplateService) {
     this.spaceStorage = spaceStorage;
     this.identityStorage = identityStorage;
     this.identityRegistry = identityRegistry;
@@ -553,7 +547,7 @@ public class SpaceServiceImpl implements SpaceService {
       SpaceUtils.removePagesAndGroupNavigation(space);
 
     } catch (Exception e) {
-      LOG.error("Unable delete space", e);
+      LOG.error("Unable delete space: {}. Cause: {}", space.getPrettyName(), e.getMessage());
     }
     spaceLifeCycle.spaceRemoved(space, null);
   }

@@ -18,14 +18,6 @@ package org.exoplatform.social.core.model;
 
 import java.io.InputStream;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Session;
-
-import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-
 /*
  * This class using for attachment profile of identity or of space, such as
  * image.
@@ -34,8 +26,6 @@ import org.exoplatform.services.log.Log;
  * @since   Sep 11, 2009
  */
 public class AvatarAttachment extends  Attachment {
-
-  private static final Log LOG = ExoLogger.getLogger(AvatarAttachment.class);
 
   public static final String TYPE = "avatar";
 

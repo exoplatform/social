@@ -24,7 +24,7 @@ import org.exoplatform.social.core.storage.cache.model.key.ActivityKey;
 /**
  * 
  */
-public class ActivityStreamOwnerCacheSelector extends ScopeCacheSelector<ActivityKey, ActivityData> {
+public class ActivityStreamOwnerCacheSelector extends CacheSelector<ActivityKey, ActivityData> {
 
   private String streamOwner;
 

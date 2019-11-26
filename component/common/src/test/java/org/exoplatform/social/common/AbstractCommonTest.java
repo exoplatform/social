@@ -17,29 +17,21 @@
 package org.exoplatform.social.common;
 
 import org.exoplatform.commons.testing.BaseExoTestCase;
-import org.exoplatform.component.test.ConfigurationUnit;
-import org.exoplatform.component.test.ConfiguredBy;
-import org.exoplatform.component.test.ContainerScope;
-import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.component.test.*;
 
 /**
  * Abstract Common Test.
  *
- * @author    <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
- * @since     Jul 6, 2010
+ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @since Jul 6, 2010
  */
 @ConfiguredBy({
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml")
+    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml")
 })
 public abstract class AbstractCommonTest extends BaseExoTestCase {
-
-  /** . */
-  protected RepositoryService repositoryService;
 
   @Override
   protected void setUp() throws Exception {
     begin();
-    repositoryService = (RepositoryService) getContainer().getComponentInstanceOfType(RepositoryService.class);
   }
 }

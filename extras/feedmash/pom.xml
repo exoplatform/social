@@ -59,6 +59,7 @@
     <dependency>
       <groupId>rome</groupId>
       <artifactId>rome</artifactId>
+      <scope>provided</scope>
     </dependency>
     <!-- commons-logging used by quartz is forbidden and must be replaced by org.slf4j:jcl-over-slf4j -->
     <dependency>

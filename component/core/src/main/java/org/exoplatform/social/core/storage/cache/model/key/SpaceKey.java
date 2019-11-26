@@ -25,7 +25,7 @@ import java.io.Serializable;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceKey extends ScopeCacheKey implements Serializable {
+public class SpaceKey implements CacheKey, Serializable {
   private static final long serialVersionUID = -5427340881099936940L;
 
   public static final SpaceKey NULL_OBJECT = new SpaceKey(null);

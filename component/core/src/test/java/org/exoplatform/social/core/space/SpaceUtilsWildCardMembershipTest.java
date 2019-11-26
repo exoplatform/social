@@ -19,23 +19,13 @@ package org.exoplatform.social.core.space;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.MembershipHandler;
-import org.exoplatform.services.organization.MembershipType;
-import org.exoplatform.services.organization.MembershipTypeHandler;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
-import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -46,16 +36,19 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
 public class SpaceUtilsWildCardMembershipTest extends AbstractCoreTest {
 
   private IdentityStorage identityStorage;
-  private SpaceStorage spaceStorage;
-  private List<Identity> tearDownIdentityList;
-  private List<Space> tearDownSpaceList;
-  private List<User> tearDownUserList;
-  private UserHandler userHandler;
-  
+
+  private SpaceStorage    spaceStorage;
+
+  private List<Identity>  tearDownIdentityList;
+
+  private List<Space>     tearDownSpaceList;
+
+  private List<User>      tearDownUserList;
+
+  private UserHandler     userHandler;
+
   public void setUp() throws Exception {
     super.setUp();
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
-    spaceStorage = (SpaceStorage) getContainer().getComponentInstanceOfType(SpaceStorageImpl.class);
     assertNotNull("identityStorage must not be null", identityStorage);
     userHandler = SpaceUtils.getOrganizationService().getUserHandler();
     tearDownIdentityList = new ArrayList<Identity>();
@@ -75,72 +68,99 @@ public class SpaceUtilsWildCardMembershipTest extends AbstractCoreTest {
     }
     super.tearDown();
   }
-  
+
   /**
-   * Test {@link SpaceUtils#isUserHasMembershipTypeInGroup(String, String, String)}
+   * Test
+   * {@link SpaceUtils#isUserHasMembershipTypeInGroup(String, String, String)}
+   * 
    * @throws Exception
    */
   public void testIsUserHasMembershipTypesInGroup() throws Exception {
     populateUser("user01");
     populateUser("user02");
     populateUser("user03");
-    
+
     populateIdentity("user01");
     populateIdentity("user02");
     populateIdentity("user03");
-    
+
     Space space = populateSpace("space01", "user03");
-    
-    assertFalse(SpaceUtils.isUserHasMembershipTypesInGroup("user01", space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
-    
+
+    assertFalse(SpaceUtils.isUserHasMembershipTypesInGroup("user01",
+                                                           space.getGroupId(),
+                                                           MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
+
     addUserToGroupWithMembership("user01", space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
-    
-    // with spaces member and manager membership are not included in case of wild-card membership
+
+    // with spaces member and manager membership are not included in case of
+    // wild-card membership
     assertFalse(SpaceUtils.isUserHasMembershipTypesInGroup("user01", space.getGroupId(), "member"));
-    
-    assertTrue(SpaceUtils.isUserHasMembershipTypesInGroup("user01",space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
+
+    assertTrue(SpaceUtils.isUserHasMembershipTypesInGroup("user01",
+                                                          space.getGroupId(),
+                                                          MembershipTypeHandler.ANY_MEMBERSHIP_TYPE));
   }
-  
+
   /**
    * Test {@link SpaceUtils#findMembershipUsersByGroupAndType(String, String)}
+   * 
    * @throws Exception
    */
   public void testFindMembershipUsersByGroupAndTypes() throws Exception {
     populateUser("user01");
     populateUser("user02");
     populateUser("user03");
-    
+
     populateIdentity("user01");
     populateIdentity("user02");
     populateIdentity("user03");
-    
+
     Space space = populateSpace("space02", "user03");
-    
-    assertEquals(0, SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE).size());
-    
+
+    assertEquals(0,
+                 SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE)
+                           .size());
+
     addUserToGroupWithMembership("user01", space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
-    
-    // with spaces member and manager membership are not included in case of wild-card membership
-    assertEquals(1, SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE).size());
-    
+
+    // with spaces member and manager membership are not included in case of
+    // wild-card membership
+    assertEquals(1,
+                 SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE)
+                           .size());
+
     addUserToGroupWithMembership("user02", space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE);
-    
-    // with spaces member and manager membership are not included in case of wild-card membership
-    assertEquals(2, SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE).size());
-    
-    assertEquals(3, SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), 
-        new String[] {MembershipTypeHandler.ANY_MEMBERSHIP_TYPE, "member"}).size());
-    assertEquals(3, SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), 
-        new String[] {MembershipTypeHandler.ANY_MEMBERSHIP_TYPE, "manager"}).size());
-    assertEquals(3, SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), 
-        new String[] {MembershipTypeHandler.ANY_MEMBERSHIP_TYPE, "member", "manager"}).size());
-    
+
+    // with spaces member and manager membership are not included in case of
+    // wild-card membership
+    assertEquals(2,
+                 SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), MembershipTypeHandler.ANY_MEMBERSHIP_TYPE)
+                           .size());
+
+    assertEquals(3,
+                 SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(),
+                                                               new String[] { MembershipTypeHandler.ANY_MEMBERSHIP_TYPE,
+                                                                   "member" })
+                           .size());
+    assertEquals(3,
+                 SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(),
+                                                               new String[] { MembershipTypeHandler.ANY_MEMBERSHIP_TYPE,
+                                                                   "manager" })
+                           .size());
+    assertEquals(3,
+                 SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(),
+                                                               new String[] { MembershipTypeHandler.ANY_MEMBERSHIP_TYPE, "member",
+                                                                   "manager" })
+                           .size());
+
     // disable user02
     disableUser("user02");
-    assertEquals(1, SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(), 
-        new String[] {MembershipTypeHandler.ANY_MEMBERSHIP_TYPE}).size());
+    assertEquals(1,
+                 SpaceUtils.findMembershipUsersByGroupAndTypes(space.getGroupId(),
+                                                               new String[] { MembershipTypeHandler.ANY_MEMBERSHIP_TYPE })
+                           .size());
   }
-  
+
   private void disableUser(String userName) {
     try {
       User user = userHandler.findUserByName(userName);
@@ -152,19 +172,19 @@ public class SpaceUtilsWildCardMembershipTest extends AbstractCoreTest {
 
   private User populateUser(String name) {
     User user = userHandler.createUserInstance(name);
-    
+
     try {
       userHandler.createUser(user, false);
     } catch (Exception e) {
       return null;
     }
-    
+
     tearDownUserList.add(user);
-    
+
     return user;
   }
-  
-  private Space populateSpace(String name, String creator) throws Exception{
+
+  private Space populateSpace(String name, String creator) throws Exception {
     Space space = new Space();
     space.setApp("app");
     space.setDisplayName(name);
@@ -177,7 +197,7 @@ public class SpaceUtilsWildCardMembershipTest extends AbstractCoreTest {
     space.setGroupId(SpaceUtils.createGroup(space.getPrettyName(), creator));
     space.setUrl(space.getPrettyName());
     String[] managers = new String[] {};
-    String[] members = new String[] {"user03"};
+    String[] members = new String[] { "user03" };
     String[] invitedUsers = new String[] {};
     String[] pendingUsers = new String[] {};
     space.setInvitedUsers(invitedUsers);
@@ -187,10 +207,10 @@ public class SpaceUtilsWildCardMembershipTest extends AbstractCoreTest {
 
     spaceStorage.saveSpace(space, true);
     tearDownSpaceList.add(space);
-    
+
     return space;
   }
-  
+
   private void populateIdentity(String remoteId) {
     String providerId = "organization";
     Identity identity = new Identity(providerId, remoteId);
@@ -199,7 +219,7 @@ public class SpaceUtilsWildCardMembershipTest extends AbstractCoreTest {
     Profile profile = new Profile(identity);
     profile.setProperty(Profile.FIRST_NAME, "FirstName" + remoteId);
     profile.setProperty(Profile.LAST_NAME, "LastName" + remoteId);
-    profile.setProperty(Profile.FULL_NAME, "FirstName" + remoteId + " " +  "LastName" + remoteId);
+    profile.setProperty(Profile.FULL_NAME, "FirstName" + remoteId + " " + "LastName" + remoteId);
     profile.setProperty("position", "developer");
     profile.setProperty("gender", "male");
     identity.setProfile(profile);

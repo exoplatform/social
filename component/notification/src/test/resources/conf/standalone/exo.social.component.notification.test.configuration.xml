@@ -74,7 +74,7 @@
   
   <component>
     <key>org.exoplatform.commons.api.notification.service.setting.PluginSettingService</key>
-    <type>org.exoplatform.commons.notification.impl.setting.PluginSettingServiceImpl</type>
+    <type>org.exoplatform.settings.jpa.JPAPluginSettingServiceImpl</type>
   </component>
   
   <component>
@@ -96,17 +96,7 @@
     <key>org.exoplatform.commons.api.notification.service.QueueMessage</key>
     <type>org.exoplatform.social.notification.mock.MockMessageQueue</type>
   </component>
-  
-  <component>
-	  <type>org.exoplatform.commons.notification.NotificationConfiguration</type>
-	  <init-params>
-	    <value-param>
-	      <name>workspace</name>
-	      <value>portal-test</value>
-	    </value-param>
-	  </init-params>
-	</component>
-  
+
   <component>
 		<key>org.exoplatform.commons.api.notification.service.NotificationCompletionService</key>
 		<type>org.exoplatform.commons.api.notification.service.NotificationCompletionService</type>

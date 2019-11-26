@@ -146,6 +146,39 @@
             </component-plugin>
         </component-plugins>
     </component>
+
+    <external-component-plugins>
+      <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
+      <component-plugin>
+        <name>chromattic</name>
+        <set-method>addLifeCycle</set-method>
+        <type>org.exoplatform.application.registry.impl.ApplicationRegistryChromatticLifeCycle</type>
+        <init-params>
+          <value-param>
+            <name>domain-name</name>
+            <value>app</value>
+          </value-param>
+          <value-param>
+            <name>workspace-name</name>
+            <value>portal-test</value>
+          </value-param>
+          <values-param>
+            <name>entities</name>
+            <value>org.exoplatform.application.registry.impl.ContentRegistry</value>
+            <value>org.exoplatform.application.registry.impl.CategoryDefinition</value>
+            <value>org.exoplatform.application.registry.impl.ContentDefinition</value>
+            <value>org.chromattic.ext.ntdef.NTFile</value>
+            <value>org.chromattic.ext.ntdef.NTFolder</value>
+            <value>org.chromattic.ext.ntdef.NTResource</value>
+          </values-param>
+          <properties-param>
+            <name>options</name>
+            <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
+            <property name="org.chromattic.api.Option.root_node.create" value="true"/>
+          </properties-param>
+        </init-params>
+      </component-plugin>
+    </external-component-plugins>
     <external-component-plugins>
         <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
         <component-plugin>
@@ -189,7 +222,7 @@
                 <values-param>
                     <name>autoCreatedInNewRepository</name>
                     <description>Node types configuration file</description>
-                    <value>classpath:/conf/standalone/application-nodetypes.xml</value>
+                    <value>jar:/conf/application-nodetypes.xml</value>
                 </values-param>
             </init-params>
         </component-plugin>

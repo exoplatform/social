@@ -16,11 +16,27 @@
  */
 package org.exoplatform.social.common.lifecycle;
 
+import org.exoplatform.container.component.ComponentPlugin;
+
 /**
  * A listener to follow the lifecycle.
+ * 
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
  */
-public interface LifeCycleListener <E extends LifeCycleEvent<?,?>> {
+public interface LifeCycleListener<E extends LifeCycleEvent<?, ?>> extends ComponentPlugin {
 
+  default String getName() {
+    return null;
+  }
+
+  default void setName(String s) {
+  }
+
+  default String getDescription() {
+    return null;
+  }
+
+  default void setDescription(String s) {
+  }
 }

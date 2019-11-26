@@ -375,8 +375,8 @@ public interface IdentityManager {
   List<Identity> getIdentitiesFilterByAlphaBet(ProfileFilter profileFilter) throws Exception;
 
   /**
-   * Gets an identity from the provider, not in JCR. To make sure to get information
-   * from JCR, use {@link #getOrCreateIdentity(String, String, boolean)}.
+   * Gets an identity from the provider. To make sure to get information
+   * from DB, use {@link #getOrCreateIdentity(String, String, boolean)}.
    *
    * @param providerId Id of the provider.
    * @param remoteId The remote Id.

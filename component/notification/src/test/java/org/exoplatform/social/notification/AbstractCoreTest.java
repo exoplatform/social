@@ -22,9 +22,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
 import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
@@ -34,8 +31,6 @@ import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
@@ -75,8 +70,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected PluginSettingService pluginSettingService;
   protected ExoFeatureService exoFeatureService;
   
-  protected Session session;
-  
   protected Identity rootIdentity;
   protected Identity johnIdentity;
   protected Identity maryIdentity;
@@ -97,7 +90,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     tearDownIdentityList = new ArrayList<Identity>();
     tearDownRelationshipList = new ArrayList<Relationship>();
 
-    session = getSession();
     identityManager = getService(IdentityManager.class);
     activityManager = getService(ActivityManagerImpl.class);
     spaceService = getService(SpaceService.class);
@@ -149,7 +141,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
 
     notificationService.clearAll();
 
-    session = null;
     end();
   }
   
@@ -214,13 +205,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
       throw e;
     }
     
-  }
-
-  private Session getSession() throws RepositoryException {
-    PortalContainer container = PortalContainer.getInstance();
-    RepositoryService repositoryService = (RepositoryService) container.getComponentInstance(RepositoryService.class);
-    ManageableRepository repository = repositoryService.getCurrentRepository();
-    return repository.getSystemSession("portal-test");
   }
 
   /**

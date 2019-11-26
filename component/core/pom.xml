@@ -29,7 +29,8 @@
   <name>eXo PLF:: Social Core Component</name>
   <description>eXo Social Core Component: People and Space</description>
   <properties>
-    <exo.test.coverage.ratio>0.64</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.59</exo.test.coverage.ratio>
+    <org.elasticsearch.version>5.6.11</org.elasticsearch.version>
   </properties>
   <dependencies>
     <dependency>
@@ -39,10 +40,6 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.portlet</groupId>
@@ -55,32 +52,16 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.apt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.ext</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.spi</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-component-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-search</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.gatein.portal</groupId>
@@ -109,28 +90,6 @@
       <groupId>org.exoplatform.doc</groupId>
       <artifactId>doc-style</artifactId>
       <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.xml.stream</groupId>
-          <artifactId>stax-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.javaee</groupId>
-          <artifactId>jboss-transaction-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.ow2.spec.ee</groupId>
-          <artifactId>ow2-jta-1.1-spec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
@@ -255,6 +214,20 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+          <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -316,6 +289,12 @@
       <groupId>org.exoplatform.gatein.portal</groupId>
       <artifactId>exo.portal.component.test.jcr</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.byteman</groupId>
@@ -355,6 +334,57 @@
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>com.jcabi</groupId>
+        <artifactId>jcabi-maven-plugin</artifactId>
+      </plugin>
+      <!-- Always cleanup generated sources before compiling -->
+      <plugin>
+        <groupId>org.bsc.maven</groupId>
+        <artifactId>maven-processor-plugin</artifactId>
+        <version>2.0.5</version>
+        <executions>
+          <execution>
+            <id>process</id>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <processors>
+                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+              </processors>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>1.2.0.Final</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <!-- Additional configuration to generate wiki pages from wikbook 
+              annotations -->
+            <configuration>
+              <compilerArguments>
+                <sourcepath>${project.build.directory}/templates</sourcepath>
+              </compilerArguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Extract templates used by wikbook -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -391,25 +421,6 @@
                   <directory>${project.build.directory}/generated-sources/annotations</directory>
                 </fileset>
               </filesets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <!-- Additional configuration to generate wiki pages from wikbook annotations-->
-            <configuration>
-              <compilerArguments>
-                <sourcepath>${project.build.directory}/templates</sourcepath>
-              </compilerArguments>
             </configuration>
           </execution>
         </executions>
@@ -456,10 +467,20 @@
             <include>**/InitContainerTestSuite.java</include>
             <include>**/NoContainerTestSuite.java</include>
           </includes>
+          <excludes>
+            <exclude>**/*TestIT.java</exclude>
+          </excludes>
+          <systemProperties>
+            <property>
+              <name>exo.files.storage.dir</name>
+              <value>target/exo-files</value>
+            </property>
+          </systemProperties>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
   <profiles>
     <!-- required by byteman -->
     <profile>
@@ -486,5 +507,111 @@
         <toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
       </properties>
     </profile>	
+    <profile>
+      <id>run-its</id>
+      <build>
+        <plugins>
+          <!-- Unzip ES standalone -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.elasticsearch.distribution.zip</groupId>
+                      <artifactId>elasticsearch</artifactId>
+                      <type>zip</type>
+                    </artifactItem>
+                  </artifactItems>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <overWriteReleases>false</overWriteReleases>
+                  <overWriteSnapshots>false</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Obtain free port for ES -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>reserve-network-port</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>reserve-network-port</goal>
+                </goals>
+                <configuration>
+                  <minPortNumber>${es.port.range.min}</minPortNumber>
+                  <maxPortNumber>${es.port.range.max}</maxPortNumber>
+                  <portNames>
+                    <portName>es.http.port</portName>
+                  </portNames>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.bazaarvoice.maven.plugins</groupId>
+            <artifactId>process-exec-maven-plugin</artifactId>
+            <version>0.4</version>
+            <executions>
+              <execution>
+                <id>Start_ES</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <configuration>
+                  <name>ES</name>
+                  <workingDir>elasticsearch-${org.elasticsearch.version}/</workingDir>
+                  <arguments>
+                    <argument>./bin/elasticsearch</argument>
+                    <argument>-Ehttp.port=${es.http.port}</argument>
+                    <argument>-Epath.data=target/es</argument>
+                    <argument>-Ehttp.enabled=true</argument>
+                    <argument>-Enetwork.host=_local_</argument>
+                    <argument>-Ehttp.type=netty4</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>shutdown_ES</id>
+                <phase>post-integration-test</phase>
+                <goals><goal>stop-all</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <exo.es.index.server.url>http://localhost:${es.http.port}</exo.es.index.server.url>
+                <exo.es.search.server.url>http://localhost:${es.http.port}</exo.es.search.server.url>
+                <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
+                <org.apache.commons.logging.simplelog.defaultlog>info</org.apache.commons.logging.simplelog.defaultlog>
+                <org.apache.commons.logging.simplelog.log.org.exoplatform>debug</org.apache.commons.logging.simplelog.log.org.exoplatform>
+                <org.apache.commons.logging.simplelog.log.net.hibernate>warn</org.apache.commons.logging.simplelog.log.net.hibernate>
+                <java.naming.factory.initial>org.exoplatform.services.naming.SimpleContextFactory</java.naming.factory.initial>
+                <java.util.logging.config.class>org.exoplatform.services.log.impl.SimpleExoLogConfigurator</java.util.logging.config.class>
+                <exo.profiles>hsqldb</exo.profiles>
+                <com.arjuna.ats.arjuna.objectstore.objectStoreDir>${project.build.directory}</com.arjuna.ats.arjuna.objectstore.objectStoreDir>
+                <ObjectStoreEnvironmentBean.objectStoreDir>${project.build.directory}</ObjectStoreEnvironmentBean.objectStoreDir>
+                <gatein.test.tmp.dir>${project.build.directory}</gatein.test.tmp.dir>
+                <gatein.test.output.path>${project.build.directory}</gatein.test.output.path>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>

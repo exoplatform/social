@@ -102,12 +102,6 @@ public class ActivityResourceBundlePlugin extends BaseComponentPlugin {
       LOG.warn("Failed to register this plugin: initParams is null");
       return;
     }
-    /* could be exo-jcr bug
-    if (this.getName() == null) {
-      LOG.warn("Failed to register this plugin: must set name with activityType value");
-    }
-    activityType = this.getName();
-    */
     Iterator<ObjectParameter> itr = initParams.getObjectParamIterator();
     if (!itr.hasNext()) {
       LOG.warn("Failed to register this plugin: no <object-param>");

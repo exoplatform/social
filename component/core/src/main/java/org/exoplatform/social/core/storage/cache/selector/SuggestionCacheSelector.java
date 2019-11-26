@@ -18,11 +18,9 @@ package org.exoplatform.social.core.storage.cache.selector;
 
 import org.exoplatform.services.cache.ObjectCacheInfo;
 import org.exoplatform.social.core.storage.cache.model.data.SuggestionsData;
-import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
-import org.exoplatform.social.core.storage.cache.model.key.ScopeCacheKey;
-import org.exoplatform.social.core.storage.cache.model.key.SuggestionKey;
+import org.exoplatform.social.core.storage.cache.model.key.*;
 
-public class SuggestionCacheSelector extends ScopeCacheSelector<ScopeCacheKey, Object> {
+public class SuggestionCacheSelector extends CacheSelector<CacheKey, Object> {
   
   private String[] target;
 
@@ -31,7 +29,7 @@ public class SuggestionCacheSelector extends ScopeCacheSelector<ScopeCacheKey, O
   }
   
   @Override
-  public boolean select(ScopeCacheKey key, ObjectCacheInfo<? extends Object> ocinfo) {
+  public boolean select(CacheKey key, ObjectCacheInfo<? extends Object> ocinfo) {
     
     if (!super.select(key, ocinfo)) {
       return false;

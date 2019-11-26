@@ -18,16 +18,13 @@
 package org.exoplatform.social.core.storage.cache.selector;
 
 import org.exoplatform.services.cache.ObjectCacheInfo;
-import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
-import org.exoplatform.social.core.storage.cache.model.key.ListRelationshipsKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipCountKey;
-import org.exoplatform.social.core.storage.cache.model.key.ScopeCacheKey;
+import org.exoplatform.social.core.storage.cache.model.key.*;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class RelationshipCacheSelector extends ScopeCacheSelector<ScopeCacheKey, Object> {
+public class RelationshipCacheSelector extends CacheSelector<CacheKey, Object> {
 
   private String[] target;
 
@@ -36,7 +33,7 @@ public class RelationshipCacheSelector extends ScopeCacheSelector<ScopeCacheKey,
   }
 
   @Override
-  public boolean select(final ScopeCacheKey key, final ObjectCacheInfo<? extends Object> ocinfo) {
+  public boolean select(final CacheKey key, final ObjectCacheInfo<? extends Object> ocinfo) {
 
     if (!super.select(key, ocinfo)) {
       return false;

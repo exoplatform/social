@@ -16,44 +16,29 @@
  */
 package org.exoplatform.social.core.test;
 
-import junit.framework.AssertionFailedError;
+import java.lang.reflect.*;
+import java.util.*;
 
 import org.apache.commons.lang.ArrayUtils;
 
 import org.exoplatform.commons.testing.BaseExoTestCase;
-import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.commons.utils.PropertyManager;
-import org.exoplatform.component.test.ConfigurationUnit;
-import org.exoplatform.component.test.ConfiguredBy;
-import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.commons.utils.*;
+import org.exoplatform.component.test.*;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.*;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.MembershipEntry;
+import org.exoplatform.services.security.*;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.impl.StorageUtils;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.storage.cache.CachedSpaceStorage;
 
-import org.jboss.byteman.contrib.bmunit.BMUnit;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import junit.framework.AssertionFailedError;
 
 /**
  *
@@ -63,10 +48,9 @@ import java.util.List;
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/TO-DELETE-gatein-jcr-impl-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.application.registry.configuration.xml")
 })
@@ -78,7 +62,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   private final Log LOG = ExoLogger.getLogger(AbstractCoreTest.class);
 
   protected SpaceService spaceService;
-  protected Session session;
+  protected IdentityManager identityManager;
   
   
   @Override
@@ -87,17 +71,17 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     PropertyManager.setProperty("exo.activity-type.MY_ACTIVITY.enabled","false");
 
     begin();
-    session = getSession();
 
     // If is query number test, init byteman
-    if (getClass().isAnnotationPresent(QueryNumberTest.class)) {
-      count = 0;
-      maxQuery = 0;
-      BMUnit.loadScriptFile(getClass(), "queryCount", "src/test/resources");
-    }
+//    if (getClass().isAnnotationPresent(QueryNumberTest.class)) {
+//      count = 0;
+//      maxQuery = 0;
+//      BMUnit.loadScriptFile(getClass(), "queryCount", "src/test/resources");
+//    }
 
     //
     spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
 
     deleteAllSpaces();
   }
@@ -107,7 +91,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     deleteAllSpaces();
 
     wantCount = false;
-    session = null;
     end();
   }
 
@@ -115,10 +98,19 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     List<Space> allSpaces = spaceService.getAllSpaces();
     if(allSpaces != null && !allSpaces.isEmpty()) {
       for (Space space : allSpaces) {
-        LOG.warn("The space " + space.getDisplayName() + " wasn't cleaned up properly");
-        spaceService.deleteSpace(space);
+        try {
+          spaceService.deleteSpace(space);
+          end();
+          begin();
+          LOG.warn("The space " + space.getDisplayName() + " wasn't cleaned up properly");
+        } catch (Throwable e) {
+          // The space is already deleted
+        }
       }
     }
+
+    CachedSpaceStorage spaceStorage = (CachedSpaceStorage) CommonsUtils.getService(SpaceStorage.class);
+    spaceStorage.clearCaches();
   }
 
   protected <T> T getService(Class<T> clazz) {
@@ -149,11 +141,11 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     }
 
     try {
-      MaxQueryNumber queryNumber = runMethod.getAnnotation(MaxQueryNumber.class);
-      if (queryNumber != null) {
-        wantCount = true;
-        maxQuery = queryNumber.value();
-      }
+//      MaxQueryNumber queryNumber = runMethod.getAnnotation(MaxQueryNumber.class);
+//      if (queryNumber != null) {
+//        wantCount = true;
+//        maxQuery = queryNumber.value();
+//      }
       runMethod.invoke(this);
     }
     catch (InvocationTargetException e) {
@@ -187,13 +179,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   public static void count() {
     ++count;
    }
-
-  private Session getSession() throws RepositoryException {
-    PortalContainer container = PortalContainer.getInstance();
-    RepositoryService repositoryService = (RepositoryService) container.getComponentInstance(RepositoryService.class);
-    ManageableRepository repository = repositoryService.getCurrentRepository();
-    return repository.getSystemSession("portal-test");
-  }
 
   /**
    * Creates new space with out init apps.
@@ -243,10 +228,16 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
       spaceService.saveSpace(space, true);
     } catch (SpaceException e) {
       LOG.warn("Error while saving space", e);
-    } finally {
-      StorageUtils.persist();
     }
     return space;
+  }
+
+  protected org.exoplatform.social.core.identity.model.Identity createOrUpdateIdentity(String remoteId) {
+    org.exoplatform.social.core.identity.model.Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId);
+    identity.setDeleted(false);
+    identity.setEnable(true);
+    identityManager.updateIdentity(identity);
+    return identity;
   }
 
   protected void addUserToGroupWithMembership(String remoteId, String groupId, String membership) {

@@ -16,38 +16,23 @@
  */
 package org.exoplatform.social.service.test;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.component.test.ConfigurationUnit;
-import org.exoplatform.component.test.ConfiguredBy;
-import org.exoplatform.component.test.ContainerScope;
-import org.exoplatform.component.test.KernelBootstrap;
-import org.exoplatform.container.PortalContainer;
+import org.exoplatform.component.test.*;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.rest.impl.ApplicationContextImpl;
-import org.exoplatform.services.rest.impl.ProviderBinder;
-import org.exoplatform.services.rest.impl.RequestHandlerImpl;
-import org.exoplatform.services.rest.impl.ResourceBinder;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.MembershipEntry;
+import org.exoplatform.services.rest.impl.*;
+import org.exoplatform.services.security.*;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.manager.*;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -72,17 +57,14 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 })
 public abstract class AbstractServiceTest extends BaseExoTestCase {
   protected static Log log = ExoLogger.getLogger(AbstractServiceTest.class.getName());
-  protected SessionProvider sessionProvider;
   protected ProviderBinder providerBinder;
   protected ResourceBinder resourceBinder;
   protected RequestHandlerImpl requestHandler;
-  private static SessionProviderService sessionProviderService;
   /** . */
   public static KernelBootstrap socialBootstrap = null;
 
 
   protected void setUp() throws Exception {
-    sessionProviderService = getContainer().getComponentInstanceOfType(SessionProviderService.class);
     resourceBinder = getContainer().getComponentInstanceOfType(ResourceBinder.class);
     requestHandler = getContainer().getComponentInstanceOfType(RequestHandlerImpl.class);
     // Reset providers to be sure it is clean
@@ -210,10 +192,6 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
     resourceBinder.removeResource(clazz);
   }
 
-  protected void startSystemSession() {
-    sessionProvider = sessionProviderService.getSystemSessionProvider(null);
-  }
-
   protected void startSessionAs(String user) {
     startSessionAs(user, new HashSet<MembershipEntry>());
   }
@@ -222,14 +200,10 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
     Identity identity = new Identity(user, memberships);
     ConversationState state = new ConversationState(identity);
     ConversationState.setCurrent(state);
-    sessionProviderService.setSessionProvider(null, new SessionProvider(state));
-    sessionProvider = sessionProviderService.getSessionProvider(null);
   }
 
   protected void endSession() {
-    sessionProviderService.removeSessionProvider(null);
     ConversationState.setCurrent(null);
-    startSystemSession();
   }
 
   protected void deleteAllIdentitiesWithActivities() throws Exception {

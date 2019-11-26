@@ -17,9 +17,7 @@
 
 package org.exoplatform.social.core.storage.cache;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
@@ -27,6 +25,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -34,20 +33,9 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
-import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
-import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
-import org.exoplatform.social.core.storage.cache.model.data.ListSpacesData;
-import org.exoplatform.social.core.storage.cache.model.data.SpaceData;
-import org.exoplatform.social.core.storage.cache.model.data.SpaceSimpleData;
-import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
-import org.exoplatform.social.core.storage.cache.model.key.ListSpacesKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceFilterKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceRefKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
-import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
-import org.exoplatform.social.core.storage.cache.selector.LastAccessedSpacesCacheSelector;
-import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
+import org.exoplatform.social.core.storage.cache.model.data.*;
+import org.exoplatform.social.core.storage.cache.model.key.*;
+import org.exoplatform.social.core.storage.cache.selector.*;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -193,7 +181,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   }
 
-  public CachedSpaceStorage(final SpaceStorage storage, final SocialStorageCacheService cacheService) {
+  public CachedSpaceStorage(final RDBMSSpaceStorageImpl storage, final SocialStorageCacheService cacheService) {
 
     this.storage = storage;
     this.cacheService = cacheService;
@@ -214,6 +202,9 @@ public class CachedSpaceStorage implements SpaceStorage {
   }
 
   private void cleanRef(Space removed) {
+    if (removed == null) {
+      return;
+    }
     exoRefSpaceCache.remove(new SpaceRefKey(removed.getDisplayName()));
     exoRefSpaceCache.remove(new SpaceRefKey(null, removed.getPrettyName()));
     exoRefSpaceCache.remove(new SpaceRefKey(null, null, removed.getGroupId()));
@@ -239,8 +230,8 @@ public class CachedSpaceStorage implements SpaceStorage {
   void clearSpaceCache() {
 
     try {
-      exoSpacesCache.select(new ScopeCacheSelector<ListSpacesKey, ListSpacesData>());
-      exoSpacesCountCache.select(new ScopeCacheSelector<SpaceFilterKey, IntegerData>());
+      exoSpacesCache.select(new CacheSelector<ListSpacesKey, ListSpacesData>());
+      exoSpacesCountCache.select(new CacheSelector<SpaceFilterKey, IntegerData>());
     }
     catch (Exception e) {
       LOG.error("Error deleting space caches", e);
@@ -1524,6 +1515,15 @@ public class CachedSpaceStorage implements SpaceStorage {
       exoRefSpaceCache.putLocal(refKey, key);
     }
     return key;
+  }
+
+  public void clearCaches() {
+    exoSpaceCache.clearCache();
+    exoSpaceSimpleCache.clearCache();
+    exoSpacesCountCache.clearCache();
+    exoSpacesCache.clearCache();
+    exoRefSpaceCache.clearCache();
+    exoIdentitiesCache.clearCache();
   }
 }
 

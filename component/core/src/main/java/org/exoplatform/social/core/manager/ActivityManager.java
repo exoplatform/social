@@ -380,18 +380,6 @@ public interface ActivityManager {
 
 
   /**
-   * Gets activities of connections from an identity.
-   *
-   * @param ownerIdentity The identity information to get activities.
-   * @return The activities.
-   * @LevelAPI Provisional
-   * @deprecated Use {@link #getActivitiesOfConnectionsWithListAccess(Identity)} instead. Will be removed by 4.0.x.
-   */
-  @Deprecated
-  List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity,
-                                                     int offset, int length) throws ActivityStorageException;
-
-  /**
    * Gets activities from all spaces of a user.
    *
    * @param ownerIdentity The identity information to get activities.
@@ -492,16 +480,6 @@ public interface ActivityManager {
   @Deprecated
   int getActivitiesCount(Identity owner) throws ActivityStorageException;
 
-  /**
-   * Processes an activity to some given rules.
-   *
-   * @param activity The activity to be processed.
-   * @LevelAPI Provisional
-   * @deprecated Will be removed by 4.0.x.
-   */
-  @Deprecated
-  void processActivitiy(ExoSocialActivity activity);
-  
   /**
    * Get the list access of all activities
    * 

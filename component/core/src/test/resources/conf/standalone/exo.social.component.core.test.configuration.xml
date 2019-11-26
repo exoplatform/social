@@ -23,81 +23,21 @@
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <key>org.exoplatform.services.user.UserStateService</key>
-     <type>org.exoplatform.services.user.UserStateService</type>
+    <type>org.exoplatform.social.core.jpa.mock.DummyDependantComponent</type>
   </component>
-  
+
   <component>
-    <key>org.exoplatform.portal.config.UserACL</key>
-    <type>org.exoplatform.portal.config.UserACL</type>
+    <key>org.exoplatform.services.naming.InitialContextInitializer</key>
+    <type>org.exoplatform.services.naming.InitialContextInitializer</type>
     <init-params>
-      <value-param>
-        <name>super.user</name>
-        <description>administrator</description>
-        <value>root</value>
-      </value-param>
-
-      <value-param>
-        <name>portal.administrator.groups</name>
-        <description>administrator</description>
-        <value>/platform/administrators</value>
-      </value-param>
-
-      <value-param>
-        <name>portal.administrator.mstype</name>
-        <description>administrator</description>
-        <value>manager</value>
-      </value-param>
-
-      <value-param>
-        <name>portal.creator.groups</name>
-        <description>groups with membership type have permission to manage portal</description>
-        <value>*:/platform/administrators,*:/organization/management/executive-board</value>
-      </value-param>
-
-      <value-param>
-        <name>navigation.creator.membership.type</name>
-        <description>specific membership type have full permission with group navigation</description>
-        <value>manager</value>
-      </value-param>
-
-      <value-param>
-        <name>guests.group</name>
-        <description>guests group</description>
-        <value>/platform/guests</value>
-      </value-param>
-
-      <values-param>
-        <name>mandatory.groups</name>
-        <description>Groups that can not be deleted.</description>
-        <value>/platform/administrators</value>
-        <value>/platform/users</value>
-        <value>/platform/guests</value>
-        <value>/customers</value>
-        <value>/partners</value>
-        <value>/organization/management/executive-board</value>
-        <value>/organization/management/human-resources</value>
-        <value>/organization/communication/marketing</value>
-        <value>/organization/communication/press-and-media</value>
-        <value>/organization/operations/sales</value>
-        <value>/organization/operations/finances</value>
-        <value>/developers</value>
-        <value>/spaces</value>
-      </values-param>
-
-      <values-param>
-        <name>mandatory.mstypes</name>
-        <description>Membership type that can not be deleted.</description>
-        <value>member</value>
-      </values-param>
+      <properties-param>
+        <name>default-properties</name>
+        <description>Default initial context properties</description>
+        <property name="java.naming.factory.initial" value="org.exoplatform.services.naming.SimpleContextFactory" />
+      </properties-param>
     </init-params>
   </component>
-  
-  <component>
-    <key>org.exoplatform.services.jcr.ext.app.SessionProviderService</key>
-    <type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
-  </component>
-  
+
   <component>
     <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
     <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
@@ -109,8 +49,8 @@
   </component>
 
   <component>
-    <key>org.exoplatform.commons.chromattic.ChromatticManager</key>
-    <type>org.exoplatform.commons.chromattic.ChromatticManager</type>
+    <key>org.exoplatform.commons.api.event.EventManager</key>
+    <type>org.exoplatform.commons.event.impl.EventManagerImpl</type>
   </component>
 
   <component>
@@ -130,11 +70,11 @@
     <init-params>
       <value-param>
         <name>pool-size</name>
-        <value>1</value>
+        <value>10</value>
       </value-param>
       <value-param>
         <name>max-pool-size</name>
-        <value>1</value>
+        <value>20</value>
       </value-param>
       <value-param>
         <name>async-mode</name>
@@ -146,103 +86,124 @@
       </value-param>
     </init-params>
   </component>
+
+  <component>
+    <type>org.exoplatform.commons.persistence.impl.EntityManagerService</type>
+  </component>
   
   <component>
-    <key>org.exoplatform.social.core.storage.streams.StreamConfig</key>
-    <type>org.exoplatform.social.core.storage.streams.StreamConfig</type>
+    <key>org.exoplatform.social.core.jpa.storage.dao.ActivityDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ActivityDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.SpaceDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.SpaceMemberDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.SpaceMemberDAOImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.IdentityDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.IdentityDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.commons.api.persistence.DataInitializer</key>
+    <type>org.exoplatform.commons.persistence.impl.LiquibaseDataInitializer</type>
     <init-params>
       <value-param>
-        <name>connections-threshold-param</name>
-        <value>1000</value> <!-- connections threshold -->
+        <name>liquibase.datasource</name>
+        <value>${exo.jpa.datasource.name:java:/comp/env/exo-jpa_portal}</value>
       </value-param>
       <value-param>
-        <name>last-login-around-days</name>
-        <value>15</value> <!-- the last login around days of an user -->
+        <name>liquibase.contexts</name>
+        <value>production</value>
       </value-param>
-      <value-param>
-        <name>limit-per-loading-param</name>
-        <value>10</value><!-- batch limit to persist to storage when CRUD node -->
-      </value-param>
-      <!-- /platform/administrators,/platform/users -->
-      <!--
-      <value-param>
-        <name>active-user-groups-param</name>
-        <value>/platform/administrators</value>
-      </value-param>
-      -->
     </init-params>
   </component>
-
-  <!--
-    Activity Stream storage components.
-  -->
+  
   <component>
-    <key>org.exoplatform.social.core.storage.api.ActivityStreamStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.JCRCachedActivityStreamStorage</type>
-  </component>
-  <component>
-    <key>org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStreamStorage</type>
+    <key>org.exoplatform.social.core.jpa.storage.dao.ConnectionDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.ConnectionDAOImpl</type>
   </component>
   
-  <!--
-    Activity storage components.
-  -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.JCRCachedActivityStorage</type>
+    <key>org.exoplatform.social.core.jpa.storage.dao.StreamItemDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.StreamItemDAOImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.ActivityStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStorage</type>
+    <key>org.exoplatform.social.core.jpa.storage.dao.IdentityDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.IdentityDAOImpl</type>
+  </component>
+   <!--
+    Activity storage components.
+  -->
+
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImpl</type>
+    <component-plugins>
+      <component-plugin>
+        <name>RDBMSActivityFileStoragePlugin</name>
+        <set-method>addFileStoragePlugin</set-method>
+        <type>org.exoplatform.social.core.jpa.storage.RDBMSActivityFileStoragePlugin</type>
+        <description>FileService based activity attachment storage</description>
+        <init-params>
+          <value-param>
+            <name>priority</name>
+            <description>the lowest priority as a fallback implementation</description>
+            <value>-1</value>
+          </value-param>
+          <value-param>
+            <name>datasource</name>
+            <description>An id of datasource name to identify this storage</description>
+            <value>file</value>
+          </value-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedActivityStorage</type>
   </component>
 
   <!--
     Identity storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.JCRCachedIdentityStorage</type>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.IdentityStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedIdentityStorage</type>
+    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedIdentityStorage</type>
   </component>
 
   <!--
     Relationship storage components.
   -->
   <component>
-    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.JCRCachedRelationshipStorage</type>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSRelationshipStorageImpl</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.impl.RelationshipStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedRelationshipStorage</type>
+    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedRelationshipStorage</type>
   </component>
 
-  <!--
-    Space storage components.
-  -->
+  <component>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSSpaceStorageImpl</type>
+  </component>
+
   <component>
     <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
-    <type>org.exoplatform.social.core.storage.cache.JCRCachedSpaceStorage</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.social.core.storage.impl.SpaceStorageImpl</key>
-    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedSpaceStorage</type>
-  </component>
-  
-  <component>
-    <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
-  </component>
-  
-  <component>
-    <type>org.exoplatform.social.core.updater.SpaceActivityStreamMigration</type>
+    <type>org.exoplatform.social.core.storage.cache.CachedSpaceStorage</type>
   </component>
 
   <component>
@@ -255,24 +216,7 @@
     <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
   </component>
 
-  <component>
-    <key>org.exoplatform.social.core.manager.ActivityManager</key>
-    <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
-    <component-plugins>
-      <component-plugin>
-        <name>OSHtmlSanitizer</name>
-        <set-method>addProcessorPlugin</set-method>
-        <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
-        <init-params>
-          <value-param>
-            <name>priority</name>
-            <description>priority of this processor (lower are executed first)</description>
-            <value>3</value>
-          </value-param>
-        </init-params>
-      </component-plugin>
-    </component-plugins>
-  </component>
+  
 
   <component>
     <key>org.exoplatform.social.core.identity.model.PropertiesDefinition</key>
@@ -294,10 +238,6 @@
   </component>
 
   <component>
-    <type>org.exoplatform.social.core.identity.provider.FakeIdentityProvider</type>
-  </component>
-  
-  <component>
     <key>org.exoplatform.social.core.manager.IdentityManager</key>
     <type>org.exoplatform.social.core.manager.IdentityManagerImpl</type>
     <component-plugins>
@@ -310,8 +250,27 @@
           <name>providers</name>
             <description>Identity Providers</description>
             <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
-            <value>org.exoplatform.social.core.identity.provider.FakeIdentityProvider</value>
+            <value>org.exoplatform.social.core.identity.IdentityProvider</value>
           </values-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.manager.ActivityManager</key>
+    <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
+    <component-plugins>
+      <component-plugin>
+        <name>OSHtmlSanitizer</name>
+        <set-method>addProcessorPlugin</set-method>
+        <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+        <init-params>
+          <value-param>
+            <name>priority</name>
+            <description>priority of this processor (lower are executed first)</description>
+            <value>3</value>
+          </value-param>
         </init-params>
       </component-plugin>
     </component-plugins>
@@ -367,28 +326,15 @@
   </component>
 
   <component>
-    <type>org.exoplatform.commons.notification.NotificationConfiguration</type>
-    <init-params>
-      <value-param>
-        <name>workspace</name>
-        <value>portal-system</value>
-      </value-param>
-    </init-params>
+    <type>org.exoplatform.commons.notification.impl.PluginStatisticService</type>
   </component>
 
   <component>
-    <key>org.exoplatform.commons.api.persistence.DataInitializer</key>
-    <type>org.exoplatform.commons.persistence.impl.LiquibaseDataInitializer</type>
-    <init-params>
-      <value-param>
-        <name>liquibase.datasource</name>
-        <value>${exo.jpa.datasource.name:exo-jpa_portal}</value>
-      </value-param>
-      <value-param>
-        <name>liquibase.contexts</name>
-        <value>production</value>
-      </value-param>
-    </init-params>
+    <type>org.exoplatform.commons.notification.impl.StatisticsService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.commons.notification.NotificationContextFactory</type>
   </component>
 
   <component>
@@ -408,12 +354,7 @@
 
   <component>
     <key>org.exoplatform.commons.api.settings.SettingService</key>
-    <type>org.exoplatform.social.core.mock.MockSettingServiceImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.commons.api.notification.service.setting.PluginSettingService</key>
-    <type>org.exoplatform.commons.notification.impl.setting.PluginSettingServiceImpl</type>
+    <type>org.exoplatform.settings.jpa.JPASettingServiceImpl</type>
   </component>
 
   <component>
@@ -440,7 +381,6 @@
     <key>org.exoplatform.commons.api.notification.service.WebNotificationService</key>
     <type>org.exoplatform.commons.notification.impl.service.WebNotificationServiceImpl</type>
   </component>
-
   <!-- Space Configuration -->
 
   <component>
@@ -488,39 +428,32 @@
     <key>org.exoplatform.social.core.application.SpaceActivityPublisher</key>
     <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
   </component>
-
+  
   <component>
-    <key>org.exoplatform.services.resources.LocaleConfigService</key>
-    <type>org.exoplatform.services.resources.impl.LocaleConfigServiceImpl</type>
-    <init-params>
-      <value-param>
-        <name>locale.config.file</name>
-        <value>jar:/conf/locales-config.xml</value>
-      </value-param>
-    </init-params>
+    <key>org.exoplatform.settings.impl.SettingServiceImpl</key>
+    <type>org.exoplatform.settings.impl.SettingServiceImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.commons.api.settings.SettingService</key>
+    <type>org.exoplatform.settings.cache.CacheSettingServiceImpl</type>
   </component>
 
-  <component>
-    <key>org.exoplatform.services.resources.ResourceBundleService</key>
-    <type>org.exoplatform.services.resources.impl.SimpleResourceBundleService</type>
-    <init-params>
-      <values-param>
-        <name>classpath.resources</name>
-        <description>The resources that start with the following package name should be load from file system</description>
-        <value>locale.portlet.social.SpaceTemplatesPortlet</value>
-      </values-param>
-      <values-param>
-        <name>init.resources</name>
-        <!--value>locale.navigation.portal.classic</value-->
-        <value>locale.portlet.social.SpaceTemplatesPortlet</value>
-      </values-param>
-      <values-param>
-        <name>portal.resource.names</name>
-        <!--value>locale.navigation.portal.classic</value-->
-        <value>locale.portlet.social.SpaceTemplatesPortlet</value>
-      </values-param>
-    </init-params>
-  </component>
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.file.services.NameSpaceService</target-component>
+    <component-plugin>
+      <name>SocialNameSpacePlugin</name>
+      <set-method>addNameSpacePlugin</set-method>
+      <type>org.exoplatform.commons.file.services.NameSpacePlugin</type>
+      <init-params>
+        <properties-param>
+          <name>fileNameSpace.params</name>
+          <property name="name" value="social"/>
+          <property name="description" value="social files storage"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 
   <!-- Bind datasource -->
   <external-component-plugins>
@@ -554,6 +487,35 @@
     </component-plugin>
   </external-component-plugins>
 
+  <!-- Data Initialization -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
+    <component-plugin>
+      <name>SocialRDBMSChangeLogsPlugin</name>
+      <set-method>addChangeLogsPlugin</set-method>
+      <type>org.exoplatform.commons.persistence.impl.ChangeLogsPlugin</type>
+      <init-params>
+        <values-param>
+          <name>changelogs</name>
+          <description>Change logs of Social RDBMS</description>
+          <value>db/changelog/social-rdbms.db.changelog-1.0.0.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>ESChangeLogsPlugin</name>
+      <set-method>addChangeLogsPlugin</set-method>
+      <type>org.exoplatform.commons.persistence.impl.ChangeLogsPlugin</type>
+      <init-params>
+        <values-param>
+          <name>changelogs</name>
+          <description>Change logs of Elasticsearch</description>
+          <value>db/changelog/exo-search.db.changelog-1.0.0.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
     <component-plugin>
@@ -578,15 +540,6 @@
           <value>1</value>
         </value-param>
       </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
-    <component-plugin>
-      <name>ProfileUpdatesPublisher</name>
-      <set-method>addProfileListener</set-method>
-      <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
     </component-plugin>
   </external-component-plugins>
 
@@ -621,101 +574,16 @@
     </component-plugin>
   </external-component-plugins>
 
-  <!--
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
-    <component-plugin>
-      <name>RelationshipPublisher</name>
-      <set-method>addListenerPlugin</set-method>
-      <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
-    </component-plugin>
-  </external-component-plugins>
-  -->
-  <external-component-plugins>
-    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
-    <component-plugin>
- 		  <name>add.namespaces</name>
- 		  <set-method>addPlugin</set-method>
- 		  <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
- 		  <init-params>
- 		    <properties-param>
- 		      <name>namespaces</name>
-          <property name="soc" value="http://www.social.org/jcr/soc/1.0/"/>
-        </properties-param>
-      </init-params>
- 		</component-plugin>
-    <component-plugin>
-      <name>add.social.nodeType</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-      <init-params>
-        <values-param>
-          <name>autoCreatedInNewRepository</name>
-          <description>Node types configuration file</description>
-          <value>jar:/conf/portal/chromattic-nodetypes.xml</value>
-          <value>jar:/conf/standalone/nodetypes-override-init.xml</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
-    <component-plugin>
-      <name>chromattic</name>
-      <set-method>addLifeCycle</set-method>
-      <type>org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle</type>
-      <init-params>
-        <value-param>
-          <name>domain-name</name>
-          <value>soc</value>
-        </value-param>
-        <value-param>
-          <name>workspace-name</name>
-          <value>portal-test</value>
-        </value-param>
-        <values-param>
-          <name>entities</name>
-          <value>org.exoplatform.social.core.chromattic.entity.ProviderRootEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ProviderEntity</value>
-
-          <value>org.exoplatform.social.core.chromattic.entity.DisabledEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>
-
-          <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>
-
-          <value>org.exoplatform.social.core.chromattic.entity.HidableEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.LockableEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityListEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityDayEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
-          
-          <value>org.exoplatform.social.core.chromattic.entity.StreamsEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRef</value>
-
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceListEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceRef</value>
-        </values-param>
-        <properties-param>
-          <name>options</name>
-          <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
-          <property name="org.chromattic.api.Option.root_node.create" value="true"/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
+<!--
+	<external-component-plugins>
+		<target-component>org.exoplatform.commons.api.event.EventManager</target-component>
+		<component-plugin>
+			<name>SOC_ACTIVITY_MIGRATION</name>
+			<set-method>addEventListener</set-method>
+			<type>org.exoplatform.social.core.jpa.storage.listener.ExampleActivityUpdaterListener</type>
+		</component-plugin>
+	</external-component-plugins>
+-->
 
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
@@ -767,7 +635,6 @@
             <field name="visibility"><string>private</string></field>
             <field name="registration"><string>open</string></field>
             <field name="bannerPath"><string>war:/conf/social-extension/social/space-template/classic/banner.png</string></field>
-            <field name="permissions"><string>*:/platform/administrators</string></field>
             <field name="homePageApplication">
               <object type="org.exoplatform.social.core.space.SpaceApplication">
                 <field name="portletApp"><string>social-portlet</string></field>
@@ -818,4 +685,23 @@
     </component-plugin>
   </external-component-plugins>
 
+  <!-- Data Initialization -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
+    <component-plugin>
+      <name>CommonsChangeLogsPlugin</name>
+      <set-method>addChangeLogsPlugin</set-method>
+      <type>org.exoplatform.commons.persistence.impl.ChangeLogsPlugin</type>
+      <init-params>
+        <values-param>
+          <name>changelogs</name>
+          <description>Change logs of settings</description>
+          <value>db/changelog/settings.db.changelog-1.0.0.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <import>jar:conf/portal/test-commons-jpa-configuration.xml</import>
+  <import>jar:conf/portal/files-configuration.xml</import>
 </configuration>

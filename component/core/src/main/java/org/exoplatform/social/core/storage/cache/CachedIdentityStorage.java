@@ -40,6 +40,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.jpa.storage.RDBMSIdentityStorageImpl;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLoader;
 import org.exoplatform.social.core.search.Sorting;
@@ -150,7 +151,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     return new ListIdentitiesData(data);
   }
 
-  public CachedIdentityStorage(final IdentityStorage storage, final SocialStorageCacheService cacheService) {
+  public CachedIdentityStorage(final RDBMSIdentityStorageImpl storage, final SocialStorageCacheService cacheService) {
 
     //
     this.storage = storage;
@@ -742,5 +743,9 @@ public class CachedIdentityStorage implements IdentityStorage {
                                      String sortField,
                                      String sortDirection) {
     return storage.sortIdentities(identityRemoteIds, firstCharacterFieldName, firstCharacter, sortField, sortDirection);
+  }
+
+  public IdentityStorage getStorage() {
+    return storage;
   }
 }

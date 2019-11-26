@@ -185,11 +185,12 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     space.setManagers(managers);
     space.setMembers(members);
     space.setUrl("/space/" + space.getPrettyName());
-    spaceService.saveSpace(space, true);
+    spaceService.createSpace(space, "root");
     space = spaceService.getSpaceByPrettyName(space.getPrettyName());
     space.setDisplayName("test1");
     space.setPrettyName("test1");
-    spaceService.saveSpace(space, false);
+    space.setEditor("root");
+    spaceService.updateSpace(space);
     // Test Rest URL at org.exoplatform.social.service.rest.SpacesRestService.getSpaceInfo
     ContainerResponse response = service("GET", "/portal/social/spaces/spaceInfo/?spaceName=testspace", "", null, null);
     assertEquals(200, response.getStatus());

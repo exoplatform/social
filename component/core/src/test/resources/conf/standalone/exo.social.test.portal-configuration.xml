@@ -61,30 +61,19 @@
         <description>guests group</description>
         <value>/platform/guests</value>      
       </value-param>     
-      <values-param>
-        <name>mandatory.groups</name>
-        <description>Groups that can not be deleted.</description>
-        <value>/platform/administrators</value>
-        <value>/platform/users</value>
-        <value>/platform/guests</value>
-      </values-param> 
-      <values-param>
-        <name>mandatory.mstypes</name>
-        <description>Membership type that can not be deleted.</description>
-        <value>member</value>      
-      </values-param>
-    </init-params>
-  </component>
-
-  <component>
-    <key>org.exoplatform.portal.config.UserPortalConfigService</key>
-    <type>org.exoplatform.portal.config.UserPortalConfigService</type>
-    <init-params>
-      <value-param>
-        <name>default.import.mode</name>
-        <value>merge</value>
-      </value-param>
-    </init-params>
+    <values-param>
+      <name>mandatory.groups</name>
+      <description>Groups that can not be deleted.</description>
+      <value>/platform/administrators</value>
+      <value>/platform/users</value>
+      <value>/platform/guests</value>
+    </values-param> 
+    <values-param>
+      <name>mandatory.mstypes</name>
+      <description>Membership type that can not be deleted.</description>
+      <value>member</value>      
+    </values-param>                  
+    </init-params>   
   </component>
 
   <external-component-plugins>
@@ -131,8 +120,12 @@
                 </value>
                 <value>
                   <object type="org.exoplatform.services.organization.OrganizationConfig$MembershipType">
-                    <field  name="type"><string>*</string></field>
-                    <field  name="description"><string>any membership type</string></field>
+                    <field name="type">
+                      <string>*</string>
+                    </field>
+                    <field name="description">
+                      <string>any membership type</string>
+                    </field>
                   </object>
                 </value>
               </collection>
@@ -183,7 +176,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Root</string></field>
                     <field  name="lastName"><string>Root</string></field>
-                    <field  name="email"><string>root@localhost.com</string></field>
+                    <field  name="email"><string>root@platform.com</string></field>
                     <field  name="groups">
                       <string>manager:/platform/administrators,member:/platform/users</string>
                     </field>
@@ -195,7 +188,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>John</string></field>
                     <field  name="lastName"><string>Anthony</string></field>
-                    <field  name="email"><string>john@localhost.com</string></field>
+                    <field  name="email"><string>john@platform.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/administrators,member:/platform/users</string>
                     </field>
@@ -207,7 +200,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Mary</string></field>
                     <field  name="lastName"><string>Kelly</string></field>
-                    <field  name="email"><string>mary@localhost.com</string></field>
+                    <field  name="email"><string>mary@platform.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -219,7 +212,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Demo</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>demo@localhost.com</string></field>
+                    <field  name="email"><string>demo@platform.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -231,7 +224,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Ghost</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>ghost@localhost.com</string></field>
+                    <field  name="email"><string>ghost@platform.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -243,7 +236,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Paul</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>paul@localhost.com</string></field>
+                    <field  name="email"><string>paul@platform.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -255,7 +248,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Raul</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>raul@localhost.com</string></field>
+                    <field  name="email"><string>raul@platform.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -267,7 +260,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Jame</string></field>
                     <field  name="lastName"><string>gtn</string></field>
-                    <field  name="email"><string>jame@localhost.com</string></field>
+                    <field  name="email"><string>jame@platform.com</string></field>
                     <field  name="groups">
                       <string>member:/platform/users</string>
                     </field>
@@ -278,12 +271,6 @@
           </object>
         </object-param>
       </init-params>
-    </component-plugin>
-
-    <component-plugin>
-      <name>SocialGroupEventListenerImpl</name>
-      <set-method>addListenerPlugin</set-method>
-      <type>org.exoplatform.social.core.space.impl.SocialGroupEventListenerImpl</type>
     </component-plugin>
 
     <component-plugin>
@@ -392,4 +379,5 @@
     </component-plugin>
   </external-component-plugins>
   
+  <remove-configuration>org.exoplatform.portal.pc.ExoKernelIntegration</remove-configuration>
 </configuration>

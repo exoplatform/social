@@ -16,15 +16,18 @@
  */
 package org.exoplatform.social.core.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.Validate;
+
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -35,9 +38,6 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 /**
  * Builds and provides default links and links of users, spaces and activities.
@@ -83,7 +83,7 @@ public class LinkProvider {
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceByPrettyName(prettyName);
     RequestContext ctx = RequestContext.getCurrentInstance();
-    if (ctx != null) {
+    if (ctx != null && space != null) {
       NodeURL nodeURL = ctx.createURL(NodeURL.TYPE);
       NavigationResource resource = new NavigationResource(SiteType.GROUP, space.getGroupId(), space.getUrl());
       return nodeURL.setResource(resource).toString();
@@ -248,115 +248,6 @@ public class LinkProvider {
    */
   public static String getActivityUriForSpace(final String remoteId, final String groupId) {
     return String.format("/%s/g/:spaces:%s/%s", getPortalName(null), groupId, remoteId);
-  }
-  
-  /**
-   * Gets URI to the provided space's avatar.
-   *
-   * @param space The target object to get its avatar based on the attachment information.
-   * @return The URI.
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
-   */
-  public static String buildAvatarImageUri(final Space space) {
-    return buildAvatarImageUri(space.getAvatarAttachment());
-  }
-
-  /**
-   * Gets URI to an avatar from the identity name.
-   *
-   * @param identityName The name of target identity to build the URL link to the avatar.
-   * @return Link to avatar of the target provided identity name.
-   * @LevelAPI Platform
-   * @since 1.2.0-GA
-   */
-  public static String buildAvatarImageUri(final String identityName) {
-    return String.format(
-        "/rest/jcr/repository/social/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar",
-        identityName);
-  }
-
-  /**
-   * Escapes the JCR special characters.
-   *
-   * @param string The set of characters to be escaped.
-   * @return Null if the string value is null; or a set of corresponding characters are returned after they have been escaped.
-   * @LevelAPI Platform
-   */
-  public static String escapeJCRSpecialCharacters(String string) {
-    if (string == null) {
-      return null;
-    }
-    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
-  }
-  
-  /**
-   * Gets URL to the profile's avatar image in a portalContainer.
-   *
-   * @param profile The user profile.
-   * @param portalContainer The portal container.
-   * @return Null or the URL.
-   * @LevelAPI Provisional
-   * @deprecated use {@link Profile#getAvatarUrl()}. Will be removed by 4.0.x.
-   */
-  public static String getAvatarImageSource(final PortalContainer portalContainer, final Profile profile) {
-    final AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
-    if (avatarAttachment != null) {
-      return buildAvatarImageUri(avatarAttachment);
-    }
-    return null;
-  }
-  
-  /**
-   * Gets URL to the profile's avatar image.
-   *
-   * @param profile The user profile.
-   * @return Null or the URL.
-   * @LevelAPI Provisional
-   * @deprecated use {@link Profile#getAvatarUrl()}. Will be removed by 4.0.x.
-   */
-  public static String getAvatarImageSource(final Profile profile) {
-    String avatarUrl = profile.getAvatarUrl();
-    if (avatarUrl != null) {
-      return avatarUrl;
-    }
-
-    final AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
-    if (avatarAttachment != null) {
-      avatarUrl = buildAvatarImageUri(avatarAttachment);
-      profile.setAvatarUrl(avatarUrl);
-      getIdentityManager().saveProfile(profile);
-      return avatarUrl;
-    }
-    return null;
-  }
-
-  /**
-   * Builds URI to the avatar image from avatarAttachment.
-   *
-   * @param avatarAttachment The object which stores information of the avatar image.
-   * @return The URI.
-   */
-  public static String buildAvatarImageUri(final AvatarAttachment avatarAttachment) {
-    String avatarUrl = null;
-    try {
-      if (avatarAttachment != null) {
-        final String repository = CommonsUtils.getRepository().getConfiguration().getName();
-        //
-        avatarUrl = escapeJCRSpecialCharacters(new StringBuilder("/").append(CommonsUtils.getRestContextName())
-                                                                     .append("/jcr/")
-                                                                     .append(repository)
-                                                                     .append("/")
-                                                                     .append(avatarAttachment.getWorkspace())
-                                                                     .append(avatarAttachment.getDataPath())
-                                                                     .append("/?upd=")
-                                                                     .append(avatarAttachment.getLastModified())
-                                                                     .toString());
-      }
-    } catch (Exception e) {
-      LOG.warn("Failed to build avatar url from avatar attachment for: " + e.getMessage());
-    }
-    return avatarUrl;
   }
 
   /**

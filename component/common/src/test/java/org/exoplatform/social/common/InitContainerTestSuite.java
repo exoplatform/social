@@ -16,20 +16,19 @@
  */
 package org.exoplatform.social.common;
 
-import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
-import org.exoplatform.commons.testing.ConfigTestCase;
-import org.exoplatform.social.common.jcr.UtilTest;
-import org.exoplatform.social.common.service.AsyncProcessorTest;
-import org.exoplatform.social.common.xmlprocessor.XMLProcessorTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
+import org.exoplatform.commons.testing.ConfigTestCase;
+import org.exoplatform.social.common.service.AsyncProcessorTest;
+import org.exoplatform.social.common.xmlprocessor.XMLProcessorTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
-  UtilTest.class,
   XMLProcessorTest.class,
   AsyncProcessorTest.class
   })

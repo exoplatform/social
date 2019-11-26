@@ -16,23 +16,20 @@
  */
 package org.exoplatform.social.common;
 
-import org.exoplatform.social.common.jcr.filter.FilterLiteralTest;
-import org.exoplatform.social.common.router.ExoRouterReserveTest;
-import org.exoplatform.social.common.router.ExoRouterTest;
-import org.exoplatform.social.common.service.TraceListTest;
-import org.exoplatform.social.common.xmlprocessor.DOMParserTest;
-import org.exoplatform.social.common.xmlprocessor.TokenizerTest;
-import org.exoplatform.social.common.xmlprocessor.filters.OpenLinkNewTabFilterPluginTest;
-import org.exoplatform.social.common.xmlprocessor.filters.SanitizeFilterPluginTest;
-import org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPluginTest;
-import org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPluginTest;
-import org.exoplatform.social.common.xmlprocessor.model.AttributesTest;
-import org.exoplatform.social.common.xmlprocessor.model.NodeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import org.exoplatform.social.common.router.ExoRouterReserveTest;
+import org.exoplatform.social.common.router.ExoRouterTest;
+import org.exoplatform.social.common.service.TraceListTest;
+import org.exoplatform.social.common.xmlprocessor.DOMParserTest;
+import org.exoplatform.social.common.xmlprocessor.TokenizerTest;
+import org.exoplatform.social.common.xmlprocessor.filters.*;
+import org.exoplatform.social.common.xmlprocessor.model.AttributesTest;
+import org.exoplatform.social.common.xmlprocessor.model.NodeTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -43,7 +40,6 @@ import org.junit.runners.Suite.SuiteClasses;
   SanitizeFilterPluginTest.class,
   URLConverterFilterPluginTest.class,
   XMLBalancerFilterPluginTest.class,
-  FilterLiteralTest.class,
   OpenLinkNewTabFilterPluginTest.class,
   ExoRouterTest.class,
   ExoRouterReserveTest.class,

@@ -23,7 +23,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ActivityKey extends ScopeCacheKey {
+public class ActivityKey implements CacheKey {
   private static final long serialVersionUID = -2689610297663275063L;
 
   private final String id;

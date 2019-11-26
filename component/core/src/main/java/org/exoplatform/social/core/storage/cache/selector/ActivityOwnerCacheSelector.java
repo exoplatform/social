@@ -25,7 +25,7 @@ import org.exoplatform.social.core.storage.cache.model.key.ActivityKey;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ActivityOwnerCacheSelector extends ScopeCacheSelector<ActivityKey, ActivityData> {
+public class ActivityOwnerCacheSelector extends CacheSelector<ActivityKey, ActivityData> {
 
   private String ownerId;
 

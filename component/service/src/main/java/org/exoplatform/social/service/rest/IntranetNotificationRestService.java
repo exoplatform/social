@@ -57,7 +57,6 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.impl.AbstractStorage;
 
 /**
  * Created by The eXo Platform SAS
@@ -66,7 +65,7 @@ import org.exoplatform.social.core.storage.impl.AbstractStorage;
  * Nov 26, 2014  
  */
 @Path("social/intranet-notification")
-public class IntranetNotificationRestService extends AbstractStorage implements ResourceContainer {
+public class IntranetNotificationRestService implements ResourceContainer {
 
   private static final Log LOG = ExoLogger.getLogger(IntranetNotificationRestService.class);
 
