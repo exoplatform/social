@@ -452,19 +452,31 @@ public class ActivityManagerImpl implements ActivityManager {
   /**
    * {@inheritDoc}
    */
-  public void saveComment(ExoSocialActivity existingActivity, ExoSocialActivity newComment) throws
-          ActivityStorageException {
+  public void saveComment(ExoSocialActivity existingActivity, ExoSocialActivity newComment) {
     if (existingActivity == null) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, "Activity cannot be NULL");
     }
+    if (existingActivity.getId() == null) {
+      LOG.debug("Comment could not be saved because activity id is null.");
+      return;
+    }
     String activityType = existingActivity.getType();
+    String commentActivityType = newComment.getType();
     String commentId = newComment.getId();
-    //Activity Type is disable , comment's can't be added
-    //existingActivity.getId() == null for the new activity if it's disabled
-    //comment should be added for the old created activity if it's disabled
-    if (existingActivity!= null && existingActivity.getId() == null && activityType != null && activityTypesRegistry.get(activityType) != null && !activityTypesRegistry.get(activityType)) {
+    // If activity Type is disabled, comment's can't be added
+    // If comment activity Type is disabled, comment's can't be added
+    // If existingActivity.getId() == null for the new activity if it's disabled
+    // comment should be added for the old created activity if it's disabled
+    boolean commentActivityTypeDisabled = commentActivityType != null && activityTypesRegistry.containsKey(commentActivityType) && activityTypesRegistry.get(commentActivityType) == Boolean.FALSE;
+    boolean activityTypeDisabled = activityType != null && activityTypesRegistry.containsKey(activityType) && activityTypesRegistry.get(activityType) == Boolean.FALSE;
+    if (commentActivityTypeDisabled || activityTypeDisabled) {
       if (LOG.isDebugEnabled()) {
-        LOG.debug("Comment could not be saved. Activity Type {} has been disabled.", activityType);
+        if (activityTypeDisabled) {
+          LOG.debug("Comment could not be saved. Activity Type {} is disabled.", activityType);
+        }
+        if (commentActivityTypeDisabled) {
+          LOG.debug("Comment could not be saved. Comment activity Type {} is disabled.", commentActivityType);
+        }
       }
       return;
     }
