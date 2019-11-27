@@ -164,6 +164,39 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     endSession();
   }
 
+  public void testGetSpaceInfo() throws Exception {
+    startSessionAs("root");
+    Space space = new Space();
+    space.setDisplayName("testspace");
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space ");
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/space/" + space.getPrettyName());
+    String[] managers = new String[]{"root"};
+    String[] members = new String[]{"root", "mary"};
+    String[] invitedUsers = new String[]{"john"};
+    String[] pendingUsers = new String[]{};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    space.setUrl("/space/" + space.getPrettyName());
+    spaceService.saveSpace(space, true);
+    space = spaceService.getSpaceByPrettyName(space.getPrettyName());
+    space.setDisplayName("test1");
+    space.setPrettyName("test1");
+    spaceService.saveSpace(space, false);
+    // Test Rest URL at org.exoplatform.social.service.rest.SpacesRestService.getSpaceInfo
+    ContainerResponse response = service("GET", "/portal/social/spaces/spaceInfo/?spaceName=testspace", "", null, null);
+    assertEquals(200, response.getStatus());
+    response = service("GET", "/portal/social/spaces/spaceInfo/?spaceName=spaceNotExist", "", null, null);
+    assertEquals(404, response.getStatus());
+  }
+
   public void testSuggestSpacesOfCurrentUser() throws Exception {
     //
     startSessionAs("mary");
