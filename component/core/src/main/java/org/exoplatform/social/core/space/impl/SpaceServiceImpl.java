@@ -42,6 +42,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.BannerAttachment;
 import org.exoplatform.social.core.space.*;
 import org.exoplatform.social.core.space.model.Space;
@@ -70,6 +71,8 @@ public class SpaceServiceImpl implements SpaceService {
 
   private SpaceStorage                         spaceStorage;
 
+  private IdentityManager                      identityManager;
+
   private IdentityStorage                      identityStorage;
 
   private OrganizationService                  orgService               = null;
@@ -94,10 +97,17 @@ public class SpaceServiceImpl implements SpaceService {
 
   private ConfigurationManager configurationManager;
 
-  public SpaceServiceImpl(SpaceStorage spaceStorage, IdentityStorage identityStorage, UserACL userACL, ConfigurationManager configurationManager,
-                          IdentityRegistry identityRegistry, WebNotificationService webNotificationService,
-                          SpacesAdministrationService spacesAdministrationService, SpaceTemplateService spaceTemplateService) {
+  public SpaceServiceImpl(SpaceStorage spaceStorage,
+                          IdentityStorage identityStorage,
+                          IdentityManager identityManager,
+                          UserACL userACL,
+                          ConfigurationManager configurationManager,
+                          IdentityRegistry identityRegistry,
+                          WebNotificationService webNotificationService,
+                          SpacesAdministrationService spacesAdministrationService,
+                          SpaceTemplateService spaceTemplateService) {
     this.spaceStorage = spaceStorage;
+    this.identityManager = identityManager;
     this.identityStorage = identityStorage;
     this.identityRegistry = identityRegistry;
     this.userACL = userACL;
@@ -333,7 +343,7 @@ public class SpaceServiceImpl implements SpaceService {
         User [] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
         for (User user : users) {
           String userId = user.getUserName();
-          Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userId);
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
           if (identity != null) {
             invitedIdentities.add(identity);
           }
@@ -1478,7 +1488,7 @@ public class SpaceServiceImpl implements SpaceService {
   public Space updateSpaceBanner(Space existingSpace) {
     checkSpaceEditorPermissions(existingSpace);
 
-    Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, existingSpace.getPrettyName());
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, existingSpace.getPrettyName());
     if (spaceIdentity != null) {
       Profile profile = spaceIdentity.getProfile();
       if (existingSpace.getBannerAttachment() != null) {
