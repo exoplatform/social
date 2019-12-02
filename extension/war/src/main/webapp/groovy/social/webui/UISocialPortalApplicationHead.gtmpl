@@ -1,0 +1,13 @@
+<%
+  import org.exoplatform.social.core.space.SpaceUtils;
+  import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.portal.application.PortalRequestContext;
+
+  def rcontext = _ctx.getRequestContext() ;
+%>
+<script type="text/javascript">
+     eXo.env.portal.spaceId = "<%=SpaceUtils.getSpaceByContext() == null ? "" : SpaceUtils.getSpaceByContext().getId()%>" ;
+     eXo.env.portal.spaceName = "<%=SpaceUtils.getSpaceByContext() == null ? "" : SpaceUtils.getSpaceByContext().getPrettyName()%>" ;
+     eXo.env.portal.spaceGroup = "<%=SpaceUtils.getSpaceByContext() == null ? "" : SpaceUtils.getSpaceByContext().getGroupId().replace("/spaces/", "")%>" ;
+     eXo.env.portal.profileOwner = "<%=Utils.getOwnerRemoteId()%>" ;
+</script>

@@ -76,4 +76,20 @@
     </component-plugin>
   </external-component-plugins>
 
+  <external-component-plugins>
+    <target-component>org.exoplatform.groovyscript.text.TemplateService</target-component>
+    <component-plugin>
+      <name>UIPortalApplication-head</name>
+      <set-method>addTemplateExtension</set-method>
+      <type>org.exoplatform.groovyscript.text.TemplateExtensionPlugin</type>
+      <init-params>
+        <values-param>
+          <name>templates</name>
+          <description>The list of templates to include in HTML Page Header with UIPortalApplication.gtmpl</description>
+          <value>war:/groovy/social/webui/UISocialPortalApplicationHead.gtmpl</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
 </configuration>
