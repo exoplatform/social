@@ -34,11 +34,12 @@ public class EditActivityPlugin extends BaseNotificationPlugin {
         ExoSocialActivity activity = ctx.value(SocialNotificationUtils.ACTIVITY);
 
         Set<String> receivers = new HashSet<String>();
-
-            // Send notification to all others users who have comment on this activity
-            Utils.sendToCommeters(receivers, activity.getCommentedIds(), activity.getPosterId());
+        if (activity.getStreamOwner() != null) {
             Utils.sendToStreamOwner(receivers, activity.getStreamOwner(), activity.getPosterId());
-            Utils.sendToActivityPoster(receivers, activity.getPosterId(), activity.getPosterId());
+        }
+        // Send notification to all others users who have comment on this activity
+        Utils.sendToCommeters(receivers, activity.getCommentedIds(), activity.getPosterId());
+        Utils.sendToActivityPoster(receivers, activity.getPosterId(), activity.getPosterId());
 
         //
         return NotificationInfo.instance()

@@ -127,7 +127,7 @@ public class Utils {
       return;
     
     String postRemoteId = Utils.getUserId(posteId);
-    if (streamOwner.equals(postRemoteId) == false) {
+    if (!streamOwner.equals(postRemoteId)) {
       receivers.add(streamOwner);
     }
   }
