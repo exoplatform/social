@@ -80,5 +80,64 @@ public class LikeWebBuilderTest extends AbstractPluginTest {
     assertBody(info, "likes your activity");
     assertBody(info, "data-link=\"/portal/classic/activity?id=" + activity.getId() + "\"");
   }
+
+  public void testLikeAndDislikeActivity() throws Exception {
+    //STEP 1 post activity
+    ExoSocialActivity activity = makeActivity(rootIdentity, "root post an activity");
+
+    //STEP 2 another user comments the activity
+    makeComment(activity, demoIdentity, "demo post a comment");
+
+    assertMadeWebNotifications(0);
+
+    //STEP 3 a third user comments the activity
+    makeComment(activity, maryIdentity, "mary post a comment");
+    
+    assertMadeWebNotifications(0);
+
+    //STEP 4 demo likes the activity
+    activityManager.saveLike(activity, demoIdentity);
+
+    assertMadeWebNotifications(1);
+    assertMadeWebNotifications(maryIdentity.getRemoteId(), 0);
+    
+    // Verify web notifications for root
+    List<NotificationInfo> list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 1);
+    NotificationInfo likeNotification = list.get(0);
+
+    NotificationContext ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(likeNotification.setTo("root"));
+    MessageInfo info = buildMessageInfo(ctx);
+
+    assertBody(info, "likes your activity");
+    assertBody(info, "data-link=\"/portal/classic/activity?id=" + activity.getId() + "\"");
+
+    //STEP 5 mary likes the activity
+    activityManager.saveLike(activity, maryIdentity);
+
+    assertMadeWebNotifications(2);
+    assertMadeWebNotifications(demoIdentity.getRemoteId(), 0);
+
+    // Verify web notifications for root
+    list = assertMadeWebNotifications(rootIdentity.getRemoteId(), 2);
+    likeNotification = list.get(1);
+
+    ctx = NotificationContextImpl.cloneInstance();
+    ctx.setNotificationInfo(likeNotification.setTo("root"));
+    info = buildMessageInfo(ctx);
+
+    assertBody(info, "likes your activity");
+    assertBody(info, "data-link=\"/portal/classic/activity?id=" + activity.getId() + "\"");
+
+    activityManager.deleteLike(activity, demoIdentity);
+    
+    // make sure no added notification for root
+    assertMadeWebNotifications(2);
+
+    activityManager.deleteLike(activity, maryIdentity);
+
+    // make sure no added notification for root
+    assertMadeWebNotifications(2);
+  }
   
 }
