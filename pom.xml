@@ -36,6 +36,7 @@
     <module>component</module>
     <module>webapp</module>
     <module>extras</module>
+    <module>search</module>
   </modules>
   <scm>
     <connection>scm:git:git://github.com/exoplatform/social.git</connection>
@@ -71,11 +72,11 @@
     <!-- * Your own modules -->
     <!-- * And projects below you -->
     <dependencies>
-      <!-- Import versions of external dependencies to use -->
+      <!-- Import versions from commons project -->
       <dependency>
-        <groupId>org.exoplatform</groupId>
-        <artifactId>maven-depmgt-pom</artifactId>
-        <version>${org.exoplatform.depmgt.version}</version>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -110,6 +111,11 @@
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-component-webui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-component-oauth-auth</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -159,6 +165,17 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-search-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-search-portlet</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>social-webapp-portlet</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -205,179 +222,7 @@
         <version>${project.version}</version>
         <type>pom</type>
       </dependency>
-      <!-- Import versions from commons project -->
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from platform-ui project -->
-      <dependency>
-        <groupId>org.exoplatform.platform-ui</groupId>
-        <artifactId>platform-ui</artifactId>
-        <version>${org.exoplatform.platform-ui.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- To be replaced by an import of GateIn commons parent POM -->
-      <dependency>
-        <groupId>org.gatein.common</groupId>
-        <artifactId>common-common</artifactId>
-        <version>${org.gatein.common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gatein.common</groupId>
-        <artifactId>common-logging</artifactId>
-        <version>${org.gatein.common.version}</version>
-      </dependency>
-      <!-- To be replaced by an import of GateIn PC parent POM -->
-      <dependency>
-        <groupId>org.exoplatform.gatein.pc</groupId>
-        <artifactId>pc-api</artifactId>
-        <version>${org.exoplatform.gatein.pc.version}</version>
-      </dependency>
-      <!-- To be replaced by an import of GateIn Portal parent POM -->
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.application-registry</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.common</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.identity</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-        <type>test-jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.portal</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.web.security</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.file-storage</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.portal</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-        <type>test-jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.resources</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.test.core</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.test.jcr</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.web.api</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.web.controller</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.web.resources</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.web.server</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.dashboard</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.eXo</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.framework</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.portal</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.core</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.portlet</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <!-- To be replaced by an import of GateIn WCI parent POM -->
-      <dependency>
-        <groupId>org.exoplatform.gatein.wci</groupId>
-        <artifactId>wci-wci</artifactId>
-        <version>${org.exoplatform.gatein.wci.version}</version>
-      </dependency>
-      <!-- Import versions from ws project -->
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>ws-parent</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from core project -->
-      <dependency>
-        <groupId>org.exoplatform.core</groupId>
-        <artifactId>core-parent</artifactId>
-        <version>${org.exoplatform.core.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from kernel project -->
-      <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>kernel-parent</artifactId>
-        <version>${org.exoplatform.kernel.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Use to generate some documentation -->
-      <dependency>
-        <groupId>org.exoplatform.doc</groupId>
-        <artifactId>doc-style</artifactId>
-        <version>${org.exoplatform.doc.doc-style.version}</version>
-      </dependency>
-    </dependencies>
+     </dependencies>
   </dependencyManagement>
   <dependencies>
     <dependency>

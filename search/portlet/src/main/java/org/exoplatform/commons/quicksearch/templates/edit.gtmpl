@@ -1,0 +1,50 @@
+<div id="quickSearchSetting" class="uiQuickSearchSetting">
+  <div class="uiForm">
+    <div class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label">&{quicksearch.resultsPerType.label}</label>
+        <div class="controls">
+          <span class="uiSelectbox uiEDWidth70">
+            <select id="resultsPerPage" class="selectbox uiResultPerPage">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+            </select>
+          </span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">&{quicksearch.currentsite.label}</label>
+        <div class="controls"><span class="uiCheckbox"><input type="checkbox" id="searchCurrentSiteOnly" class="checkbox"><span></span></span></div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">&{quicksearch.searchIn.label}</label>
+        <div class="controls">
+          <ul id="lstSearchInOptions"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="uiAction">
+      <button type="button" value="Save Settings" class="btn" id="btnSave">&{quicksearch.saveSettings.label}</button>
+    </div>
+
+  </div>
+  
+	<script>
+	  window.require(["PORTLET/unified-search/QuicksearchPortlet"], function() {
+	  	initQuickSearchSetting("&{quicksearch.everything.label}","&{quicksearch.alert.saveSetting}","&{quicksearch.alert.error.saveSetting}");
+	  });
+	</script>
+    
+</div>
+

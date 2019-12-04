@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+	xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+	<component>
+		<key>org.exoplatform.commons.api.event.EventManager</key>
+		<type>org.exoplatform.commons.event.impl.EventManagerImpl</type>
+	</component>
+
+	<component>
+		<key>org.exoplatform.settings.impl.SettingServiceImpl</key>
+		<type>org.exoplatform.settings.impl.SettingServiceImpl</type>
+	</component>
+
+	<component>
+		<key>org.exoplatform.services.cache.CacheService</key>
+		<jmx-name>cache:type=CacheService</jmx-name>
+		<type>org.exoplatform.services.cache.impl.CacheServiceImpl</type>
+		<init-params>
+			<object-param>
+				<name>cache.config.default</name>
+				<object type="org.exoplatform.services.cache.ExoCacheConfig">
+					<field name="name">
+						<string>default</string>
+					</field>
+					<field name="maxSize">
+						<int>30000</int>
+					</field>
+					<field name="liveTime">
+						<long>60000</long>
+					</field>
+					<field name="distributed">
+						<boolean>false</boolean>
+					</field>
+					<field name="implementation">
+						<string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string>
+					</field>
+				</object>
+			</object-param>
+		</init-params>
+	</component>
+
+	<component>
+		<key>org.exoplatform.commons.api.settings.SettingService</key>
+		<type>org.exoplatform.commons.search.service.MockSettingService</type>
+	</component>	
+
+	<external-component-plugins>
+		<target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+		<component-plugin>
+			<name>add.nodeType</name>
+			<set-method>addPlugin</set-method>
+			<type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+			<init-params>
+				<values-param>
+					<name>autoCreatedInNewRepository</name>
+					<description>Node types configuration file</description>
+					<value>classpath:/conf/jcr/test-nodetypes-config.xml</value>
+				</values-param>
+			</init-params>
+		</component-plugin>
+		<component-plugin>
+			<name>add.namespaces</name>
+			<set-method>addPlugin</set-method>
+			<type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+			<init-params>
+				<properties-param>
+					<name>namespaces</name>
+					<property name="stg" value="http://www.gatein.org/jcr/token/1.0/" />
+				</properties-param>
+			</init-params>
+		</component-plugin>
+	</external-component-plugins>
+
+	<import>classpath:/conf/standalone/test-conteninitializerservice-configuration.xml</import>
+</configuration>

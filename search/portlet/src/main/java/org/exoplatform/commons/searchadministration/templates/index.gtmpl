@@ -1,0 +1,14 @@
+<div id="searchAdmin" class="uiSearchAdmin">
+  <h4 class="titleWithBorder">&{searchadministration.label}</h4>
+ 
+  <table class="uiGrid table  table-hover table-striped">
+    <thead>
+	    <tr>
+	      <th>&{searchadministration.contentType.label}</th>
+	      <th>&{searchadministration.description.label}</th>
+	      <th>&{searchadministration.action.label}</th>
+	    </tr>
+	  </thead>
+	  
+  </table>
+</div>

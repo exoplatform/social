@@ -1,0 +1,34 @@
+<%
+  import java.util.Random;
+  Random rand = new Random();
+  portletId = rand.nextInt(1000000);
+%>
+
+<div class="uiSearchPlatformToolBarPortlet uiDropdownWithIcon dropdown" id="ToolBarSearch" tabindex="0">
+	<input type="hidden" id="portletIdQuickSearch" name="portletId" value="${portletId}"/>
+	<input type="hidden" id="seeAllQuickSearch" name="seeAll" value="&{quicksearch.seeAll.label}"/>
+	<input type="hidden" id="noResultsQuickSearch" name="noResults" value="&{quicksearch.noResults.label}"/>
+	<input type="hidden" id="searchingQuickSearch" name="searching" value="&{quicksearch.searching.label}"/>
+	<input id="adminkeyword-${portletId}" name="adminkeyword" value="&{quicksearch.input.label}" type="text" style="display: none;"/>
+	<a id="adminSearchLink-${portletId}" class="dropdown-toggle">
+    	<i class="uiIconPLF24x24Search"></i>
+	</a>
+	<div id="quickSearchResult-${portletId}" class="uiQuickSearchResult" ></div>
+</div>
+
+	<script>
+	fireAEvent = function(event,id){
+    //IE uses this
+    if(window.event) {
+        holder = window.event.keyCode;
+    }
+    //FF uses this
+    else {
+        holder = event.which;
+    } 
+	if (holder == 13) document.getElementById(id).getElementsByTagName('a')[0].click()
+}
+	  window.require(["PORTLET/unified-search/QuicksearchPortlet"], function() {
+		initQuickSearch("${portletId}","&{quicksearch.seeAll.label}","&{quicksearch.noResults.label}","&{quicksearch.searching.label}");
+	  });
+	</script>

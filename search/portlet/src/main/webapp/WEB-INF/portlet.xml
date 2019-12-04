@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+             version="2.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
+  <!-- ================================================================== -->
+  <!-- = Unified Search Portlet                                         = -->
+  <!-- ================================================================== -->
+   <portlet>
+     <portlet-name>UnifiedsearchPortlet</portlet-name>
+     <display-name xml:lang="EN">Unified Search</display-name>
+     <portlet-class>org.exoplatform.commons.unifiedsearch.UnifiedsearchPortlet</portlet-class>
+     <supports>
+       <mime-type>text/html</mime-type>
+       <portlet-mode>edit</portlet-mode>       
+     </supports>
+     <supported-locale>en</supported-locale>
+     <resource-bundle>locale.portlet.unifiedsearch.unifiedsearch</resource-bundle>     
+     <portlet-info>
+       <title>Unified Search</title>
+       <keywords>Search</keywords>
+     </portlet-info>
+     <portlet-preferences>
+		<preference>     	
+     		<name>resultsPerPage</name>
+     		<value>10</value>
+		</preference>
+		<preference>     	
+     		<name>searchTypes</name>
+     		<value>all</value>
+		</preference>
+		<preference>     	
+     		<name>searchCurrentSiteOnly</name>
+     		<value>false</value>
+		</preference>
+		<preference>     	     		
+     		<name>hideSearchForm</name>
+     		<value>false</value>     		     		     		
+     	</preference>
+     	<preference>
+     		<name>hideFacetsFilter</name>
+     		<value>false</value>
+		</preference>
+     </portlet-preferences>
+   </portlet>
+
+  <!-- ================================================================== -->
+  <!-- = Quick Search Portlet                                           = -->
+  <!-- ================================================================== -->
+   <portlet>
+     <portlet-name>QuicksearchPortlet</portlet-name>
+     <display-name xml:lang="EN">Quick Search</display-name>
+     <portlet-class>org.exoplatform.commons.quicksearch.QuicksearchPortlet</portlet-class>
+     <supports>
+       <mime-type>text/html</mime-type>
+       <portlet-mode>edit</portlet-mode>       
+     </supports>
+     <supported-locale>en</supported-locale>
+     <resource-bundle>locale.portlet.quicksearch.quicksearch</resource-bundle>
+     <portlet-info>
+       <title>Quick Search</title>
+       <keywords>Search</keywords>
+     </portlet-info>
+     <portlet-preferences>
+		<preference>     	
+     		<name>resultsPerPage</name>
+     		<value>5</value>
+		</preference>
+		<preference>     	
+     		<name>searchTypes</name>
+     		<value>all</value>
+		</preference>
+		<preference>     	
+     		<name>searchCurrentSiteOnly</name>
+     		<value>true</value>
+		</preference>
+     </portlet-preferences>          
+   </portlet>
+
+  <!-- ================================================================== -->
+  <!-- = Unified Search Administration Portlet                          = -->
+  <!-- ================================================================== -->
+   <portlet>
+     <portlet-name>SearchAdministrationPortlet</portlet-name>
+     <display-name xml:lang="EN">Search Administration</display-name>
+     <portlet-class>org.exoplatform.commons.searchadministration.SearchadministrationPortlet</portlet-class>
+     <supports>
+       <mime-type>text/html</mime-type>
+     </supports>
+     <supported-locale>en</supported-locale>
+     <resource-bundle>locale.portlet.searchadministration.searchadministration</resource-bundle>
+     <portlet-info>
+       <title>Search Administration</title>
+       <keywords>Search</keywords>
+     </portlet-info>
+   </portlet>   
+</portlet-app>
