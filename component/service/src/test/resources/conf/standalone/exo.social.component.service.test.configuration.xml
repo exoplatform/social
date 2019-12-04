@@ -67,14 +67,6 @@
      <type>org.exoplatform.services.rest.impl.RequestDispatcher</type>
   </component>
 
-  <component>
-     <type>org.exoplatform.services.rest.impl.ResourceBinder</type>
-  </component>
-
-  <component>
-     <type>org.exoplatform.services.rest.impl.provider.JAXBContextResolver</type>
-  </component>
-
   <!-- Request/Response filters. -->
   <component>
      <type>org.exoplatform.services.rest.impl.ProvidersRegistry</type>

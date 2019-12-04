@@ -39,6 +39,7 @@
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
+      <scope>provided</scope>
       <exclusions>  
         <exclusion>
           <groupId>log4j</groupId>
@@ -293,6 +294,11 @@
       <groupId>jmock</groupId>
       <artifactId>jmock</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-client</artifactId>
+        <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
