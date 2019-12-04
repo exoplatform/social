@@ -70,7 +70,15 @@
       commentButton.click(function(event) {
         var commentId = commentButton.data("comment-id");
         var clickAction = commentButton.data("click").replace("COMMENTID", (commentId ? commentId : ""));
+        var currentComposerComment = 'CommentTextarea' + UIActivity.activityId;
         eval(clickAction);
+        try {
+          if (CKEDITOR.instances[currentComposerComment]) {
+              CKEDITOR.instances[currentComposerComment].destroy(true);
+          }
+        } catch (e) {
+          console.log(e);
+        }
       });
     },
 
@@ -403,7 +411,16 @@
                        event.stopPropagation();
                        var commentId = editCommentButton.data("edit-comment-id");
                        var clickAction = editCommentButton.data("click").replace("COMMENTID", (commentId ? commentId : ""));
+                       var currentComposerEditComment = 'composerEditComment' + commentId;
                        eval(clickAction);
+                       try {
+                         if (CKEDITOR.instances[currentComposerEditComment]) {
+                             CKEDITOR.instances[currentComposerEditComment].destroy(true);
+                         }
+                       } catch (e) {
+                         console.log(e);
+                       }
+
                      });
 
 
