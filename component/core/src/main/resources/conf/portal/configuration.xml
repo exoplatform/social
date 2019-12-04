@@ -26,7 +26,11 @@
    <component>
      <type>org.exoplatform.social.core.jpa.search.listener.ProfileESListenerImpl</type>
    </component> 
-   
+
+  <component>
+    <type>org.exoplatform.commons.search.service.UnifiedSearchService</type>
+  </component>
+
    <component>
      <type>org.exoplatform.social.core.jpa.search.ProfileSearchConnector</type>
      <init-params>

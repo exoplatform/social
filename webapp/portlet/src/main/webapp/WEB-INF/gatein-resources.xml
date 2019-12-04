@@ -272,4 +272,33 @@
 		</module>
 	</portlet>
 
+   <portlet>
+      <name>WhoIsOnLinePortlet</name>
+      <module>
+         <script>
+            <minify>false</minify>
+            <path>/js/whoIsOnline.bundle.js</path>
+         </script>
+         <depends>
+            <module>vue</module>
+         </depends>
+         <depends>
+            <module>eXoVueI18n</module>
+         </depends>
+         <depends>
+            <module>extensionRegistry</module>
+         </depends>
+         <depends>
+            <module>jquery</module>
+            <as>$</as>
+         </depends>
+         <depends>
+            <module>userPopupPlugin</module>
+         </depends>
+        <depends>
+          <module>bts_tooltip</module>
+        </depends>
+      </module>
+   </portlet>
+
 </gatein-resources>

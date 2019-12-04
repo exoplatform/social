@@ -23,6 +23,27 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
 
   <portlet>
+    <portlet-name>WhoIsOnLinePortlet</portlet-name>
+    <display-name xml:lang="EN">Who is on Line</display-name>
+    <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
+    <init-param>
+      <name>portlet-view-dispatched-file-path</name>
+      <value>/who-is-online-app/index.html</value>
+    </init-param>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+     <supported-locale>fr</supported-locale>
+    <resource-bundle>locale.portlet.whoisonline.whoisonline</resource-bundle>
+    <portlet-info>
+      <title>Who is on line</title>
+      <short-title>Who is on line</short-title>
+      <keywords>Juzu social intranet</keywords>
+    </portlet-info>
+  </portlet>
+
+  <portlet>
     <portlet-name>SpaceInfos</portlet-name>
     <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
     <init-param>

@@ -27,6 +27,10 @@
     <type>org.exoplatform.social.webui.profile.settings.UserProfileRenderingService</type>
   </component>
 
+  <component>
+    <type>org.exoplatform.web.application.ApplicationLifecycleExtension</type>
+  </component>
+
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>

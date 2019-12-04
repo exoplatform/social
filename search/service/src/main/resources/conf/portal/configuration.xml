@@ -33,40 +33,14 @@
     <type>org.exoplatform.commons.search.indexing.JcrIndexingService</type>
   </component>
 
+  <!-- Indexing -->
+  <component>
+    <type>org.exoplatform.commons.search.service.UnifiedSearchService</type>
+  </component>
+
   <component>
     <key>org.exoplatform.commons.api.search.SearchService</key>
     <type>org.exoplatform.commons.search.driver.jcr.JcrSearchDriver</type>
-    <component-plugins>
-      <!-- Social -->
-      <component-plugin profiles="all">
-        <name>PeopleSearchConnector</name>
-        <set-method>addConnector</set-method>
-        <type>org.exoplatform.social.core.search.PeopleSearchConnector</type>
-        <description>eXo Social People</description>
-        <init-params>
-          <properties-param>
-            <name>constructor.params</name>
-            <property name="searchType" value="people"/>
-            <property name="displayName" value="People"/>
-            <property name="enable" value="${exo.unified-search.connector.people.enable:true}"/>
-          </properties-param>
-        </init-params>      
-      </component-plugin>      
-      <component-plugin profiles="all">
-        <name>SpaceSearchConnector</name>
-        <set-method>addConnector</set-method>
-        <type>org.exoplatform.social.core.search.SpaceSearchConnector</type>
-        <description>eXo Social Spaces</description>
-        <init-params>
-          <properties-param>
-             <name>constructor.params</name>
-             <property name="searchType" value="space"/>
-             <property name="displayName" value="Spaces"/>
-             <property name="enable" value="${exo.unified-search.connector.space.enable:true}"/>
-          </properties-param>
-        </init-params>      
-      </component-plugin>      
-    </component-plugins>
     <init-params>
       <value-param>
         <name>exo.search.excluded-characters</name>

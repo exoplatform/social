@@ -56,7 +56,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>social-search-service</artifactId>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
