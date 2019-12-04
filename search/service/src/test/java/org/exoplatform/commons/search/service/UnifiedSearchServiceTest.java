@@ -60,7 +60,6 @@ import org.json.JSONObject;
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/rest-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/exo.test.portal-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/controller.xml")  
 })
 public class UnifiedSearchServiceTest extends AbstractServiceTest implements ResourceContainer{
   

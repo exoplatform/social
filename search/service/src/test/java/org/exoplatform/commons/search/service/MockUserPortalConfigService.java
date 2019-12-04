@@ -36,15 +36,8 @@ import org.exoplatform.services.organization.OrganizationService;
  */
 public class MockUserPortalConfigService  extends UserPortalConfigService{
   
-  public MockUserPortalConfigService(UserACL userACL,
-                                     DataStorage storage,
-                                     OrganizationService orgService,
-                                     NavigationService navService,
-                                     DescriptionService descriptionService,
-                                     PageService pageService,
-                                     InitParams params) throws Exception {
-    super(userACL, storage, orgService, navService, descriptionService, pageService, params);
-    // TODO Auto-generated constructor stub
+  public MockUserPortalConfigService() throws Exception {
+    super(null, null, null, null, null, null, new InitParams());
   }
 
   @Override

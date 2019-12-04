@@ -57,34 +57,6 @@
     </component-plugins>
   </component>
 
-  <component>
-    <type>org.gatein.web.redirect.RedirectCookieService</type>
-    <init-params>
-      <!--
-      <value-param>
-        <name>redirect.cookie.maxage</name>
-        <description>The MaxAge value to use for the cookie</description>
-        <value>2600000</value>
-      </value-param>
-      <value-param>
-        <name>redirect.cookie.comment</name>
-        <description>The comment to use for the cookie</description>
-        <value>This Cookie Stores the Site Preference for a particular user</value>
-      </value-param>
-      <value-param>
-        <name>redirect.cookie.path</name>
-        <description>Use to overwrite the default path for the cookie. The default path is determined based on the portal site.</description>
-        <value>/portal</value>
-      </value-param>
-      <value-param>
-        <name>redirect.cookie.prefix</name>
-        <description>Sets the prefix for the cookie name. Any changes to this value will cause all previous cookies to be ignored, which can be useful.</description>
-        <value>gtn.site</value>
-      </value-param>
-       -->
-    </init-params>
-  </component>
-
   <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
     <component-plugin>
