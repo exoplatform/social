@@ -61,7 +61,7 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 
 @ComponentConfigs({
-        @ComponentConfig(lifecycle = UIFormLifecycle.class, template = "system:/groovy/portal/webui/form/UIOAuthInvitationForm.gtmpl", events = {
+        @ComponentConfig(lifecycle = UIFormLifecycle.class, template = "war:/groovy/social/webui/oauth/UIOAuthInvitationForm.gtmpl", events = {
             @EventConfig(listeners = UIOAuthInvitationForm.ConfirmActionListener.class),
             @EventConfig(listeners = UIOAuthInvitationForm.NewAccountActionListener.class, phase = Event.Phase.DECODE),
             @EventConfig(listeners = UIRegisterOAuth.CancelActionListener.class, phase = Event.Phase.DECODE)},
@@ -77,7 +77,6 @@ public class UIOAuthInvitationForm extends UIForm {
     private String detectedUserName;
 
     public UIOAuthInvitationForm(InitParams params) throws Exception {
-
         addUIFormInput(new UIFormStringInput(PASSWORD, PASSWORD, null)
                 .setType(UIFormStringInput.PASSWORD_TYPE)
                 //.addValidator(MandatoryValidator.class)
