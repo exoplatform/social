@@ -39,7 +39,7 @@ import org.exoplatform.social.core.relationship.model.Relationship.Type;
                 query = "SELECT c FROM SocConnection c WHERE c.sender.id = :sender AND c.receiver.id = :reciver AND c.status = :status"),
         @NamedQuery(name = "SocConnection.deleteConnectionByIdentity",
                 query = "DELETE FROM SocConnection c WHERE c.sender.id = :identityId OR c.receiver.id = :identityId"),
-        @NamedQuery(name = "SocConnection.getConnectionsWithStatus", query = "SELECT c FROM SocConnection c WHERE (c.sender.id = :identityId OR c.receiver.id = :identityId) AND c.status = :status order by c.updatedDate DESC"),
+        @NamedQuery(name = "SocConnection.getConnectionsWithStatus", query = "SELECT c FROM SocConnection c WHERE (c.sender.id = :identityId OR c.receiver.id = :identityId) AND c.status = :status AND c.sender.enabled = true AND c.receiver.enabled = true AND c.sender.deleted = false AND c.receiver.deleted = false order by c.updatedDate DESC"),
         @NamedQuery(name = "SocConnection.countConnectionsWithStatus", query = "SELECT count(distinct c.id) from SocConnection c WHERE (c.sender.id = :identityId or c.receiver.id = :identityId) AND c.status = :status"),
         @NamedQuery(name = "SocConnection.getConnectionsWithoutStatus", query = "SELECT c AS receiver FROM SocConnection c WHERE (c.sender.id = :identityId OR c.receiver.id = :identityId)"),
         @NamedQuery(name = "SocConnection.countConnectionsWithoutStatus", query = "SELECT count(distinct c.id) from SocConnection c WHERE (c.sender.id = :identityId or c.receiver.id = :identityId)"),
