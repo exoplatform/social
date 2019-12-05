@@ -113,7 +113,9 @@ public interface ActivityManager {
    *     *          user event listener will be called in the createUser method.
    * @LevelAPI Platform
    */
-  void updateActivity(ExoSocialActivity activity, boolean broadcast);
+  default void updateActivity(ExoSocialActivity activity, boolean broadcast) {
+    this.updateActivity(activity);
+  }
 
   /**
    * Deletes a specific activity.
