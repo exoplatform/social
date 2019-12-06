@@ -68,14 +68,6 @@
         <value>/platform/administrators</value>
         <value>/platform/users</value>
         <value>/platform/guests</value>
-        <value>/customers</value>
-        <value>/partners</value>
-        <value>/organization/management/executive-board</value>
-        <value>/organization/management/human-resources</value>
-        <value>/organization/communication/marketing</value>
-        <value>/organization/communication/press-and-media</value>
-        <value>/organization/operations/sales</value>
-        <value>/organization/operations/finances</value>
         <value>/spaces</value>
       </values-param>
 
@@ -83,8 +75,55 @@
         <name>mandatory.mstypes</name>
         <description>Membership type that can not be deleted.</description>
         <value>member</value>
+        <value>manager</value>
+        <value>*</value>
       </values-param>
     </init-params>
   </component>
 
+  <external-component-plugins>
+    <!-- The full qualified name of the UserPortalConfigService -->
+    <target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>
+    <component-plugin>
+      <!-- The name of the plugin -->
+      <name>new.portal.config.user.listener</name>
+      <!-- The name of the method to call on the UserPortalConfigService in order to register the NewPortalConfigs -->
+      <set-method>initListener</set-method>
+      <!-- The full qualified name of the NewPortalConfigListener -->
+      <type>org.exoplatform.portal.config.NewPortalConfigListener</type>
+      <description>this listener init the portal configuration</description>
+      <init-params>
+        <value-param>
+          <name>override</name>
+          <description>The flag parameter to decide if portal metadata is overriden on restarting server</description>
+          <value>true</value>
+        </value-param>
+        <object-param>
+          <name>group.configuration</name>
+          <description>description</description>
+          <object type="org.exoplatform.portal.config.NewPortalConfig">
+            <field name="predefinedOwner">
+              <collection type="java.util.HashSet">
+                <value>
+                  <string>/platform/administrators</string>
+                </value>
+                <value>
+                  <string>/platform/users</string>
+                </value>
+              </collection>
+            </field>
+            <field name="ownerType">
+              <string>group</string>
+            </field>
+            <field name="templateLocation">
+              <string>war:/conf/social-extension/portal</string>
+            </field>
+            <field name="importMode">
+              <string>insert</string>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 </configuration>
