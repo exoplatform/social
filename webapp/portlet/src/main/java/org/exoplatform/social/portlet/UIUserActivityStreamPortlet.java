@@ -47,7 +47,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
  */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UIUserActivityStreamPortlet.gtmpl"
+  template = "war:/groovy/social/portlet/UIUserActivityStreamPortlet.gtmpl"
 )
 public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private String ownerName;

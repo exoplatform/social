@@ -31,7 +31,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UIMyConnectionsNavigationPortlet.gtmpl"
+  template = "war:/groovy/social/portlet/UIMyConnectionsNavigationPortlet.gtmpl"
 )
 public class UIMyConnectionsNavigationPortlet extends UIPortletApplication {
 

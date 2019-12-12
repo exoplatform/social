@@ -25,7 +25,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIBasicProfilePortlet.gtmpl"
+  template = "war:/groovy/social/portlet/user/UIBasicProfilePortlet.gtmpl"
 )
 public class UIBasicProfilePortlet extends UIAbstractUserPortlet {
   final private static String URL_KEY = "url";

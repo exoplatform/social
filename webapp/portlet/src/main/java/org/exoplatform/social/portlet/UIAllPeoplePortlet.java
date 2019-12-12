@@ -23,7 +23,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UIAllPeoplePortlet.gtmpl"
+  template = "war:/groovy/social/portlet/UIAllPeoplePortlet.gtmpl"
 )
 public class UIAllPeoplePortlet extends UIPortletApplication {
 

@@ -28,7 +28,7 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
  */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "app:/groovy/social/portlet/UINotify.gtmpl"
+  template = "war:/groovy/social/portlet/UINotify.gtmpl"
 )
 public class UINotify extends UIComponent {
   private String msg;

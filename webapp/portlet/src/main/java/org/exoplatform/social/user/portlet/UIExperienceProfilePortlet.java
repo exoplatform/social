@@ -31,7 +31,7 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIExperienceProfilePortlet.gtmpl"
+  template = "war:/groovy/social/portlet/user/UIExperienceProfilePortlet.gtmpl"
 )
 public class UIExperienceProfilePortlet extends UIAbstractUserPortlet {
   private static final String DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";

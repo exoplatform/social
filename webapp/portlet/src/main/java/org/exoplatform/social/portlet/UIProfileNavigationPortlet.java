@@ -40,7 +40,7 @@ import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfig(
  lifecycle = UIApplicationLifecycle.class,
- template = "app:/groovy/social/portlet/UIProfileNavigationPortlet.gtmpl",
+ template = "war:/groovy/social/portlet/UIProfileNavigationPortlet.gtmpl",
  events = {
    @EventConfig(listeners = UIProfileNavigationPortlet.ChangePictureActionListener.class)
  }

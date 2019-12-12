@@ -61,7 +61,7 @@ import org.json.JSONObject;
  */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UISpacesToolBarPortlet.gtmpl"
+  template = "war:/groovy/social/portlet/UISpacesToolBarPortlet.gtmpl"
 )
 public class UISpacesToolBarPortlet extends UIPortletApplication {
 

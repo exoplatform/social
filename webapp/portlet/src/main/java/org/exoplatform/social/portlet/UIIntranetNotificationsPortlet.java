@@ -44,7 +44,7 @@ import org.json.JSONObject;
  */
 @ComponentConfig(
  lifecycle = UIApplicationLifecycle.class,
- template = "app:/groovy/social/portlet/UIIntranetNotificationsPortlet.gtmpl"
+ template = "war:/groovy/social/portlet/UIIntranetNotificationsPortlet.gtmpl"
 )
 public class UIIntranetNotificationsPortlet extends UIPortletApplication {
   private static final Log LOG = ExoLogger.getLogger(UIIntranetNotificationsPortlet.class);

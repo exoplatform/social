@@ -36,7 +36,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
  */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UISpaceActivityStreamPortlet.gtmpl"
+  template = "war:/groovy/social/portlet/UISpaceActivityStreamPortlet.gtmpl"
 )
 public class UISpaceActivityStreamPortlet extends UIPortletApplication {
   private Space space;

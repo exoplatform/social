@@ -38,7 +38,7 @@ import org.exoplatform.webui.organization.OrganizationUtils;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UISocialLogoPortlet.gtmpl"
+  template = "war:/groovy/social/portlet/UISocialLogoPortlet.gtmpl"
 )
 public class UISocialLogoPortlet extends UIPortletApplication {
   private Profile                profile;

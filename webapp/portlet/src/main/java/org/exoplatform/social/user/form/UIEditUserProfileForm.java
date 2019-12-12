@@ -37,7 +37,7 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
-   template = "app:/groovy/social/portlet/user/UIEditUserProfileForm.gtmpl",
+   template = "war:/groovy/social/portlet/user/UIEditUserProfileForm.gtmpl",
    events = {
      @EventConfig(listeners = UIEditUserProfileForm.AddExperienceActionListener.class, phase = Phase.DECODE),
      @EventConfig(listeners = UIEditUserProfileForm.RemoveExperienceActionListener.class, phase = Phase.DECODE),

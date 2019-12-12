@@ -615,7 +615,7 @@
     <portlet-preferences>
       <preference>
         <name>template</name>
-        <value>app:/groovy/social/portlet/UIProfilePortlet.gtmpl</value>
+        <value>war:/groovy/social/portlet/UIProfilePortlet.gtmpl</value>
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>

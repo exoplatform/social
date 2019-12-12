@@ -39,7 +39,7 @@ import org.json.JSONObject;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIRecentActivitiesPortlet.gtmpl",
+  template = "war:/groovy/social/portlet/user/UIRecentActivitiesPortlet.gtmpl",
   events = {
     @EventConfig(listeners = UIRecentActivitiesPortlet.LoadActivityActionListener.class)
   }
