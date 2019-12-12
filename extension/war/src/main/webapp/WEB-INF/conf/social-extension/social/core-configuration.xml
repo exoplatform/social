@@ -773,16 +773,6 @@
                 <collection type="java.util.ArrayList">
                   <value>
                     <object type="org.exoplatform.social.core.space.SpaceApplication">
-                      <field name="portletApp"><string>dashboard</string></field>
-                      <field name="portletName"><string>DashboardPortlet</string></field>
-                      <field name="appTitle"><string>Dashboard</string></field>
-                      <field name="removable"><boolean>true</boolean></field>
-                      <field name="order"><int>100</int></field>
-                      <field name="uri"><string>dashboard</string></field>
-                    </object>
-                  </value>
-                  <value>
-                    <object type="org.exoplatform.social.core.space.SpaceApplication">
                       <field name="portletApp"><string>social-portlet</string></field>
                       <field name="portletName"><string>SpaceSettingPortlet</string></field>
                       <field name="appTitle"><string>Space Settings</string></field>
