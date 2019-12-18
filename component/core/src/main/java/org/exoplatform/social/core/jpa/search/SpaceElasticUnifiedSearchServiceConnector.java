@@ -158,6 +158,9 @@ public class SpaceElasticUnifiedSearchServiceConnector extends ElasticSearchServ
   }
 
   private String getUrlFromJsonResult(Space space, SearchContext context) {
+    if (space == null || context == null) {
+      return null;
+    }
     try {
       String permanentSpaceName = space.getPrettyName();
       String groupId = space.getGroupId();
