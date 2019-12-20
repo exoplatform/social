@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>الأنشطة</activities>
+         <profile>الملفّ الشخصي</profile>
+         <connections>اتصالات</connections>
+         <wiki>ويكي</wiki>
+         <Myactivities>آخر أخباري</Myactivities>
+         <Myprofile>ملفي الشخصي</Myprofile>
+         <Myconnections>علاقاتي</Myconnections>
+         <Mywiki>ويكي خاصة</Mywiki>
+         <Mywallet>محفظتي</Mywallet>
+         <Myachievements>انجازاتي</Myachievements>
+         <NotificationSettingsPortlet>الإشعارات الخاصّة بي</NotificationSettingsPortlet>
+         <More>المزيد</More>
+         <EditProfile>تغيير</EditProfile>
+         <available>المـُـشاركون المُتواجدون</available>
+         <offline>غير متصل</offline>
+         <away>غير موجود</away>
+         <donotdisturb>عدم الإزعاج</donotdisturb>
+         <invisible>غير مرئي</invisible>
+         <bannerSizeHint>اختر صورة بارتفاع 130 بكسل على الأقل.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>تحميل صورة</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>تحميل صورة</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>قبول</AcceptRequest>
+         <Deny>رفض</Deny>
+         <RemoveConnection>قطع الاتصال</RemoveConnection>
+         <CancelRequest>الغاء الطّلب</CancelRequest>
+      </action>
+      <label>
+         <Connect>اتصال</Connect>
+         <ConnectNotExisting>تم إلغاء الدعوة من قبل شخص آخر.</ConnectNotExisting>
+         <ConnectionExisted>أنشئت هذه الدعوة من قبل شخص آخر.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

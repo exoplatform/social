@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Ang mga aktibidad</activities>
+         <profile>Ang profile</profile>
+         <connections>Ang mga koneksyon</connections>
+         <wiki>Ang Wiki</wiki>
+         <Myactivities>Aking mga gawain</Myactivities>
+         <Myprofile>Aking Profile</Myprofile>
+         <Myconnections>Aking mga koneksyon</Myconnections>
+         <Mywiki>Aking Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Aking mga abiso</NotificationSettingsPortlet>
+         <More>Higit pa</More>
+         <EditProfile>I-edit</EditProfile>
+         <available>Magagamit</available>
+         <offline>Hindi naka-online</offline>
+         <away>Malayo</away>
+         <donotdisturb>Huwag abalahin</donotdisturb>
+         <invisible>Hindi nakikita</invisible>
+         <bannerSizeHint>Pumili ng isang imahe ng hindi bababa sa 130 pixels na taas.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Mag-upload ng isang Imahe</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Mag-upload ng isang Imahe</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Tanggapin</AcceptRequest>
+         <Deny>Tanggihan</Deny>
+         <RemoveConnection>Huwag ikonekta</RemoveConnection>
+         <CancelRequest>Kanselahin ang Kahilingan</CancelRequest>
+      </action>
+      <label>
+         <Connect>Ikonekta</Connect>
+         <ConnectNotExisting>Ang imbitasyon ay kinansela ng ibang tao.</ConnectNotExisting>
+         <ConnectionExisted>Ang imbitasyon ay itinatag ng ibang tao.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

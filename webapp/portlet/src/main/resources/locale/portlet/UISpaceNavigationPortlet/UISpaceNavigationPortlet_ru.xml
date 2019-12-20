@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+ <UISpaceNavigationPortlet>
+     <label>
+         <Spaces>Мои области</Spaces>
+         <Join>Присоединиться к области</Join>
+         <see>Показать {0} больше областей</see>
+     </label>
+     <msg>
+         <filter-spaces>Найти область</filter-spaces>
+         <no-space>Область не найдена</no-space>
+     </msg>
+
+</UISpaceNavigationPortlet>
+</bundle>

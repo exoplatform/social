@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Hoạt động</activities>
+         <profile>Hồ sơ</profile>
+         <connections>Kết nối</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Hoạt động cá nhân</Myactivities>
+         <Myprofile>Hồ sơ</Myprofile>
+         <Myconnections>Kết nối của Tôi</Myconnections>
+         <Mywiki>Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Thiết lập các thông báo</NotificationSettingsPortlet>
+         <More>Hiện thêm</More>
+         <EditProfile>Chỉnh sửa</EditProfile>
+         <available>Rảnh rỗi</available>
+         <offline>Gián tuyến</offline>
+         <away>Vắng</away>
+         <donotdisturb>Không làm phiền</donotdisturb>
+         <invisible>Ẩn</invisible>
+         <bannerSizeHint>Choose an image at least 130 pixels high.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Tải Ảnh lên</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Tải Ảnh lên</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Đồng ý</AcceptRequest>
+         <Deny>Từ chối</Deny>
+         <RemoveConnection>Ngừng kết nối</RemoveConnection>
+         <CancelRequest>Hủy bỏ Yêu cầu</CancelRequest>
+      </action>
+      <label>
+         <Connect>Kết nối</Connect>
+         <ConnectNotExisting>Lời mời đã bị hủy bỏ.</ConnectNotExisting>
+         <ConnectionExisted>Lời mời đã được thiết lập.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

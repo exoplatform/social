@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Activități</activities>
+         <profile>Profil</profile>
+         <connections>Conexiuni</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Activităţile mele</Myactivities>
+         <Myprofile>Profilul meu</Myprofile>
+         <Myconnections>Colaboratorii mei</Myconnections>
+         <Mywiki>Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Notificări</NotificationSettingsPortlet>
+         <More>Mai mult</More>
+         <EditProfile>Modifică</EditProfile>
+         <available>Disponibil</available>
+         <offline>Deconectat</offline>
+         <away>Plecat</away>
+         <donotdisturb>Nu deranjaţi</donotdisturb>
+         <invisible>Invizibil</invisible>
+         <bannerSizeHint>Alege o imagine de cel puțin 130 de pixeli în înălțime.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Încărcă o imagine</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Încărcă o imagine</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Accept</AcceptRequest>
+         <Deny>Refuză</Deny>
+         <RemoveConnection>Deconectează</RemoveConnection>
+         <CancelRequest>Revocă cererea</CancelRequest>
+      </action>
+      <label>
+         <Connect>Conectare</Connect>
+         <ConnectNotExisting>Invitaţia a fost anulată de altcineva.</ConnectNotExisting>
+         <ConnectionExisted>Invitaţia a fost trimisă de către altcineva.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Activities</activities>
+         <profile>Profil</profile>
+         <connections>Nettverk</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>My Activities</Myactivities>
+         <Myprofile>Min profil</Myprofile>
+         <Myconnections>Mitt nettverk</Myconnections>
+         <Mywiki>Min Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Mine varsler</NotificationSettingsPortlet>
+         <More>More</More>
+         <EditProfile>Rediger</EditProfile>
+         <available>Tilgjengelig</available>
+         <offline>Frakoblet</offline>
+         <away>Borte</away>
+         <donotdisturb>Ikke forstyrr</donotdisturb>
+         <invisible>Invisible</invisible>
+         <bannerSizeHint>Choose an image at least 130 pixels high.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Last opp et bilde</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Last opp et bilde</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Godta</AcceptRequest>
+         <Deny>Ikke bekreft</Deny>
+         <RemoveConnection>Koble fra</RemoveConnection>
+         <CancelRequest>Avbryt forespørsel</CancelRequest>
+      </action>
+      <label>
+         <Connect>Legg til i nettverk</Connect>
+         <ConnectNotExisting>Invitasjonen ble avbrutt av noen andre.</ConnectNotExisting>
+         <ConnectionExisted>Invitasjonen ble opprettet av noen andre.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

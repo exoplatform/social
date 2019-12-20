@@ -20,7 +20,6 @@
 <gatein-resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/gatein_resources_1_4 http://www.exoplatform.org/xml/ns/gatein_resources_1_4"
                   xmlns="http://www.exoplatform.org/xml/ns/gatein_resources_1_4">
-
   <portlet>
     <name>SpaceInfos</name>
     <module>
@@ -300,5 +299,74 @@
         </depends>
       </module>
    </portlet>
+
+  <portlet>
+    <name>UISetupPlatformToolBarPortlet</name>
+    <module>
+      <depends>
+        <module>bts_dropdown</module>
+      </depends>
+    </module>
+  </portlet>
+  <portlet>
+    <name>UIHelpPlatformToolBarPortlet</name>
+    <module>
+      <depends>
+        <module>base</module>
+      </depends>
+      <depends>
+        <module>social-core</module>
+      </depends>
+    </module>
+  </portlet>
+<!--END-->
+  <portlet>
+    <name>UIUserNavigationPortlet</name>
+    <module>
+      <depends>
+        <module>webui-ext</module>
+      </depends>
+    </module>
+  </portlet>
+  <module>
+    <name>ui-user-navigation</name>
+    <as>uiusernav</as>
+    <script>
+      <path>/js/UIUserNavigationPortlet/UIUserNavigation.js</path>
+    </script>
+    <depends>
+      <module>base</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>jq</as>
+    </depends>
+    <depends>
+      <module>bts_dropdown</module>
+    </depends>
+    <depends>
+      <module>bts_popover</module>
+    </depends>
+    <depends>
+      <module>bannerUploader</module>
+    </depends>
+  </module>
+  <module>
+    <name>navigation-spaces-search</name>
+    <as>navigationSpacesSearch</as>
+    <script>
+      <path>/js/UISpaceNavigationPortlet/UISpaceNavigation.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>bts_dropdown</module>
+    </depends>
+    <depends>
+      <module>bts_popover</module>
+    </depends>
+  </module>
 
 </gatein-resources>

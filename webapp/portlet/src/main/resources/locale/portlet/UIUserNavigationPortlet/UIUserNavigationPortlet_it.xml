@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Attività</activities>
+         <profile>Profilo</profile>
+         <connections>Connessioni</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Le mie attività</Myactivities>
+         <Myprofile>Mio Profilo</Myprofile>
+         <Myconnections>Le mie connessioni</Myconnections>
+         <Mywiki>Mio Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Mie notifiche</NotificationSettingsPortlet>
+         <More>Di più</More>
+         <EditProfile>Modificare</EditProfile>
+         <available>Disponibile</available>
+         <offline>Non in linea</offline>
+         <away>Fuori</away>
+         <donotdisturb>Non disturbare</donotdisturb>
+         <invisible>Invisibile</invisible>
+         <bannerSizeHint>Scegli un'immagine con almeno 130 pixel di altezza.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Carica un'immagine</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Carica un'immagine</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Accettare</AcceptRequest>
+         <Deny>Nega</Deny>
+         <RemoveConnection>Disconnetti</RemoveConnection>
+         <CancelRequest>Annullare  Richiesta</CancelRequest>
+      </action>
+      <label>
+         <Connect>Connettarsi</Connect>
+         <ConnectNotExisting>L'invito è stato annullato da qualcun altro.</ConnectNotExisting>
+         <ConnectionExisted>L'invito è stato stabilito da qualcun'altro.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

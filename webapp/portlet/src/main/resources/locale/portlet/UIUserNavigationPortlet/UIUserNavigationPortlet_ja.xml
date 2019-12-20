@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>アクテビティ</activities>
+         <profile>プロフィール</profile>
+         <connections>コネクト</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>アクティビティ</Myactivities>
+         <Myprofile>マイプロフィール</Myprofile>
+         <Myconnections>マイ・コネクト</Myconnections>
+         <Mywiki>Wiki</Mywiki>
+         <Mywallet>マイ・ウォレット</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>通知</NotificationSettingsPortlet>
+         <More>詳細</More>
+         <EditProfile>編集</EditProfile>
+         <available>利用可能</available>
+         <offline>オフライン</offline>
+         <away>離席中</away>
+         <donotdisturb>サイレントモード</donotdisturb>
+         <invisible>非公開</invisible>
+         <bannerSizeHint>少なくとも 高さ130 ピクセルのイメージを選択してください。</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>画像のアップロード</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>画像のアップロード</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>承諾</AcceptRequest>
+         <Deny>拒否</Deny>
+         <RemoveConnection>コネクション解除</RemoveConnection>
+         <CancelRequest>リクエストを取り消す</CancelRequest>
+      </action>
+      <label>
+         <Connect>コネクト</Connect>
+         <ConnectNotExisting>他のユーザーによって、招待がキャンセルされました。</ConnectNotExisting>
+         <ConnectionExisted>他のユーザーによって招待が成立しました。</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

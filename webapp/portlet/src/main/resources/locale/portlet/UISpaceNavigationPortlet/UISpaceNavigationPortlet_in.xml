@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+ <UISpaceNavigationPortlet>
+     <label>
+         <Spaces>Ruang saya</Spaces>
+         <Join>Bergabung dengan ruang</Join>
+         <see>Tampilkan {0} lebih banyak ruang</see>
+     </label>
+     <msg>
+         <filter-spaces>Temukan ruang</filter-spaces>
+         <no-space>Tidak ada ruang yang ditemukan</no-space>
+     </msg>
+
+</UISpaceNavigationPortlet>
+</bundle>

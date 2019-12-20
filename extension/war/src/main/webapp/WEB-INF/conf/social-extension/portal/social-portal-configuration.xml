@@ -82,6 +82,21 @@
   </component>
 
   <external-component-plugins>
+    <target-component>org.exoplatform.platform.common.service.MenuConfiguratorService</target-component>
+    <component-plugin>
+      <name>ECMS - Setup Menu Management Plugin</name>
+      <set-method>addNavigation</set-method>
+      <type>org.exoplatform.platform.common.service.plugin.MenuConfiguratorAddNodePlugin</type>
+      <init-params>
+        <value-param>
+          <name>extended.setup.navigation.file</name>
+          <value>war:/conf/social-extension/portal/setup-navigation.xml</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
     <!-- The full qualified name of the UserPortalConfigService -->
     <target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>
     <component-plugin>

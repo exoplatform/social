@@ -70,11 +70,13 @@
           <name>classpath.resources</name>
           <description>The resources that start with the following package name should be load from file system</description>
           <value>locale.social.Webui</value>
+          <value>locale.social.menu.webui</value>
         </values-param>
         <values-param>
           <name>portal.resource.names</name>
           <description>The resources that start with the following package name should be load from file system</description>
           <value>locale.social.Webui</value>
+          <value>locale.social.menu.webui</value>
         </values-param>
       </init-params>
     </component-plugin>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Activities</activities>
+         <profile>Profilis</profile>
+         <connections>Jungtys</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>My Activities</Myactivities>
+         <Myprofile>Mano profilis</Myprofile>
+         <Myconnections>Mano jungtys</Myconnections>
+         <Mywiki>Mano Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>My Notifications</NotificationSettingsPortlet>
+         <More>More</More>
+         <EditProfile>Redaguoti</EditProfile>
+         <available>Laisvas</available>
+         <offline>Offline</offline>
+         <away>Away</away>
+         <donotdisturb>Do not disturb</donotdisturb>
+         <invisible>Invisible</invisible>
+         <bannerSizeHint>Choose an image at least 130 pixels high.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Įkelti paveiksliuką</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Įkelti paveiksliuką</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Sutikti</AcceptRequest>
+         <Deny>Atmesti</Deny>
+         <RemoveConnection>Atsijungti</RemoveConnection>
+         <CancelRequest>Atšaukti užklausą</CancelRequest>
+      </action>
+      <label>
+         <Connect>Prisijungti</Connect>
+         <ConnectNotExisting>Kvietimas buvo atšauktas kieno nors kito.</ConnectNotExisting>
+         <ConnectionExisted>Kvietimas buvo nustatytas kieno nors kito.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

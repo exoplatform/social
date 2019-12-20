@@ -1,9 +1,16 @@
 <%
   import org.exoplatform.social.core.space.SpaceUtils;
   import org.exoplatform.social.webui.Utils;
+  import org.apache.commons.lang.StringUtils;
   import org.exoplatform.portal.application.PortalRequestContext;
 
   def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  int frequency = 15000;
+  if(StringUtils.isNotEmpty(System.getProperty("user.status.ping.frequency"))) {
+    frequency = Integer.parseInt(System.getProperty("user.status.ping.frequency"));
+  }
+  jsManager.require("SHARED/presence", "presence").addScripts("presence.sendPing(" + frequency + ");");
 %>
 <script type="text/javascript">
      eXo.env.portal.spaceId = "<%=SpaceUtils.getSpaceByContext() == null ? "" : SpaceUtils.getSpaceByContext().getId()%>" ;

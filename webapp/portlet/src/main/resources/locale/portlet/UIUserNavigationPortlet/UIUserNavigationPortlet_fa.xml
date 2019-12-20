@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>فعالیت ها</activities>
+         <profile>مشخصات</profile>
+         <connections>ارتباطات</connections>
+         <wiki>ویکی</wiki>
+         <Myactivities>فعالیت های من</Myactivities>
+         <Myprofile>مشخصات من</Myprofile>
+         <Myconnections>ارتباطات من</Myconnections>
+         <Mywiki>ویکی من</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>اطلاعیه های من</NotificationSettingsPortlet>
+         <More>بیشتر</More>
+         <EditProfile>ويرايش</EditProfile>
+         <available>در دسترس</available>
+         <offline>آفلاین</offline>
+         <away>خارج از دسترس</away>
+         <donotdisturb>مزاحم نشوید</donotdisturb>
+         <invisible>نامرئی</invisible>
+         <bannerSizeHint>Choose an image at least 130 pixels high.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>ارسال یک تصویر</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>ارسال یک تصویر</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>قبول</AcceptRequest>
+         <Deny>رد</Deny>
+         <RemoveConnection>قطع ارتباط</RemoveConnection>
+         <CancelRequest>لغو درخواست</CancelRequest>
+      </action>
+      <label>
+         <Connect>اتصال</Connect>
+         <ConnectNotExisting>دعوتنامه توسط شخص دیگری لغو شد.</ConnectNotExisting>
+         <ConnectionExisted>دعوتنامه توسط شخص دیگری ارسال شده است.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

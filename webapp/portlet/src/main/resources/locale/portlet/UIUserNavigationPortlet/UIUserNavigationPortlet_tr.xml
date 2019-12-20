@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Aktiviteler</activities>
+         <profile>Profil</profile>
+         <connections>Bağlantılar</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Faliyetlerim</Myactivities>
+         <Myprofile>Profilim</Myprofile>
+         <Myconnections>Bağlantılarım</Myconnections>
+         <Mywiki>Wikim</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Bildirimlerim</NotificationSettingsPortlet>
+         <More>Daha</More>
+         <EditProfile>Düzenle</EditProfile>
+         <available>Uygun</available>
+         <offline>Çevrimdışı</offline>
+         <away>Uzakta</away>
+         <donotdisturb>Rahatsız etmeyin</donotdisturb>
+         <invisible>Görünmez</invisible>
+         <bannerSizeHint>En az 130 piksel yüksekliğinde bir resim seçin.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Bir Resim Yükleyin</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Bir Resim Yükleyin</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Kabul</AcceptRequest>
+         <Deny>Reddet</Deny>
+         <RemoveConnection>Bağlantıyı kes</RemoveConnection>
+         <CancelRequest>İsteği İptal Et</CancelRequest>
+      </action>
+      <label>
+         <Connect>Bağlan</Connect>
+         <ConnectNotExisting>Davetiye başkası tarafından iptal edildi.</ConnectNotExisting>
+         <ConnectionExisted>Davet başkası tarafından oluşturuldu.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

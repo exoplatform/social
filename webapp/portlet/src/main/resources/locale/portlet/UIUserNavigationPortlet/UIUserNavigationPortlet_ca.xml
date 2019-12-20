@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Activitats</activities>
+         <profile>Perfil</profile>
+         <connections>Connexions</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Les Meves Activitats</Myactivities>
+         <Myprofile>El Meu Perfil</Myprofile>
+         <Myconnections>Les Meves Connexions</Myconnections>
+         <Mywiki>El Meu Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Les Meves Notificacions</NotificationSettingsPortlet>
+         <More>Més</More>
+         <EditProfile>Edita</EditProfile>
+         <available>Disponibilitat</available>
+         <offline>Desconnectat</offline>
+         <away>Absent</away>
+         <donotdisturb>No molestar</donotdisturb>
+         <invisible>Invisible</invisible>
+         <bannerSizeHint>Triï una imatge d'una alçada mínima de 130 píxels.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Puja una imatge</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Puja una imatge</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Accepta</AcceptRequest>
+         <Deny>Denega</Deny>
+         <RemoveConnection>Desconnecta</RemoveConnection>
+         <CancelRequest>Cancel·la la petició</CancelRequest>
+      </action>
+      <label>
+         <Connect>Connecta</Connect>
+         <ConnectNotExisting>S'ha cancel·lat la invitació per una altra persona.</ConnectNotExisting>
+         <ConnectionExisted>La invitació ha sigut establer-ta per algú altre.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

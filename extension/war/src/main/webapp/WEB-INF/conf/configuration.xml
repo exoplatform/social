@@ -35,4 +35,6 @@
   <import>war:/conf/social-extension/social/service-configuration.xml</import>
   <import>war:/conf/social-extension/social/webui-configuration.xml</import>
 
+  <import>war:/conf/social-extension/social/help-configuration.xml</import>
+
 </configuration>
