@@ -5,6 +5,24 @@
     xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_3">
 
   <portlet>
+    <name>SuggestionsPeopleSpace</name>
+    <module>
+      <depends>
+        <module>jQuerySuggestions</module>
+      </depends>
+    </module>
+  </portlet>
+
+  <portlet>
+    <name>Invitations</name>
+    <module>
+      <depends>
+        <module>jQueryInvitations</module>
+      </depends>
+    </module>
+  </portlet>
+
+  <portlet>
     <name>NotificationSettingsPortlet</name>
     <module>
       <script>
@@ -29,6 +47,40 @@
       </depends>
     </module>
   </portlet>
+
+   <module>
+      <name>jQuerySuggestions</name>
+      <load-group>homepage-apps</load-group>
+      <script>
+         <path>/js/suggestions/suggestions.js</path>
+      </script>
+      <depends>
+         <module>jquery</module>
+      </depends>
+      <depends>
+         <module>xss-utils</module>
+      </depends>
+      <depends>
+        <module>bts_tooltip</module>
+      </depends>
+   </module>
+
+   <module>
+      <name>jQueryInvitations</name>
+      <load-group>homepage-apps</load-group>
+      <script>
+         <path>/js/invitations/invitations.js</path>
+      </script>
+      <depends>
+         <module>jquery</module>
+      </depends>
+      <depends>
+         <module>xss-utils</module>
+      </depends>
+      <depends>
+        <module>bts_tooltip</module>
+      </depends>
+   </module>
 
   <module>
     <name>notificationLocale</name>
