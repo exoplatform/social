@@ -28,6 +28,45 @@
 
   <page-nodes>
     <node>
+      <name>administration</name>
+      <label>#{administration.title}</label>
+      <node>
+        <name>registry</name>
+        <label>#{administration.application-registry}</label>
+        <page-reference>group::/platform/administrators::registry</page-reference>
+      </node>
+      <node>
+        <name>pageManagement</name>
+        <label>#{administration.pageManagement}</label>
+        <page-reference>group::/platform/administrators::pageManagement</page-reference>
+      </node>
+      <node>
+        <name>newStaff</name>
+        <label>#{administration.newstaff}</label>
+        <page-reference>group::/platform/administrators::newStaff</page-reference>
+      </node>
+      <node>
+        <name>management</name>
+        <label>#{administration.management}</label>
+        <page-reference>group::/platform/administrators::management</page-reference>
+      </node>
+    </node>
+    <node>
+      <name>groupnavigation</name>
+      <label>#{administration.groupnavigation}</label>
+      <page-reference>group::/platform/administrators::groupnavigation</page-reference>
+    </node>
+    <node>
+      <name>portalnavigation</name>
+      <label>#{administration.portalnavigation}</label>
+      <page-reference>group::/platform/administrators::portalnavigation</page-reference>
+    </node>
+    <node>
+      <name>branding</name>
+      <label>#{administration.branding}</label>
+      <page-reference>group::/platform/administrators::branding</page-reference>
+    </node>
+    <node>
       <name>spacesTemplates</name>
       <label>#{administration.spacesTemplates}</label>
       <page-reference>group::/platform/administrators::spacesTemplates</page-reference>

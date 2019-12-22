@@ -130,8 +130,8 @@
             <field name="ownerType">
               <string>group</string>
             </field>
-            <field name="templateLocation">
-              <string>war:/conf/social-extension/portal</string>
+            <field name="location">
+              <string>war:/conf/portal</string>
             </field>
             <field name="importMode">
               <string>insert</string>

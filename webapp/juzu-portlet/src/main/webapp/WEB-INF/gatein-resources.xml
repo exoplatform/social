@@ -50,7 +50,6 @@
 
    <module>
       <name>jQuerySuggestions</name>
-      <load-group>homepage-apps</load-group>
       <script>
          <path>/js/suggestions/suggestions.js</path>
       </script>
@@ -67,7 +66,6 @@
 
    <module>
       <name>jQueryInvitations</name>
-      <load-group>homepage-apps</load-group>
       <script>
          <path>/js/invitations/invitations.js</path>
       </script>
