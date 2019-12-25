@@ -22,6 +22,7 @@ import java.util.*;
 
 import org.exoplatform.commons.notification.NotificationUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.mop.Visibility;
@@ -190,12 +191,12 @@ public class UIUserNavigationPortlet extends UIPortletApplication {
   public Map<String, String> getUserNodes() throws Exception {
     if (userNodes == null) {
       userNodes = new LinkedHashMap<>();
-      if (CommonsUtils.hasProfile("social")) {
+      if (ExoContainer.hasProfile("social")) {
         userNodes.put(PROFILE_URI, getProfileLink());
         userNodes.put(ACTIVITIES_URI, getactivitesURL());
         userNodes.put(CONNEXIONS_URI, getrelationURL());
       }
-      if (CommonsUtils.hasProfile("wiki")) {
+      if (ExoContainer.hasProfile("wiki")) {
         userNodes.put(WIKI_URI, getWikiURL());
       }
       if (CommonsUtils.isFeatureActive(WALLET_FEATURE_NAME, Utils.getViewerRemoteId())) {
