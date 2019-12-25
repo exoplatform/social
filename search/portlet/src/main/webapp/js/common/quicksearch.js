@@ -26,7 +26,16 @@ window.initQuickSearch = function initQuickSearch(portletId,seeAllMsg, noResultM
     var searchTimeout;
     //var skipKeyUp = [9,16,17,18,19,20,33,34,35,36,37,38,39,40,45,49];
 
-    
+    const i18NData = {};
+    const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
+    const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.quicksearch.quicksearch-${lang}.json`;
+    fetch(url, {
+      method: 'get',
+      credentials: 'include'
+    })
+      .then(resp => resp && resp.ok && resp.json())
+      .then(data => data && Object.assign(i18NData, data));
+
     var mapKeyUp = {"0":"48","1":"49","2":"50","3":"51","4":"52","5":"53","6":"54","7":"55","8":"56","9":"57",
     		"a":"65","b":"66","c":"67","d":"68","e":"69","f":"70","g":"71","h":"72","i":"73","j":"74",
     		"k":"75","l":"76","m":"77","n":"78","o":"79","p":"80","q":"81","r":"82","s":"83","t":"84",
@@ -210,16 +219,14 @@ window.initQuickSearch = function initQuickSearch(portletId,seeAllMsg, noResultM
           var results = resultMap[searchType]; //get all results of this type
           if(results && 0!=$(results).length) { //show the type with result only
             //results.map(function(result){result.type = searchType;}); //assign type for each result
-            results = results.sort(function(a,b){
-                return byRelevancyDESC(a,b);
-            });
+            results.sort(byRelevancyDESC);
             $.map(results, function(result){result.type = searchType;}); //assign type for each result
             var cell = []; //the cell contains results of this type (in the quick search result table)
             $.each(results, function(i, result){
               index = index + 1; 	
               cell.push(renderQuickSearchResult(result, index)); //add this result to the cell
             });
-            var row = QUICKSEARCH_TABLE_ROW_TEMPLATE.replace(/%{type}/g,eXo.ecm.WCMUtils.getBundle("quicksearch.type." +  CONNECTORS[searchType].displayName , eXo.env.portal.language)).replace(/%{results}/g, cell.join(""));
+            var row = QUICKSEARCH_TABLE_ROW_TEMPLATE.replace(/%{type}/g, i18NData["quicksearch.type." +  CONNECTORS[searchType].displayName]).replace(/%{results}/g, cell.join(""));
             rows.push(row);
           }
         });
@@ -567,7 +574,7 @@ window.initQuickSearchSetting = function(allMsg,alertOk,alertNotOk){
         if(CONNECTORS[type]) searchInOpts.push(CHECKBOX_TEMPLATE.
           replace(/%{name}/g, "searchInOption").
           replace(/%{value}/g, type).
-          replace(/%{text}/g, eXo.ecm.WCMUtils.getBundle("quicksearch.type." +  CONNECTORS[type].displayName , eXo.env.portal.language)));
+          replace(/%{text}/g, i18NData["quicksearch.type." +  CONNECTORS[type].displayName]));
       });
       $("#lstSearchInOptions").html(searchInOpts.join(""));
 

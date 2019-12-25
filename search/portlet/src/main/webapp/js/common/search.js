@@ -11,6 +11,16 @@ window.initSearch = function initSearch() {
     var formLoading;
     var searchCount = 0;
 
+    const i18NData = {};
+    const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
+    const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.unifiedsearch.unifiedsearch-${lang}.json`;
+    fetch(url, {
+      method: 'get',
+      credentials: 'include'
+    })
+      .then(resp => resp && resp.ok && resp.json())
+      .then(data => data && Object.assign(i18NData, data));
+
     var SEARCH_RESULT_TEMPLATE =
       "<div class=\"resultBox clearfix %{type}\">" +
         "%{avatar}" +
@@ -163,7 +173,7 @@ window.initSearch = function initSearch() {
         var connector = connectors[searchType];
         // Show only the types user selected in setting
         if(connector && (-1 != $.inArray("all", searchSetting.searchTypes) || -1 != $.inArray(searchType, searchSetting.searchTypes))) {
-          var key =eXo.ecm.WCMUtils.getBundle("unifiedSearch.type." + connector.displayName , eXo.env.portal.language);
+          var key =i18NData["unifiedSearch.type." + connector.displayName ];
           contentTypes.push("<li><span class='uiCheckbox'><input type='checkbox' class='checkbox' name='contentType' value='" + connector.searchType + "'><span></span></span>" + key + "</li>");
 
         }
@@ -564,7 +574,7 @@ window.initSearch = function initSearch() {
       }
 
       NUM_RESULTS_RENDERED = NUM_RESULTS_RENDERED + current.length;
-      var resultHeader =eXo.ecm.WCMUtils.getBundle("unifiedSearch.label.Results" , eXo.env.portal.language).replace("{0}",1).replace("{1}",NUM_RESULTS_RENDERED).replace("{2}","<strong>" +XSSUtils.sanitizeString($("#txtQuery").val())+ "<strong>");
+      var resultHeader =i18NData["unifiedSearch.label.Results"].replace("{0}",1).replace("{1}",NUM_RESULTS_RENDERED).replace("{2}","<strong>" +XSSUtils.sanitizeString($("#txtQuery").val())+ "<strong>");
       $("#resultHeader").html(resultHeader);
       $("#resultSort").show();
       $("#resultPage").removeClass("noResult");
@@ -823,7 +833,7 @@ window.initSearchSetting = function initSearchSetting(allMsg,alertOk,alertNotOk)
         if(CONNECTORS[type]) searchInOpts.push(CHECKBOX_TEMPLATE.
           replace(/%{name}/g, "searchInOption").
           replace(/%{value}/g, type).
-          replace(/%{text}/g, eXo.ecm.WCMUtils.getBundle("unifiedSearch.type." + CONNECTORS[type].displayName , eXo.env.portal.language)));
+          replace(/%{text}/g, i18NData["unifiedSearch.type." + CONNECTORS[type].displayName ]));
       });
       $("#lstSearchInOptions").html(searchInOpts.join(""));
 

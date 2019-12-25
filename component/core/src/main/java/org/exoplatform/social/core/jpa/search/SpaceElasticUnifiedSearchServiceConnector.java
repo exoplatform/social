@@ -121,6 +121,9 @@ public class SpaceElasticUnifiedSearchServiceConnector extends ElasticSearchServ
     for(Object jsonHit : jsonHits) {      
       JSONObject hitSource = (JSONObject) ((JSONObject) jsonHit).get("_source");
       Space space = spaceService.getSpaceById(((JSONObject) jsonHit).get("_id").toString());
+      if (space == null) {
+        continue;
+      }
       
       String title = getTitleFromJsonResult(hitSource);
       String url = getUrlFromJsonResult(space, context);

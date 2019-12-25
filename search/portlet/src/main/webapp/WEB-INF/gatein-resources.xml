@@ -45,9 +45,6 @@
         <module>jquery</module>
         <as>$</as>
       </depends>
-      <depends>
-        <module>wcm-utils</module>
-      </depends>
     </module>
   </portlet>
 
