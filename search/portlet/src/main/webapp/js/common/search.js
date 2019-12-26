@@ -180,9 +180,13 @@ window.initSearch = function initSearch() {
       });
       if(0!=contentTypes.length) {
         $("#lstContentTypes").html(contentTypes.join(""));
-      } else {
-        // Disable All Content Types checkbox if there's no content type to show
-        $(":checkbox[name='contentType'][value='all']").prop("disabled", "disabled");
+      } else {//Check if all contentType Checkboxes are checked
+        var checkboxesSubFilter = $("input[name='contentType'][value!='all']");//Enumerate the number of checkboxes which name is contentType but their value isn't 'all'
+        if(checkboxesSubFilter.length == checkboxesSubFilter.filter(":checked").length){//Check if all contentType checkboxes which value isn't 'all' are checked
+          $(":checkbox[name='contentType'][value='all']").prop('checked', true);//Main contentType checkbox has to be checked if previous condition is true
+        } else {
+          $(":checkbox[name='contentType'][value='all']").prop('checked', false); //uncheck All contentTypes
+        }
       }
     }
 
@@ -624,8 +628,12 @@ window.initSearch = function initSearch() {
         } else {
           $(":checkbox[name='site']").prop('checked', false);
         }
-      } else {
-        $(":checkbox[name='site'][value='all']").prop('checked', false); //uncheck All Sites
+      } else {//Check if all site Checkboxes are checked
+        var checkboxesSubFilter = $("input[name='site'][value!='all']");//Enumerate the number of checkboxes which name is site but their value isn't 'all'
+        if(checkboxesSubFilter.length == checkboxesSubFilter.filter(":checked").length){//Check if all site checkboxes which value isn't 'all' are checked
+          $(":checkbox[name='site'][value='all']").prop('checked', true);//Main Site checkbox has to be checked if previous condition is true
+        } else {
+          $(":checkbox[name='site'][value='all']").prop('checked', false); //uncheck All Sites
       }
 
       window.search = search(); //perform search again to update the results
