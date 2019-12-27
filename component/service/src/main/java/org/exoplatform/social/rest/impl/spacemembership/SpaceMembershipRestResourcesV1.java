@@ -67,7 +67,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   private IdentityManager identityManager;
 
   private enum MembershipType {
-    ALL, PENDING, APPROVED, IGNORED
+    ALL, PENDING, APPROVED, IGNORED, INVITED
   }
   
   public SpaceMembershipRestResourcesV1(SpaceService spaceService, IdentityManager identityManager) {
@@ -89,7 +89,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
                                        @ApiParam(value = "Space display name to get membership, ex: my space", required = false) @QueryParam("space") String spaceDisplayName,
                                        @ApiParam(value = "User name to filter only memberships of the given user", required = false) @QueryParam("user") String user,
-                                       @ApiParam(value = "Type of membership to get (All, Pending, Approved)", required = false) @QueryParam("status") String status,
+                                       @ApiParam(value = "Type of membership to get (All, Pending, Approved, Invited)", required = false) @QueryParam("status") String status,
                                        @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                        @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                        @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
@@ -135,6 +135,11 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
           user, new SpaceFilter(spaceDisplayName)) : spaceService.getAccessibleSpacesWithListAccess(user);
         break;
       }
+      case INVITED: {
+        listAccess = spaceDisplayName != null ? spaceService.getInvitedSpacesByFilter(
+                user, new SpaceFilter(spaceDisplayName)) : spaceService.getInvitedSpacesWithListAccess(user);
+        break;
+      }
 
       default:
         SpaceFilter spaceFilter = new SpaceFilter();
@@ -151,7 +156,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     CollectionEntity spacesMemberships = new CollectionEntity(spaceMemberships, EntityBuilder.SPACES_MEMBERSHIP_TYPE, offset, limit);
     
     if (returnSize) {
-      spacesMemberships.setSize(spaceMemberships.size());
+      spacesMemberships.setSize(listAccess.getSize());
     }
     
     return EntityBuilder.getResponse(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -369,6 +374,14 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
         }
         if (ArrayUtils.contains(space.getManagers(), userId)) {
           membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "manager", path, expand);
+          spaceMemberships.add(membershipEntity.getDataEntity());
+        }
+        if (ArrayUtils.contains(space.getInvitedUsers(), userId)) {
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "invited", path, expand);
+          spaceMemberships.add(membershipEntity.getDataEntity());
+        } 
+        if (ArrayUtils.contains(space.getPendingUsers(), userId)) {
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "pending", path, expand);
           spaceMemberships.add(membershipEntity.getDataEntity());
         }
       } else {

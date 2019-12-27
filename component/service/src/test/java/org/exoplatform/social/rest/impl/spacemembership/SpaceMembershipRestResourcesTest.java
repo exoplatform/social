@@ -2,6 +2,7 @@ package org.exoplatform.social.rest.impl.spacemembership;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.rest.impl.ContainerResponse;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -10,6 +11,7 @@ import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 import javax.ws.rs.core.Response;
+import java.util.stream.Stream;
 
 public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
   private IdentityManager identityManager;
@@ -24,17 +26,24 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
 
     identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
     spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
-    
-    identityManager.getOrCreateIdentity("organization", "root", true);
-    identityManager.getOrCreateIdentity("organization", "john", true);
-    identityManager.getOrCreateIdentity("organization", "mary", true);
-    identityManager.getOrCreateIdentity("organization", "demo", true);
 
-    //root creates 2 spaces, john 1 and mary 1
+    Identity rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
+    Identity johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
+    Identity maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
+    Identity demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
+
+    Stream.of(rootIdentity, johnIdentity, maryIdentity, demoIdentity).forEach(identity -> {
+      identity.setDeleted(false);
+      identity.setEnable(true);
+      identityManager.updateIdentity(identity);
+    });
+    //root creates 2 spaces, john 1 and mary 3
     createSpaceIfNotExist(1, "root");
     createSpaceIfNotExist(2, "root");
     createSpaceIfNotExist(3, "john");
     createSpaceIfNotExist(4, "mary");
+    createSpaceIfNotExist(5, "mary");
+    createSpaceIfNotExist(6, "mary");
 
     membershipRestResources = new SpaceMembershipRestResourcesV1(spaceService, identityManager);
     registry(membershipRestResources);
@@ -80,7 +89,7 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     CollectionEntity collections = (CollectionEntity) response.getEntity();
-    assertEquals(2, collections.getEntities().size());
+    assertEquals(6, collections.getEntities().size());
   }
 
   public void testGetSpaceMembershipsOfASpaceAsANonMember() throws Exception {
@@ -139,7 +148,45 @@ public class SpaceMembershipRestResourcesTest extends AbstractResourceTest {
     assertEquals(200, response.getStatus());
     assertFalse(spaceService.isMember(spaceService.getSpaceByPrettyName("space1"), "demo"));
   }
-  
+
+  public void testGetInvitedSpaceMemberships() throws Exception {
+    spaceService.addInvitedUser(spaceService.getSpaceByPrettyName("space1"), "demo");
+    spaceService.addInvitedUser(spaceService.getSpaceByPrettyName("space2"), "demo");
+    spaceService.addInvitedUser(spaceService.getSpaceByPrettyName("space3"), "demo");
+    spaceService.addInvitedUser(spaceService.getSpaceByPrettyName("space4"), "demo");
+    spaceService.addPendingUser(spaceService.getSpaceByPrettyName("space5"), "demo");
+    spaceService.addMember(spaceService.getSpaceByPrettyName("space6"), "demo");
+    
+    startSessionAs("demo");
+    ContainerResponse response = service("GET", getURLResource("spacesMemberships?status=invited&returnSize=true&limit=3"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    // should return the limited size 
+    assertEquals(3, collections.getEntities().size());
+    // should return the size of whole list 
+    assertEquals(4, collections.getSize());
+  }
+
+  public void testGetPendingSpaceMemberships() throws Exception {
+    spaceService.addPendingUser(spaceService.getSpaceByPrettyName("space1"), "demo");
+    spaceService.addPendingUser(spaceService.getSpaceByPrettyName("space2"), "demo");
+    spaceService.addPendingUser(spaceService.getSpaceByPrettyName("space3"), "demo");
+    spaceService.addPendingUser(spaceService.getSpaceByPrettyName("space4"), "demo");
+    spaceService.addInvitedUser(spaceService.getSpaceByPrettyName("space5"), "demo");
+    spaceService.addMember(spaceService.getSpaceByPrettyName("space6"), "demo");
+
+    startSessionAs("demo");
+    ContainerResponse response = service("GET", getURLResource("spacesMemberships?status=pending&returnSize=true&limit=3"), "", null, null);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    CollectionEntity collections = (CollectionEntity) response.getEntity();
+    // should return the limited size 
+    assertEquals(3, collections.getEntities().size());
+    // should return the size of whole list 
+    assertEquals(4, collections.getSize());
+  }
+
   private void createSpaceIfNotExist(int number, String creator) throws Exception {
     String spaceName = "space" + number;
     if(spaceService.getSpaceByPrettyName(spaceName) == null) {
