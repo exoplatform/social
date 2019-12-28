@@ -177,7 +177,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
           spaceService.installApplication(space, spaceApplication.getPortletName());
         }
       }
-      //commit the parentNode to JCR 
       navService.saveNode(parentNodeCtx, null);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);

@@ -19,7 +19,7 @@ package org.exoplatform.commons.search.service;
 import java.util.Locale;
 import java.util.Map;
 
-import org.exoplatform.portal.mop.Described.State;
+import org.exoplatform.portal.mop.State;
 import org.exoplatform.portal.mop.description.DescriptionService;
 
 /**

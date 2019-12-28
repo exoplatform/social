@@ -91,13 +91,13 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    * @return
    */
   protected NotificationInfo getNotificationInfo(String username) {
-    List<NotificationInfo> list = notificationService.storeDigestJCR(username);
+    List<NotificationInfo> list = notificationService.storeDigest(username);
     assertTrue(list.size() > 0);
     return list.get(0);
   }
   
   protected List<NotificationInfo> getNotificationInfos(String username) {
-    return notificationService.storeDigestJCR(username);
+    return notificationService.storeDigest(username);
   }
   
   /**
@@ -135,7 +135,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
   protected void assertMadeMailDigestNotifications(int number) {
     UserSetting setting = userSettingService.get(rootIdentity.getRemoteId());
     if (setting.isInDaily(getPlugin().getKey().getId())) {
-      assertEquals(number, notificationService.sizeOfDigestJCR());
+      assertEquals(number, notificationService.sizeOfStoredDigest());
     }
   }
 
@@ -145,7 +145,7 @@ public abstract class AbstractPluginTest extends AbstractCoreTest {
    */
   protected List<NotificationInfo> assertMadeMailDigestNotifications(String username, int number) {
     UserSetting setting = userSettingService.get(username);
-    List<NotificationInfo> got = notificationService.storeDigestJCR(username);
+    List<NotificationInfo> got = notificationService.storeDigest(username);
     if (setting.isActive(UserSetting.EMAIL_CHANNEL, getPlugin().getKey().getId())) {
       got = notificationService.storeInstantly(username);
       assertEquals(number, got.size());

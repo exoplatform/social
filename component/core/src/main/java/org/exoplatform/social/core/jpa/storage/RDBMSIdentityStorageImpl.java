@@ -542,7 +542,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
    */
   @Deprecated
   public String getType(final String nodetype, final String property) {
-    return "undefined";
+    throw new UnsupportedOperationException();
   }
 
   /**

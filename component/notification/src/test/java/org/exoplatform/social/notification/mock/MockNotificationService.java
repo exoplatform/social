@@ -34,7 +34,7 @@ import org.exoplatform.commons.utils.CommonsUtils;
 
 public class MockNotificationService implements NotificationService {
 
-  private Map<String, List<NotificationInfo>> storeDigestJCR = new HashMap<>();
+  private Map<String, List<NotificationInfo>> storedDigest = new HashMap<>();
   private Map<String, List<NotificationInfo>> storeInstantly = new HashMap<>();
   private Map<String, List<NotificationInfo>> storeWebNotifs = new HashMap<>();
 
@@ -46,22 +46,22 @@ public class MockNotificationService implements NotificationService {
     return this.storeWebNotifs.values().stream().mapToInt(List::size).sum();
   }
   
-  public int sizeOfDigestJCR() {
-    return this.storeDigestJCR.values().stream().mapToInt(List::size).sum();
+  public int sizeOfStoredDigest() {
+    return this.storedDigest.values().stream().mapToInt(List::size).sum();
   }
 
-  public int sizeOfDigestJCR(String username) {
-    return this.storeDigestJCR.containsKey(username) ? this.storeDigestJCR.get(username).size() : 0;
+  public int sizeOfStoredDigest(String username) {
+    return this.storedDigest.containsKey(username) ? this.storedDigest.get(username).size() : 0;
   }
   
   public void clearAll() {
-    clearOfDigestJCR();
+    clearOfStoredDigest();
     clearOfInstantly();
     clearOfWebNotifs();
   }
   
-  public void clearOfDigestJCR() {
-    this.storeDigestJCR.clear();
+  public void clearOfStoredDigest() {
+    this.storedDigest.clear();
   }
   
   public void clearOfInstantly() {
@@ -72,8 +72,8 @@ public class MockNotificationService implements NotificationService {
     this.storeWebNotifs.clear();
   }
 
-  public List<NotificationInfo> storeDigestJCR(String username) {
-    return this.storeDigestJCR.containsKey(username) ? this.storeDigestJCR.get(username) : Collections.emptyList();
+  public List<NotificationInfo> storeDigest(String username) {
+    return this.storedDigest.containsKey(username) ? this.storedDigest.get(username) : Collections.emptyList();
   }
   
   public List<NotificationInfo> storeInstantly(String username) {
@@ -123,10 +123,10 @@ public class MockNotificationService implements NotificationService {
       }
       
       if (userSetting.isInDaily(pluginId) || userSetting.isInWeekly(pluginId)) {
-        if(!this.storeDigestJCR.containsKey(userId)) {
-          this.storeDigestJCR.put(userId, new ArrayList<>());
+        if(!this.storedDigest.containsKey(userId)) {
+          this.storedDigest.put(userId, new ArrayList<>());
         }
-        this.storeDigestJCR.get(userId).add(notification);
+        this.storedDigest.get(userId).add(notification);
       }
       
     }

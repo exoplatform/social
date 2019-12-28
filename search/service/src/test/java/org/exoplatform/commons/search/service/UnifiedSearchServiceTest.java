@@ -16,31 +16,26 @@
  */
 package org.exoplatform.commons.search.service;
 
+import java.lang.reflect.Method;
+import java.util.*;
+
 import javax.ws.rs.core.MediaType;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import org.exoplatform.commons.api.search.SearchService;
 import org.exoplatform.commons.api.search.data.SearchResult;
-import org.exoplatform.commons.search.driver.jcr.JcrSearchDriver;
-import org.exoplatform.component.test.ConfigurationUnit;
-import org.exoplatform.component.test.ConfiguredBy;
-import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.commons.search.driver.JcrSearchDriver;
+import org.exoplatform.component.test.*;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.ContainerResponse;
-import org.exoplatform.services.security.MembershipEntry;
-import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
 import org.exoplatform.services.rest.resource.ResourceContainer;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
+import org.exoplatform.services.security.*;
 
 /**
  * Created by The eXo Platform SAS
@@ -51,11 +46,9 @@ import org.json.JSONObject;
 
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/controller-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/exo-configuration.xml"),  
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/jcr-configuration.xml"),  
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/test-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/rest-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/exo.test.portal-configuration.xml"),

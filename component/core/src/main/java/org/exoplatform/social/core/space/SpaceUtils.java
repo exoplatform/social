@@ -23,35 +23,30 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+import org.gatein.common.i18n.LocalizedString;
+import org.gatein.common.util.Tools;
+import org.gatein.pc.api.Portlet;
+import org.gatein.pc.api.PortletInvoker;
+import org.gatein.pc.api.info.MetaInfo;
+import org.gatein.pc.api.info.PortletInfo;
+
+import com.ibm.icu.text.Transliterator;
+
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.*;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
-import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.*;
 import org.exoplatform.portal.config.UserACL.Permission;
-import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.config.UserPortalConfigService;
-import org.exoplatform.portal.config.model.ApplicationState;
-import org.exoplatform.portal.config.model.ApplicationType;
-import org.exoplatform.portal.config.model.Container;
-import org.exoplatform.portal.config.model.ModelObject;
-import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.config.model.*;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
-import org.exoplatform.portal.mop.management.operations.navigation.NavigationUtils;
-import org.exoplatform.portal.mop.navigation.NavigationContext;
-import org.exoplatform.portal.mop.navigation.NavigationService;
-import org.exoplatform.portal.mop.navigation.NavigationServiceException;
-import org.exoplatform.portal.mop.navigation.NavigationState;
-import org.exoplatform.portal.mop.navigation.NodeContext;
-import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.mop.navigation.*;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.user.*;
@@ -71,16 +66,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
-
-import org.apache.commons.lang.StringUtils;
-import org.gatein.common.i18n.LocalizedString;
-import org.gatein.common.util.Tools;
-import org.gatein.pc.api.Portlet;
-import org.gatein.pc.api.PortletInvoker;
-import org.gatein.pc.api.info.MetaInfo;
-import org.gatein.pc.api.info.PortletInfo;
-
-import com.ibm.icu.text.Transliterator;
 
 /**
  * SpaceUtils Utility for working with space
@@ -647,7 +632,7 @@ public class SpaceUtils {
   }
 
   /**
-   * end the request and push data to JCR.
+   * commit transaction and restart a new one.
    */
   public static void restartRequest() {
     RequestLifeCycle.end();
@@ -1210,7 +1195,7 @@ public class SpaceUtils {
     // Need to get usernode base on resolvePath
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
-    return NavigationUtils.loadNode(navService, spaceNavCtx, spaceUrl);
+    return loadNode(navService, spaceNavCtx, spaceUrl);
   }
 
   /**
@@ -1807,5 +1792,40 @@ public class SpaceUtils {
     }
 
     return new ArrayList<String>(userNames);
+  }
+
+  public static NodeContext<NodeContext<?>> loadNode(NavigationService navigationService,
+                                                     NavigationContext navigation,
+                                                     String navUri) {
+    if (navigation == null)
+      return null;
+
+    if (navUri != null) {
+      String[] path = trim(navUri.split("/"));
+      NodeContext<NodeContext<?>> node = navigationService.loadNode(NodeModel.SELF_MODEL,
+                                                                    navigation,
+                                                                    GenericScope.branchShape(path, Scope.ALL),
+                                                                    null);
+      for (String name : path) {
+        node = node.get(name);
+        if (node == null)
+          break;
+      }
+
+      return node;
+    } else {
+      return navigationService.loadNode(NodeModel.SELF_MODEL, navigation, Scope.ALL, null);
+    }
+  }
+
+  private static String[] trim(String[] array) {
+    List<String> trimmed = new ArrayList<String>(array.length);
+    for (String s : array) {
+      if (s != null && !"".equals(s)) {
+        trimmed.add(s);
+      }
+    }
+
+    return trimmed.toArray(new String[trimmed.size()]);
   }
 }

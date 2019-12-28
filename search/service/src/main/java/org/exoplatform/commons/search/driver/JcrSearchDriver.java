@@ -1,4 +1,4 @@
-package org.exoplatform.commons.search.driver.jcr;
+package org.exoplatform.commons.search.driver;
 
 import java.util.ArrayList;
 import java.util.Arrays;

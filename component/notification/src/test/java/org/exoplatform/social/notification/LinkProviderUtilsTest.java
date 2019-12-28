@@ -96,8 +96,8 @@ public class LinkProviderUtilsTest extends AbstractCoreTest {
     Profile profile = new Profile(new Identity("demo"));
     assertEquals(expected, LinkProviderUtils.getUserAvatarUrl(profile));
     //
-    profile.setAvatarUrl("/rest/jcr/repository/social/users/avatar/demo");
-    expected = "http://exoplatform.com/rest/jcr/repository/social/users/avatar/demo";
+    profile.setAvatarUrl("/rest//social/user/avatar/demo");
+    expected = "http://exoplatform.com/rest/social/user/avatar/demo";
     assertEquals(expected, LinkProviderUtils.getUserAvatarUrl(profile));
   }
 
@@ -107,8 +107,8 @@ public class LinkProviderUtilsTest extends AbstractCoreTest {
     Space space = new Space();
     assertEquals(expected, LinkProviderUtils.getSpaceAvatarUrl(space));
     //
-    space.setAvatarUrl("/rest/jcr/repository/social/spaces/avatar/space_test");
-    expected = "http://exoplatform.com/rest/jcr/repository/social/spaces/avatar/space_test";
+    space.setAvatarUrl("/rest/social/space/avatar/space_test");
+    expected = "http://exoplatform.com/rest/social/space/avatar/space_test";
     assertEquals(expected, LinkProviderUtils.getSpaceAvatarUrl(space));
   }
 

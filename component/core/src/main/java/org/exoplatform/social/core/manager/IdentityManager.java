@@ -78,7 +78,7 @@ public interface IdentityManager {
   Identity getOrCreateIdentity(String providerId, String remoteId, boolean isProfileLoaded);
 
   /**
-   * Gets an identity by a given Id. This Id is UUID stored by JCR.
+   * Gets an identity by a given Id. This Id is UUID defined by storage.
    *
    * @param identityId Id of the identity.
    * @param isProfileLoaded Is profile loaded or not.

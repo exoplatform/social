@@ -26,24 +26,6 @@
         
   <display-name>social-extension</display-name>
 
-  <context-param>
-     <description>Binary assets workspace name</description>
-    <param-name>org.exoplatform.frameworks.jcr.command.web.fckeditor.digitalAssetsWorkspace</param-name>
-    <param-value>collaboration</param-value>
-  </context-param>
-
-  <context-param>
-    <description>Binary assets path</description>
-    <param-name>org.exoplatform.frameworks.jcr.command.web.fckeditor.digitalAssetsPath</param-name>
-    <param-value>/Digital Assets/</param-value>
-  </context-param>
-
-  <context-param>
-    <description>Binary assets workspace name</description>
-    <param-name>CurrentFolder</param-name>
-    <param-value>/Digital Assets/</param-value>
-  </context-param>
-
   <!-- ================================================================== -->
   <!--   RESOURCE FILTER TO CACHE MERGED JAVASCRIPT AND CSS               -->
   <!-- ================================================================== -->
