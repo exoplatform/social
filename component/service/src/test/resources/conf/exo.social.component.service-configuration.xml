@@ -17,10 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<configuration
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd" xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
     <type>org.exoplatform.social.service.rest.AppsRestService</type>
@@ -66,6 +63,15 @@
   <component>
      <type>org.exoplatform.services.rest.impl.ProvidersRegistry</type>
   </component>
+
+  <component>
+     <type>org.exoplatform.services.rest.impl.ResourceBinder</type>
+  </component>
+
+  <component>
+     <type>org.exoplatform.services.rest.impl.provider.JAXBContextResolver</type>
+  </component>
+
   <external-component-plugins>
       <target-component>org.exoplatform.services.rest.impl.RequestHandlerImpl</target-component>
       <component-plugin>

@@ -34,12 +34,16 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.test.AbstractResourceTest;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.tika.parser.html.HtmlEncodingDetector;
 import org.json.JSONWriter;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.StringWriter;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -875,12 +879,12 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     compareIdentity(maryIdentity, (HashMap<String, Object>) ((HashMap<String, Object>)comments.get(0)).get("posterIdentity"));
     assertEquals("John's comment text must be \"mary comment to john's activity\"",
         "mary comment to john's activity",
-        ((HashMap<String, Object>)comments.get(0)).get("text"));
+        StringEscapeUtils.unescapeHtml(((HashMap<String, Object>)comments.get(0)).get("text").toString()));
 
     compareIdentity(demoIdentity, (HashMap<String, Object>) ((HashMap<String, Object>)comments.get(1)).get("posterIdentity"));
     assertEquals("Demo's comment text must be \"demo comment to john's activity\"",
         "demo comment to john's activity",
-        ((HashMap<String, Object>)comments.get(1)).get("text"));
+        StringEscapeUtils.unescapeHtml(((HashMap<String, Object>)comments.get(1)).get("text").toString()));
   }
   
   /**
