@@ -96,7 +96,7 @@ public class LinkProviderUtilsTest extends AbstractCoreTest {
     Profile profile = new Profile(new Identity("demo"));
     assertEquals(expected, LinkProviderUtils.getUserAvatarUrl(profile));
     //
-    profile.setAvatarUrl("/rest//social/user/avatar/demo");
+    profile.setAvatarUrl("/rest/social/user/avatar/demo");
     expected = "http://exoplatform.com/rest/social/user/avatar/demo";
     assertEquals(expected, LinkProviderUtils.getUserAvatarUrl(profile));
   }

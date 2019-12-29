@@ -773,10 +773,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
     Identity gotJohnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                    "john");
-    tearDownIdentityList.add(johnIdentity);
-    tearDownIdentityList.add(rootIdentity);
     // an activity for avatar created, clean it up here
-
     ActivityManager activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
 
     end();

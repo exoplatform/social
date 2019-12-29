@@ -68,17 +68,22 @@ public class IdentityDAOTest extends BaseCoreTest {
   }
 
   public void testGetAllIds() {
+    List<Long> allIds = identityDAO.getAllIds(0, 0);
+    assertNotNull(allIds);
+
+    int initialSize = allIds.size();
+
     // Given
     IdentityEntity identityUser1 = identityDAO.create(createIdentity(OrganizationIdentityProvider.NAME, "user1"));
     IdentityEntity identityUser2 = identityDAO.create(createIdentity(OrganizationIdentityProvider.NAME, "user2"));
     IdentityEntity identitySpace1 = identityDAO.create(createIdentity(SpaceIdentityProvider.NAME, "space1"));
 
     // When
-    List<Long> allIds = identityDAO.getAllIds(0, 0);
+    allIds = identityDAO.getAllIds(0, 0);
 
     // Then
     assertNotNull(allIds);
-    assertEquals(3, allIds.size());
+    assertEquals(3 + initialSize, allIds.size());
     assertTrue(allIds.contains(identityUser1.getId()));
     assertTrue(allIds.contains(identityUser2.getId()));
     assertTrue(allIds.contains(identitySpace1.getId()));
@@ -225,22 +230,30 @@ public class IdentityDAOTest extends BaseCoreTest {
   }
 
   public void testGetAllIdsByProvider() {
+    List<Long> allOrganizationIds = identityDAO.getAllIdsByProvider(OrganizationIdentityProvider.NAME, 0, 0);
+    assertNotNull(allOrganizationIds);
+    List<Long> allSpaceIds = identityDAO.getAllIdsByProvider(SpaceIdentityProvider.NAME, 0, 0);
+    assertNotNull(allSpaceIds);
+
+    int initialUserSize = allOrganizationIds.size();
+    int initialSpaceSize = allSpaceIds.size();
+
     // Given
     IdentityEntity identityUser1 = identityDAO.create(createIdentity(OrganizationIdentityProvider.NAME, "user1"));
     IdentityEntity identityUser2 = identityDAO.create(createIdentity(OrganizationIdentityProvider.NAME, "user2"));
     IdentityEntity identitySpace1 = identityDAO.create(createIdentity(SpaceIdentityProvider.NAME, "space1"));
 
     // When
-    List<Long> allOrganizationIds = identityDAO.getAllIdsByProvider(OrganizationIdentityProvider.NAME, 0, 0);
-    List<Long> allSpaceIds = identityDAO.getAllIdsByProvider(SpaceIdentityProvider.NAME, 0, 0);
+    allOrganizationIds = identityDAO.getAllIdsByProvider(OrganizationIdentityProvider.NAME, 0, 0);
+    allSpaceIds = identityDAO.getAllIdsByProvider(SpaceIdentityProvider.NAME, 0, 0);
 
     // Then
     assertNotNull(allOrganizationIds);
-    assertEquals(2, allOrganizationIds.size());
+    assertEquals(2 + initialUserSize, allOrganizationIds.size());
     assertTrue(allOrganizationIds.contains(identityUser1.getId()));
     assertTrue(allOrganizationIds.contains(identityUser2.getId()));
     assertNotNull(allSpaceIds);
-    assertEquals(1, allSpaceIds.size());
+    assertEquals(1 + initialSpaceSize, allSpaceIds.size());
     assertTrue(allSpaceIds.contains(identitySpace1.getId()));
 
     deleteIdentities.add(identityUser1);

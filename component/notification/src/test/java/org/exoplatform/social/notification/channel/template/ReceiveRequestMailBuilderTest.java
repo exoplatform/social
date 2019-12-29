@@ -111,7 +111,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(messages);
     buildDigest(ctx, writer);
     
-    assertDigest(writer, "You've received a connection request from Demo gtn, Mary Kelly.");
+    assertDigest(writer, "You've received a connection request from " + getFullName("demo") + ", " + getFullName("mary") + ".");
     notificationService.clearAll();
     
   }
@@ -143,7 +143,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(messages);
     buildDigest(ctx, writer);
     
-    assertDigest(writer, "You've received a connection request from John Anthony, Mary Kelly.");
+    assertDigest(writer, "You've received a connection request from " + getFullName("john") + ", " + getFullName("mary") + ".");
     notificationService.clearAll();
     
   }
@@ -172,7 +172,7 @@ public class ReceiveRequestMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(messages);
     buildDigest(ctx, writer);
     
-    assertDigest(writer, "You've received a connection request from Mary Kelly.");
+    assertDigest(writer, "You've received a connection request from " + getFullName("mary") + ".");
     notificationService.clearAll();
   }
   

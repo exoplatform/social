@@ -49,14 +49,10 @@ import org.exoplatform.social.notification.mock.MockNotificationService;
 
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.ROOT, path = "conf/configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.ROOT, path = "conf/standalone/exo.social.test.root-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.notification.test.configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.search.test.configuration.xml")
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.notification-dependencies-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.notification-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.notification-local-configuration.xml"),
 })
 public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected IdentityManager identityManager;
@@ -100,22 +96,12 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     //
     checkAndCreateDefaultUsers();
 
-    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
-    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
-    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
-    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
-    ghostIdentity = new Identity(OrganizationIdentityProvider.NAME, "ghost");
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+    ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost");
 
-    identityManager.saveIdentity(rootIdentity);
-    identityManager.saveIdentity(johnIdentity);
-    identityManager.saveIdentity(maryIdentity);
-    identityManager.saveIdentity(demoIdentity);
-    identityManager.saveIdentity(ghostIdentity);
-
-    tearDownIdentityList.add(rootIdentity);
-    tearDownIdentityList.add(johnIdentity);
-    tearDownIdentityList.add(maryIdentity);
-    tearDownIdentityList.add(demoIdentity);
     notificationService.clearAll();
   }
 
@@ -249,5 +235,12 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     activityManager.updateActivity(activity);
 
     return activity;
+  }
+
+  protected String getFullName(String userId) {
+    Identity identity  = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
+    assertNotNull("Can't find identity of " + userId, identity);
+    assertNotNull("Can't find profile of " + userId, identity.getProfile());
+    return identity.getProfile().getFullName();
   }
 }

@@ -29,18 +29,6 @@
     <type>org.exoplatform.social.webNotification.service.test.MockWebNotificationStorage</type>
   </component>
 
-  <component>
-    <key>org.exoplatform.upload.UploadService</key>
-    <type>org.exoplatform.social.mock.MockUploadService</type>
-    <init-params>
-      <value-param>
-        <name>upload.limit.size</name>
-        <description>Maximum size of the file to upload in MB</description>
-        <value>10</value>
-      </value-param>
-    </init-params>
-  </component>
-
   <!-- Notifications plugins required for IntranetNotificationsRestServiceTest -->
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.notification.service.setting.PluginContainer</target-component>

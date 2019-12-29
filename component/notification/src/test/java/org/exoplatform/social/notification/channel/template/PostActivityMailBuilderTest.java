@@ -84,7 +84,7 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfo(postActivityNotification.setTo("root"));
     MessageInfo info = buildMessageInfo(ctx);
     
-    assertSubject(info, "Demo gtn posted on your activity stream");
+    assertSubject(info, getFullName("demo") + " posted on your activity stream");
     assertBody(info, "New post on your activity stream");
     assertBody(info, "demo post activity on activity stream of root");
   }
@@ -114,7 +114,7 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn, Mary Kelly, John Anthony and 1 others posted on your activity stream.");
+    assertDigest(writer, getFullName("demo") + ", " + getFullName("mary") + ", " + getFullName("john") + " and 1 others posted on your activity stream.");
     
     tearDownIdentityList.add(ghostIdentity);
   }
@@ -132,7 +132,7 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn, John Anthony posted on your activity stream.");
+    assertDigest(writer, getFullName("demo") + ", " + getFullName("john") + " posted on your activity stream.");
   }
 
   public void testDigestWithDeletedActivity() throws Exception {
@@ -152,6 +152,6 @@ public class PostActivityMailBuilderTest extends AbstractPluginTest {
     tearDownActivityList.remove(demoActivity);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "John Anthony posted on your activity stream.");
+    assertDigest(writer, getFullName("john") + " posted on your activity stream.");
   }
 }

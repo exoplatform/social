@@ -111,8 +111,20 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-component-notification</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>social-component-service</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-component-service</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>

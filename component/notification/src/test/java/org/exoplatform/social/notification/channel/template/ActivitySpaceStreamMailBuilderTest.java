@@ -106,7 +106,7 @@ public class ActivitySpaceStreamMailBuilderTest extends AbstractPluginTest {
     
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "John Anthony posted in my space 1.");
+    assertDigest(writer, getFullName("john") + " posted in my space 1.");
   }
 
 }

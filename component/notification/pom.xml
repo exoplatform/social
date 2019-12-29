@@ -98,12 +98,36 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.gatein.portal</groupId>
-      <artifactId>exo.portal.component.resources</artifactId>
+      <artifactId>exo.portal.component.application-registry</artifactId>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.gatein.portal</groupId>
       <artifactId>exo.portal.component.test.core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-component-common</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-core</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-service</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.gatein.portal</groupId>
+      <artifactId>exo.portal.component.resources</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -128,19 +152,35 @@
     </dependency>
   </dependencies>
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <includes>
-	            <include>**/InitContainerTestSuite.java</include>
-	            <include>**/UtilsTestCase.java</include>
-            </includes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/InitContainerTestSuite.java</include>
+            <include>**/UtilsTestCase.java</include>
+          </includes>
+          <systemProperties>
+            <property>
+              <name>exo.files.storage.dir</name>
+              <value>target/exo-files</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

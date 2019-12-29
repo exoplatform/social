@@ -72,6 +72,18 @@
      <type>org.exoplatform.services.rest.impl.provider.JAXBContextResolver</type>
   </component>
 
+  <component>
+    <key>org.exoplatform.upload.UploadService</key>
+    <type>org.exoplatform.social.mock.MockUploadService</type>
+    <init-params>
+      <value-param>
+        <name>upload.limit.size</name>
+        <description>Maximum size of the file to upload in MB</description>
+        <value>10</value>
+      </value-param>
+    </init-params>
+  </component>
+
   <external-component-plugins>
       <target-component>org.exoplatform.services.rest.impl.RequestHandlerImpl</target-component>
       <component-plugin>
@@ -133,6 +145,15 @@
         </init-params>
         -->
      </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+    <component-plugin>
+      <name>social.new.user.event.listener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.social.core.listeners.SocialUserEventListenerImpl</type>
+    </component-plugin>
   </external-component-plugins>
 
 </configuration>
