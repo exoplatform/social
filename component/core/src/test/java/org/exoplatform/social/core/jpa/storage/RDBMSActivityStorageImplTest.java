@@ -711,15 +711,24 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     activityStorage.saveActivity(demoIdentity, activity1);
     tearDownActivityList.add(activity1);
 
+    end();
+    begin();
+
     ExoSocialActivity activity2 = createActivity(1);
     activity2.setTitle("hello mention @demo");
     activityStorage.saveActivity(rootIdentity, activity2);
     tearDownActivityList.add(activity2);
 
+    end();
+    begin();
+
     ExoSocialActivity activity3 = createActivity(1);
     activity3.setTitle("bye world");
     activityStorage.saveActivity(demoIdentity, activity3);
     tearDownActivityList.add(activity3);
+
+    end();
+    begin();
 
     // When
     List<ExoSocialActivity> activities = activityStorage.getActivities(demoIdentity, demoIdentity, 0, 10);

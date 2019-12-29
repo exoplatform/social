@@ -22,6 +22,7 @@ import org.exoplatform.social.core.mock.MockUploadService;
 import org.exoplatform.upload.UploadService;
 import org.junit.Test;
 
+import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -83,14 +84,18 @@ public class ActivityManagerTest extends AbstractCoreTest {
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
     tearDownSpaceList = new ArrayList<Space>();
-    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
-    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
-    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
-    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
-    ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost", true);
-    raulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "raul", true);
-    jameIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "jame", true);
-    paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+    ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost");
+    raulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "raul");
+    jameIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "jame");
+    paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul");
+
+    PropertyManager.setProperty("exo.activity-type.cs-calendar:spaces.enabled","false");
+    PropertyManager.setProperty("exo.activity-type.MY_ACTIVITY.enabled","false");
+    ((ActivityManagerImpl) activityManager).initActivityTypes();
   }
 
   @Override

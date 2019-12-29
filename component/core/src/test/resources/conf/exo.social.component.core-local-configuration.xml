@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2003-2017 eXo Platform SAS.
+    Copyright (C) 2003-2011 eXo Platform SAS.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -17,18 +17,18 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<configuration
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
-    <component>
-        <key>org.exoplatform.commons.search.index.IndexingOperationProcessor</key>
-        <type>org.exoplatform.commons.search.index.impl.ElasticIndexingOperationProcessor</type>
-        <init-params>
-          <value-param>
-            <name>es.version</name>
-            <value>${exo.es.version.minor:5.6}</value>
-          </value-param>
-        </init-params>
-    </component>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd" xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+  <component>
+    <key>org.exoplatform.upload.UploadService</key>
+    <type>org.exoplatform.social.core.mock.MockUploadService</type>
+    <init-params>
+      <value-param>
+        <name>upload.limit.size</name>
+        <description>Maximum size of the file to upload in MB</description>
+        <value>10</value>
+      </value-param>
+    </init-params>
+  </component>
+
 </configuration>
