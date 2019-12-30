@@ -31,7 +31,6 @@
 		<type>org.exoplatform.commons.search.service.MockUserPortalConfigService</type>
 	</component>	
 
-  
   <component>
     <key>org.exoplatform.portal.config.DataStorage</key>
     <type>org.exoplatform.commons.search.service.MockDataStorage</type>
@@ -55,17 +54,7 @@
     <key>org.exoplatform.portal.mop.page.PageService</key>
     <type>org.exoplatform.portal.mop.page.PageServiceWrapper</type>
   </component>
-      
-  <component>
-    <key>org.exoplatform.portal.pom.config.POMSessionManager</key>
-    <type>org.exoplatform.portal.pom.config.POMSessionManager</type>
-  </component>
-        
-  <component>
-    <key>org.exoplatform.portal.pom.data.ModelDataStorage</key>
-    <type>org.exoplatform.portal.pom.config.POMDataStorage</type>
-  </component>
-          
+
   <component>
     <type>org.exoplatform.services.rest.impl.ProvidersRegistry</type>
   </component>
