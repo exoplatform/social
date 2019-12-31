@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.rest.impl.spacemembership;
 
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,12 +36,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -87,6 +92,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
+                                       @Context Request request,
                                        @ApiParam(value = "Space display name to get membership, ex: my space", required = false) @QueryParam("space") String spaceDisplayName,
                                        @ApiParam(value = "User name to filter only memberships of the given user", required = false) @QueryParam("user") String user,
                                        @ApiParam(value = "Type of membership to get (All, Pending, Approved, Invited)", required = false) @QueryParam("status") String status,
@@ -158,8 +164,22 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     if (returnSize) {
       spacesMemberships.setSize(listAccess.getSize());
     }
+    //
+    EntityTag eTag = null;
+    if (spacesMemberships != null) {
+      eTag = new EntityTag(Integer.toString(spacesMemberships.hashCode()));
+    }
+    //
+    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+    if (builder == null) {
+      builder = EntityBuilder.getResponseBuilder(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      builder.tag(eTag);
+    }
+    CacheControl cc = new CacheControl();
+    cc.setNoStore(true);
+    builder.cacheControl(cc);
     
-    return EntityBuilder.getResponse(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return builder.build();
   }
   
   @POST
