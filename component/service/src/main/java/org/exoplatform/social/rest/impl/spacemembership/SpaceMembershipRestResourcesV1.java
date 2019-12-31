@@ -282,7 +282,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @ApiOperation(value = "Updates a specific space membership by id",
                 httpMethod = "PUT",
                 response = Response.class,
-                notes = "This updates the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user  but he cannot update his own membership to \"approved\" for a space with a \"validation\" subscription</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is a spaces super manager</li></ul>")
+                notes = "This updates the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user but he cannot update his own membership to \"approved\" for a space with a \"validation\" subscription</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is a spaces super manager</li><li>the user of the space membership is the authenticated user, he can update his own membership to \"approved\" or \"ignored\" for a space with a \"closed\" subscription</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
@@ -301,26 +301,44 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     }
     //
     String spacePrettyName = idParams[0];
-    String spaceGroupId = SPACE_PREFIX + spacePrettyName;
-    Space space = spaceService.getSpaceByGroupId(spaceGroupId);
+    Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
     if (space == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (!spaceService.isSuperManager(authenticatedUser) && ! spaceService.isManager(space, authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    if (model.getRole() != null) {
+      if (!spaceService.isSuperManager(authenticatedUser) && ! spaceService.isManager(space, authenticatedUser)) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+      space.setEditor(authenticatedUser);
+      if (model.getRole().equals("manager") && ! spaceService.isManager(space, targetUser)) {
+        spaceService.setManager(space, targetUser, true);
+      }
+      if (model.getRole().equals("member") && spaceService.isManager(space, targetUser)) {
+        spaceService.setManager(space, targetUser, false);
+      }
     }
-    //
-    space.setEditor(authenticatedUser);
-    if (model.getRole() != null && model.getRole().equals("manager") && ! spaceService.isManager(space, targetUser)) {
-      spaceService.setManager(space, targetUser, true);
-    }
-    if (model.getRole() != null && model.getRole().equals("member") && spaceService.isManager(space, targetUser)) {
-      spaceService.setManager(space, targetUser, false);
-    }
-    //
     String role = idParams[2];
+    if (role.equalsIgnoreCase(MembershipType.INVITED.name())) {
+      //Check authenticated user
+      checkAuthenticatedUserPermission(targetUser);
+      if (!spaceService.isInvitedUser(space, targetUser)) {
+        throw new WebApplicationException(Response.Status.FORBIDDEN);
+      }
+      if (model.getStatus() != null) {
+        if (model.getStatus().equalsIgnoreCase(MembershipType.APPROVED.name())) {
+          spaceService.addMember(space, targetUser);
+          role = MembershipType.APPROVED.name();
+        }
+        else if (model.getStatus().equalsIgnoreCase(MembershipType.IGNORED.name())) {
+          spaceService.removeInvitedUser(space, targetUser);
+          role = MembershipType.IGNORED.name();
+        }
+      }
+    }
+    //
+    
     SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, targetUser, role, uriInfo.getPath(),
                                                                                           expand);    
     return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);

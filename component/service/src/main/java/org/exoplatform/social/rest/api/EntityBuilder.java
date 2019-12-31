@@ -266,6 +266,9 @@ public class EntityBuilder {
       case "pending":
         spaceMembership.setStatus("pending");
         break;
+      case "ignored":
+        spaceMembership.setStatus("ignored");
+        break;
       default:
         spaceMembership.setStatus("approved");
     }
