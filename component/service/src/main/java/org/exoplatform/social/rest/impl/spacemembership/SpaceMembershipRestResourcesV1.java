@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.rest.impl.spacemembership;
 
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,12 +36,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -67,7 +72,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   private IdentityManager identityManager;
 
   private enum MembershipType {
-    ALL, PENDING, APPROVED, IGNORED
+    ALL, PENDING, APPROVED, IGNORED, INVITED
   }
   
   public SpaceMembershipRestResourcesV1(SpaceService spaceService, IdentityManager identityManager) {
@@ -87,9 +92,10 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
+                                       @Context Request request,
                                        @ApiParam(value = "Space display name to get membership, ex: my space", required = false) @QueryParam("space") String spaceDisplayName,
                                        @ApiParam(value = "User name to filter only memberships of the given user", required = false) @QueryParam("user") String user,
-                                       @ApiParam(value = "Type of membership to get (All, Pending, Approved)", required = false) @QueryParam("status") String status,
+                                       @ApiParam(value = "Type of membership to get (All, Pending, Approved, Invited)", required = false) @QueryParam("status") String status,
                                        @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
                                        @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
                                        @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand,
@@ -135,6 +141,11 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
           user, new SpaceFilter(spaceDisplayName)) : spaceService.getAccessibleSpacesWithListAccess(user);
         break;
       }
+      case INVITED: {
+        listAccess = spaceDisplayName != null ? spaceService.getInvitedSpacesByFilter(
+                user, new SpaceFilter(spaceDisplayName)) : spaceService.getInvitedSpacesWithListAccess(user);
+        break;
+      }
 
       default:
         SpaceFilter spaceFilter = new SpaceFilter();
@@ -151,10 +162,24 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     CollectionEntity spacesMemberships = new CollectionEntity(spaceMemberships, EntityBuilder.SPACES_MEMBERSHIP_TYPE, offset, limit);
     
     if (returnSize) {
-      spacesMemberships.setSize(spaceMemberships.size());
+      spacesMemberships.setSize(listAccess.getSize());
     }
+    //
+    EntityTag eTag = null;
+    if (spacesMemberships != null) {
+      eTag = new EntityTag(Integer.toString(spacesMemberships.hashCode()));
+    }
+    //
+    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+    if (builder == null) {
+      builder = EntityBuilder.getResponseBuilder(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      builder.tag(eTag);
+    }
+    CacheControl cc = new CacheControl();
+    cc.setNoStore(true);
+    builder.cacheControl(cc);
     
-    return EntityBuilder.getResponse(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    return builder.build();
   }
   
   @POST
@@ -257,7 +282,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
   @ApiOperation(value = "Updates a specific space membership by id",
                 httpMethod = "PUT",
                 response = Response.class,
-                notes = "This updates the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user  but he cannot update his own membership to \"approved\" for a space with a \"validation\" subscription</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is a spaces super manager</li></ul>")
+                notes = "This updates the space membership in the following cases: <br/><ul><li>the user of the space membership is the authenticated user but he cannot update his own membership to \"approved\" for a space with a \"validation\" subscription</li><li>the authenticated user is a manager of the space</li><li>the authenticated user is a spaces super manager</li><li>the user of the space membership is the authenticated user, he can update his own membership to \"approved\" or \"ignored\" for a space with a \"closed\" subscription</li></ul>")
   @ApiResponses(value = { 
     @ApiResponse (code = 200, message = "Request fulfilled"),
     @ApiResponse (code = 500, message = "Internal server error due to data encoding") })
@@ -276,26 +301,44 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     }
     //
     String spacePrettyName = idParams[0];
-    String spaceGroupId = SPACE_PREFIX + spacePrettyName;
-    Space space = spaceService.getSpaceByGroupId(spaceGroupId);
+    Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
     if (space == null) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     //
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
-    if (!spaceService.isSuperManager(authenticatedUser) && ! spaceService.isManager(space, authenticatedUser)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    if (model.getRole() != null) {
+      if (!spaceService.isSuperManager(authenticatedUser) && ! spaceService.isManager(space, authenticatedUser)) {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+      space.setEditor(authenticatedUser);
+      if (model.getRole().equals("manager") && ! spaceService.isManager(space, targetUser)) {
+        spaceService.setManager(space, targetUser, true);
+      }
+      if (model.getRole().equals("member") && spaceService.isManager(space, targetUser)) {
+        spaceService.setManager(space, targetUser, false);
+      }
     }
-    //
-    space.setEditor(authenticatedUser);
-    if (model.getRole() != null && model.getRole().equals("manager") && ! spaceService.isManager(space, targetUser)) {
-      spaceService.setManager(space, targetUser, true);
-    }
-    if (model.getRole() != null && model.getRole().equals("member") && spaceService.isManager(space, targetUser)) {
-      spaceService.setManager(space, targetUser, false);
-    }
-    //
     String role = idParams[2];
+    if (role.equalsIgnoreCase(MembershipType.INVITED.name())) {
+      //Check authenticated user
+      checkAuthenticatedUserPermission(targetUser);
+      if (!spaceService.isInvitedUser(space, targetUser)) {
+        throw new WebApplicationException(Response.Status.FORBIDDEN);
+      }
+      if (model.getStatus() != null) {
+        if (model.getStatus().equalsIgnoreCase(MembershipType.APPROVED.name())) {
+          spaceService.addMember(space, targetUser);
+          role = MembershipType.APPROVED.name();
+        }
+        else if (model.getStatus().equalsIgnoreCase(MembershipType.IGNORED.name())) {
+          spaceService.removeInvitedUser(space, targetUser);
+          role = MembershipType.IGNORED.name();
+        }
+      }
+    }
+    //
+    
     SpaceMembershipEntity membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, targetUser, role, uriInfo.getPath(),
                                                                                           expand);    
     return EntityBuilder.getResponse(membershipEntity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
@@ -369,6 +412,14 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
         }
         if (ArrayUtils.contains(space.getManagers(), userId)) {
           membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "manager", path, expand);
+          spaceMemberships.add(membershipEntity.getDataEntity());
+        }
+        if (ArrayUtils.contains(space.getInvitedUsers(), userId)) {
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "invited", path, expand);
+          spaceMemberships.add(membershipEntity.getDataEntity());
+        } 
+        if (ArrayUtils.contains(space.getPendingUsers(), userId)) {
+          membershipEntity = EntityBuilder.buildEntityFromSpaceMembership(space, userId, "pending", path, expand);
           spaceMemberships.add(membershipEntity.getDataEntity());
         }
       } else {

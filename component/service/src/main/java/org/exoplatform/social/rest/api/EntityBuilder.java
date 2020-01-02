@@ -258,8 +258,20 @@ public class EntityBuilder {
     }
     spaceMembership.setDataSpace(spaceEntity);
     spaceMembership.setRole(type);
-    spaceMembership.setStatus("approved");
 
+    switch (type) {
+      case "invited":
+        spaceMembership.setStatus("invited");
+        break;
+      case "pending":
+        spaceMembership.setStatus("pending");
+        break;
+      case "ignored":
+        spaceMembership.setStatus("ignored");
+        break;
+      default:
+        spaceMembership.setStatus("approved");
+    }
     return spaceMembership;
   }
 

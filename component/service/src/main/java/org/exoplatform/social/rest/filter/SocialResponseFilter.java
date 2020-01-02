@@ -117,14 +117,18 @@ public class SocialResponseFilter implements ResponseFilter {
       responseBuilder.entity(entity);
     }
     
-    CacheControl cc = new CacheControl();
-    cc.setMaxAge(86400);
-    cc.setPrivate(true);
-    cc.setNoCache(false);
-    
-    response.setResponse(responseBuilder.cacheControl(cc)
-                                        .status(status)
-                                        .build());
+    if (response.getHttpHeaders() != null && !response.getHttpHeaders().containsKey("cache-control")) {
+      CacheControl cc = new CacheControl();
+      cc.setMaxAge(86400);
+      cc.setPrivate(true);
+      cc.setNoCache(false);
+      response.setResponse(responseBuilder.cacheControl(cc)
+                           .status(status)
+                           .build());
+    }
+    else {
+      response.setResponse(responseBuilder.status(status).build());
+    }
   }
 
   private String serializeToJson(Object entity) {
