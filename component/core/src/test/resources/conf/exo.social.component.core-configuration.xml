@@ -280,6 +280,18 @@
   </component>
 
   <component>
+    <key>org.exoplatform.upload.UploadService</key>
+    <type>org.exoplatform.social.core.mock.MockUploadService</type>
+    <init-params>
+      <value-param>
+        <name>upload.limit.size</name>
+        <description>Maximum size of the file to upload in MB</description>
+        <value>10</value>
+      </value-param>
+    </init-params>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
     <type>org.exoplatform.social.core.storage.cache.CachedActivityStorage</type>
   </component>
