@@ -159,6 +159,10 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
   public List<Relationship> getRelationships(Identity identity, Relationship.Type type) {
     return convertRelationshipEntitiesToRelationships(connectionDAO.getConnections(identity, type, null, NULL_CHARACTER, 0, -1, null));
   }
+  
+  public List<Relationship> getRelationships(Identity identity, Relationship.Type type, long offset, long limit) {
+    return convertRelationshipEntitiesToRelationships(connectionDAO.getConnections(identity, type, null, NULL_CHARACTER, offset, limit, null));
+  }
 
   public List<Relationship> getRelationships(Identity sender, Identity receiver, Type type) {
     return convertRelationshipEntitiesToRelationships(connectionDAO.getConnections(sender, receiver, type));
@@ -271,7 +275,7 @@ public class RDBMSRelationshipStorageImpl implements RelationshipStorage {
 
   @Override
   public List<Relationship> getRelationshipsByStatus(Identity identity, Type type, long offset, long limit) {
-    return getRelationships(identity, type);
+    return getRelationships(identity, type, offset, limit);
   }
 
   @Override

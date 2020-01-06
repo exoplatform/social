@@ -35,8 +35,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -115,7 +118,12 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
       collectionRelationship.setSize(size);
     }
     //
-    return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    Response.ResponseBuilder builder = EntityBuilder.getResponseBuilder(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    CacheControl cc = new CacheControl();
+    cc.setNoStore(true);
+    builder.cacheControl(cc);
+    
+    return builder.build();
   }
 
   @POST
