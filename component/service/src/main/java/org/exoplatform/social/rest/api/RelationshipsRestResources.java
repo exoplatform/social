@@ -25,6 +25,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -39,6 +40,7 @@ public interface RelationshipsRestResources extends SocialRest {
    */
   @GET
   public abstract Response getRelationships(@Context UriInfo uriInfo,
+                                            @Context Request request,
                                             @QueryParam("status") String expand,
                                             @QueryParam("identityId") String identityId,
                                             @QueryParam("offset") int offset,

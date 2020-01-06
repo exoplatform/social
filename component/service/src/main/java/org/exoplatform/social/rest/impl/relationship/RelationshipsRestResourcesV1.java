@@ -35,8 +35,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -75,6 +78,7 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
     @ApiResponse (code = 400, message = "Invalid query input"),
     @ApiResponse (code = 412, message = "Precondition failed, check your input params")})
   public Response getRelationships(@Context UriInfo uriInfo,
+                                   @Context Request request,
                                    @ApiParam(value = "Status of the target relationship: pending, confirmed or all") @QueryParam("status") String status,
                                    @ApiParam(value = "Identity id which is a UUID such as 40487b7e7f00010104499b339f056aa4") @QueryParam("identityId") String identityId,
                                    @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
@@ -115,7 +119,21 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
       collectionRelationship.setSize(size);
     }
     //
-    return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+    EntityTag eTag = null;
+    if (collectionRelationship != null) {
+      eTag = new EntityTag(Integer.toString(collectionRelationship.hashCode()));
+    }
+    //
+    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+    if (builder == null) {
+      builder = EntityBuilder.getResponseBuilder(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+      builder.tag(eTag);
+    }
+    CacheControl cc = new CacheControl();
+    cc.setNoStore(true);
+    builder.cacheControl(cc);
+    
+    return builder.build();
   }
 
   @POST
