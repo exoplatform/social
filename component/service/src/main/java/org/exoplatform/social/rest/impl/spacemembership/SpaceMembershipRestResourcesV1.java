@@ -92,7 +92,6 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
     @ApiResponse (code = 500, message = "Internal server error"),
     @ApiResponse (code = 400, message = "Invalid query input") })
   public Response getSpacesMemberships(@Context UriInfo uriInfo,
-                                       @Context Request request,
                                        @ApiParam(value = "Space display name to get membership, ex: my space", required = false) @QueryParam("space") String spaceDisplayName,
                                        @ApiParam(value = "User name to filter only memberships of the given user", required = false) @QueryParam("user") String user,
                                        @ApiParam(value = "Type of membership to get (All, Pending, Approved, Invited)", required = false) @QueryParam("status") String status,
@@ -165,16 +164,7 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
       spacesMemberships.setSize(listAccess.getSize());
     }
     //
-    EntityTag eTag = null;
-    if (spacesMemberships != null) {
-      eTag = new EntityTag(Integer.toString(spacesMemberships.hashCode()));
-    }
-    //
-    Response.ResponseBuilder builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
-    if (builder == null) {
-      builder = EntityBuilder.getResponseBuilder(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
-      builder.tag(eTag);
-    }
+    Response.ResponseBuilder builder = EntityBuilder.getResponseBuilder(spacesMemberships, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
     CacheControl cc = new CacheControl();
     cc.setNoStore(true);
     builder.cacheControl(cc);
