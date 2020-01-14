@@ -22,7 +22,23 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.exoplatform.commons.api.persistence.ExoEntity;
 
@@ -30,63 +46,63 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
 @ExoEntity
 @Table(name = "SOC_SPACES")
 @NamedQueries({
-    @NamedQuery(name = "SpaceEntity.getLastSpaces", query = "SELECT sp FROM SocSpaceEntity sp ORDER BY sp.createdDate DESC"),
-    @NamedQuery(name = "SpaceEntity.getSpaceByGroupId", query = "SELECT sp FROM SocSpaceEntity sp WHERE sp.groupId = :groupId"),
-    @NamedQuery(name = "SpaceEntity.getSpaceByPrettyName", query = "SELECT sp FROM SocSpaceEntity sp WHERE sp.prettyName = :prettyName"),
-    @NamedQuery(name = "SpaceEntity.getSpaceByDisplayName", query = "SELECT sp FROM SocSpaceEntity sp WHERE sp.displayName = :displayName"),
-    @NamedQuery(name = "SpaceEntity.getSpaceByURL", query = "SELECT sp FROM SocSpaceEntity sp WHERE sp.url = :url") })
+        @NamedQuery(name = "SpaceEntity.getLastSpaces", query = "SELECT sp FROM SocSpaceEntity sp ORDER BY sp.createdDate DESC"),
+        @NamedQuery(name = "SpaceEntity.getSpaceByGroupId", query = "SELECT sp FROM SocSpaceEntity sp WHERE sp.groupId = :groupId"),
+        @NamedQuery(name = "SpaceEntity.getSpaceByPrettyName", query = "SELECT sp FROM SocSpaceEntity sp WHERE sp.prettyName = :prettyName"),
+        @NamedQuery(name = "SpaceEntity.getSpaceByDisplayName", query = "SELECT sp FROM SocSpaceEntity sp WHERE sp.displayName = :displayName"),
+        @NamedQuery(name = "SpaceEntity.getSpaceByURL", query = "SELECT sp FROM SocSpaceEntity sp WHERE sp.url = :url") })
 public class SpaceEntity implements Serializable {
 
-  private static final long            serialVersionUID        = 3223615477747436986L;
+  private static final long serialVersionUID = 3223615477747436986L;
 
   @Id
   @SequenceGenerator(name = "SEQ_SOC_SPACES_ID", sequenceName = "SEQ_SOC_SPACES_ID")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_SOC_SPACES_ID")
   @Column(name = "SPACE_ID")
-  private Long                         id;
+  private Long              id;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<SpaceMemberEntity>       members                 = new HashSet<>();
+  private Set<SpaceMemberEntity>  members          = new HashSet<>();
 
   /**
    * The list of applications with portlet Id, application name, and its state
    * (installed, activated, deactivated).
    */
   @ElementCollection
-  @CollectionTable(name = "SOC_APPS", joinColumns = @JoinColumn(name = "SPACE_ID"))
-  private Set<AppEntity>               app                     = new HashSet<>();
+  @CollectionTable(name = "SOC_APPS", joinColumns = @JoinColumn(name = "SPACE_ID") )
+  private Set<AppEntity>    app              = new HashSet<>();
 
   @Column(name = "PRETTY_NAME")
-  private String                       prettyName;
+  private String            prettyName;
 
   @Column(name = "DISPLAY_NAME")
-  private String                       displayName;
+  private String            displayName;
 
   @Column(name = "REGISTRATION")
-  private REGISTRATION                 registration;
+  private REGISTRATION            registration;
 
   @Column(name = "DESCRIPTION")
-  private String                       description;
+  private String            description;
 
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "AVATAR_LAST_UPDATED")
-  private Date                         avatarLastUpdated;
+  private Date              avatarLastUpdated;
 
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "BANNER_LAST_UPDATED")
-  private Date                         bannerLastUpdated;
+  private Date              bannerLastUpdated;
 
   @Column(name = "VISIBILITY")
-  public VISIBILITY                    visibility;
+  public VISIBILITY         visibility;
 
   @Column(name = "PRIORITY")
-  public PRIORITY                      priority;
+  public PRIORITY           priority;
 
   @Column(name = "GROUP_ID")
-  public String                        groupId;
+  public String             groupId;
 
   @Column(name = "URL")
-  public String                        url;
+  public String             url;
 
   @Column(name = "TEMPLATE")
   private String            template;
@@ -99,7 +115,7 @@ public class SpaceEntity implements Serializable {
 
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "CREATED_DATE", nullable = false)
-  private Date                         createdDate             = new Date();
+  private Date              createdDate      = new Date();
 
   public Long getId() {
     return id;

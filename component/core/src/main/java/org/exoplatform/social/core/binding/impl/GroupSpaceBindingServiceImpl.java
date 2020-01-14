@@ -70,6 +70,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId, String spaceRole) {
     LOG.info("Retrieving group/space bindings for space:" + spaceId + "/" + spaceRole);
     return groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId, spaceRole);
@@ -78,6 +79,8 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
   * {@inheritDoc}
   */
+
+  @Override
   public List<GroupSpaceBinding> findGroupSpaceBindingsByGroup(String group, String role) {
     LOG.info("Retrieving group/space bindings for group:" + group + "/" + role);
     return groupSpaceBindingStorage.findGroupSpaceBindingsByGroup(group, role);
@@ -86,6 +89,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<UserSpaceBinding> findUserBindingsBySpace(String spaceId, String userName) {
     LOG.info("Retrieving user bindings for member:" + userName + "/" + spaceId);
     return groupSpaceBindingStorage.findUserSpaceBindingsBySpace(spaceId, userName);
@@ -94,6 +98,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
   * {@inheritDoc}
   */
+  @Override
   public List<UserSpaceBinding> findUserBindingsByUser(String userName) {
     LOG.info("Retrieving user bindings for member:" + userName);
     return groupSpaceBindingStorage.findUserSpaceBindingsByUser(userName);
@@ -102,6 +107,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<UserSpaceBinding> findUserBindingsByGroup(String group, String groupRole, String userName) {
     LOG.info("Retrieving user bindings for user :" + userName + "with membership :" + group + ":" + groupRole);
     return groupSpaceBindingStorage.findUserSpaceBindingsByGroup(group, groupRole, userName);
@@ -110,6 +116,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void saveSpaceBindings(String spaceId, List<GroupSpaceBinding> groupSpaceBindings) {
     LOG.info("Saving space bindings:" + spaceId);
     try {
@@ -138,6 +145,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void saveUserBindings(String userName, List<UserSpaceBinding> userSpaceBindings) {
     LOG.info("Saving user bindings for user :" + userName);
     try {
@@ -153,6 +161,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void deleteAllSpaceBindingsByGroup(GroupSpaceBinding groupSpaceBinding) {
     LOG.info("Delete binding group :" + groupSpaceBinding.getGroup() + "/" + groupSpaceBinding.getGroupRole() + " for space :"
         + groupSpaceBinding.getSpaceId() + "/" + groupSpaceBinding.getSpaceRole());
@@ -167,6 +176,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void deleteUserBinding(UserSpaceBinding userSpaceBinding) {
     LOG.info("Delete user binding for member :" + userSpaceBinding.getUser() + "/" + userSpaceBinding.getSpaceId());
     groupSpaceBindingStorage.deleteUserBinding(userSpaceBinding.getId());
@@ -196,6 +206,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void deleteAllSpaceBindingsBySpace(String spaceId, String spaceRole) {
     LOG.info("Delete all bindings for space :" + spaceId + "/" + spaceRole);
     for (GroupSpaceBinding groupSpaceBinding : findGroupSpaceBindingsBySpace(spaceId, spaceRole)) {
@@ -206,6 +217,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void deleteAllUserBindings(String userName) {
     LOG.info("Delete all user bindings for user :" + userName);
     groupSpaceBindingStorage.deleteAllUserBindings(userName);
@@ -214,6 +226,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean hasUserBindings(String spaceId, String userName) {
     LOG.info("Checking if member has binding :" + userName + " space:" + spaceId);
     return groupSpaceBindingStorage.hasUserBindings(spaceId, userName);
