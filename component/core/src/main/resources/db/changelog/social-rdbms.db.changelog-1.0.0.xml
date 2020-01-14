@@ -551,55 +551,9 @@
     <sql dbms="oracle">UPDATE SOC_IDENTITY_EXPERIENCES SET EXPERIENCE_ID=SEQ_SOC_EXPERIENCE_ID.nextval;</sql>
     <addPrimaryKey tableName="SOC_IDENTITY_EXPERIENCES" columnNames="EXPERIENCE_ID"></addPrimaryKey>
   </changeSet>
-    
   <changeSet author="social" id="1.0.0-61">
     <renameColumn tableName="SOC_SPACES" oldColumnName="TYPE" newColumnName="TEMPLATE" columnDataType="NVARCHAR(200)"/>
   </changeSet>
-  
-  <changeSet author="social" id="1.0.0-62">
-    <createTable tableName="SOC_GROUP_SPACE_BINDING">
-        <column name="GROUP_SPACE_BINDING_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GROUP_SPACE_BINDING_ID"/>
-        </column>
-        <column name="SPACE_ID" type="BIGINT">
-          <constraints foreignKeyName="FK_SOC_GROUP_SPACE_BINDING_SPACEID" references="SOC_SPACES(SPACE_ID)" nullable="false"/> 	
-        </column>
-        <column name="GROUP_NAME" type="NVARCHAR(200)">
-          <constraints nullable="false"/>
-        </column>
-        <column name="SPACE_ROLE" type="NVARCHAR(200)">
-          <constraints nullable="false"/>
-        </column>
-        <column name="GROUP_ROLE" type="NVARCHAR(200)">
-          <constraints nullable="false"/>
-        </column>
-    </createTable> 
-    <createTable tableName="SOC_USER_SPACE_BINDING">
-        <column name="USER_SPACE_BINDING_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
-        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_USER_SPACE_BINDING"/>
-        </column>
-        <column name="GROUP_SPACE_BINDING_ID" type="BIGINT">
-          <constraints foreignKeyName="FK_SOC_USER_SPACE_BINDING_GROUP" references="SOC_GROUP_SPACE_BINDING(GROUP_SPACE_BINDING_ID)" nullable="false"/> 	
-        </column>
-        <column name="USERNAME" type="NVARCHAR(200)">
-          <constraints nullable="false"/>
-        </column>
-        <column name="SPACE_ID" type="BIGINT">
-          <constraints foreignKeyName="FK_SOC_USER_SPACE_BINDING_SPACEID" references="SOC_SPACES(SPACE_ID)" nullable="false"/> 	
-        </column>
-    </createTable>
-    <createIndex tableName="SOC_GROUP_SPACE_BINDING" indexName="IDX_SOC_GROUP_SPACE_BINDING_01">
-          <column name="GROUP_NAME"/>
-    </createIndex>
-    <createIndex tableName="SOC_USER_SPACE_BINDING" indexName="IDX_SOC_USER_SPACE_BINDING_01">
-          <column name="USERNAME"/>
-          <column name="SPACE_ID"/>
-    </createIndex>
-    <createSequence sequenceName="SEQ_SOC_USER_SPACE_BINDING_ID" startValue="1"/>
-    <createSequence sequenceName="SEQ_SOC_GROUP_SPACE_BINDING_ID" startValue="1"/>
-    <sql dbms="postgresql">UPDATE SOC_USER_SPACE_BINDING SET USER_SPACE_BINDING_ID=nextval('SEQ_SOC_USER_SPACE_BINDING_ID');UPDATE SOC_GROUP_SPACE_BINDING SET GROUP_SPACE_BINDING_ID=nextval('SEQ_SOC_GROUP_SPACE_BINDING_ID');</sql>
-    <sql dbms="oracle">UPDATE SOC_USER_SPACE_BINDING SET USER_SPACE_BINDING_ID=SEQ_SOC_USER_SPACE_BINDING_ID.nextval;UPDATE SOC_GROUP_SPACE_BINDING SET GROUP_SPACE_BINDING_ID=SEQ_SOC_GROUP_SPACE_BINDING_ID'.nextval</sql>
-  </changeSet>         
 
   <changeSet author="social" id="1.0.0-62" dbms="mysql">
     <sql>
@@ -634,4 +588,48 @@
     </createIndex>
   </changeSet>
 
+  <changeSet author="social" id="1.0.0-65">
+    <createTable tableName="SOC_GROUP_SPACE_BINDING">
+      <column name="GROUP_SPACE_BINDING_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GROUP_SPACE_BINDING_ID"/>
+      </column>
+      <column name="SPACE_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_GROUP_SPACE_BINDING_SPACEID" references="SOC_SPACES(SPACE_ID)" nullable="false"/>
+      </column>
+      <column name="GROUP_NAME" type="NVARCHAR(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="SPACE_ROLE" type="NVARCHAR(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="GROUP_ROLE" type="NVARCHAR(200)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="SOC_USER_SPACE_BINDING">
+      <column name="USER_SPACE_BINDING_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SOC_USER_SPACE_BINDING"/>
+      </column>
+      <column name="GROUP_SPACE_BINDING_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_USER_SPACE_BINDING_GROUP" references="SOC_GROUP_SPACE_BINDING(GROUP_SPACE_BINDING_ID)" nullable="false"/>
+      </column>
+      <column name="USERNAME" type="NVARCHAR(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="SPACE_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_USER_SPACE_BINDING_SPACEID" references="SOC_SPACES(SPACE_ID)" nullable="false"/>
+      </column>
+    </createTable>
+    <createIndex tableName="SOC_GROUP_SPACE_BINDING" indexName="IDX_SOC_GROUP_SPACE_BINDING_01">
+      <column name="GROUP_NAME"/>
+    </createIndex>
+    <createIndex tableName="SOC_USER_SPACE_BINDING" indexName="IDX_SOC_USER_SPACE_BINDING_01">
+      <column name="USERNAME"/>
+      <column name="SPACE_ID"/>
+    </createIndex>
+    <createSequence sequenceName="SEQ_SOC_USER_SPACE_BINDING_ID" startValue="1"/>
+    <createSequence sequenceName="SEQ_SOC_GROUP_SPACE_BINDING_ID" startValue="1"/>
+    <sql dbms="postgresql">UPDATE SOC_USER_SPACE_BINDING SET USER_SPACE_BINDING_ID=nextval('SEQ_SOC_USER_SPACE_BINDING_ID');UPDATE SOC_GROUP_SPACE_BINDING SET GROUP_SPACE_BINDING_ID=nextval('SEQ_SOC_GROUP_SPACE_BINDING_ID');</sql>
+    <sql dbms="oracle">UPDATE SOC_USER_SPACE_BINDING SET USER_SPACE_BINDING_ID=SEQ_SOC_USER_SPACE_BINDING_ID.nextval;UPDATE SOC_GROUP_SPACE_BINDING SET GROUP_SPACE_BINDING_ID=SEQ_SOC_GROUP_SPACE_BINDING_ID'.nextval</sql>
+  </changeSet>
 </databaseChangeLog>
