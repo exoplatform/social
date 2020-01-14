@@ -60,28 +60,34 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     this.spaceDAO = spaceDAO;
   }
 
+  @ExoTransactional
   public List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId, String role) throws GroupSpaceBindingStorageException {
     return buildGroupBindingListFromEntities(groupSpaceBindingDAO.findGroupSpaceBindingsBySpace(Long.parseLong(spaceId), role));
   }
 
+  @ExoTransactional
   public List<GroupSpaceBinding> findGroupSpaceBindingsByGroup(String group, String role) throws GroupSpaceBindingStorageException {
     return buildGroupBindingListFromEntities(groupSpaceBindingDAO.findGroupSpaceBindingsByGroup(group, role));
   }
 
+  @ExoTransactional
   public List<UserSpaceBinding> findUserSpaceBindingsBySpace(String spaceId, String username) throws GroupSpaceBindingStorageException {
     return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsBySpace(Long.parseLong(spaceId), username));
   }
 
+  @ExoTransactional
   public List<UserSpaceBinding> findUserSpaceBindingsByGroup(String group,
                                                              String groupRole,
                                                              String userName) throws GroupSpaceBindingStorageException {
     return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsByGroup(group, groupRole, userName));
   }
 
+  @ExoTransactional
   public List<UserSpaceBinding> findUserAllBindingsbyGroupMembership(String group, String groupRole) {
     return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserAllBindingsByGroupMembership(group, groupRole));
   }
 
+  @ExoTransactional
   public List<UserSpaceBinding> findUserSpaceBindingsByUser(String userName) throws GroupSpaceBindingStorageException {
     return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserAllBindingsByUser(userName));
   }
@@ -126,6 +132,7 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   }
 
   @Override
+  @ExoTransactional
   public boolean hasUserBindings(String spaceId, String userName) {
     return userSpaceBindingDAO.hasUserBindings(Long.parseLong(spaceId), userName);
   }

@@ -40,8 +40,7 @@ import org.junit.runners.Suite.SuiteClasses;
   SpaceMemberDAOTest.class,
   SpaceMemberAnyMembershipUpgradeTest.class,
   SpaceDAOTest.class,
-  SpaceDAOTest.class,
-  RDBMSGroupSpaceBindingStorageTest.class
+  SpaceDAOTest.class
 })
 
 @ConfigTestCase(AbstractCoreTest.class)
