@@ -1,5 +1,15 @@
 (function($){
-  
+
+const i18NData = {};
+const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
+const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.unifiedsearch.unifiedsearch-${lang}.json`;
+fetch(url, {
+  method: 'get',
+  credentials: 'include'
+})
+  .then(resp => resp && resp.ok && resp.json())
+  .then(data => data && Object.assign(i18NData, data));
+
 window.initSearch = function initSearch() {
 
     //*** Global variables ***
@@ -8,18 +18,6 @@ window.initSearch = function initSearch() {
     var SEARCH_SETTING; //search setting
     var SERVER_OFFSET = 0;
     var LIMIT, RESULT_CACHE, CACHE_OFFSET, NUM_RESULTS_RENDERED;
-    var formLoading;
-    var searchCount = 0;
-
-    const i18NData = {};
-    const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
-    const url = `${eXo.env.portal.context}/${eXo.env.portal.rest}/i18n/bundle/locale.portlet.unifiedsearch.unifiedsearch-${lang}.json`;
-    fetch(url, {
-      method: 'get',
-      credentials: 'include'
-    })
-      .then(resp => resp && resp.ok && resp.json())
-      .then(data => data && Object.assign(i18NData, data));
 
     var SEARCH_RESULT_TEMPLATE =
       "<div class=\"resultBox clearfix %{type}\">" +
@@ -634,6 +632,7 @@ window.initSearch = function initSearch() {
           $(":checkbox[name='site'][value='all']").prop('checked', true);//Main Site checkbox has to be checked if previous condition is true
         } else {
           $(":checkbox[name='site'][value='all']").prop('checked', false); //uncheck All Sites
+        }
       }
 
       window.search = search(); //perform search again to update the results
