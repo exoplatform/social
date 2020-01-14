@@ -532,20 +532,6 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
   }
 
   /**
-   * Gets the type.
-   *
-   * @param nodetype the nodetype
-   * @param property the property
-   * @return the type
-   * @throws IdentityStorageException if has any error
-   * @deprecated JCR implementation doesn't exist anymore, so nodetype does not exist
-   */
-  @Deprecated
-  public String getType(final String nodetype, final String property) {
-    throw new UnsupportedOperationException();
-  }
-
-  /**
    * Add or modify properties of profile and persist to database. Profile parameter is a lightweight that
    * contains only the property that you want to add or modify. NOTE: The method will
    * not delete the properties on old profile when the param profile have not those keys.

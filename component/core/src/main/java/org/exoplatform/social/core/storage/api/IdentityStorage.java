@@ -248,8 +248,12 @@ public interface IdentityStorage {
    * @param property the property
    * @return the type
    * @throws IdentityStorageException
+   * @deprecated JCR implementation doesn't exist anymore, so nodetype does not exist
    */
-  public String getType(final String nodetype, final String property);
+  @Deprecated
+  default String getType(final String nodetype, final String property) {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Add or modify properties of profile and persist it. Profile parameter is a lightweight that

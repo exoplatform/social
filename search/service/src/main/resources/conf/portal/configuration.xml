@@ -30,7 +30,7 @@
   <!-- Indexing -->
   <component>
     <key>org.exoplatform.commons.api.indexing.IndexingService</key>
-    <type>org.exoplatform.commons.search.indexing.JcrIndexingService</type>
+    <type>org.exoplatform.commons.search.indexing.DummyIndexingService</type>
   </component>
 
   <!-- Indexing -->
@@ -40,7 +40,7 @@
 
   <component>
     <key>org.exoplatform.commons.api.search.SearchService</key>
-    <type>org.exoplatform.commons.search.driver.JcrSearchDriver</type>
+    <type>org.exoplatform.commons.search.driver.SearchServiceImpl</type>
     <init-params>
       <value-param>
         <name>exo.search.excluded-characters</name>

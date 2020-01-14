@@ -28,7 +28,7 @@
   <!-- UNIFIED SEARCH -->
   <component>
     <key>org.exoplatform.commons.api.search.SearchService</key>
-    <type>org.exoplatform.commons.search.driver.JcrSearchDriver</type>
+    <type>org.exoplatform.commons.search.driver.SearchServiceImpl</type>
     
     <component-plugins>
       <component-plugin>

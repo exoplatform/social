@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import org.exoplatform.commons.api.search.SearchService;
 import org.exoplatform.commons.api.search.data.SearchResult;
-import org.exoplatform.commons.search.driver.JcrSearchDriver;
+import org.exoplatform.commons.search.driver.SearchServiceImpl;
 import org.exoplatform.component.test.*;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -70,7 +70,7 @@ public class UnifiedSearchServiceTest extends AbstractServiceTest implements Res
   
   private static UnifiedSearchService unifiedSearchService;
 
-  private JcrSearchDriver searchService;
+  private SearchServiceImpl searchService;
 
   private Collection<MembershipEntry> membershipEntries = new ArrayList<MembershipEntry>();
   
@@ -87,7 +87,7 @@ public class UnifiedSearchServiceTest extends AbstractServiceTest implements Res
     
     PortalContainer portalContainer = (PortalContainer)ExoContainerContext.getCurrentContainer();    
     unifiedSearchService = (UnifiedSearchService) portalContainer.getComponentInstanceOfType(UnifiedSearchService.class);
-    searchService = (JcrSearchDriver)portalContainer.getComponentInstanceOfType(SearchService.class);
+    searchService = (SearchServiceImpl)portalContainer.getComponentInstanceOfType(SearchService.class);
     registry(unifiedSearchService);       
   }
   
