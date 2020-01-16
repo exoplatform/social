@@ -129,22 +129,25 @@ public class UISpaceMenu extends UIContainer {
 
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-    boolean canEditBanner = hasSettingPermission();
-    uiBanner.setRendered(canEditBanner);
-    uiAvatarBanner.setRenderUpload(canEditBanner);
-    String selectedApp = getAppSelected();
-    UserNode selectedNode =  getApps().stream().filter(app -> {
-      try {
-        return app.getName().equals(selectedApp);
-      } catch (Exception e) {
-        return false;
+    Space space = getSpace();
+    if (space != null) {
+      boolean canEditBanner = hasSettingPermission();
+      uiBanner.setRendered(canEditBanner);
+      uiAvatarBanner.setRenderUpload(canEditBanner);
+      String selectedApp = getAppSelected();
+      UserNode selectedNode = getApps().stream().filter(app -> {
+        try {
+          return app.getName().equals(selectedApp);
+        } catch (Exception e) {
+          return false;
+        }
+      }).findFirst().orElse(null);
+
+      String selectedNodeLabel = getResolvedNodeTitle(selectedNode, context);
+
+      if (selectedNodeLabel != null) {
+        Util.getPortalRequestContext().setPageTitle(space.getDisplayName() + " - " + selectedNodeLabel);
       }
-    }).findFirst().orElse(null);
-
-    String selectedNodeLabel = getResolvedNodeTitle(selectedNode, context);
-
-    if(selectedNodeLabel != null) {
-      Util.getPortalRequestContext().setPageTitle(getSpace().getDisplayName() + " - " + selectedNodeLabel);
     }
 
     super.processRender(context);

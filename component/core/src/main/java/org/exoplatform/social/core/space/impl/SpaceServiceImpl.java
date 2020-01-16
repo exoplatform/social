@@ -1330,7 +1330,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public boolean hasSettingPermission(Space space, String userId) {
-    return isSuperManager(userId) || ArrayUtils.contains(space.getManagers(), userId);
+    return isSuperManager(userId) || (space != null && ArrayUtils.contains(space.getManagers(), userId));
   }
 
   /**
