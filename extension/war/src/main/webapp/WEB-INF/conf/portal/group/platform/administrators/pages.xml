@@ -25,21 +25,6 @@
     </portlet-application>
   </page>
   <page>
-    <name>pageManagement</name>
-    <title>Page Management</title>
-    <access-permissions>manager:/platform/administrators</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>exoadmin</application-ref>
-        <portlet-ref>PageManagementPortlet</portlet-ref>
-      </portlet>
-      <title>Page Management</title>
-      <access-permissions>manager:/platform/administrators</access-permissions>
-      <show-info-bar>false</show-info-bar>
-    </portlet-application>
-  </page>
-  <page>
     <name>newStaff</name>
     <title>New Staff</title>
     <access-permissions>manager:/platform/administrators</access-permissions>
@@ -69,38 +54,6 @@
       </portlet>
       <title>Organization Management</title>
       <access-permissions>*:/platform/administrators</access-permissions>
-      <show-info-bar>false</show-info-bar>
-    </portlet-application>
-  </page>
-  <page>
-    <name>portalnavigation</name>
-    <title>Portal Navigation</title>
-    <access-permissions>manager:/platform/administrators</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>exoadmin</application-ref>
-        <portlet-ref>PortalNavigationPortlet</portlet-ref>
-      </portlet>
-      <title>Portal Navigation</title>
-      <access-permissions>Everyone</access-permissions>
-      <show-info-bar>false</show-info-bar>
-      <show-application-state>false</show-application-state>
-      <show-application-mode>false</show-application-mode>
-    </portlet-application>
-  </page>
-  <page>
-    <name>groupnavigation</name>
-    <title>Group Navigation</title>
-    <access-permissions>manager:/platform/administrators</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>exoadmin</application-ref>
-        <portlet-ref>GroupNavigationPortlet</portlet-ref>
-      </portlet>
-      <title>Group Navigation</title>
-      <access-permissions>Everyone</access-permissions>
       <show-info-bar>false</show-info-bar>
     </portlet-application>
   </page>

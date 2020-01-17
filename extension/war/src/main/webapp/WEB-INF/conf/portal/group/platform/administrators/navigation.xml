@@ -36,11 +36,6 @@
         <page-reference>group::/platform/administrators::registry</page-reference>
       </node>
       <node>
-        <name>pageManagement</name>
-        <label>#{administration.pageManagement}</label>
-        <page-reference>group::/platform/administrators::pageManagement</page-reference>
-      </node>
-      <node>
         <name>newStaff</name>
         <label>#{administration.newstaff}</label>
         <page-reference>group::/platform/administrators::newStaff</page-reference>
@@ -50,16 +45,6 @@
         <label>#{administration.management}</label>
         <page-reference>group::/platform/administrators::management</page-reference>
       </node>
-    </node>
-    <node>
-      <name>groupnavigation</name>
-      <label>#{administration.groupnavigation}</label>
-      <page-reference>group::/platform/administrators::groupnavigation</page-reference>
-    </node>
-    <node>
-      <name>portalnavigation</name>
-      <label>#{administration.portalnavigation}</label>
-      <page-reference>group::/platform/administrators::portalnavigation</page-reference>
     </node>
     <node>
       <name>branding</name>
