@@ -359,46 +359,6 @@
         </dependencies>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <!-- Additional configuration to generate wiki pages from wikbook 
-              annotations -->
-            <configuration>
-              <compilerArguments>
-                <sourcepath>${project.build.directory}/templates</sourcepath>
-              </compilerArguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Always cleanup generated sources before compiling -->
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>cleanup-generated-files</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <configuration>
-              <filesets>
-                <fileset>
-                  <directory>${project.build.directory}/generated-sources/annotations</directory>
-                </fileset>
-              </filesets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
