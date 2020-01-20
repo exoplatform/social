@@ -1,6 +1,14 @@
 import './components/initComponents.js';
 import { spacesConstants } from '../js/spacesConstants.js';
 import * as spacesAdministrationDirectives from './spacesAdministrationDirectives.js';
+import Vuetify from 'vuetify';
+
+Vue.use(Vuetify);
+
+const vuetify = new Vuetify({
+  dark: true,
+  iconfont: '',
+});
 
 // getting language of the PLF 
 const lang = typeof eXo !== 'undefined' ? eXo.env.portal.language : 'en';
@@ -27,7 +35,8 @@ export function init() {
     new Vue({
       el: '#spacesAdministration',
       template: '<exo-spaces-administration-spaces></exo-spaces-administration-spaces>',
-      i18n
+      i18n,
+      vuetify,
     });
   });
 }
