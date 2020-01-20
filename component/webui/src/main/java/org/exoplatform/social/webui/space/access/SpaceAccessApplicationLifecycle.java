@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.mop.SiteType;
@@ -42,7 +43,7 @@ import org.exoplatform.web.application.ApplicationLifecycle;
 import org.exoplatform.web.application.RequestFailure;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
-public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
+public class SpaceAccessApplicationLifecycle extends BaseComponentPlugin implements ApplicationLifecycle<WebuiRequestContext> {
 
   private static final Log LOG = ExoLogger.getLogger(SpaceAccessApplicationLifecycle.class);
 

@@ -98,4 +98,18 @@
     </component-plugin>
   </external-component-plugins>
 
+  <external-component-plugins>
+    <target-component>org.exoplatform.web.application.ApplicationLifecycleExtension</target-component>
+    <component-plugin>
+      <name>SpaceAccessApplicationLifecycle</name>
+      <set-method>addPortalApplicationLifecycle</set-method>
+      <type>org.exoplatform.social.webui.space.access.SpaceAccessApplicationLifecycle</type>
+    </component-plugin>
+    <component-plugin>
+      <name>OAuthLifecycle</name>
+      <set-method>addPortalApplicationLifecycle</set-method>
+      <type>org.exoplatform.oauth.webui.OAuthLifecycle</type>
+    </component-plugin>
+  </external-component-plugins>
+
 </configuration>

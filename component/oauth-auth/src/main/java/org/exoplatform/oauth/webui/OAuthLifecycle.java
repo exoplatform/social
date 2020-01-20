@@ -23,6 +23,7 @@
 
 package org.exoplatform.oauth.webui;
 
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.oauth.OAuthConst;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
@@ -34,6 +35,7 @@ import org.exoplatform.web.application.ApplicationLifecycle;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestFailure;
 import org.exoplatform.web.security.AuthenticationRegistry;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
@@ -53,7 +55,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author <a href="mailto:mposolda@redhat.com">Marek Posolda</a>
  */
-public class OAuthLifecycle implements ApplicationLifecycle<PortalRequestContext> {
+public class OAuthLifecycle extends BaseComponentPlugin implements ApplicationLifecycle<PortalRequestContext> {
 
     /** . */
     private final Logger log = LoggerFactory.getLogger(OAuthLifecycle.class);
