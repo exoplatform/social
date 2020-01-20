@@ -48,7 +48,7 @@
     </node>
     <node>
       <name>branding</name>
-      <label>#{administration.branding}</label>
+      <label>#{administration.Branding}</label>
       <page-reference>group::/platform/administrators::branding</page-reference>
     </node>
     <node>
