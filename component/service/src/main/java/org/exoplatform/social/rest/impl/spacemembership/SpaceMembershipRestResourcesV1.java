@@ -38,8 +38,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -60,6 +58,7 @@ import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.utils.LogUtils;
 
 @Path(VersionResources.VERSION_ONE + "/social/spacesMemberships")
 @Api(tags = VersionResources.VERSION_ONE + "/social/spacesMemberships", value = VersionResources.VERSION_ONE + "/social/spacesMemberships", description = "Managing memberships of users in a space")
@@ -320,10 +319,12 @@ public class SpaceMembershipRestResourcesV1 implements SpaceMembershipRestResour
         if (model.getStatus().equalsIgnoreCase(MembershipType.APPROVED.name())) {
           spaceService.addMember(space, targetUser);
           role = MembershipType.APPROVED.name();
+          LogUtils.logInfo("spaceMembership", "approve-space-invitation", "space_name:" + spacePrettyName + ",receiver:" + targetUser, this.getClass());
         }
         else if (model.getStatus().equalsIgnoreCase(MembershipType.IGNORED.name())) {
           spaceService.removeInvitedUser(space, targetUser);
           role = MembershipType.IGNORED.name();
+          LogUtils.logInfo("spaceMembership", "ignore-space-invitation", "space_name:" + spacePrettyName + ",receiver:" + targetUser, this.getClass());
         }
       }
     }
