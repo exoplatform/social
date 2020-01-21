@@ -413,11 +413,7 @@ public abstract class BaseCoreTest extends BaseExoTestCase {
       if (isSave) {
         activityStorage.saveActivity(streamOwner, a);
       } else {
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-          LOG.warn(e);
-        }
+        restartTransaction();
       }
       list.add(a);
     }

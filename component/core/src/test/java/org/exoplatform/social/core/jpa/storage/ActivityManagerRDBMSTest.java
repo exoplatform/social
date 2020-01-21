@@ -1106,22 +1106,20 @@ public class ActivityManagerRDBMSTest extends AbstractCoreTest {
    */
   public void testGetComments() throws ActivityStorageException {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
-    ;
     activity.setTitle("blah blah");
     activityManager.saveActivityNoReturn(rootIdentity, activity);
 
     List<ExoSocialActivity> comments = new ArrayList<ExoSocialActivity>();
     for (int i = 0; i < 3; i++) {
       ExoSocialActivity comment = new ExoSocialActivityImpl();
-      ;
       comment.setTitle("comment " + i);
       comment.setUserId(rootIdentity.getId());
       activityManager.saveComment(activity, comment);
       assertNotNull("comment.getId() must not be null", comment.getId());
 
       comments.add(comment);
-      sleep(5);
     }
+    restartTransaction();
 
     RealtimeListAccess<ExoSocialActivity> listAccess = activityManager.getCommentsWithListAccess(activity);
     assertEquals(3, listAccess.getSize());

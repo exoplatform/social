@@ -213,15 +213,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     ConversationState.setCurrent(state);
   }
 
-  protected void sleep(int millis) {
-    try {
-      LOG.info("Wait {} ms!", millis);
-      Thread.sleep(millis);
-    } catch (Exception e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
   protected Identity createUserAndIdentity(String username) throws Exception {
     OrganizationService organizationService = getContainer().getComponentInstanceOfType(OrganizationService.class);
     UserHandler userHandler = organizationService.getUserHandler();

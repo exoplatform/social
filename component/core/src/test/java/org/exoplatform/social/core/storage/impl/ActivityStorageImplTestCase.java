@@ -611,9 +611,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   @MaxQueryNumber(32430)
   public void testCommentOrder() throws Exception {
-    // fill 10 activities
     for (int i = 0; i < 10; ++i) {
-      Thread.sleep(10);
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
       activityStorage.saveActivity(rootIdentity, activity);
@@ -621,13 +619,13 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
       // fill 10 comments for each activity
       for (int j = 0; j < 10; ++j) {
-        Thread.sleep(10);
         ExoSocialActivity comment = new ExoSocialActivityImpl();
         comment.setTitle("title " + i + j);
         comment.setUserId(rootIdentity.getId());
         activityStorage.saveComment(activity, comment);
       }
     }
+    restartTransaction();
 
     int i = 9;
     for (ExoSocialActivity activity : activityStorage.getUserActivities(rootIdentity)) {
@@ -653,14 +651,13 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     activity = activityStorage.getActivity(activity.getId());
 
     for (int i = 0; i < 10; ++i) {
-      Thread.sleep(10);
-
       ExoSocialActivity comment = new ExoSocialActivityImpl();
       comment.setTitle("comment title " + i);
       comment.setUserId(rootIdentity.getId());
 
       activityStorage.saveComment(activity, comment);
     }
+    restartTransaction();
 
     assertEquals(10, activityStorage.getActivity(activity.getId()).getReplyToId().length);
 

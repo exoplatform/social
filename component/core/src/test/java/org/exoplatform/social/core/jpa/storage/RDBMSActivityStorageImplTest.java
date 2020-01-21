@@ -547,7 +547,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
       activity.setUserId(demoIdentity.getId());
       activityStorage.saveActivity(spaceIdentity, activity);
       LOG.info("user = " + demoIdentity.getRemoteId() + " activity's postedTime = " + activity.getPostedTime());
-      sleep(10);
+      restartTransaction();
       tearDownActivityList.add(activity);
       if (i == 4) {
         baseActivity = activity;
@@ -570,7 +570,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
       activity.setTitle("activity title " + i);
       activity.setUserId(demoIdentity.getId());
       activityStorage.saveActivity(spaceIdentity2, activity);
-      sleep(10);
+      restartTransaction();
       tearDownActivityList.add(activity);
     }
     assertEquals(4, activityStorage.getOlderOnUserSpacesActivities(demoIdentity, baseActivity, 10).size());
@@ -953,12 +953,12 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
   
   private void createActivities(int number, Identity owner) {
     for (int i = 0; i < number; i++) {
+      restartTransaction();
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("activity title " + i);
       activity.setUserId(owner.getId());
       activityStorage.saveActivity(owner, activity);
       LOG.info("owner = " + owner.getRemoteId() + " PostedTime = " + activity.getPostedTime());
-      sleep(10);
     }
   }
   

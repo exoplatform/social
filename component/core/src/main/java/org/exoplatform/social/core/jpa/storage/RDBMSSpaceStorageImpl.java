@@ -495,14 +495,11 @@ public class RDBMSSpaceStorageImpl implements SpaceStorage {
 
   @Override
   @ExoTransactional
-  public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
+  public void updateSpaceAccessed(String remoteId, Space space) {
     SpaceMemberEntity member = spaceMemberDAO.getSpaceMemberShip(remoteId, Long.parseLong(space.getId()), Status.MEMBER);
     if (member != null) {
+      member.setVisited(true);
       member.setLastAccess(new Date());
-      // consider visited if access after create time more than 2s
-      if (!member.isVisited()) {
-        member.setVisited((member.getLastAccess().getTime() - member.getSpace().getCreatedDate().getTime()) >= 2000);
-      }
     }
     spaceMemberDAO.update(member);
   }

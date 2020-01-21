@@ -61,8 +61,7 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     assertEquals(2, result.size());
     assertEquals(space0.getId(), result.get(0).getId());
         
-    //user access to space1 2.5s after space1 has been created
-    Thread.sleep(2500);
+    restartTransaction();
     spaceStorage.updateSpaceAccessed("ghost", space1);
     
     //getVisitedSpaces return a list of spaces that
@@ -88,7 +87,7 @@ public class RDBMSSpaceStorageTest extends SpaceStorageTest {
     assertEquals(2, result.size());
     assertEquals(space2.getId(), result.get(0).getId());
 
-    Thread.sleep(2500);
+    restartTransaction();
     spaceStorage.updateSpaceAccessed("ghost", space3);
 
     result = spaceStorage.getLastAccessedSpace(filter, 0, -1);

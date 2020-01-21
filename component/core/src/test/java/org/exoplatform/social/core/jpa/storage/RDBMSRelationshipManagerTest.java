@@ -1570,10 +1570,10 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
   public void testGetLastConnections() throws Exception {
     Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
     relationshipManager.confirm(maryIdentity, ghostIdentity);
-    Thread.sleep(1000);
+    restartTransaction();
     Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
     relationshipManager.confirm(maryIdentity, demoIdentity);
-    Thread.sleep(1000);
+    restartTransaction();
     Relationship paulToMaryRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
     relationshipManager.confirm(maryIdentity, paulIdentity);
     
@@ -1583,7 +1583,7 @@ public class RDBMSRelationshipManagerTest extends AbstractCoreTest {
     assertEquals(demoIdentity.getRemoteId(), identities.get(1).getRemoteId());
     assertEquals(ghostIdentity.getRemoteId(), identities.get(2).getRemoteId());
 
-    Thread.sleep(1000);
+    restartTransaction();
     Relationship johnToMaryRelationship = relationshipManager.inviteToConnect(maryIdentity, johnIdentity);
     relationshipManager.confirm(johnIdentity, maryIdentity);
     identities = relationshipManager.getLastConnections(maryIdentity, 10);

@@ -773,12 +773,13 @@ public class IdentityStorageTest extends AbstractCoreTest {
     Long avatarLastUpdated = profile.getAvatarLastUpdated();
     assertNotNull(avatarLastUpdated);
 
-    // Make sure that the upcoming update will not occur at the exact same time than the first update
-    Thread.sleep(10);
+    restartTransaction();
 
     // we re-attach the the avatar to the profile to be sure that @Profile.avatarLastUpdated value is updated
     profile.setProperty(Profile.AVATAR, avatarAttachment);
     identityStorage.updateProfile(profile);
+    restartTransaction();
+
     Profile profile1 = identityStorage.loadProfile(profile);
     Long avatarLastUpdated1 = profile1.getAvatarLastUpdated();
     assertNotNull(avatarLastUpdated1);
@@ -815,12 +816,13 @@ public class IdentityStorageTest extends AbstractCoreTest {
     profile.setProperty(Profile.AVATAR, avatarAttachment);
     identityStorage.saveIdentity(identity);
     identityStorage.saveProfile(profile);
+    restartTransaction();
+
     profile = identityStorage.loadProfile(profile);
     avatarLastUpdated = profile.getAvatarLastUpdated();
     assertNotNull(avatarLastUpdated);
 
-    // Make sure that the upcoming update will not occur at the exact same time than the first update
-    Thread.sleep(10);
+    restartTransaction();
 
     profile.setProperty(Profile.AVATAR, avatarAttachment);
     identityStorage.updateProfile(profile);
@@ -864,8 +866,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     Long bannerLastUpdated = profile.getBannerLastUpdated();
     assertNotNull(bannerLastUpdated);
 
-    // Make sure that the upcoming update will not occur at the exact same time than the first update
-    Thread.sleep(10);
+    restartTransaction();
 
     // we re-attach the the banner to the profile to be sure that @Profile.bannerLastUpdated value is updated
     profile.setProperty(Profile.BANNER, bannerAttachment);
@@ -908,8 +909,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     bannerLastUpdated = profile.getBannerLastUpdated();
     assertNotNull(bannerLastUpdated);
 
-    // Make sure that the upcoming update will not occur at the exact same time than the first update
-    Thread.sleep(10);
+    restartTransaction();
 
     profile.setProperty(Profile.BANNER, bannerAttachment);
     identityStorage.updateProfile(profile);
