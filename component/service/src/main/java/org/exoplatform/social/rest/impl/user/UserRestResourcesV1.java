@@ -285,14 +285,16 @@ public class UserRestResourcesV1 implements UserRestResources {
         eTag = new EntityTag(Integer.toString(lastUpdated.hashCode()));
       }
       //
-      builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
-      if (builder == null) {
-        InputStream stream = identityManager.getAvatarInputStream(identity);
-        if (stream != null) {
+      if (identity.isEnable() && !identity.isDeleted()) {
+        builder = (eTag == null ? null : request.evaluatePreconditions(eTag));
+        if (builder == null) {
+          InputStream stream = identityManager.getAvatarInputStream(identity);
+          if (stream != null) {
           /* As recommended in the the RFC1341 (https://www.w3.org/Protocols/rfc1341/4_Content-Type.html),
           we set the avatar content-type to "image/png". So, its data  would be recognized as "image" by the user-agent */
-          builder = Response.ok(stream, "image/png");
-          builder.tag(eTag);
+            builder = Response.ok(stream, "image/png");
+            builder.tag(eTag);
+          }
         }
       }
 
