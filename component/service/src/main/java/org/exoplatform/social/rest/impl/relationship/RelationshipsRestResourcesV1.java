@@ -37,9 +37,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -58,6 +56,7 @@ import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
 import org.exoplatform.social.rest.entity.RelationshipEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.utils.LogUtils;
 
 @Path(VersionResources.VERSION_ONE + "/social/relationships")
 @Api(tags = VersionResources.VERSION_ONE + "/social/relationships", value = VersionResources.VERSION_ONE + "/social/relationships", description = "Managing relationships of identities")
@@ -236,9 +235,13 @@ public class RelationshipsRestResourcesV1 implements RelationshipsRestResources 
     if (type != null && ! type.equals(Relationship.Type.ALL)) {
       if (type.equals(Relationship.Type.IGNORED)) {
         relationshipManager.delete(relationship);
+        LogUtils.logInfo("relationships", "ignore-connection-request", "sender:" + relationship.getSender().getRemoteId() + ",receiver:" + relationship.getReceiver().getRemoteId(), this.getClass());
       } else {
         relationship.setStatus(type);
         relationshipManager.update(relationship);
+        if (type.equals(Relationship.Type.CONFIRMED)) {
+          LogUtils.logInfo("relationships", "confirm-connection-request", "sender:" + relationship.getSender().getRemoteId() + ",receiver:" + relationship.getReceiver().getRemoteId(), this.getClass());
+        }
       }
     }
     
