@@ -68,9 +68,9 @@
       }
       var commentButton = $("#" + UIActivity.commentButtonId);
       commentButton.click(function(event) {
-        var commentId = commentButton.attr('id').split('CommentButton')[1];
+        var commentId = commentButton.data("comment-id");
         var clickAction = commentButton.data("click").replace("COMMENTID", (commentId ? commentId : ""));
-        var currentComposerComment = 'CommentTextarea' + commentId;
+        var currentComposerComment = 'CommentTextarea' + UIActivity.activityId;
         eval(clickAction);
         try {
           if (CKEDITOR.instances[currentComposerComment]) {
