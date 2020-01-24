@@ -3,13 +3,15 @@ import ExoSpacesAdministrationManageSpaces from './ExoSpacesAdministrationManage
 import ExoSpacesAdministrationSpacesPermissions from './ExoSpacesAdministrationSpacesPermissions.vue';
 import ExoSpacesAdministrationSpaces  from './ExoSpacesAdministrationSpaces.vue';
 import ExoSpaceBindingModal from './modal/ExoSpaceBindingModal.vue';
+import ExoGroupBindingDrawer from './drawer/ExoGroupBindingDrawer.vue';
 
 const components = {
   'exo-spaces-administration-manage-spaces': ExoSpacesAdministrationManageSpaces,
   'exo-spaces-administration-manage-permissions' : ExoSpacesAdministrationSpacesPermissions,
   'exo-spaces-administration-spaces' : ExoSpacesAdministrationSpaces,
   'exo-modal' : ExoModal,
-  'exo-spaces-binding-modal' : ExoSpaceBindingModal
+  'exo-spaces-binding-modal' : ExoSpaceBindingModal,
+  'exo-group-binding-drawer' : ExoGroupBindingDrawer
 };
 
 for(const key in components) {

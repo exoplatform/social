@@ -1,7 +1,7 @@
 import './components/initComponents.js';
 import { spacesConstants } from '../js/spacesConstants.js';
 import * as spacesAdministrationDirectives from './spacesAdministrationDirectives.js';
-import Vuetify from 'vuetify';
+import '../css/main.less';
 
 Vue.use(Vuetify);
 
