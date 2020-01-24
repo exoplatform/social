@@ -57,7 +57,7 @@ let config = {
   },
   plugins: [
     // we use ExtractTextWebpackPlugin to extract the css code on a css file
-    new ExtractTextWebpackPlugin('css/[name].css')
+    new ExtractTextWebpackPlugin('css/main.css')
   ]
 };
 

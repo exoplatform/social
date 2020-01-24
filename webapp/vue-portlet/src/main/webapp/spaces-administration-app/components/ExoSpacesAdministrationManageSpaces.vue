@@ -25,7 +25,7 @@
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td v-html="space.description"></td>
         <td class="center actionContainer" >
-          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" class="actionIcon" @click="openSpaceBindingModal(space.id, index)">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" class="actionIcon" @click="openSpaceBindingDrawer(space.id, index)">
             <i class="uiIconSpaceBinding uiIconGroup"></i>
           </a>
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName,space.groupId)" class="actionIcon" target="_blank">
@@ -77,8 +77,18 @@
         <div class="btn" @click="closeModal">{{ $t('social.spaces.administration.delete.spaces.button.cancel') }}</div>
       </div>
     </exo-modal>
-    <exo-spaces-binding-modal v-show="showSpaceBindingModal" :title="$t('social.spaces.administration.binding.modal.title')" @modal-closed="closeSpaceBindingModal"/>
-  </div>  
+    <v-navigation-drawer
+      id="GroupBindingDrawer"        
+      v-model="showGroupBindingForm"
+      fixed
+      right
+      stateless
+      temporary
+      width="500"
+      max-width="100vw">
+      <exo-group-binding-drawer @close="closeGroupBindingDrawer"/>
+    </v-navigation-drawer>
+  </div>
 </template>
 <script>
 import * as spacesAdministrationServices from '../spacesAdministrationServices';
@@ -87,7 +97,7 @@ import { spacesConstants } from '../../js/spacesConstants';
 export default {
   data() {
     return {
-      showSpaceBindingModal: false,
+      showGroupBindingForm: false,
       showConfirmMessageModal: false,
       spaces: [],
       spaceToBindId: null,
@@ -193,13 +203,13 @@ export default {
     closeModal(){
       this.showConfirmMessageModal = false;
     },
-    closeSpaceBindingModal(){
-      this.showSpaceBindingModal = false;
-    },
-    openSpaceBindingModal(id, index){
-      this.showSpaceBindingModal = true;
+    openSpaceBindingDrawer(id, index) {
       this.spaceToBindId = id;
       this.spaceToBindIndex = index;
+      this.showGroupBindingForm = true;
+    },
+    closeGroupBindingDrawer() {
+      this.showGroupBindingForm = false;
     }
   }
 };
