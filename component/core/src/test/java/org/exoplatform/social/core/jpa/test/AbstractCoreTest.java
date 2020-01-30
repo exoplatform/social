@@ -41,6 +41,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.jpa.search.ProfileSearchConnector;
+import org.exoplatform.social.core.jpa.storage.dao.ActivityDAO;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -97,6 +98,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     deleteAllRelationships();
     deleteAllSpaces();
     deleteAllIdentitiesWithActivities();
+    deleteAllActivities();
   }
 
   @Override
@@ -105,6 +107,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     deleteAllRelationships();
     deleteAllSpaces();
     deleteAllIdentitiesWithActivities();
+    deleteAllActivities();
 
     //
     end();
@@ -296,6 +299,11 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
       Arrays.stream(relationships.load(0, relationships.getSize()))
               .forEach(relationship -> relationshipManager.deny(identity, relationship));
     }
+  }
+  
+  protected void deleteAllActivities() throws Exception {
+    ActivityDAO activityDAO = getService(ActivityDAO.class);
+    activityDAO.deleteAll();
   }
 
   public static void persist() {

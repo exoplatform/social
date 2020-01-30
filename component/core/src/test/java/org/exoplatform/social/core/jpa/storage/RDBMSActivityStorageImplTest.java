@@ -960,6 +960,7 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
       activityStorage.saveActivity(owner, activity);
       LOG.info("owner = " + owner.getRemoteId() + " PostedTime = " + activity.getPostedTime());
     }
+    restartTransaction();
   }
   
   private ExoSocialActivity createActivity(int num) {
@@ -989,12 +990,14 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
    * @param number the number of comments
    */
   private void createComment(ExoSocialActivity existingActivity, Identity posterIdentity, Identity commentReplyIdentity, int number, int numberOfSubComments) {
+    restartTransaction();
     for (int i = 0; i < number; i++) {
       ExoSocialActivity comment = new ExoSocialActivityImpl();
       comment.setTitle("comment " + i);
       comment.setUserId(posterIdentity.getId());
       comment.setPosterId(posterIdentity.getId());
       activityStorage.saveComment(existingActivity, comment);
+      restartTransaction();
 
       for (int j = 0; j < numberOfSubComments; j++) {
         ExoSocialActivity commentReply = new ExoSocialActivityImpl();
@@ -1003,7 +1006,9 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
         commentReply.setPosterId(commentReplyIdentity.getId());
         commentReply.setParentCommentId(comment.getId());
         activityStorage.saveComment(existingActivity, commentReply);
+        restartTransaction();
       }
     }
+    restartTransaction();
   }
 }
