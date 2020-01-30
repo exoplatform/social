@@ -757,7 +757,7 @@ public class MailTemplateProvider extends TemplateProvider {
         for (NotificationInfo message : notifications) {
           String remoteId = message.getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
 
-          Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+          Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId);
           //
           if (identity.isDeleted() == true) {
             continue;

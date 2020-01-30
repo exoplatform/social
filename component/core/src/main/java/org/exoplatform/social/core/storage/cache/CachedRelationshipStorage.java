@@ -17,10 +17,7 @@
 
 package org.exoplatform.social.core.storage.cache;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,28 +26,17 @@ import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.jpa.storage.RDBMSRelationshipStorageImpl;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
-import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
-import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
-import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
-import org.exoplatform.social.core.storage.cache.model.data.RelationshipData;
-import org.exoplatform.social.core.storage.cache.model.data.SuggestionsData;
-import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
-import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
-import org.exoplatform.social.core.storage.cache.model.key.ListRelationshipsKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipCountKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipIdentityKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipType;
-import org.exoplatform.social.core.storage.cache.model.key.SuggestionKey;
+import org.exoplatform.social.core.storage.cache.model.data.*;
+import org.exoplatform.social.core.storage.cache.model.key.*;
 import org.exoplatform.social.core.storage.cache.selector.RelationshipCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.SuggestionCacheSelector;
-import org.exoplatform.social.core.storage.impl.AbstractStorage;
 
 /**
  * Cache support for RelationshipStorage.
@@ -58,34 +44,45 @@ import org.exoplatform.social.core.storage.impl.AbstractStorage;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class CachedRelationshipStorage extends AbstractStorage implements RelationshipStorage {
+public class CachedRelationshipStorage implements RelationshipStorage {
 
   /** Logger */
-  private static final Log LOG = ExoLogger.getLogger(CachedRelationshipStorage.class);
+  private static final Log                                                                                   LOG                    =
+                                                                                                                 ExoLogger.getLogger(CachedRelationshipStorage.class);
 
   //
-  private final ExoCache<RelationshipKey, RelationshipData> exoRelationshipCache;
-  private final ExoCache<RelationshipIdentityKey, RelationshipKey> exoRelationshipByIdentityCache;
-  private final ExoCache<RelationshipCountKey, IntegerData> exoRelationshipCountCache;
-  private final ExoCache<ListRelationshipsKey, ListIdentitiesData> exoRelationshipsCache;
-  private final ExoCache<SuggestionKey, SuggestionsData> exoSuggestionCache;
+  private final ExoCache<RelationshipKey, RelationshipData>                                                  exoRelationshipCache;
+
+  private final ExoCache<RelationshipIdentityKey, RelationshipKey>                                           exoRelationshipByIdentityCache;
+
+  private final ExoCache<RelationshipCountKey, IntegerData>                                                  exoRelationshipCountCache;
+
+  private final ExoCache<ListRelationshipsKey, ListIdentitiesData>                                           exoRelationshipsCache;
+
+  private final ExoCache<SuggestionKey, SuggestionsData>                                                     exoSuggestionCache;
 
   //
-  private final FutureExoCache<RelationshipKey, RelationshipData, ServiceContext<RelationshipData>> relationshipCache;
-  private final FutureExoCache<RelationshipIdentityKey,RelationshipKey,ServiceContext<RelationshipKey>> relationshipCacheIdentity;
-  private final FutureExoCache<RelationshipCountKey, IntegerData, ServiceContext<IntegerData>> relationshipsCount;
+  private final FutureExoCache<RelationshipKey, RelationshipData, ServiceContext<RelationshipData>>          relationshipCache;
+
+  private final FutureExoCache<RelationshipIdentityKey, RelationshipKey, ServiceContext<RelationshipKey>>    relationshipCacheIdentity;
+
+  private final FutureExoCache<RelationshipCountKey, IntegerData, ServiceContext<IntegerData>>               relationshipsCount;
+
   private final FutureExoCache<ListRelationshipsKey, ListIdentitiesData, ServiceContext<ListIdentitiesData>> relationshipsCache;
-  private final FutureExoCache<SuggestionKey, SuggestionsData, ServiceContext<SuggestionsData>> suggestionCache;
+
+  private final FutureExoCache<SuggestionKey, SuggestionsData, ServiceContext<SuggestionsData>>              suggestionCache;
 
   //
-  private final ExoCache<IdentityKey, IdentityData> exoIdentityCache;
+  private final ExoCache<IdentityKey, IdentityData>                                                          exoIdentityCache;
 
   //
-  private final RelationshipStorage storage;
-  private final IdentityStorage identityStorage;
+  private final RelationshipStorage                                                                          storage;
+
+  private final IdentityStorage                                                                              identityStorage;
 
   //
-  private static RelationshipKey RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
+  private static RelationshipKey                                                                             RELATIONSHIP_NOT_FOUND =
+                                                                                                                                    new RelationshipKey(null);
 
   void clearCacheFor(Relationship r) {
 
@@ -99,18 +96,18 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     }
 
     try {
-      exoRelationshipsCache.select(new RelationshipCacheSelector(identities.toArray(new String[]{})));
-      exoRelationshipCountCache.select(new RelationshipCacheSelector(identities.toArray(new String[]{})));
-      exoSuggestionCache.select(new SuggestionCacheSelector(identities.toArray(new String[]{})));
-    }
-    catch (Exception e) {
+      exoRelationshipsCache.select(new RelationshipCacheSelector(identities.toArray(new String[] {})));
+      exoRelationshipCountCache.select(new RelationshipCacheSelector(identities.toArray(new String[] {})));
+      exoSuggestionCache.select(new SuggestionCacheSelector(identities.toArray(new String[] {})));
+    } catch (Exception e) {
       LOG.error(e);
     }
 
   }
-  
+
   /**
-   * When enable/disable an user, we need to clear all cache associated to suggestion and relationship
+   * When enable/disable an user, we need to clear all cache associated to
+   * suggestion and relationship
    */
   public void clearAllRelationshipCache() {
     try {
@@ -121,7 +118,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
       LOG.error(e);
     }
   }
-  
+
   /**
    * Build the identity list from the caches Ids.
    *
@@ -150,8 +147,8 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     List<IdentityKey> data = new ArrayList<IdentityKey>();
     for (Identity i : identities) {
       IdentityKey k = new IdentityKey(i);
-      if(exoIdentityCache.get(k) == null) {
-        //data from db no need to replicate on other cluster nodes
+      if (exoIdentityCache.get(k) == null) {
+        // data from db no need to replicate on other cluster nodes
         exoIdentityCache.putLocal(k, new IdentityData(i));
       }
       data.add(new IdentityKey(i));
@@ -159,7 +156,7 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     return new ListIdentitiesData(data);
 
   }
-  
+
   /**
    * Build the suggestions from the identity map.
    *
@@ -171,10 +168,10 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     for (Entry<Identity, Integer> item : map.entrySet()) {
       data.put(item.getKey().getId(), item.getValue());
     }
-    
+
     return new SuggestionsData(data);
   }
-  
+
   /**
    * Build the suggestions map from the caches Ids.
    *
@@ -190,8 +187,9 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     return suggestions;
 
   }
-  
-  public CachedRelationshipStorage(final RelationshipStorage storage, final IdentityStorage identityStorage,
+
+  public CachedRelationshipStorage(final RDBMSRelationshipStorageImpl storage,
+                                   final IdentityStorage identityStorage,
                                    final SocialStorageCacheService cacheService) {
 
     //
@@ -246,19 +244,20 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
 
     //
     exoRelationshipCache.remove(new RelationshipKey(relationship.getId()));
-    
+
     // clear caching.
     if (relationship.getSender() != null && relationship.getReceiver() != null) {
-      RelationshipIdentityKey identityKey = new RelationshipIdentityKey(relationship.getSender().getId(), relationship.getReceiver().getId());
+      RelationshipIdentityKey identityKey = new RelationshipIdentityKey(relationship.getSender().getId(),
+                                                                        relationship.getReceiver().getId());
       relationshipCacheIdentity.remove(identityKey);
-      
+
       identityKey = new RelationshipIdentityKey(relationship.getReceiver().getId(), relationship.getSender().getId());
       relationshipCacheIdentity.remove(identityKey);
     }
-    
+
     //
     clearCacheFor(relationship);
-    
+
   }
 
   /**
@@ -271,32 +270,33 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
 
     //
     RelationshipData data = relationshipCache.get(
-        new ServiceContext<RelationshipData>() {
-          public RelationshipData execute() {
-            Relationship got = storage.getRelationship(uuid);
-            if (got != null) {
-              return new RelationshipData(storage.getRelationship(uuid));
-            }
-            return null;
-          }
-        },
-        key
-    );
+                                                  new ServiceContext<RelationshipData>() {
+                                                    public RelationshipData execute() {
+                                                      Relationship got = storage.getRelationship(uuid);
+                                                      if (got != null) {
+                                                        return new RelationshipData(storage.getRelationship(uuid));
+                                                      }
+                                                      return null;
+                                                    }
+                                                  },
+                                                  key);
 
     //
     if (data != null) {
       return data.build();
     }
     return null;
-    
+
   }
 
   /**
    * {@inheritDoc}
    */
   public List<Relationship> getSenderRelationships(
-      final Identity sender, final Relationship.Type type, final List<Identity> listCheckIdentity)
-      throws RelationshipStorageException {
+                                                   final Identity sender,
+                                                   final Relationship.Type type,
+                                                   final List<Identity> listCheckIdentity)
+                                                                                           throws RelationshipStorageException {
     return storage.getSenderRelationships(sender, type, listCheckIdentity);
   }
 
@@ -304,8 +304,10 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
    * {@inheritDoc}
    */
   public List<Relationship> getSenderRelationships(
-      final String senderId, final Relationship.Type type, final List<Identity> listCheckIdentity)
-      throws RelationshipStorageException {
+                                                   final String senderId,
+                                                   final Relationship.Type type,
+                                                   final List<Identity> listCheckIdentity)
+                                                                                           throws RelationshipStorageException {
     return storage.getSenderRelationships(senderId, type, listCheckIdentity);
   }
 
@@ -313,8 +315,10 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
    * {@inheritDoc}
    */
   public List<Relationship> getReceiverRelationships(
-      final Identity receiver, final Relationship.Type type, final List<Identity> listCheckIdentity)
-      throws RelationshipStorageException {
+                                                     final Identity receiver,
+                                                     final Relationship.Type type,
+                                                     final List<Identity> listCheckIdentity)
+                                                                                             throws RelationshipStorageException {
     return storage.getReceiverRelationships(receiver, type, listCheckIdentity);
   }
 
@@ -322,12 +326,13 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
    * {@inheritDoc}
    */
   public Relationship getRelationship(Identity identity1, Identity identity2)
-      throws RelationshipStorageException {
+                                                                              throws RelationshipStorageException {
 
     // We make sure to check the Relationship in the same order to improve
     // efficiency of the cache
     final Identity idFirst, idLast;
-    if (StringUtils.isBlank(identity1.getId()) || StringUtils.isBlank(identity2.getId()) || identity1.getId().trim().equals(identity2.getId().trim())) {
+    if (identity1 == null || identity2 == null || StringUtils.isBlank(identity1.getId()) || StringUtils.isBlank(identity2.getId())
+        || identity1.getId().trim().equals(identity2.getId().trim())) {
       return null;
     } else if (identity1.getId().compareTo(identity2.getId()) > 0) {
       idFirst = identity1;
@@ -341,42 +346,43 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
 
     //
     RelationshipKey gotKey = relationshipCacheIdentity.get(
-        new ServiceContext<RelationshipKey>() {
-          public RelationshipKey execute() {
-            Relationship got = storage.getRelationship(idFirst, idLast);
-            if (got != null) {
-              RelationshipKey k = new RelationshipKey(got.getId());
-              return k;
-            }
-            else {
-              return RELATIONSHIP_NOT_FOUND;
-            }
-          }
-        },
-        key
-    );
+                                                           new ServiceContext<RelationshipKey>() {
+                                                             public RelationshipKey execute() {
+                                                               Relationship got = storage.getRelationship(idFirst, idLast);
+                                                               if (got != null) {
+                                                                 RelationshipKey k = new RelationshipKey(got.getId());
+                                                                 return k;
+                                                               } else {
+                                                                 return RELATIONSHIP_NOT_FOUND;
+                                                               }
+                                                             }
+                                                           },
+                                                           key);
 
     //
     if (gotKey != null && !gotKey.equals(RELATIONSHIP_NOT_FOUND)) {
       return getRelationship(gotKey.getId());
-    }
-    else {
+    } else {
       return null;
     }
 
   }
-  
+
   @Override
-  public boolean hasRelationship(Identity identity1, Identity identity2, String relationshipPath) throws RelationshipStorageException {
+  public boolean hasRelationship(Identity identity1,
+                                 Identity identity2,
+                                 String relationshipPath) throws RelationshipStorageException {
     RelationshipIdentityKey key = new RelationshipIdentityKey(identity2.getId(), identity1.getId());
     RelationshipKey gotKey = exoRelationshipByIdentityCache.get(key);
-    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
+    if (gotKey != null && !gotKey.equals(RELATIONSHIP_NOT_FOUND)
+        && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
-    
+
     key = new RelationshipIdentityKey(identity1.getId(), identity2.getId());
     gotKey = exoRelationshipByIdentityCache.get(key);
-    if (gotKey != null && ! gotKey.equals(RELATIONSHIP_NOT_FOUND) && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
+    if (gotKey != null && !gotKey.equals(RELATIONSHIP_NOT_FOUND)
+        && getRelationship(identity1, identity2).getStatus().equals(Relationship.Type.CONFIRMED)) {
       return true;
     }
 
@@ -387,8 +393,10 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
    * {@inheritDoc}
    */
   public List<Relationship> getRelationships(
-      final Identity identity, final Relationship.Type type, final List<Identity> listCheckIdentity)
-      throws RelationshipStorageException {
+                                             final Identity identity,
+                                             final Relationship.Type type,
+                                             final List<Identity> listCheckIdentity)
+                                                                                     throws RelationshipStorageException {
     return storage.getRelationships(identity, type, listCheckIdentity);
   }
 
@@ -396,20 +404,23 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
    * {@inheritDoc}
    */
   public List<Identity> getRelationships(final Identity identity, final long offset, final long limit)
-      throws RelationshipStorageException {
+                                                                                                       throws RelationshipStorageException {
 
     //
     IdentityKey key = new IdentityKey(identity);
     ListRelationshipsKey<IdentityKey> listKey =
-        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.RELATIONSHIP, offset, limit);
+                                              new ListRelationshipsKey<IdentityKey>(key,
+                                                                                    RelationshipType.RELATIONSHIP,
+                                                                                    offset,
+                                                                                    limit);
     ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getRelationships(identity, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
+                                                     new ServiceContext<ListIdentitiesData>() {
+                                                       public ListIdentitiesData execute() {
+                                                         List<Identity> got = storage.getRelationships(identity, offset, limit);
+                                                         return buildIds(got);
+                                                       }
+                                                     },
+                                                     listKey);
 
     //
     return buildRelationships(keys);
@@ -420,20 +431,25 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
    * {@inheritDoc}
    */
   public List<Identity> getIncomingRelationships(final Identity receiver, final long offset, final long limit)
-      throws RelationshipStorageException {
+                                                                                                               throws RelationshipStorageException {
 
     //
     IdentityKey key = new IdentityKey(receiver);
     ListRelationshipsKey<IdentityKey> listKey =
-        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.INCOMMING, offset, limit);
+                                              new ListRelationshipsKey<IdentityKey>(key,
+                                                                                    RelationshipType.INCOMMING,
+                                                                                    offset,
+                                                                                    limit);
     ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getIncomingRelationships(receiver, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
+                                                     new ServiceContext<ListIdentitiesData>() {
+                                                       public ListIdentitiesData execute() {
+                                                         List<Identity> got = storage.getIncomingRelationships(receiver,
+                                                                                                               offset,
+                                                                                                               limit);
+                                                         return buildIds(got);
+                                                       }
+                                                     },
+                                                     listKey);
 
     //
     return buildRelationships(keys);
@@ -451,13 +467,13 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
 
     //
     return relationshipsCount.get(
-        new ServiceContext<IntegerData>() {
-          public IntegerData execute() {
-            return new IntegerData(storage.getIncomingRelationshipsCount(receiver));
-          }
-        },
-        key)
-        .build();
+                                  new ServiceContext<IntegerData>() {
+                                    public IntegerData execute() {
+                                      return new IntegerData(storage.getIncomingRelationshipsCount(receiver));
+                                    }
+                                  },
+                                  key)
+                             .build();
 
   }
 
@@ -465,20 +481,25 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
    * {@inheritDoc}
    */
   public List<Identity> getOutgoingRelationships(final Identity sender, final long offset, final long limit)
-      throws RelationshipStorageException {
+                                                                                                             throws RelationshipStorageException {
 
     //
     IdentityKey key = new IdentityKey(sender);
     ListRelationshipsKey<IdentityKey> listKey =
-        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.OUTGOING, offset, limit);
+                                              new ListRelationshipsKey<IdentityKey>(key,
+                                                                                    RelationshipType.OUTGOING,
+                                                                                    offset,
+                                                                                    limit);
     ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getOutgoingRelationships(sender, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
+                                                     new ServiceContext<ListIdentitiesData>() {
+                                                       public ListIdentitiesData execute() {
+                                                         List<Identity> got = storage.getOutgoingRelationships(sender,
+                                                                                                               offset,
+                                                                                                               limit);
+                                                         return buildIds(got);
+                                                       }
+                                                     },
+                                                     listKey);
 
     //
     return buildRelationships(keys);
@@ -496,13 +517,13 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
 
     //
     return relationshipsCount.get(
-        new ServiceContext<IntegerData>() {
-          public IntegerData execute() {
-            return new IntegerData(storage.getOutgoingRelationshipsCount(sender));
-          }
-        },
-        key)
-        .build();
+                                  new ServiceContext<IntegerData>() {
+                                    public IntegerData execute() {
+                                      return new IntegerData(storage.getOutgoingRelationshipsCount(sender));
+                                    }
+                                  },
+                                  key)
+                             .build();
 
   }
 
@@ -517,13 +538,13 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
 
     //
     return relationshipsCount.get(
-        new ServiceContext<IntegerData>() {
-          public IntegerData execute() {
-            return new IntegerData(storage.getRelationshipsCount(identity));
-          }
-        },
-        key)
-        .build();
+                                  new ServiceContext<IntegerData>() {
+                                    public IntegerData execute() {
+                                      return new IntegerData(storage.getRelationshipsCount(identity));
+                                    }
+                                  },
+                                  key)
+                             .build();
 
   }
 
@@ -531,19 +552,22 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
    * {@inheritDoc}
    */
   public List<Identity> getConnections(final Identity identity, final long offset, final long limit)
-      throws RelationshipStorageException {
+                                                                                                     throws RelationshipStorageException {
 
     //
     IdentityKey key = new IdentityKey(identity);
-    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.CONNECTION, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key,
+                                                                                      RelationshipType.CONNECTION,
+                                                                                      offset,
+                                                                                      limit);
     ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getConnections(identity, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
+                                                     new ServiceContext<ListIdentitiesData>() {
+                                                       public ListIdentitiesData execute() {
+                                                         List<Identity> got = storage.getConnections(identity, offset, limit);
+                                                         return buildIds(got);
+                                                       }
+                                                     },
+                                                     listKey);
 
     //
     return buildRelationships(keys);
@@ -568,13 +592,13 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
 
     //
     return relationshipsCount.get(
-        new ServiceContext<IntegerData>() {
-          public IntegerData execute() {
-            return new IntegerData(storage.getConnectionsCount(identity));
-          }
-        },
-        key)
-        .build();
+                                  new ServiceContext<IntegerData>() {
+                                    public IntegerData execute() {
+                                      return new IntegerData(storage.getConnectionsCount(identity));
+                                    }
+                                  },
+                                  key)
+                             .build();
 
   }
 
@@ -584,20 +608,27 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
                                                final long limit) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(),
+    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(),
+                                                  existingIdentity.getRemoteId(),
                                                   profileFilter);
     ListRelationshipsKey<IdentityFilterKey> listKey =
-        new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.CONNECTION_WITH_FILTER, offset, limit);
+                                                    new ListRelationshipsKey<IdentityFilterKey>(key,
+                                                                                                RelationshipType.CONNECTION_WITH_FILTER,
+                                                                                                offset,
+                                                                                                limit);
 
     //
     ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getConnectionsByFilter(existingIdentity, profileFilter, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
+                                                     new ServiceContext<ListIdentitiesData>() {
+                                                       public ListIdentitiesData execute() {
+                                                         List<Identity> got = storage.getConnectionsByFilter(existingIdentity,
+                                                                                                             profileFilter,
+                                                                                                             offset,
+                                                                                                             limit);
+                                                         return buildIds(got);
+                                                       }
+                                                     },
+                                                     listKey);
 
     //
     return buildRelationships(keys);
@@ -610,19 +641,26 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
                                             final long limit) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
+    IdentityFilterKey key =
+                          new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
     ListRelationshipsKey<IdentityFilterKey> listKey =
-        new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.INCOMMING_WITH_FILTER, offset, limit);
+                                                    new ListRelationshipsKey<IdentityFilterKey>(key,
+                                                                                                RelationshipType.INCOMMING_WITH_FILTER,
+                                                                                                offset,
+                                                                                                limit);
 
     //
     ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getIncomingByFilter(existingIdentity, profileFilter, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
+                                                     new ServiceContext<ListIdentitiesData>() {
+                                                       public ListIdentitiesData execute() {
+                                                         List<Identity> got = storage.getIncomingByFilter(existingIdentity,
+                                                                                                          profileFilter,
+                                                                                                          offset,
+                                                                                                          limit);
+                                                         return buildIds(got);
+                                                       }
+                                                     },
+                                                     listKey);
 
     //
     return buildRelationships(keys);
@@ -635,19 +673,26 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
                                             final long limit) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
+    IdentityFilterKey key =
+                          new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
     ListRelationshipsKey<IdentityFilterKey> listKey =
-        new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.OUTGOING_WITH_FILTER, offset, limit);
+                                                    new ListRelationshipsKey<IdentityFilterKey>(key,
+                                                                                                RelationshipType.OUTGOING_WITH_FILTER,
+                                                                                                offset,
+                                                                                                limit);
 
     //
     ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getOutgoingByFilter(existingIdentity, profileFilter, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
+                                                     new ServiceContext<ListIdentitiesData>() {
+                                                       public ListIdentitiesData execute() {
+                                                         List<Identity> got = storage.getOutgoingByFilter(existingIdentity,
+                                                                                                          profileFilter,
+                                                                                                          offset,
+                                                                                                          limit);
+                                                         return buildIds(got);
+                                                       }
+                                                     },
+                                                     listKey);
 
     //
     return buildRelationships(keys);
@@ -655,83 +700,99 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
   }
 
   public int getConnectionsCountByFilter(
-      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
+                                         final Identity existingIdentity,
+                                         final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(),
+    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(),
+                                                   existingIdentity.getRemoteId(),
                                                    profileFilter);
     RelationshipCountKey<IdentityFilterKey> key =
-        new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.CONNECTION_WITH_FILTER);
+                                                new RelationshipCountKey<IdentityFilterKey>(iKey,
+                                                                                            RelationshipType.CONNECTION_WITH_FILTER);
 
     //
     return relationshipsCount.get(
-        new ServiceContext<IntegerData>() {
-          public IntegerData execute() {
-            return new IntegerData(storage.getConnectionsCountByFilter(existingIdentity, profileFilter));
-          }
-        },
-        key).build();
+                                  new ServiceContext<IntegerData>() {
+                                    public IntegerData execute() {
+                                      return new IntegerData(storage.getConnectionsCountByFilter(existingIdentity,
+                                                                                                 profileFilter));
+                                    }
+                                  },
+                                  key)
+                             .build();
 
   }
 
   public int getIncomingCountByFilter(
-      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
+                                      final Identity existingIdentity,
+                                      final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
+    IdentityFilterKey iKey =
+                           new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
     RelationshipCountKey<IdentityFilterKey> key =
-        new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.INCOMMING_WITH_FILTER);
+                                                new RelationshipCountKey<IdentityFilterKey>(iKey,
+                                                                                            RelationshipType.INCOMMING_WITH_FILTER);
 
     //
     return relationshipsCount.get(
-        new ServiceContext<IntegerData>() {
-          public IntegerData execute() {
-            return new IntegerData(storage.getIncomingCountByFilter(existingIdentity, profileFilter));
-          }
-        },
-        key).build();
+                                  new ServiceContext<IntegerData>() {
+                                    public IntegerData execute() {
+                                      return new IntegerData(storage.getIncomingCountByFilter(existingIdentity, profileFilter));
+                                    }
+                                  },
+                                  key)
+                             .build();
 
   }
 
   public int getOutgoingCountByFilter(
-      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
+                                      final Identity existingIdentity,
+                                      final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
+    IdentityFilterKey iKey =
+                           new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
     RelationshipCountKey<IdentityFilterKey> key =
-        new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.OUTGOING_WITH_FILTER);
+                                                new RelationshipCountKey<IdentityFilterKey>(iKey,
+                                                                                            RelationshipType.OUTGOING_WITH_FILTER);
 
     //
     return relationshipsCount.get(
-        new ServiceContext<IntegerData>() {
-          public IntegerData execute() {
-            return new IntegerData(storage.getOutgoingCountByFilter(existingIdentity, profileFilter));
-          }
-        },
-        key).build();
+                                  new ServiceContext<IntegerData>() {
+                                    public IntegerData execute() {
+                                      return new IntegerData(storage.getOutgoingCountByFilter(existingIdentity, profileFilter));
+                                    }
+                                  },
+                                  key)
+                             .build();
 
   }
 
-  public Map<Identity, Integer> getSuggestions(final Identity identity, final int maxConnections, 
-                                                final int maxConnectionsToLoad, 
-                                                final int maxSuggestions) 
-                                                         throws RelationshipStorageException {
+  public Map<Identity, Integer> getSuggestions(final Identity identity,
+                                               final int maxConnections,
+                                               final int maxConnectionsToLoad,
+                                               final int maxSuggestions)
+                                                                         throws RelationshipStorageException {
     //
     IdentityKey key = new IdentityKey(identity);
-    SuggestionKey<IdentityKey> suggestKey = new SuggestionKey<IdentityKey>(key, maxConnections, 
-                                                                           maxConnectionsToLoad, 
+    SuggestionKey<IdentityKey> suggestKey = new SuggestionKey<IdentityKey>(key,
+                                                                           maxConnections,
+                                                                           maxConnectionsToLoad,
                                                                            maxSuggestions);
-    
+
     SuggestionsData keys = suggestionCache.get(
-        new ServiceContext<SuggestionsData>() {
-          public SuggestionsData execute() {
-            Map<Identity, Integer> got = storage.getSuggestions(identity, maxConnections, 
-                                                                maxConnectionsToLoad, 
-                                                                maxSuggestions);
-            return buildIdMap(got);
-          }
-        },
-        suggestKey);
+                                               new ServiceContext<SuggestionsData>() {
+                                                 public SuggestionsData execute() {
+                                                   Map<Identity, Integer> got = storage.getSuggestions(identity,
+                                                                                                       maxConnections,
+                                                                                                       maxConnectionsToLoad,
+                                                                                                       maxSuggestions);
+                                                   return buildIdMap(got);
+                                                 }
+                                               },
+                                               suggestKey);
 
     //
     return buildSuggestions(keys);
@@ -742,24 +803,27 @@ public class CachedRelationshipStorage extends AbstractStorage implements Relati
     //
     IdentityKey key = new IdentityKey(identity);
     ListRelationshipsKey<IdentityKey> listKey =
-        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.LAST_CONNECTIONS, 0, limit);
+                                              new ListRelationshipsKey<IdentityKey>(key,
+                                                                                    RelationshipType.LAST_CONNECTIONS,
+                                                                                    0,
+                                                                                    limit);
     ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getLastConnections(identity, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
+                                                     new ServiceContext<ListIdentitiesData>() {
+                                                       public ListIdentitiesData execute() {
+                                                         List<Identity> got = storage.getLastConnections(identity, limit);
+                                                         return buildIds(got);
+                                                       }
+                                                     },
+                                                     listKey);
 
     //
     return buildRelationships(keys);
   }
-  
+
   public List<Relationship> getRelationshipsByStatus(Identity identity, Relationship.Type type, long offset, long limit) {
     return storage.getRelationshipsByStatus(identity, type, offset, limit);
   }
-  
+
   public int getRelationshipsCountByStatus(Identity identity, Relationship.Type type) {
     return storage.getRelationshipsCountByStatus(identity, type);
   }

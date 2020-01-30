@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Aktivitäten</activities>
+         <profile>Profil</profile>
+         <connections>Verbindungen</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Meine Aktivitäten</Myactivities>
+         <Myprofile>Mein Profil</Myprofile>
+         <Myconnections>Meine Verbindungen</Myconnections>
+         <Mywiki>Mein Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Meine Benachrichtigungen</NotificationSettingsPortlet>
+         <More>Mehr</More>
+         <EditProfile>Bearbeiten</EditProfile>
+         <available>Verfügbar</available>
+         <offline>Offline</offline>
+         <away>Abwesend</away>
+         <donotdisturb>Bitte nicht stören</donotdisturb>
+         <invisible>Unsichtbar</invisible>
+         <bannerSizeHint>Wählen Sie ein Bild, das mindestens 130 Pixel hoch ist.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Ein Bild hochladen</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Ein Bild hochladen</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Annehmen</AcceptRequest>
+         <Deny>Ablehnen</Deny>
+         <RemoveConnection>Trennen</RemoveConnection>
+         <CancelRequest>Anfrage abbrechen</CancelRequest>
+      </action>
+      <label>
+         <Connect>Verbinden</Connect>
+         <ConnectNotExisting>Einladung wurde von jemand anderem abgebrochen.</ConnectNotExisting>
+         <ConnectionExisted>Einladung wurde von jemand anderem vergeben.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

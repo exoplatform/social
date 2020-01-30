@@ -26,8 +26,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-import javax.jcr.InvalidItemStateException;
-
 import org.exoplatform.commons.cache.future.Loader;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
@@ -166,12 +164,7 @@ public abstract class FutureCache<K, V, C>
          {
             if (e.getCause() != null)
             {
-              if (e.getCause() instanceof InvalidItemStateException) {
-                log.warn(e.getMessage());
-                return null;
-              } else {
-                throw new UndeclaredThrowableException(e.getCause());
-              }
+              throw new UndeclaredThrowableException(e.getCause());
             }
             else
             {

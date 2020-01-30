@@ -16,7 +16,11 @@
  */
 package org.exoplatform.social.service.rest;
 
-import junit.framework.AssertionFailedError;
+import java.util.ArrayList;
+
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
@@ -29,31 +33,35 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
+import junit.framework.AssertionFailedError;
 
-public class PeopleRestServiceTest  extends AbstractResourceTest {
-  private IdentityManager identityManager;
-  private SpaceService spaceService;
+public class PeopleRestServiceTest extends AbstractResourceTest {
+  private IdentityManager     identityManager;
+
+  private SpaceService        spaceService;
+
   private RelationshipManager relationshipManager;
-  private ActivityStorageImpl activityStorage;
 
-  private Identity rootIdentity;
-  private Identity demoIdentity;
-  private Identity maryIdentity;
-  private Identity johnIdentity;
+  private ActivityStorage     activityStorage;
+
+  private Identity            rootIdentity;
+
+  private Identity            demoIdentity;
+
+  private Identity            maryIdentity;
+
+  private Identity            johnIdentity;
 
   public void setUp() throws Exception {
     super.setUp();
 
-    identityManager =  getContainer().getComponentInstanceOfType(IdentityManager.class);
-    spaceService =  getContainer().getComponentInstanceOfType(SpaceService.class);
-    activityStorage = getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
-    relationshipManager =  getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    identityManager = getContainer().getComponentInstanceOfType(IdentityManager.class);
+    spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
+    activityStorage = getContainer().getComponentInstanceOfType(ActivityStorage.class);
+    relationshipManager = getContainer().getComponentInstanceOfType(RelationshipManager.class);
 
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
@@ -73,7 +81,8 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     String username = "root";
     h.putSingle("username", username);
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
-    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=R&currentUser=root", "", h, null, writer);
+    ContainerResponse response =
+                               service("GET", "/social/people/suggest.json?nameToSearch=R&currentUser=root", "", h, null, writer);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     assertEquals("application/json;charset=utf-8", response.getContentType().toString());
@@ -82,7 +91,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
   }
 
   public void testUserMentionInComment() throws Exception {
-    //Given
+    // Given
     final String TITLE = "activity on root stream";
     ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
     demoActivity.setTitle(TITLE);
@@ -95,10 +104,17 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     h2.putSingle("username", username);
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
 
-    //When
-    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_comment&activityId=" + demoActivity.getId() + "&spaceURL=null", "", h2, null, writer);
+    // When
+    ContainerResponse response =
+                               service("GET",
+                                       "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_comment&activityId="
+                                           + demoActivity.getId() + "&spaceURL=null",
+                                       "",
+                                       h2,
+                                       null,
+                                       writer);
 
-    //Then
+    // Then
     assertEquals(200, response.getStatus());
     assertTrue(((ArrayList) response.getEntity()).size() == 2);
 
@@ -106,7 +122,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
   }
 
   public void testUserMentionInActivityStream() throws Exception {
-    //Given
+    // Given
     Relationship relationship = new Relationship(rootIdentity, maryIdentity);
     relationship.setStatus(Relationship.Type.CONFIRMED);
     relationshipManager.update(relationship);
@@ -115,17 +131,24 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     h3.putSingle("username", username);
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
 
-    //When
-    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&activityId=null&spaceURL=null", "", h3, null, writer);
+    // When
+    ContainerResponse response =
+                               service("GET",
+                                       "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&activityId=null&spaceURL=null",
+                                       "",
+                                       h3,
+                                       null,
+                                       writer);
 
-    //Then
+    // Then
     assertEquals(200, response.getStatus());
     assertTrue(((ArrayList) response.getEntity()).size() == 2);
 
     relationshipManager.delete(relationship);
   }
+
   public void testUserMentionInSpaceComment() throws Exception {
-    //Given
+    // Given
     Relationship relationship = new Relationship(rootIdentity, maryIdentity);
     relationship.setStatus(Relationship.Type.CONFIRMED);
     relationshipManager.update(relationship);
@@ -134,8 +157,8 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     space.setDisplayName("space1");
     space.setGroupId("/platform/users");
     space.setVisibility(Space.PUBLIC);
-    space.setManagers(new String[]{rootIdentity.getRemoteId()});
-    String[] spaceMembers = new String[] {rootIdentity.getRemoteId(), demoIdentity.getRemoteId()};
+    space.setManagers(new String[] { rootIdentity.getRemoteId() });
+    String[] spaceMembers = new String[] { rootIdentity.getRemoteId(), demoIdentity.getRemoteId() };
     space.setMembers(spaceMembers);
     spaceService.createSpace(space, rootIdentity.getRemoteId());
     final String TITLE = "activity of root in the space activity stream";
@@ -147,18 +170,26 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     h4.putSingle("username", username);
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
 
-    //When
-    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_comment&activityId=" + demoActivity.getId() + "&spaceURL=" + space.getUrl(), "", h4, null, writer);
+    // When
+    ContainerResponse response =
+                               service("GET",
+                                       "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_comment&activityId="
+                                           + demoActivity.getId() + "&spaceURL=" + space.getUrl(),
+                                       "",
+                                       h4,
+                                       null,
+                                       writer);
 
-    //Then
+    // Then
     assertEquals(200, response.getStatus());
     assertTrue(((ArrayList) response.getEntity()).size() == 2);
 
     spaceService.deleteSpace(space);
     relationshipManager.delete(relationship);
   }
+
   public void testUserMentionInSpaceActivityStream() throws Exception {
-    //Given
+    // Given
     Relationship relationship = new Relationship(rootIdentity, maryIdentity);
     relationship.setStatus(Relationship.Type.CONFIRMED);
     relationshipManager.update(relationship);
@@ -167,8 +198,8 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     space.setDisplayName("space1");
     space.setGroupId("/platform/users");
     space.setVisibility(Space.PUBLIC);
-    space.setManagers(new String[]{rootIdentity.getRemoteId()});
-    String[] spaceMembers = new String[] {rootIdentity.getRemoteId(), demoIdentity.getRemoteId()};
+    space.setManagers(new String[] { rootIdentity.getRemoteId() });
+    String[] spaceMembers = new String[] { rootIdentity.getRemoteId(), demoIdentity.getRemoteId() };
     space.setMembers(spaceMembers);
     spaceService.createSpace(space, rootIdentity.getRemoteId());
     MultivaluedMap<String, String> h4 = new MultivaluedMapImpl();
@@ -176,10 +207,17 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     h4.putSingle("username", username);
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
 
-    //When
-    ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&activityId=null&spaceURL=" + space.getUrl(), "", h4, null, writer);
+    // When
+    ContainerResponse response =
+                               service("GET",
+                                       "/social/people/suggest.json?nameToSearch=m&currentUser=root&typeOfRelation=mention_activity_stream&activityId=null&spaceURL="
+                                           + space.getUrl(),
+                                       "",
+                                       h4,
+                                       null,
+                                       writer);
 
-    //Then
+    // Then
     assertEquals(200, response.getStatus());
     assertTrue(((ArrayList) response.getEntity()).size() == 2);
 

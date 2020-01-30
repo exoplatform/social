@@ -23,7 +23,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UISpaceMenuPortlet.gtmpl"
+  template = "war:/groovy/social/portlet/UISpaceMenuPortlet.gtmpl"
 )
 
 public class UISpaceMenuPortlet extends UIPortletApplication {

@@ -27,6 +27,10 @@
     <type>org.exoplatform.social.webui.profile.settings.UserProfileRenderingService</type>
   </component>
 
+  <component>
+    <type>org.exoplatform.web.application.ApplicationLifecycleExtension</type>
+  </component>
+
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
@@ -66,13 +70,45 @@
           <name>classpath.resources</name>
           <description>The resources that start with the following package name should be load from file system</description>
           <value>locale.social.Webui</value>
+          <value>locale.social.menu.webui</value>
         </values-param>
         <values-param>
           <name>portal.resource.names</name>
           <description>The resources that start with the following package name should be load from file system</description>
           <value>locale.social.Webui</value>
+          <value>locale.social.menu.webui</value>
         </values-param>
       </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.groovyscript.text.TemplateService</target-component>
+    <component-plugin>
+      <name>UIPortalApplication-head</name>
+      <set-method>addTemplateExtension</set-method>
+      <type>org.exoplatform.groovyscript.text.TemplateExtensionPlugin</type>
+      <init-params>
+        <values-param>
+          <name>templates</name>
+          <description>The list of templates to include in HTML Page Header with UIPortalApplication.gtmpl</description>
+          <value>war:/groovy/social/webui/UISocialPortalApplicationHead.gtmpl</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.web.application.ApplicationLifecycleExtension</target-component>
+    <component-plugin>
+      <name>SpaceAccessApplicationLifecycle</name>
+      <set-method>addPortalApplicationLifecycle</set-method>
+      <type>org.exoplatform.social.webui.space.access.SpaceAccessApplicationLifecycle</type>
+    </component-plugin>
+    <component-plugin>
+      <name>OAuthLifecycle</name>
+      <set-method>addPortalApplicationLifecycle</set-method>
+      <type>org.exoplatform.oauth.webui.OAuthLifecycle</type>
     </component-plugin>
   </external-component-plugins>
 

@@ -31,7 +31,7 @@ import org.exoplatform.webui.core.UIPortletApplication;
 @ComponentConfig()
 public class UIGroovyPortlet extends UIPortletApplication {
   /** DEFAULT TEMPLATE. */
-  private String DEFAULT_TEMPLATE = "app:/groovy/social/portlet/UIGroovyPortlet.gtmpl" ;
+  private String DEFAULT_TEMPLATE = "war:/groovy/social/portlet/UIGroovyPortlet.gtmpl" ;
 
   /** Stores template information. */
   private String template_ ;

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Kegiatan</activities>
+         <profile>Profil</profile>
+         <connections>Koneksi</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Kegiatan Saya</Myactivities>
+         <Myprofile>Profil Saya</Myprofile>
+         <Myconnections>Koneksi saya</Myconnections>
+         <Mywiki>Wiki saya</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Notifikasi Saya</NotificationSettingsPortlet>
+         <More>Lainnya</More>
+         <EditProfile>Edit</EditProfile>
+         <available>Tersedia</available>
+         <offline>Tidak Aktif</offline>
+         <away>Jauh</away>
+         <donotdisturb>Jangan ganggu</donotdisturb>
+         <invisible>Tidak terlihat</invisible>
+         <bannerSizeHint>Pilih gambar setidaknya 130 piksel tinggi.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Unggah gambar</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Unggah gambar</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Menerima</AcceptRequest>
+         <Deny>Menolak</Deny>
+         <RemoveConnection>Putuskan sambungan</RemoveConnection>
+         <CancelRequest>Batalkan Permintaan</CancelRequest>
+      </action>
+      <label>
+         <Connect>Hubungkan</Connect>
+         <ConnectNotExisting>Undangan dibatalkan oleh orang lain.</ConnectNotExisting>
+         <ConnectionExisted>Undangan telah disiapkan oleh orang lain.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

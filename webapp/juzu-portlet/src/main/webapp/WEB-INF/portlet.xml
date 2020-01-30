@@ -11,18 +11,46 @@
      <portlet-name>NotificationSettingsPortlet</portlet-name>
      <display-name xml:lang="EN">User Notification Settings</display-name>
      <portlet-class>org.exoplatform.social.portlet.userNotification.UserNotificationPortlet</portlet-class>
-          
      <supports>
        <mime-type>text/html</mime-type>
      </supports>
-     
      <supported-locale>en</supported-locale>
      <resource-bundle>locale.portlet.notification.UserNotificationPortlet</resource-bundle>
      <portlet-info>
        <title>User notification settings</title>
        <keywords>social</keywords>
      </portlet-info>
-     
    </portlet>
-  
+    <portlet>
+      <portlet-name>SuggestionsPeopleSpace</portlet-name>
+      <display-name xml:lang="EN">Suggestions Portlet</display-name>
+      <portlet-class>org.exoplatform.platform.portlet.juzu.suggestions.SuggestionsPortlet</portlet-class>
+      <supports>
+        <mime-type>text/html</mime-type>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>fr</supported-locale>
+      <resource-bundle>locale.portlet.suggestions.suggestions</resource-bundle>
+      <portlet-info>
+        <title>Suggestions</title>
+        <short-title>Suggestions</short-title>
+        <keywords>Juzu social intranet</keywords>
+      </portlet-info>
+    </portlet>
+    <portlet>
+      <portlet-name>Invitations</portlet-name>
+      <display-name xml:lang="EN">Invitations</display-name>
+      <portlet-class>org.exoplatform.platform.portlet.juzu.invitations.InvitationsPortlet</portlet-class>
+      <supports>
+        <mime-type>text/html</mime-type>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <supported-locale>fr</supported-locale>
+      <resource-bundle>locale.portlet.invitations.invitations</resource-bundle>
+      <portlet-info>
+        <title>Invitations</title>
+        <short-title>Invitations</short-title>
+        <keywords>Juzu social intranet</keywords>
+      </portlet-info>
+    </portlet>
 </portlet-app>

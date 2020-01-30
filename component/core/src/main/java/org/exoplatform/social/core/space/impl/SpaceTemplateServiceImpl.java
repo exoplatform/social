@@ -243,8 +243,10 @@ public class SpaceTemplateServiceImpl implements SpaceTemplateService, Startable
       SpaceTemplate spaceTemplateExtension = extendedSpaceTemplates.get(spaceTemplateExtensionName);
       List<SpaceApplication> apps = spaceTemplateExtension.getSpaceApplicationList();
       SpaceTemplate toExtendSpaceTemplate = this.spaceTemplates.get(spaceTemplateExtensionName);
-      if (toExtendSpaceTemplate == null) {;
-        LOG.warn("Can't extend Space template {} with applications {} because the space template can't be found.", spaceTemplateExtensionName, apps);
+      if (toExtendSpaceTemplate == null) {
+        LOG.warn("Can't extend Space template '{}' with applications {} because the space template can't be found.",
+                 spaceTemplateExtensionName,
+                 apps == null ? "" : apps.stream().map(SpaceApplication::getPortletName).collect(Collectors.toList()));
       }
       if (spaceTemplateExtension.getBannerPath() != null) {
         LOG.warn("Banner path defined in extension of space template {} isn't extensible", spaceTemplateExtensionName);

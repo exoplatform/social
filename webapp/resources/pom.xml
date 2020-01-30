@@ -30,13 +30,6 @@
   <name>eXo PLF:: Social Resources Web App</name>
   <description>eXo Social Resources Web App</description>
   <dependencies>
-    <!-- We want to be sure to use the right version in the dependency plugin but it's not required in the package -->
-    <dependency>
-      <groupId>org.exoplatform.platform-ui</groupId>
-      <artifactId>platform-ui-skin</artifactId>
-      <type>war</type>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

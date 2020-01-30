@@ -267,7 +267,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     List<DataEntity> dataEntities = (List<DataEntity>) collections.getEntities();
     assertEquals(4, dataEntities.size());
     // Make sure properties 'deleted' and 'enabled' are added to the dataEntity.
-    assertEquals(9, dataEntities.get(0).size());
+    assertEquals(13, dataEntities.get(0).size());
     assertEquals(true, dataEntities.get(0).containsKey("deleted"));
     assertEquals(true, dataEntities.get(0).containsKey("enabled"));
     assertEquals(rootIdentity.isDeleted(), dataEntities.get(0).get("deleted"));
@@ -280,7 +280,7 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     dataEntities = (List<DataEntity>) collections.getEntities();
     // Make sure properties 'deleted' and 'enabled' are added to the dataEntity.
     assertEquals(2, dataEntities.size());
-    assertEquals(9, dataEntities.get(0).size());
+    assertEquals(13, dataEntities.get(0).size());
     assertEquals(true, dataEntities.get(0).containsKey("deleted"));
     assertEquals(true, dataEntities.get(0).containsKey("enabled"));
     assertEquals(johnIdentity.isDeleted(), dataEntities.get(0).get("deleted"));

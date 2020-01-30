@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+ <UISpaceNavigationPortlet>
+     <label>
+         <Spaces>Meine Räume</Spaces>
+         <Join>einem Raum beitreten</Join>
+         <see>Zeige {0} weitere Räume an</see>
+     </label>
+     <msg>
+         <filter-spaces>Räume suchen</filter-spaces>
+         <no-space>Kein Raum gefunden</no-space>
+     </msg>
+
+</UISpaceNavigationPortlet>
+</bundle>

@@ -24,8 +24,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -38,6 +41,7 @@ import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.TransientApplicationState;
+import org.exoplatform.portal.module.ModuleRegistry;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
@@ -119,6 +123,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
 
   private SpaceService spaceService;
 
+  private ModuleRegistry moduleRegistry;
+
   private SpaceTemplateService spaceTemplateService;
 
   private Map<ApplicationCategory, List<Application>> appStoreCache = null;
@@ -171,7 +177,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
           spaceService.installApplication(space, spaceApplication.getPortletName());
         }
       }
-      //commit the parentNode to JCR 
       navService.saveNode(parentNodeCtx, null);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);
@@ -403,7 +408,23 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
                                                  String appName,
                                                  boolean isRoot) throws SpaceException {
     String appId = spaceApplication.getPortletName();
-    Application app = getApplication(space, appId);
+    String potletFullId = spaceApplication.getPortletApp() + "/" + spaceApplication.getPortletName();
+    if (!isPortletActive(potletFullId)) {
+      return null;
+    }
+
+    Application app;
+    try {
+      app = getApplication(space, appId);
+    } catch (Exception e) {
+      if (StringUtils.isBlank(spaceApplication.getPortletApp())) {
+        throw new IllegalStateException("An error occurred while getting application '{}' from registry."
+            + " In fact, the application isn't configured with its application name (WAR webapp name)."
+            + " This may be the cause of the problem", e);
+      } else {
+        throw new IllegalStateException("An error occurred while getting application '{}' from registry.", e);
+      }
+    }
     String contentId = app.getContentId();
     if (contentId == null) {
       contentId = app.getCategoryName() + "/" + app.getApplicationName();
@@ -699,5 +720,20 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     }
 
     return spaceService;
+  }
+
+  private boolean isPortletActive(String potletFullId) {
+    ModuleRegistry moduleRegistry = getModuleRegistry();
+    if (moduleRegistry == null) {
+      return true;
+    }
+    return moduleRegistry.isPortletActive(potletFullId);
+  }
+
+  private ModuleRegistry getModuleRegistry() {
+    if (moduleRegistry == null) {
+      moduleRegistry = CommonsUtils.getService(ModuleRegistry.class);
+    }
+    return moduleRegistry;
   }
 }

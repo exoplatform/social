@@ -104,15 +104,7 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
    * @return number of newer elements if any
    */
   int getNumberOfNewer(Long sinceTime);
-  
-  /**
-   * Gets the number of updated elements based on the of multi-value since time.
-   * 
-   * @param sinceTime the postedTime
-   * @return number of newer elements if any
-   */
-  int getNumberOfMultiUpdated(Map<String, Long> sinceTime);
-  
+
   /**
    * Gets get updated activities base on since time.
    * 
@@ -155,4 +147,9 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
    * @return number of elements if any
    */
   int getNumberOfUpgrade();
+
+  @SuppressWarnings("unchecked")
+  public static <T> T[] convertListToArray(List<T> list, Class<T> type) {
+    return list.toArray((T[]) java.lang.reflect.Array.newInstance(type, list.size()));
+  }
 }

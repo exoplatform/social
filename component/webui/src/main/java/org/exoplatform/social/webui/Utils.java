@@ -25,7 +25,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.UserPortalConfigService;
-import org.exoplatform.portal.mop.Described;
+import org.exoplatform.portal.mop.State;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.user.UserNavigation;
@@ -827,7 +827,7 @@ public class Utils {
       Locale userLocale =  Util.getPortalRequestContext().getLocale();
       Locale portalLocale = SpaceUtils.getUserPortal().getLocale();
       DescriptionService descriptionService = userPortalConfigService.getDescriptionService();
-      Described.State description = descriptionService.resolveDescription(id, portalLocale, userLocale);
+      State description = descriptionService.resolveDescription(id, portalLocale, userLocale);
       if (description != null) {
         return description.getName();
       }

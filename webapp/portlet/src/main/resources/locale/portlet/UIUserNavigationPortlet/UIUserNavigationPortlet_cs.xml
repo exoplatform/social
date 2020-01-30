@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Sled aktivit</activities>
+         <profile>Profil</profile>
+         <connections>Kontakty</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Moje aktivity</Myactivities>
+         <Myprofile>Můj profil</Myprofile>
+         <Myconnections>Moje kontakty</Myconnections>
+         <Mywiki>Moje Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Oznámení</NotificationSettingsPortlet>
+         <More>Více</More>
+         <EditProfile>Upravit</EditProfile>
+         <available>K dispozici</available>
+         <offline>Offline</offline>
+         <away>Nepřítomný</away>
+         <donotdisturb>Nerušit</donotdisturb>
+         <invisible>Neviditelný</invisible>
+         <bannerSizeHint>Zvolte obrázek o výšce nejméně 130 pixelů.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Nahrát obrázek</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Nahrát obrázek</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Přijmout</AcceptRequest>
+         <Deny>Zakázat</Deny>
+         <RemoveConnection>Odpojit</RemoveConnection>
+         <CancelRequest>Zrušit žádost</CancelRequest>
+      </action>
+      <label>
+         <Connect>Přidat</Connect>
+         <ConnectNotExisting>Pozvání bylo zrušeno jiným uživatelem.</ConnectNotExisting>
+         <ConnectionExisted>Pozvánka byla založena někým jiným.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

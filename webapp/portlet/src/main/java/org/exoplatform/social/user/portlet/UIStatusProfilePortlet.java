@@ -26,7 +26,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIStatusProfilePortlet.gtmpl"
+  template = "war:/groovy/social/portlet/user/UIStatusProfilePortlet.gtmpl"
 )
 public class UIStatusProfilePortlet extends UIAbstractUserPortlet {
   public static final String OFFLINE_STATUS        = "offline";

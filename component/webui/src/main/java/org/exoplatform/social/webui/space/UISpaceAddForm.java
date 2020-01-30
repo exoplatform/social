@@ -246,7 +246,7 @@ public class UISpaceAddForm extends UIForm {
         uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.ERROR));
         return;
       }
-      SpaceUtils.endRequest();
+      SpaceUtils.restartRequest();
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setUIComponent(null);
       uiPopup.setRendered(false);

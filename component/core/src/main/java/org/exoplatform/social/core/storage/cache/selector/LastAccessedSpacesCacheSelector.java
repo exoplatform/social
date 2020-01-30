@@ -10,16 +10,13 @@ import org.exoplatform.services.cache.ObjectCacheInfo;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.cache.SocialStorageCacheService;
 import org.exoplatform.social.core.storage.cache.model.data.ListSpacesData;
-import org.exoplatform.social.core.storage.cache.model.key.ListSpacesKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceFilterKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
+import org.exoplatform.social.core.storage.cache.model.key.*;
 
 /**
  * Cache selector for last accessed spaces.
  * It select all cache entries for the given userId and for space type LATEST_ACCESSED or VISITED.
  */
-public class LastAccessedSpacesCacheSelector extends ScopeCacheSelector<ListSpacesKey, ListSpacesData> {
+public class LastAccessedSpacesCacheSelector extends CacheSelector<ListSpacesKey, ListSpacesData> {
 
   private String                    remoteId;
 

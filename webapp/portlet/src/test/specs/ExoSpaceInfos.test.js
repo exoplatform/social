@@ -49,7 +49,6 @@ describe('ExoSpaceInfos.test.js', () => {
         $constants : spacesConstants
       }
     });
-
   });
 
   it('should display 2 managers in list when 2 users in managers data', () => {

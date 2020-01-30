@@ -1,41 +1,15 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.lucene.queryParser.QueryParser;
-import org.chromattic.api.ChromatticSession;
-import org.exoplatform.commons.chromattic.ChromatticManager;
-import org.exoplatform.commons.chromattic.Synchronization;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.storage.query.JCRProperties;
-import org.exoplatform.social.core.storage.query.QueryFunction;
-import org.exoplatform.social.core.storage.query.WhereExpression;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -43,27 +17,53 @@ import org.exoplatform.social.core.storage.query.WhereExpression;
  */
 public class StorageUtils {
   //
-  private static final Log LOG = ExoLogger.getLogger(StorageUtils.class.getName());
+  private static final Log   LOG               = ExoLogger.getLogger(StorageUtils.class.getName());
+
   //
-  public static final String ASTERISK_STR = "*";
-  public static final String PERCENT_STR = "%";
-  public static final char   ASTERISK_CHAR = '*';
-  public static final String SPACE_STR = " ";
-  public static final String EMPTY_STR = "";
-  public static final String SLASH_STR = "/";
-  public static final String COLON_STR = ":";
-  public static final String SOC_RELATIONSHIP = "soc:relationship";
-  public static final String SOC_RELCEIVER    = "soc:receiver";
-  public static final String SOC_SENDER       = "soc:sender";
-  public static final String SOC_IGNORED      = "soc:ignored";
-  public static final String SOC_FROM         = "soc:from";
-  public static final String SOC_TO           = "soc:to";
+  public static final String ASTERISK_STR      = "*";
+
+  public static final String PERCENT_STR       = "%";
+
+  public static final char   ASTERISK_CHAR     = '*';
+
+  public static final String SPACE_STR         = " ";
+
+  public static final String EMPTY_STR         = "";
+
+  public static final String SLASH_STR         = "/";
+
+  public static final String COLON_STR         = ":";
+
+  public static final String SOC_RELATIONSHIP  = "soc:relationship";
+
+  public static final String SOC_RELCEIVER     = "soc:receiver";
+
+  public static final String SOC_SENDER        = "soc:sender";
+
+  public static final String SOC_IGNORED       = "soc:ignored";
+
+  public static final String SOC_FROM          = "soc:from";
+
+  public static final String SOC_TO            = "soc:to";
+
   public static final String SOC_ACTIVITY_INFO = "soc:activityInfo";
-  public static final String SOC_PREFIX = "soc:";
-  private final static long DAY_MILISECONDS = 86400000;//a day = 24h x 60m x 60s x 1000 milisecond.
-  
-  private static Class<?> cls;
-  
+
+  public static final String SOC_PREFIX        = "soc:";
+
+  private final static long  DAY_MILISECONDS   = 86400000;                                         // a
+                                                                                                   // day
+                                                                                                   // =
+                                                                                                   // 24h
+                                                                                                   // x
+                                                                                                   // 60m
+                                                                                                   // x
+                                                                                                   // 60s
+                                                                                                   // x
+                                                                                                   // 1000
+                                                                                                   // milisecond.
+
+  private static Class<?>    cls;
+
   static {
     try {
       cls = Class.forName("org.exoplatform.platform.gadget.services.LoginHistory.LoginHistoryServiceImpl");
@@ -73,149 +73,33 @@ public class StorageUtils {
           + e.getMessage());
     }
   }
-  
-  public static void applyFilter(final WhereExpression whereExpression, final ProfileFilter profileFilter) {
-    //
-    String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
-    processUsernameSearchPattern(inputName.trim());
-    String position = addAsteriskToStringInput(StringEscapeUtils.escapeHtml(profileFilter.getPosition()).trim()).replace(ASTERISK_STR, PERCENT_STR);
-    inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
-    String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
-    char firstChar = profileFilter.getFirstCharacterOfName();
-    String skills = addAsteriskToStringInput(StringEscapeUtils.escapeHtml(profileFilter.getSkills()).trim()).replace(ASTERISK_STR, PERCENT_STR);
-    String company = addAsteriskToStringInput(StringEscapeUtils.escapeHtml(profileFilter.getCompany()).trim()).replace(ASTERISK_STR, PERCENT_STR);
-
-    //
-    if (firstChar != '\u0000') {
-      whereExpression.and().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName),
-          String.valueOf(firstChar).toLowerCase() + PERCENT_STR
-      );
-    }
-    else if (nameForSearch.trim().length() != 0) {
-      whereExpression.and().startGroup()
-          .like(
-            whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName),
-            PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR
-           )
-           .or().like(
-            whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName),
-            PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR
-           )
-           .or().like(
-            whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
-            PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR
-           )
-           .endGroup();
-    }
-
-    if (position.length() != 0) {
-      whereExpression.and().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
-          PERCENT_STR + position.toLowerCase() + PERCENT_STR
-      );
-      whereExpression.or().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.positions),
-          PERCENT_STR + position.toLowerCase() + PERCENT_STR
-      );
-    }
-
-    if (skills.length() != 0) {
-      whereExpression.and().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
-          PERCENT_STR + skills.toLowerCase() + PERCENT_STR
-      );
-    }
-  
-    if (company.length() != 0) {
-      whereExpression.and().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations),
-          PERCENT_STR + company.toLowerCase() + PERCENT_STR
-      );
-    }
-
-    if (profileFilter.getAll().length() != 0) {
-      String value = escapeSpecialCharacter(profileFilter.getAll());
-      if (value.trim().length() > 0 || value.replaceAll(" ", "").trim().length() > 0) {
-        whereExpression.and().startGroup()
-            .contains(ProfileEntity.fullName, value.toLowerCase())
-            .or().contains(ProfileEntity.firstName, value.toLowerCase())
-            .or().contains(ProfileEntity.lastName, value.toLowerCase())
-            .or().contains(ProfileEntity.position, value.toLowerCase())
-            .or().contains(ProfileEntity.skills, value.toLowerCase())
-            .or().contains(ProfileEntity.positions, value.toLowerCase())
-            .or().contains(ProfileEntity.organizations, value.toLowerCase())
-            .or().contains(ProfileEntity.jobsDescription, value.toLowerCase())
-            .endGroup();
-      }
-    }
-
-  }
-  
-  /**
-   * Escape special character by using QueryParser then replace single quote character
-   * 
-   * @param s the string to escape
-   * @return
-   */
-  public static String escapeSpecialCharacter(String s) {
-    return QueryParser.escape(s).replace("'", "''");
-  }
-
-  public static void applyExcludes(final WhereExpression whereExpression, final List<Identity> excludedIdentityList) {
-
-    if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
-      for (Identity identity : excludedIdentityList) {
-        whereExpression.and().not().equals(ProfileEntity.parentId, identity.getId());
-      }
-    }
-  }
-
-  public static void applyWhereFromIdentity(final WhereExpression whereExpression, final List<Identity> identities) {
-
-    //
-    whereExpression.startGroup();
-    if (identities.size() > 0) {
-      for (int i = 0; identities.size() > i; ++i) {
-        Identity current = identities.get(i);
-        whereExpression.equals(JCRProperties.id, current.getProfile().getId());
-        if (i + 1 < identities.size()) {
-          whereExpression.or();
-        }
-      }      
-    } else {
-      whereExpression.equals(JCRProperties.id, "");
-    }
-    
-    whereExpression.endGroup();
-    
-  }
 
   public static String processUsernameSearchPattern(final String userName) {
     String modifiedUserName = userName;
     if (modifiedUserName.length() > 0) {
       modifiedUserName =
-          ((EMPTY_STR.equals(modifiedUserName)) || (modifiedUserName.length() == 0))
-              ? ASTERISK_STR
-              : modifiedUserName;
+                       ((EMPTY_STR.equals(modifiedUserName)) || (modifiedUserName.length() == 0))
+                                                                                                  ? ASTERISK_STR
+                                                                                                  : modifiedUserName;
 
       modifiedUserName =
-          (modifiedUserName.charAt(0) != ASTERISK_CHAR) ? ASTERISK_STR + modifiedUserName : modifiedUserName;
+                       (modifiedUserName.charAt(0) != ASTERISK_CHAR) ? ASTERISK_STR + modifiedUserName : modifiedUserName;
 
       modifiedUserName =
-          (modifiedUserName.charAt(modifiedUserName.length() - 1) != ASTERISK_CHAR)
-              ? modifiedUserName += ASTERISK_STR
-              : modifiedUserName;
+                       (modifiedUserName.charAt(modifiedUserName.length() - 1) != ASTERISK_CHAR)
+                                                                                                 ? modifiedUserName +=
+                                                                                                                    ASTERISK_STR
+                                                                                                 : modifiedUserName;
 
       modifiedUserName =
-          (modifiedUserName.indexOf(ASTERISK_STR) >= 0)
-              ? modifiedUserName.replace(ASTERISK_STR, "." + ASTERISK_STR)
-              : modifiedUserName;
+                       (modifiedUserName.indexOf(ASTERISK_STR) >= 0)
+                                                                     ? modifiedUserName.replace(ASTERISK_STR, "." + ASTERISK_STR)
+                                                                     : modifiedUserName;
 
       modifiedUserName =
-          (modifiedUserName.indexOf(PERCENT_STR) >= 0)
-              ? modifiedUserName.replace(PERCENT_STR, "." + ASTERISK_STR)
-              : modifiedUserName;
+                       (modifiedUserName.indexOf(PERCENT_STR) >= 0)
+                                                                    ? modifiedUserName.replace(PERCENT_STR, "." + ASTERISK_STR)
+                                                                    : modifiedUserName;
 
       Pattern.compile(modifiedUserName);
     }
@@ -233,28 +117,8 @@ public class StorageUtils {
   }
 
   /**
-   * Encodes Url to conform to the generated Url of WEBDAV.
-   * Currently, Could not load data from generated url that contain dot character (.) cause by not consist with WEBDAV.
-   * This method replace any percent character (%) by (%25) to solve this problem. 
-   * @param path
-   * @return
-   */
-  public static String encodeUrl(String path) {
-    PortalContainer container = PortalContainer.getInstance();
-    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
-    SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle)
-                                          manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
-    ChromatticSession chromatticSession = lifeCycle.getSession();
-    StringBuilder encodedUrl = new StringBuilder(); 
-    encodedUrl = encodedUrl.append("/").append(container.getRestContextName()).append("/jcr/").
-                              append(lifeCycle.getRepositoryName()).append("/").
-                              append(chromatticSession.getJCRSession().getWorkspace().getName()).
-                              append(path.replaceAll("%", "%25"));
-    return encodedUrl.toString();
-  }
-
-  /**
    * Process Unified Search Condition
+   * 
    * @param searchCondition the input search condition
    * @return List of conditions
    * @since 4.0.x
@@ -268,9 +132,10 @@ public class StorageUtils {
     }
     return result;
   }
-  
+
   /**
    * Gets common item number from two list
+   * 
    * @param m the first list
    * @param n the second list
    * @return number of common item
@@ -281,27 +146,28 @@ public class StorageUtils {
     }
     List<T> copy = new ArrayList<T>(m);
     copy.removeAll(n);
-    
+
     return (m.size() - copy.size());
   }
-  
+
   /**
    * Sort one map by its value
+   * 
    * @param map the input map
    * @param asc indicate sort by ASC (true) or DESC (false)
    * @return the sorted map
    * @since 4.0.x
    */
-  public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue( Map<K, V> map , final boolean asc) {
+  public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue(Map<K, V> map, final boolean asc) {
     //
-    List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>( map.entrySet() );
+    List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
     //
-    Collections.sort( list, new Comparator<Map.Entry<K, V>>() {
-      public int compare( Map.Entry<K, V> o1, Map.Entry<K, V> o2 ) {
+    Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+      public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
         if (asc)
-          return (o1.getValue()).compareTo( o2.getValue() );
+          return (o1.getValue()).compareTo(o2.getValue());
         else
-          return (o1.getValue()).compareTo( o2.getValue() )/-1;
+          return (o1.getValue()).compareTo(o2.getValue()) / -1;
       }
     });
 
@@ -311,7 +177,7 @@ public class StorageUtils {
     }
     return result;
   }
-  
+
   /**
    * Sort list of spaces by space's display name
    * 
@@ -332,7 +198,7 @@ public class StorageUtils {
 
     return list;
   }
-  
+
   /**
    * Sort list of identities by full name
    * 
@@ -353,7 +219,7 @@ public class StorageUtils {
 
     return list;
   }
-  
+
   /**
    * Sort a list of activity by updated time
    * 
@@ -364,15 +230,16 @@ public class StorageUtils {
     //
     Collections.sort(list, new Comparator<ExoSocialActivity>() {
       public int compare(ExoSocialActivity a1, ExoSocialActivity a2) {
-        return ((Long)a1.getUpdated().getTime()).compareTo((Long)a2.getUpdated().getTime()) / -1;
+        return ((Long) a1.getUpdated().getTime()).compareTo((Long) a2.getUpdated().getTime()) / -1;
       }
     });
 
     return list.size() > limit ? list.subList(0, limit - 1) : list;
   }
-  
+
   /**
    * Gets sub list from the provided list with start and end index.
+   * 
    * @param list the identity list
    * @param startIndex start index to get
    * @param toIndex end index to get
@@ -380,16 +247,18 @@ public class StorageUtils {
    */
   public static <T> List<T> subList(List<T> list, int startIndex, int toIndex) {
     int totalSize = list.size();
-    
-    if (startIndex >= totalSize) return Collections.emptyList();
-    
+
+    if (startIndex >= totalSize)
+      return Collections.emptyList();
+
     //
-    if ( toIndex >= totalSize ) {
+    if (toIndex >= totalSize) {
       toIndex = totalSize;
     }
-    
+
     return list.subList(startIndex, toIndex);
   }
+
   /*
    * Gets added element when compares between l1 and l2
    * @param l1
@@ -399,7 +268,7 @@ public class StorageUtils {
   public static String[] sub(String[] l1, String[] l2) {
 
     if (l1 == null) {
-      return new String[]{};
+      return new String[] {};
     }
 
     if (l2 == null) {
@@ -408,129 +277,12 @@ public class StorageUtils {
 
     List<String> l = new ArrayList(Arrays.asList(l1));
     l.removeAll(Arrays.asList(l2));
-    return l.toArray(new String[]{});
-  }
-  /**
-   * Make the decision to persist JCR Storage or not
-   * @return
-   */
-  public static boolean persist() {
-    try {
-      ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
-      chromatticSession.save();
-    } catch (Exception e) {
-      return false;
-    }
-    return true;
-  }
-  
-  /**
-   * Make the decision to persist JCR Storage and refresh session or not
-   * 
-   * @return
-   */
-  public static boolean persist(boolean isRefresh) {
-    try {
-      ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
-      if (chromatticSession.getJCRSession().hasPendingChanges()) {
-        chromatticSession.getJCRSession().save();
-        if (isRefresh) {
-          chromatticSession.getJCRSession().refresh(true);
-        }
-
-      }
-    } catch (Exception e) {
-      return false;
-    }
-    return true;
-  }
-  
-  /**
-   * Make the decision to persist JCR Storage or not
-   * @return
-   */
-  public static boolean persistJCR(boolean beginRequest) {
-    try {
-      //push to JCR
-      AbstractStorage.lifecycleLookup().closeContext(true);
-      
-      if (beginRequest) {
-        AbstractStorage.lifecycleLookup().openContext();
-      }
-      
-    } catch (Exception e) {
-      return false;
-    }
-    return true;
-  }
-  
-  /**
-   * End the request for ChromatticManager 
-   * @return
-   */
-  public static boolean endRequest() {
-    try {
-      
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
-      Synchronization synchronization = manager.getSynchronization();
-      if (synchronization != null) {
-        synchronization.setSaveOnClose(true);
-        //close synchronous and session.logout
-        manager.endRequest(true);
-      }
-    } catch (Exception e) {
-      return false;
-    }
-    return true;
-  }
-  
-  /**
-   * Returns a collection containing all the elements in <code>list1</code> that
-   * are also in <code>list2</code>.
-   * 
-   * @param list1
-   * @param list2
-   * @return
-   */
-  public <T> List<T> intersection(List<T> list1, List<T> list2) {
-    List<T> list = new ArrayList<T>();
-
-    for (T t : list1) {
-      if (list2.contains(t)) {
-        list.add(t);
-      }
-    }
-
-    return list;
-  }
-  /**
-   * Returns a array containing all the elements in <code>list1</code> that
-   * @param array1
-   * @param array2
-   * @return
-   */
-  public <T> T[] intersection(T[] array1, T[] array2) {
-    List<T> got = intersection(Arrays.asList(array1), Arrays.asList(array2));
-    return (T[]) got.toArray();
-  }
-  
-  /**
-   * Returns a new {@link List} containing a - b
-   * @param a
-   * @param b
-   * @return
-   */
-  public static <T> List<T> sub(final Collection<T> a, final Collection<T> b) {
-    ArrayList<T> list = new ArrayList<T>(a);
-    for (Iterator<T> it = b.iterator(); it.hasNext();) {
-        list.remove(it.next());
-    }
-    return list;
+    return l.toArray(new String[] {});
   }
 
   /**
    * Retrieves the user list who has last login around given days.
+   * 
    * @param aroundDays the given days.
    * @return The list of users.
    */
@@ -555,7 +307,6 @@ public class StorageUtils {
   }
 
   /**
-   * 
    * @param aroundDays
    * @param lazilyCreatedTime
    * @return
@@ -563,10 +314,10 @@ public class StorageUtils {
   public static boolean isActiveUser(int aroundDays, long lazilyCreatedTime) {
     Calendar cal = Calendar.getInstance();
     cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - aroundDays);
-    long limitTime = cal.getTimeInMillis(); 
+    long limitTime = cal.getTimeInMillis();
     return lazilyCreatedTime >= limitTime;
   }
-  
+
   public static long getBeforeLastLogin(String userId) {
     try {
       if (cls != null) {
@@ -583,7 +334,7 @@ public class StorageUtils {
       return 0;
     }
   }
-  
+
   public static Map<String, Integer> getActiveUsers(int aroundDays) {
     try {
       if (cls != null) {
@@ -595,28 +346,29 @@ public class StorageUtils {
       } else {
         return new HashMap<String, Integer>();
       }
-      
+
     } catch (Exception e) {
       LOG.error("Failed to invoke method " + e.getMessage(), e);
       return null;
     }
   }
-  
+
   /**
-  * Compares oldDate and newDate.
-  *
-  * return TRUE if given newDate the after one day or more the given oldDate
-  * @param oldDate
-  * @param newDate
-  * @return TRUE: the day after oldDate
-  */
-    public static boolean afterDayOrMore(long oldDate, long newDate) {
-      long diffValue = newDate - oldDate;
-      return diffValue >= DAY_MILISECONDS;
-    }
-    
+   * Compares oldDate and newDate. return TRUE if given newDate the after one
+   * day or more the given oldDate
+   * 
+   * @param oldDate
+   * @param newDate
+   * @return TRUE: the day after oldDate
+   */
+  public static boolean afterDayOrMore(long oldDate, long newDate) {
+    long diffValue = newDate - oldDate;
+    return diffValue >= DAY_MILISECONDS;
+  }
+
   /**
-   * Gets the list of activity's id from the activities  
+   * Gets the list of activity's id from the activities
+   * 
    * @param activities
    * @return list of ids
    */

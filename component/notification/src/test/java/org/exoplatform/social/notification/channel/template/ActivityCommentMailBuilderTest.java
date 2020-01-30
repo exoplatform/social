@@ -182,7 +182,7 @@ public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toRoot);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn, John Anthony have commented on your activity: my activity&#39;s title post today.demo : demo add comment...");
+    assertDigest(writer, getFullName("demo") + ", " + getFullName("john") + " have commented on your activity: my activity&#39;s title post today.demo : demo add comment...");
   }
   
   public void testDigestWithDeletedComment() throws Exception {
@@ -210,7 +210,7 @@ public class ActivityCommentMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toRoot);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn, John Anthony have commented on your activity: my activity&#39;s title post today.demo : demo add comment...");
+    assertDigest(writer, getFullName("demo") + ", " + getFullName("john") + " have commented on your activity: my activity&#39;s title post today.demo : demo add comment...");
     
     notificationService.clearAll();
     

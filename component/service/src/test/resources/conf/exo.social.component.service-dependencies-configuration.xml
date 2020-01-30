@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd" xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+  <import>jar:/conf/exo.portal.component.identity-configuration.xml</import>
+  <import>jar:/conf/exo.portal.component.portal-configuration.xml</import>
+  <import>jar:/conf/exo.portal.component.application-registry-configuration.xml</import>
+  <import>jar:/conf/exo.commons.component.core-configuration.xml</import>
+  <import>jar:/conf/exo.social.component.core-configuration.xml</import>
+
+</configuration>

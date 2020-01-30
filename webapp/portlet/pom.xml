@@ -162,19 +162,16 @@
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- We want to be sure to use the right version in the dependency plugin but it's not required in the package -->
-    <dependency>
-      <groupId>org.exoplatform.platform-ui</groupId>
-      <artifactId>platform-ui-skin</artifactId>
-      <type>war</type>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.exoplatform.gatein.wci</groupId>
       <artifactId>wci-wci</artifactId>
       <scope>runtime</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>social-portlet</finalName>
@@ -189,6 +186,7 @@
         <executions>
           <execution>
             <id>install node and npm</id>
+            <phase>compile</phase>
             <goals>
               <goal>install-node-and-npm</goal>
             </goals>
@@ -199,6 +197,7 @@
           </execution>
           <execution>
             <id>npm install</id>
+            <phase>compile</phase>
             <goals>
               <goal>npm</goal>
             </goals>
@@ -208,6 +207,7 @@
           </execution>
           <execution>
             <id>npm run test</id>
+            <phase>test</phase>
             <goals>
               <goal>npm</goal>
             </goals>
@@ -217,6 +217,7 @@
           </execution>
           <execution>
             <id>npm run build</id>
+            <phase>compile</phase>
             <goals>
               <goal>npm</goal>
             </goals>

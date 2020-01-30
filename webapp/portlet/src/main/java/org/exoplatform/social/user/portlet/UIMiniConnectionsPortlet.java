@@ -37,7 +37,7 @@ import org.json.JSONObject;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/user/UIMiniConnectionsPortlet.gtmpl",
+  template = "war:/groovy/social/portlet/user/UIMiniConnectionsPortlet.gtmpl",
   events = {
     @EventConfig(listeners = UIMiniConnectionsPortlet.RemoveConnectionActionListener.class)
   }

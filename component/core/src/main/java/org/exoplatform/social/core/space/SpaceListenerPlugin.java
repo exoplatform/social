@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.space;
 
-import org.exoplatform.social.common.jcr.ManagedPlugin;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 
@@ -26,7 +25,7 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice Lamarque</a>
  * @version $Revision$
  */
-public abstract class SpaceListenerPlugin extends ManagedPlugin implements
+public abstract class SpaceListenerPlugin implements
         SpaceLifeCycleListener {
 
   /**

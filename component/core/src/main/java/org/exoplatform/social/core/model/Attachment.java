@@ -16,18 +16,9 @@
  */
 package org.exoplatform.social.core.model;
 
-import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Session;
 import java.io.InputStream;
 
 public abstract  class Attachment {
-
-  private static final Log LOG = ExoLogger.getLogger(Attachment.class);
 
   /**
    * The id.
@@ -88,32 +79,6 @@ public abstract  class Attachment {
   }
 
   public abstract String getAttachmentType();
-
-  /**
-   * Gets the data path by specifying a PortalContainer instance
-   *
-   * @return the data path
-   * @throws Exception the exception
-   * @deprecated
-   */
-  public String getDataPath(PortalContainer portalContainer) throws Exception {
-    return getDataPath();
-  }
-
-  /**
-   * Gets the data path.
-   *
-   * @return the data path
-   * @throws Exception the exception
-   */
-  public String getDataPath() throws Exception {
-    try {
-      return getSession().getItem(getId()).getPath();
-    } catch (ItemNotFoundException e) {
-      LOG.warn("Failed to get data path", e);
-      return null;
-    }
-  }
 
   /**
    * Gets the id.
@@ -248,16 +213,6 @@ public abstract  class Attachment {
     } else {
       imageBytes = null;
     }
-  }
-
-  /**
-   * Gets the session.
-   *
-   * @return the session
-   * @throws Exception the exception
-   */
-  private Session getSession() throws Exception {
-    return CommonsUtils.getSystemSessionProvider().getSession(workspace, CommonsUtils.getRepository());
   }
 
 }

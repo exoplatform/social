@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.webui.util.Util;

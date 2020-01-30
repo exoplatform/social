@@ -34,7 +34,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UISocialUserToolBarGroupPortlet.gtmpl")
+  template = "war:/groovy/social/portlet/UISocialUserToolBarGroupPortlet.gtmpl")
 public class UISocialUserToolBarGroupPortlet extends UIPortletApplication {
 
   public UISocialUserToolBarGroupPortlet() throws Exception {

@@ -119,7 +119,7 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(messages);
     buildDigest(ctx, writer);
     
-    assertDigest(writer, "The following users have asked to join the my space 1 space: John Anthony, Mary Kelly.");
+    assertDigest(writer, "The following users have asked to join the my space 1 space: " + getFullName("john") + ", " + getFullName("mary") + ".");
     notificationService.clearAll();
     
   }
@@ -150,7 +150,7 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(messages);
     buildDigest(ctx, writer);
     
-    assertDigest(writer, "The following users have asked to join the my space 1 space: John Anthony, Mary Kelly.");
+    assertDigest(writer, "The following users have asked to join the my space 1 space: " + getFullName("john") + ", " + getFullName("mary") + ".");
     notificationService.clearAll();
     
   }
@@ -177,7 +177,7 @@ public class RequestJoinSpaceMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(messages);
     buildDigest(ctx, writer);
     
-    assertDigest(writer, "The following users have asked to join the my space 1 space: Demo gtn, Mary Kelly.");
+    assertDigest(writer, "The following users have asked to join the my space 1 space: " + getFullName("demo") + ", " + getFullName("mary") + ".");
     notificationService.clearAll();
     
   }

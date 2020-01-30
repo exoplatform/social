@@ -119,6 +119,6 @@ public class ActivityCommentReplyMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toRoot);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn has replied to your comment: my activity title post today.demo add reply");
+    assertDigest(writer, getFullName("demo") + " has replied to your comment: my activity title post today.demo add reply");
   }
 }

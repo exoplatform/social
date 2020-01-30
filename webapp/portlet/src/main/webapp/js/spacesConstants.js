@@ -7,6 +7,7 @@ export const spacesConstants = {
   SOCIAL_SPACES_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/${eXo.env.portal.containerName}/social/spaces/`,
   SOCIAL_USER_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/users`,
   SPACE_ID: eXo.env.portal.spaceId,
+  LANG: eXo.env.portal.language,
   HOST_NAME: window.location.host,
   MANAGERS_ROLE: '/users?role=manager',
   UPLOAD_API: `${eXo.env.portal.context}/upload`,

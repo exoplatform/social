@@ -23,8 +23,6 @@ import junit.framework.AssertionFailedError;
 
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.mop.user.UserPortal;
-import org.exoplatform.portal.pom.config.POMSession;
-import org.exoplatform.portal.pom.config.POMSessionManager;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.Authenticator;
@@ -41,8 +39,6 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private UserPortalConfigService userPortalConfigSer_;
   /** . */
-  private POMSessionManager mgr = null;
-  /** . */
   private Authenticator authenticator = null;
   
   private List<Identity> tearDownUserList = null;
@@ -56,7 +52,6 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
   @Override
   public void setUp() throws Exception {
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    mgr = (POMSessionManager)getContainer().getComponentInstanceOfType(POMSessionManager.class);
     authenticator = (Authenticator)getContainer().getComponentInstanceOfType(Authenticator.class);
 
     cacheService = getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
@@ -101,9 +96,6 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
   
   private abstract class UnitTest {
 
-    /** . */
-    private POMSession mopSession;
-
     protected final void execute(String userId) {
       Throwable failure = null;
 
@@ -122,16 +114,6 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
 
       //
       if (failure == null) {
-        // Clear cache for test
-        mgr.clearCache();
-
-        //
-        if (mgr.getLifeCycle().getContext() == null) {
-          mopSession = mgr.openSession();
-        } else {
-          mopSession = mgr.getSession();
-        }
-
         //
         ConversationState.setCurrent(conversationState);
         try {
@@ -140,7 +122,6 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
           failure = e;
         } finally {
           ConversationState.setCurrent(null);
-          mopSession.close(false);
           end();
         }
       }

@@ -16,8 +16,11 @@
  */
 package org.exoplatform.social.core.test;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
 import org.exoplatform.social.core.activity.filter.ActivityIteratorTest;
-import org.exoplatform.social.core.feature.ActiviyBuilderWhereTest;
 import org.exoplatform.social.core.identity.IdentityResultTest;
 import org.exoplatform.social.core.identity.model.GlobalIdTest;
 import org.exoplatform.social.core.identity.model.IdentityTest;
@@ -25,45 +28,20 @@ import org.exoplatform.social.core.image.ImageUtilsTest;
 import org.exoplatform.social.core.processor.ActivityResourceBundlePluginTest;
 import org.exoplatform.social.core.processor.I18NActivityProcessorTest;
 import org.exoplatform.social.core.relationship.RelationshipTest;
-import org.exoplatform.social.core.space.SpaceUtilsTest;
-import org.exoplatform.social.core.storage.ChromatticNameEncodeTest;
 import org.exoplatform.social.core.storage.StorageUtilsTest;
-import org.exoplatform.social.core.storage.query.ExpressionConstructorTestCase;
-import org.exoplatform.social.core.storage.query.WhereExpressionTypesafetyTestCase;
-import org.exoplatform.social.core.storage.query.WhereExpressionValuesTestCase;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  GlobalIdTest.class,
-  IdentityTest.class,
-  ImageUtilsTest.class,
-  ActivityResourceBundlePluginTest.class,
-  I18NActivityProcessorTest.class,
-  RelationshipTest.class,
-  StorageUtilsTest.class,
-  ExpressionConstructorTestCase.class,
-  WhereExpressionTypesafetyTestCase.class,
-  WhereExpressionValuesTestCase.class,
-  ActiviyBuilderWhereTest.class,
-  ActivityIteratorTest.class,
-  IdentityResultTest.class,
-  ChromatticNameEncodeTest.class
-  })
+    GlobalIdTest.class,
+    IdentityTest.class,
+    ImageUtilsTest.class,
+    ActivityResourceBundlePluginTest.class,
+    I18NActivityProcessorTest.class,
+    RelationshipTest.class,
+    StorageUtilsTest.class,
+    ActivityIteratorTest.class,
+    IdentityResultTest.class,
+})
 public class NoContainerTestSuite {
-  
-  @BeforeClass
-  public static void setUp() throws Exception {
-    
-  }
-
-  @AfterClass
-  public static void tearDown() {
-  }
-
 
 }

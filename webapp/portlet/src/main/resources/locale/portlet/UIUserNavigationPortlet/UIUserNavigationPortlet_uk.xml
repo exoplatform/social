@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Діяльності</activities>
+         <profile>Профіль</profile>
+         <connections>Список контактів</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Мої діяльності</Myactivities>
+         <Myprofile>Мій профіль</Myprofile>
+         <Myconnections>Мої контакти</Myconnections>
+         <Mywiki>Моя вікі-сторінка</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Мої сповіщення</NotificationSettingsPortlet>
+         <More>Більше</More>
+         <EditProfile>Редагувати</EditProfile>
+         <available>Доступний</available>
+         <offline>Офлайн</offline>
+         <away>Немає на місці</away>
+         <donotdisturb>Не турбувати</donotdisturb>
+         <invisible>Невидимий</invisible>
+         <bannerSizeHint>Виберіть зображення висотою не менше, як 130 пікселів.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Завантажити зображення</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Завантажити зображення</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Прийняти</AcceptRequest>
+         <Deny>Відхилити</Deny>
+         <RemoveConnection>Відключити</RemoveConnection>
+         <CancelRequest>Скасувати запит</CancelRequest>
+      </action>
+      <label>
+         <Connect>Додати в контакти</Connect>
+         <ConnectNotExisting>Запрошення було скасовано іншим користувачем.</ConnectNotExisting>
+         <ConnectionExisted>Запрошення було створене кимось ще.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

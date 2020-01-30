@@ -6,7 +6,8 @@ let config = {
   // set the entry point of the application
   // can use multiple entry
   entry: {
-    spaceInfos: './src/main/webapp/space-infos-app/main.js'
+    spaceInfos: './src/main/webapp/space-infos-app/main.js',
+    whoIsOnline: './src/main/webapp/who-is-online-app/main.js'
   },
   module: {
     rules: [

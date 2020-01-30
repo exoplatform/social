@@ -1,0 +1,56 @@
+<div id="searchSetting" class="uiSearchSetting">
+  <div class="uiForm">
+    <div class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label">&{unifiedsearch.edit.resultsPerPage.label}</label>
+        <div class="controls">
+          <span class="uiSelectbox uiEDWidth70">
+            <select id="resultsPerPage" class="selectbox uiResultPerPage">
+              <option>5</option>
+              <option>10</option>
+              <option>20</option>
+              <option>50</option>
+              <option>100</option>
+            </select>
+          </span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">&{unifiedsearch.edit.currentsite.label}</label>
+        <div class="controls"><span class="uiCheckbox"><input type="checkbox" id="searchCurrentSiteOnly" class="checkbox"><span></span></span></div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">&{unifiedsearch.edit.hideSearchForm.label}</label>
+        <div class="controls"><span class="uiCheckbox"><input type="checkbox" id="hideSearchForm" class="checkbox"><span></span></span></div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">&{unifiedsearch.edit.hideFacetsFilter.label}</label>
+        <div class="controls"><span class="uiCheckbox"><input type="checkbox" id="hideFacetsFilter" class="checkbox"><span></span></span></div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">&{unifiedsearch.edit.searchIn.label}</label>
+        <div class="controls">
+          <ul id="lstSearchInOptions"></ul>
+        </div>
+        
+	      <input type="hidden" id="everythingSearchSettings" value="&{unifiedsearch.edit.everything.label}"/>
+	      <input type="hidden" id="alertOkSearchSettings" value="&{unifiedsearch.edit.alert.saveSettings}"/>
+	      <input type="hidden" id="alertNotOkSearchSettings" value="&{unifiedsearch.edit.alert.error.saveSettings}"/>
+        
+      </div>
+    </div>
+
+    <div class="uiAction">
+      <button type="button" value="Save Settings" class="btn" id="btnSave">&{unifiedsearch.edit.saveSettings.label}</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+window.require(["PORTLET/unified-search/UnifiedsearchPortlet"], function() {
+  initSearchSetting("&{unifiedsearch.edit.everything.label}","&{unifiedsearch.edit.alert.saveSettings}","&{unifiedsearch.edit.alert.error.saveSettings}");
+});  
+</script>

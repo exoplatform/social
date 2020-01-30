@@ -56,7 +56,7 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfigs ({
   @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class,
-    template = "app:/groovy/social/portlet/UIMembersPortlet.gtmpl",
+    template = "war:/groovy/social/portlet/UIMembersPortlet.gtmpl",
     events = {
       @EventConfig(listeners = UIMembersPortlet.ConnectActionListener.class),
       @EventConfig(listeners = UIMembersPortlet.ConfirmActionListener.class),

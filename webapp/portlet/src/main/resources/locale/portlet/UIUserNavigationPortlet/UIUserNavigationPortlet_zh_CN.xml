@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>活动流</activities>
+         <profile>配置文件</profile>
+         <connections>联系人</connections>
+         <wiki>wiki</wiki>
+         <Myactivities>我的活动流</Myactivities>
+         <Myprofile>我的配置文件</Myprofile>
+         <Myconnections>我的联系人</Myconnections>
+         <Mywiki>我的 Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>我的通知</NotificationSettingsPortlet>
+         <More>更多</More>
+         <EditProfile>编辑</EditProfile>
+         <available>可用</available>
+         <offline>离线</offline>
+         <away>离开</away>
+         <donotdisturb>请勿打扰</donotdisturb>
+         <invisible>隐藏</invisible>
+         <bannerSizeHint>Choose an image at least 130 pixels high.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>上传图像</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>上传图像</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>接受</AcceptRequest>
+         <Deny>拒绝</Deny>
+         <RemoveConnection>断开连接</RemoveConnection>
+         <CancelRequest>取消请求</CancelRequest>
+      </action>
+      <label>
+         <Connect>连接</Connect>
+         <ConnectNotExisting>邀请取消了别人。</ConnectNotExisting>
+         <ConnectionExisted>邀请设立了别人。</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

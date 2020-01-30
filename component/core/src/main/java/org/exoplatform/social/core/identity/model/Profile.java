@@ -16,14 +16,10 @@
  */
 package org.exoplatform.social.core.identity.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
+
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 
@@ -33,239 +29,199 @@ import org.exoplatform.social.core.profile.ProfileLifeCycle;
 public class Profile {
 
   /** gender key. */
-  public static final String        GENDER         = "gender";
-  public static final String        MALE           = "male";
-  public static final String        FEMALE         = "female";
+  public static final String  GENDER                  = "gender";
+
+  public static final String  MALE                    = "male";
+
+  public static final String  FEMALE                  = "female";
 
   /** username key. */
-  public static final String        USERNAME       = "username";
+  public static final String  USERNAME                = "username";
 
   /** firstname key. */
-  public static final String        FIRST_NAME     = "firstName";
+  public static final String  FIRST_NAME              = "firstName";
 
   /** lastname key. */
-  public static final String        LAST_NAME      = "lastName";
+  public static final String  LAST_NAME               = "lastName";
 
   /** lastname key. */
-  public static final String        FULL_NAME      = "fullName";
-  
-  /** email key. */
-  public static final String        EMAIL          = "email";
+  public static final String  FULL_NAME               = "fullName";
 
   /** email key. */
-  public static final String        ABOUT_ME       = "aboutMe";
+  public static final String  EMAIL                   = "email";
+
+  /** email key. */
+  public static final String  ABOUT_ME                = "aboutMe";
 
   /** profile of a deleted user */
-  public static final String        DELETED        = "deleted";
+  public static final String  DELETED                 = "deleted";
 
   /**
    * property of type {@link AvatarAttachment} that contains the avatar
    */
-  public static final String        AVATAR         = "avatar";
+  public static final String  AVATAR                  = "avatar";
 
-  public static final String        BANNER         = "banner";
-  
+  public static final String  BANNER                  = "banner";
+
   /** EXPERIENCE. */
-  public static final String        EXPERIENCES    = "experiences";
+  public static final String  EXPERIENCES             = "experiences";
 
   /** ID. */
-  public static final String        EXPERIENCES_ID          = "id";
+  public static final String  EXPERIENCES_ID          = "id";
 
   /** COMPANY. */
-  public static final String        EXPERIENCES_COMPANY     = "company";
+  public static final String  EXPERIENCES_COMPANY     = "company";
 
   /** POSITION. */
-  public static final String        EXPERIENCES_POSITION    = "position";
+  public static final String  EXPERIENCES_POSITION    = "position";
 
   /** POSITION. */
-  public static final String        EXPERIENCES_SKILLS      = "skills";
+  public static final String  EXPERIENCES_SKILLS      = "skills";
 
   /** START DATE OF EXPERIENCE. */
-  public static final String        EXPERIENCES_START_DATE  = "startDate";
+  public static final String  EXPERIENCES_START_DATE  = "startDate";
 
   /** END DATE OF EXPERIENCE. */
-  public static final String        EXPERIENCES_END_DATE    = "endDate";
+  public static final String  EXPERIENCES_END_DATE    = "endDate";
 
   /** CURRENT OR PAST EXPERIENCE. */
-  public static final String        EXPERIENCES_IS_CURRENT  = "isCurrent";
+  public static final String  EXPERIENCES_IS_CURRENT  = "isCurrent";
 
   /** DESCRIPTION OF EXPERIENCE. */
-  public static final String        EXPERIENCES_DESCRIPTION = "description";
+  public static final String  EXPERIENCES_DESCRIPTION = "description";
 
   /** POSITION. */
-  public static final String        POSITION       = "position";
+  public static final String  POSITION                = "position";
 
   /**
    * An optional url for this profile
    */
   @Deprecated
-  public static final String        URL            = "Url";
+  public static final String  URL                     = "Url";
 
   /** PHONES key. */
-  public static final String        CONTACT_PHONES = "phones";
+  public static final String  CONTACT_PHONES          = "phones";
 
   /** IMS key. */
-  public static final String        CONTACT_IMS    = "ims";
+  public static final String  CONTACT_IMS             = "ims";
 
   /** URLS key. */
-  public static final String        CONTACT_URLS   = "urls";
+  public static final String  CONTACT_URLS            = "urls";
 
   /** url postfix */
-  public static final String        URL_POSTFIX    = "Url";
+  public static final String  URL_POSTFIX             = "Url";
 
   /** Resized subfix */
-  public static final String        RESIZED_SUBFIX = "RESIZED_";
+  public static final String  RESIZED_SUBFIX          = "RESIZED_";
 
   /** Space string */
-  private static final String       SPACE_STR = " ";
-  
+  private static final String SPACE_STR               = " ";
+
   /** Types of updating of profile. */
-  public static enum                UpdateType 
-                                      {
-                                        POSITION,
-                                        BASIC_INFOR,
-                                        CONTACT,
-                                        EXPERIENCES,
-                                        AVATAR,
-                                        ABOUT_ME,
-                                        BANNER;
-                                        
-                                        public void updateActivity(ProfileLifeCycle profileLifeCycle, Profile profile) {
-                                          switch (this) {
-                                            case ABOUT_ME: {
-                                              profileLifeCycle.aboutMeUpdated(profile.getIdentity().remoteId, profile);
-                                              break;
-                                            }
-                                            case CONTACT: {
-                                              profileLifeCycle.contactUpdated(profile.getIdentity().getRemoteId(), profile);
-                                              break;
-                                            }
-                                            case EXPERIENCES: {
-                                              profileLifeCycle.experienceUpdated(profile.getIdentity().getRemoteId(), profile);
-                                              break;
-                                            }
-                                            case AVATAR: {
-                                              profileLifeCycle.avatarUpdated(profile.getIdentity().getRemoteId(), profile);
-                                              break;
-                                            }
-                                            case BANNER: {
-                                              profileLifeCycle.bannerUpdated(profile.getIdentity().getRemoteId(), profile);
-                                              break;
-                                            }
-                                            default :
-                                              break;
-                                          }
-                                        }
-                                      };
-                                      
-  public static enum                AttachedActivityType
-                                      {
-                                        USER("userProfileActivityId"),
-                                        SPACE("spaceProfileActivityId"),
-                                        RELATION("relationActivityId"),
-                                        RELATIONSHIP("relationShipActivityId");
-                                        
-                                        private String type;
-                                        private AttachedActivityType(String type) {
-                                          this.type = type;
-                                        }
-                                        public String value() {
-                                          return this.type;
-                                        }
-                                        public void setActivityId(ActivityProfileEntity entity, String activityId) {
-                                          switch (this) {
-                                            case USER: {
-                                              entity.setUserProfileActivityId(activityId);
-                                              break;
-                                            }
-                                            case SPACE: {
-                                              entity.setSpaceProfileActivityId(activityId);
-                                              break;
-                                            }
-                                            case RELATION: {
-                                              entity.setRelationActivityId(activityId);
-                                              break;
-                                            }
-                                            case RELATIONSHIP: {
-                                              entity.setRelationShipActivityId(activityId);
-                                              break;
-                                            }
-                                            default :
-                                              break;
-                                          }
-                                        }
-                                        public String getActivityId(ActivityProfileEntity entity) {
-                                          switch (this) {
-                                          case USER: {
-                                            return entity.getUserProfileActivityId();
-                                          }
-                                          case SPACE: {
-                                            return entity.getSpaceProfileActivityId();
-                                          }
-                                          case RELATION: {
-                                            return entity.getRelationActivityId();
-                                          }
-                                          case RELATIONSHIP: {
-                                            return entity.getRelationShipActivityId();
-                                          }
-                                          default : {
-                                            return null;
-                                          }
-                                        }
-                                        }
-                                      };
-  
-                                      
+  public static enum UpdateType {
+    POSITION,
+    BASIC_INFOR,
+    CONTACT,
+    EXPERIENCES,
+    AVATAR,
+    ABOUT_ME,
+    BANNER;
+
+    public void updateActivity(ProfileLifeCycle profileLifeCycle, Profile profile) {
+      switch (this) {
+      case ABOUT_ME: {
+        profileLifeCycle.aboutMeUpdated(profile.getIdentity().remoteId, profile);
+        break;
+      }
+      case CONTACT: {
+        profileLifeCycle.contactUpdated(profile.getIdentity().getRemoteId(), profile);
+        break;
+      }
+      case EXPERIENCES: {
+        profileLifeCycle.experienceUpdated(profile.getIdentity().getRemoteId(), profile);
+        break;
+      }
+      case AVATAR: {
+        profileLifeCycle.avatarUpdated(profile.getIdentity().getRemoteId(), profile);
+        break;
+      }
+      case BANNER: {
+        profileLifeCycle.bannerUpdated(profile.getIdentity().getRemoteId(), profile);
+        break;
+      }
+      default:
+        break;
+      }
+    }
+  };
+
+  public static enum AttachedActivityType {
+    USER("userProfileActivityId"),
+    SPACE("spaceProfileActivityId"),
+    RELATION("relationActivityId"),
+    RELATIONSHIP("relationShipActivityId");
+
+    private String type;
+
+    private AttachedActivityType(String type) {
+      this.type = type;
+    }
+
+    public String value() {
+      return this.type;
+    }
+  };
+
   /** The properties. */
-  private final Map<String, Object> properties     = new HashMap<String, Object>();
+  private final Map<String, Object>              properties  = new HashMap<String, Object>();
 
   private static final Map<UpdateType, String[]> updateTypes = new HashMap<UpdateType, String[]>();
   static {
-    updateTypes.put(UpdateType.POSITION, new String[] {POSITION});
-    updateTypes.put(UpdateType.BASIC_INFOR, new String[] {FIRST_NAME, LAST_NAME, EMAIL});
-    updateTypes.put(UpdateType.CONTACT, new String[] {GENDER, CONTACT_PHONES, CONTACT_IMS, CONTACT_URLS});
-    updateTypes.put(UpdateType.EXPERIENCES, new String[] {EXPERIENCES});
-    updateTypes.put(UpdateType.AVATAR, new String[] {AVATAR});
-    updateTypes.put(UpdateType.BANNER, new String[] {BANNER});
+    updateTypes.put(UpdateType.POSITION, new String[] { POSITION });
+    updateTypes.put(UpdateType.BASIC_INFOR, new String[] { FIRST_NAME, LAST_NAME, EMAIL });
+    updateTypes.put(UpdateType.CONTACT, new String[] { GENDER, CONTACT_PHONES, CONTACT_IMS, CONTACT_URLS });
+    updateTypes.put(UpdateType.EXPERIENCES, new String[] { EXPERIENCES });
+    updateTypes.put(UpdateType.AVATAR, new String[] { AVATAR });
+    updateTypes.put(UpdateType.BANNER, new String[] { BANNER });
   }
 
   /** The identity. */
-  private Identity            identity;
+  private Identity             identity;
 
   /** The id. */
-  private String                    id;
+  private String               id;
 
   /** The last loaded time */
-  private long                      lastLoaded;
+  private long                 lastLoaded;
 
   /** Indicates whether or not the profile has been modified locally */
-  private boolean                   hasChanged;
+  private boolean              hasChanged;
 
   /** Indicates the type of profile are being modified locally */
-  private UpdateType                updateType;
+  private UpdateType           updateType;
 
   /** Profile url, this will never be stored */
-  private String                    url;
+  private String               url;
 
   /** Profile url, this will never be stored */
-  private String                    avatarUrl;
+  private String               avatarUrl;
 
   /** Profile url, this will never be stored */
-  private String                    bannerUrl;
+  private String               bannerUrl;
 
-  private AttachedActivityType      attachedActivityType;
-  
+  private AttachedActivityType attachedActivityType;
+
   /** Profile created time **/
-  private long                      createdTime;
-  
-  private List<UpdateType> listUpdateTypes;
-  
-  /**  The last updated time of avatar ( in millisecond) */
-  private Long                      avatarLastUpdated;
+  private long                 createdTime;
 
-  /**  The last updated time of avatar ( in millisecond) */
-  private Long                      bannerLastUpdated;
-  
+  private List<UpdateType>     listUpdateTypes;
+
+  /** The last updated time of avatar ( in millisecond) */
+  private Long                 avatarLastUpdated;
+
+  /** The last updated time of avatar ( in millisecond) */
+  private Long                 bannerLastUpdated;
+
   /**
    * Instantiates a new profile.
    *
@@ -283,7 +239,7 @@ public class Profile {
   public final Identity getIdentity() {
     return identity;
   }
-  
+
   /**
    * Sets the identity.
    *
@@ -332,7 +288,8 @@ public class Profile {
   /**
    * Indicates whether or not the profile has been modified locally.
    *
-   * @return <code>true</code> if it has been modified locally, <code>false</code> otherwise.
+   * @return <code>true</code> if it has been modified locally,
+   *         <code>false</code> otherwise.
    */
   public final boolean hasChanged() {
     return hasChanged;
@@ -342,11 +299,12 @@ public class Profile {
    * Clear the has changed flag.
    */
   public final void clearHasChanged() {
-     setHasChanged(false);
+    setHasChanged(false);
   }
 
   /**
    * Gets type of update.
+   * 
    * @return the updated type for a profile
    * @since 1.2.0-GA
    */
@@ -372,7 +330,7 @@ public class Profile {
     for (UpdateType key : updateTypes.keySet()) {
       String[] updateTypeValues = updateTypes.get(key);
       for (String value : updateTypeValues) {
-        if(value.equals(updateType)) {
+        if (value.equals(updateType)) {
           this.updateType = key;
           break;
         }
@@ -401,7 +359,7 @@ public class Profile {
     if (URL.equals(name)) {
       return this.url;
     }
-    
+
     return properties.get(name);
   }
 
@@ -418,7 +376,7 @@ public class Profile {
       this.url = value.toString();
       return;
     }
-    
+
     properties.put(name, value);
     setHasChanged(true);
     setUpdateType(name);
@@ -476,14 +434,14 @@ public class Profile {
     if (fullName != null && fullName.length() > 0) {
       return fullName;
     }
-    
+
     String firstName = (String) getProperty(FIRST_NAME);
     String lastName = (String) getProperty(LAST_NAME);
     fullName = (firstName != null) ? firstName : StringUtils.EMPTY;
     fullName += (lastName != null) ? SPACE_STR + lastName : StringUtils.EMPTY;
     return fullName;
   }
-  
+
   /**
    * Get this profile URL
    * 
@@ -500,7 +458,6 @@ public class Profile {
     this.url = url;
   }
 
-
   /**
    * Gets email address of this profile.
    * 
@@ -509,7 +466,7 @@ public class Profile {
   public final String getEmail() {
     return (String) getProperty(EMAIL);
   }
-  
+
   /**
    * Add or modify properties of the profile
    * 
@@ -520,10 +477,6 @@ public class Profile {
     while (it.hasNext()) {
       Map.Entry<String, Object> entry = it.next();
       String key = entry.getKey();
-      // we skip all the property that are jcr related
-      if (key.contains(":")) {
-        continue;
-      }
       setProperty(key, entry.getValue());
     }
     setHasChanged(true);
@@ -587,7 +540,7 @@ public class Profile {
   public final String getPosition() {
     return (String) getProperty(Profile.POSITION);
   }
-  
+
   /**
    * Gets gender
    * 
@@ -597,7 +550,7 @@ public class Profile {
   public final String getGender() {
     return (String) getProperty(Profile.GENDER);
   }
-  
+
   /**
    * Gets Phones
    * 
@@ -621,9 +574,9 @@ public class Profile {
   }
 
   /*
-     * Get uuid, identity, properties of profile
-     * @see java.lang.Object#toString()
-     */
+   * Get uuid, identity, properties of profile
+   * @see java.lang.Object#toString()
+   */
   @Override
   public final String toString() {
     return "[uuid : " + id + " identity : " + identity.getId() + " properties: " + properties;
@@ -636,17 +589,19 @@ public class Profile {
   public void setListUpdateTypes(List<UpdateType> listUpdateTypes) {
     this.listUpdateTypes = listUpdateTypes;
   }
-  
+
   /**
    * Gets the last updated time in milliseconds of avatar in a profile
+   * 
    * @return {@link Void}
    */
   public Long getAvatarLastUpdated() {
     return avatarLastUpdated;
   }
-  
+
   /**
    * Sets the last updated time in milliseconds of avatar in a profile
+   * 
    * @param avatarLastUpdated
    */
   public void setAvatarLastUpdated(Long avatarLastUpdated) {

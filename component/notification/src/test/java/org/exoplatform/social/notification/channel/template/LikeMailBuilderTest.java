@@ -88,7 +88,7 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfo(likeNotification.setTo("root"));
     MessageInfo info = buildMessageInfo(ctx);
     
-    assertSubject(info, "Demo gtn likes one of your activities");
+    assertSubject(info, getFullName("demo") + " likes one of your activities");
     assertBody(info, "New like on your activity stream");
   }
   
@@ -106,7 +106,7 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Demo gtn, John Anthony like your activity: root post an activity");
+    assertDigest(writer, getFullName("mary") + ", " + getFullName("demo") + ", " + getFullName("john") + " like your activity: root post an activity");
   }
   
   public void testLikeLinkActivity() throws Exception {
@@ -135,7 +135,7 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfo(likeNotification.setTo("root"));
     MessageInfo info = buildMessageInfo(ctx);
     
-    assertSubject(info, "Mary Kelly likes one of your activities");
+    assertSubject(info, getFullName("mary") + " likes one of your activities");
     assertBody(info, "New like on your activity stream");
     assertBody(info, "link title");
     assertBody(info, "message activity");
@@ -163,6 +163,6 @@ public class LikeMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(list);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Demo gtn likes your activity: root post an activity");
+    assertDigest(writer, getFullName("demo") + " likes your activity: root post an activity");
   }
 }

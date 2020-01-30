@@ -22,9 +22,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
 import org.exoplatform.commons.api.notification.service.setting.PluginContainer;
 import org.exoplatform.commons.api.notification.service.setting.PluginSettingService;
 import org.exoplatform.commons.api.settings.ExoFeatureService;
@@ -34,8 +31,6 @@ import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
@@ -54,16 +49,10 @@ import org.exoplatform.social.notification.mock.MockNotificationService;
 
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.ROOT, path = "conf/configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.ROOT, path = "conf/standalone/exo.social.test.root-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.notification.test.configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.search.test.configuration.xml")
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.notification-dependencies-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.notification-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.social.component.notification-local-configuration.xml"),
 })
 public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected IdentityManager identityManager;
@@ -74,8 +63,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   protected MockNotificationService notificationService;
   protected PluginSettingService pluginSettingService;
   protected ExoFeatureService exoFeatureService;
-  
-  protected Session session;
   
   protected Identity rootIdentity;
   protected Identity johnIdentity;
@@ -97,7 +84,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     tearDownIdentityList = new ArrayList<Identity>();
     tearDownRelationshipList = new ArrayList<Relationship>();
 
-    session = getSession();
     identityManager = getService(IdentityManager.class);
     activityManager = getService(ActivityManagerImpl.class);
     spaceService = getService(SpaceService.class);
@@ -110,22 +96,12 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     //
     checkAndCreateDefaultUsers();
 
-    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
-    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
-    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
-    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
-    ghostIdentity = new Identity(OrganizationIdentityProvider.NAME, "ghost");
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+    ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost");
 
-    identityManager.saveIdentity(rootIdentity);
-    identityManager.saveIdentity(johnIdentity);
-    identityManager.saveIdentity(maryIdentity);
-    identityManager.saveIdentity(demoIdentity);
-    identityManager.saveIdentity(ghostIdentity);
-
-    tearDownIdentityList.add(rootIdentity);
-    tearDownIdentityList.add(johnIdentity);
-    tearDownIdentityList.add(maryIdentity);
-    tearDownIdentityList.add(demoIdentity);
     notificationService.clearAll();
   }
 
@@ -149,7 +125,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
 
     notificationService.clearAll();
 
-    session = null;
     end();
   }
   
@@ -216,13 +191,6 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     
   }
 
-  private Session getSession() throws RepositoryException {
-    PortalContainer container = PortalContainer.getInstance();
-    RepositoryService repositoryService = (RepositoryService) container.getComponentInstance(RepositoryService.class);
-    ManageableRepository repository = repositoryService.getCurrentRepository();
-    return repository.getSystemSession("portal-test");
-  }
-
   /**
    * Makes the activity for Test Case
    * @param owner
@@ -267,5 +235,12 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     activityManager.updateActivity(activity);
 
     return activity;
+  }
+
+  protected String getFullName(String userId) {
+    Identity identity  = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
+    assertNotNull("Can't find identity of " + userId, identity);
+    assertNotNull("Can't find profile of " + userId, identity.getProfile());
+    return identity.getProfile().getFullName();
   }
 }

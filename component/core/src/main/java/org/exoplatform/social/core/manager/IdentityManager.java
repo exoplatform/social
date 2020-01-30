@@ -78,7 +78,7 @@ public interface IdentityManager {
   Identity getOrCreateIdentity(String providerId, String remoteId, boolean isProfileLoaded);
 
   /**
-   * Gets an identity by a given Id. This Id is UUID stored by JCR.
+   * Gets an identity by a given Id. This Id is UUID defined by storage.
    *
    * @param identityId Id of the identity.
    * @param isProfileLoaded Is profile loaded or not.
@@ -375,8 +375,8 @@ public interface IdentityManager {
   List<Identity> getIdentitiesFilterByAlphaBet(ProfileFilter profileFilter) throws Exception;
 
   /**
-   * Gets an identity from the provider, not in JCR. To make sure to get information
-   * from JCR, use {@link #getOrCreateIdentity(String, String, boolean)}.
+   * Gets an identity from the provider. To make sure to get information
+   * from DB, use {@link #getOrCreateIdentity(String, String, boolean)}.
    *
    * @param providerId Id of the provider.
    * @param remoteId The remote Id.

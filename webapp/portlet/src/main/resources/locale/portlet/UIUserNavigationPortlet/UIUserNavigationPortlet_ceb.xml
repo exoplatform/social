@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Activities</activities>
+         <profile>Profile</profile>
+         <connections>Connections</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>My Activities</Myactivities>
+         <Myprofile>My Profile</Myprofile>
+         <Myconnections>My Connections</Myconnections>
+         <Mywiki>My Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>My Notifications</NotificationSettingsPortlet>
+         <More>More</More>
+         <EditProfile>Edit</EditProfile>
+         <available>Available</available>
+         <offline>Wala naka-online</offline>
+         <away>Palayo</away>
+         <donotdisturb>Do not disturb</donotdisturb>
+         <invisible>Invisible</invisible>
+         <bannerSizeHint>Choose an image at least 130 pixels high.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Upload an Image</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Upload an Image</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Accept</AcceptRequest>
+         <Deny>Ayaw tuguti</Deny>
+         <RemoveConnection>Disconnect</RemoveConnection>
+         <CancelRequest>Cancel Request</CancelRequest>
+      </action>
+      <label>
+         <Connect>Connect</Connect>
+         <ConnectNotExisting>Ang imbitasyon kai gikansel sa laing tawo.</ConnectNotExisting>
+         <ConnectionExisted>Ang imbitasyon gihimo sa laing tawo.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

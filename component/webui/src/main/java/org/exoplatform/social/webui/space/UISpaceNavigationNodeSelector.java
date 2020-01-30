@@ -29,7 +29,7 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.Visibility;
-import org.exoplatform.portal.mop.Described.State;
+import org.exoplatform.portal.mop.State;
 import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationError;
 import org.exoplatform.portal.mop.navigation.NavigationServiceException;

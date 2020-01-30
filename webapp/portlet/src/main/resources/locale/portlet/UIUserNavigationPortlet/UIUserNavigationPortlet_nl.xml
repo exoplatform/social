@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+   <UIUserNavigationPortlet>
+      <label>
+         <activities>Activiteiten</activities>
+         <profile>Profiel</profile>
+         <connections>Connecties</connections>
+         <wiki>Wiki</wiki>
+         <Myactivities>Mijn activiteiten</Myactivities>
+         <Myprofile>Mijn Profiel</Myprofile>
+         <Myconnections>Mijn verbindingen</Myconnections>
+         <Mywiki>Mijn Wiki</Mywiki>
+         <Mywallet>My Wallet</Mywallet>
+         <Myachievements>My Achievements</Myachievements>
+         <NotificationSettingsPortlet>Mijn Notificaties</NotificationSettingsPortlet>
+         <More>Meer</More>
+         <EditProfile>Bewerken</EditProfile>
+         <available>Toon deelnemers als</available>
+         <offline>Offline</offline>
+         <away>Afwezig</away>
+         <donotdisturb>Niet storen</donotdisturb>
+         <invisible>Onzichtbaar</invisible>
+         <bannerSizeHint>Kies een afbeelding van minimaal 130 pixels hoog.</bannerSizeHint>
+      </label>
+   </UIUserNavigationPortlet>
+   <UIAvatarUploaderPopup>
+      <title>
+         <UIAvatarUploader>Een afbeelding uploaden</UIAvatarUploader>
+      </title>
+   </UIAvatarUploaderPopup>
+   <UIPopupBannerUploader>
+      <title>
+         <UIBannerUploader>Een afbeelding uploaden</UIBannerUploader>
+      </title>
+   </UIPopupBannerUploader>
+   <UIRelationshipAction>
+      <action>
+         <AcceptRequest>Akkoord</AcceptRequest>
+         <Deny>Weigeren</Deny>
+         <RemoveConnection>Verbinding verbreken</RemoveConnection>
+         <CancelRequest>Aanvraag annuleren</CancelRequest>
+      </action>
+      <label>
+         <Connect>Verbinden</Connect>
+         <ConnectNotExisting>Uitnodiging is door iemand anders geannuleerd.</ConnectNotExisting>
+         <ConnectionExisted>Uitnodiging werd opgericht door iemand anders.</ConnectionExisted>
+      </label>
+   </UIRelationshipAction>
+</bundle>

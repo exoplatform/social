@@ -62,6 +62,8 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
 
   private UserACL userACL;
 
+  private InitParams initParams;
+
   private List<MembershipEntry> spacesAdministratorsMemberships = new ArrayList<>();
 
   private List<MembershipEntry> spaceCreatorsMemberships = new ArrayList<>();
@@ -73,11 +75,13 @@ public class SpacesAdministrationServiceImpl implements Startable, SpacesAdminis
     this.identityRegistry = identityRegistry;
     this.organizationService = organizationService;
     this.userACL = userACL;
-    loadSettings(initParams);
+    this.initParams = initParams;
   }
 
   @Override
   public void start() {
+    loadSettings(initParams);
+
     // update Spaces administration at startup in case the configuration has changed
     PortalContainer.addInitTask(PortalContainer.getInstance().getPortalContext(), new RootContainer.PortalContainerPostInitTask() {
       @Override

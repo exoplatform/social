@@ -134,7 +134,7 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Demo gtn, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn");
+    assertDigest(writer, getFullName("mary") + ", " + getFullName("demo") + ", " + getFullName("root") + " have mentioned you in an activity: mary mention " + getFullName("john") + " and " + getFullName("demo") + "");
   }
   
   public void testDigestWithDuplicateUser() throws Exception {
@@ -166,7 +166,7 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Demo gtn have mentioned you in an activity: mary mention John Anthony and Demo gtn");
+    assertDigest(writer, getFullName("mary") + ", " + getFullName("demo") + " have mentioned you in an activity: mary mention " + getFullName("john") + " and " + getFullName("demo") + "");
   }
   
   public void testDigestWithDeletedActivity() throws Exception {
@@ -205,6 +205,6 @@ public class ActivityMentionMailBuilderTest extends AbstractPluginTest {
     ctx.setNotificationInfos(toJohn);
     Writer writer = new StringWriter();
     buildDigest(ctx, writer);
-    assertDigest(writer, "Mary Kelly, Root Root have mentioned you in an activity: mary mention John Anthony and Demo gtn");
+    assertDigest(writer, getFullName("mary") + ", " + getFullName("root") + " have mentioned you in an activity: mary mention " + getFullName("john") + " and " + getFullName("demo") + "");
   }
 }

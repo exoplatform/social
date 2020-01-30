@@ -26,8 +26,7 @@ import java.util.ResourceBundle;
 
 import junit.framework.TestCase;
 
-import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.commons.utils.PropertyManager;
+import org.exoplatform.commons.utils.*;
 import org.exoplatform.container.configuration.ConfigurationManagerImpl;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ObjectParameter;
@@ -42,6 +41,7 @@ import org.exoplatform.services.resources.impl.LocaleConfigServiceImpl;
 import org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
  * Unit Test for {@link org.exoplatform.social.core.processor.I18NActivityProcessor}.
@@ -50,7 +50,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
  * @since Feb 6, 2012
  */
 @SuppressWarnings("deprecation")
-public class I18NActivityProcessorTest extends TestCase {
+public class I18NActivityProcessorTest extends AbstractCoreTest {
 
   private I18NActivityProcessor i18NActivityProcessor;
 
@@ -308,7 +308,9 @@ public class I18NActivityProcessorTest extends TestCase {
 
 
   private FakeResourceBundleService getResourceBundleService() throws Exception {
-    FakeResourceBundleService fakeResourceBundleService = new FakeResourceBundleService(createService());
+    LocaleConfigService localeService = getContainer().getComponentInstanceOfType(LocaleConfigService.class);
+    assertNotNull(localeService);
+    FakeResourceBundleService fakeResourceBundleService = new FakeResourceBundleService(localeService);
     
 
     //register resource bundle plugin
@@ -346,19 +348,6 @@ public class I18NActivityProcessorTest extends TestCase {
     initParams.addParam(getObjectParameter("FakeResourceBundle", activityKeyTypeMapping));
     activityResourceBundlePlugin = new ActivityResourceBundlePlugin(initParams);
     activityResourceBundlePlugin.setName("fake-type");
-  }
-  
-  private LocaleConfigService createService() throws Exception {
-    ConfigurationManagerImpl cm = new ConfigurationManagerImpl();
-    InitParams params = new InitParams();
-    ValueParam param = new ValueParam();
-    param.setName("locale.config.file");
-    param.setValue("classpath:/conf/locales-config.xml");
-    params.addParameter(param);
-
-    //
-    LocaleConfigService service = new LocaleConfigServiceImpl(params, cm);
-    return service;
   }
 
   /**

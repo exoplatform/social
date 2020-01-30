@@ -27,7 +27,6 @@
   import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.container.PortalContainer;
-  import org.exoplatform.services.jcr.RepositoryService;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
   import org.exoplatform.social.core.identity.model.Profile;
@@ -37,9 +36,6 @@
   def uicomponentId = uicomponent.id;
   PortalContainer portalContainer = PortalContainer.getInstance();
   String portalName = portalContainer.getPortalContainerInfo().getContainerName();
-
-  RepositoryService rService = uicomponent.getApplicationComponent(RepositoryService.class) ;
-  String repository = rService.getCurrentRepository().getConfiguration().getName() ;
 
   def isEditable = uicomponent.isEditable();
   def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
