@@ -25,6 +25,7 @@ import org.exoplatform.commons.testing.ConfigTestCase;
 import org.exoplatform.social.core.application.*;
 import org.exoplatform.social.core.feature.SpaceLastVisitedTest;
 import org.exoplatform.social.core.feature.WhatsHotTest;
+import org.exoplatform.social.core.jpa.storage.RDBMSActivityStorageImplTest;
 import org.exoplatform.social.core.listeners.SocialUserProfileEventListenerImplTest;
 import org.exoplatform.social.core.manager.*;
 import org.exoplatform.social.core.processor.*;
@@ -41,6 +42,7 @@ import org.exoplatform.social.core.storage.impl.ActivityStorageImplTestCase;
 //    SpaceLastVisitedTest.class,
 //FIXME regression JCR to RDBMS migration
 //    WhatsHotTest.class,
+    RDBMSActivityStorageImplTest.class,
     ActivityManagerTest.class,
 //FIXME regression JCR to RDBMS migration
 //    ActivityStorageTest.class,

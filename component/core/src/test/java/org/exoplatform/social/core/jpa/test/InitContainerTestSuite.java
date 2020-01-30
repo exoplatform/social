@@ -29,7 +29,6 @@ import org.exoplatform.social.core.jpa.storage.dao.*;
     ActivityDAOTest.class,
     IdentityDAOTest.class,
     StreamItemDAOTest.class,
-    RDBMSActivityStorageImplTest.class,
     ActivityManagerRDBMSTest.class,
     SpaceActivityRDBMSPublisherTest.class,
     RelationshipStorageTest.class,
