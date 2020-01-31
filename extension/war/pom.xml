@@ -22,7 +22,7 @@
   <parent>
     <artifactId>social-extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>6.0.x-SNAPSHOT</version>
+    <version>6.0.x-spaces-groups-binding-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extension-war</artifactId>
