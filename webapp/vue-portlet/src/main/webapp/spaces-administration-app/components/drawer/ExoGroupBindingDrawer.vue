@@ -23,66 +23,99 @@
           </v-flex>
         </v-layout>
       </v-card-title>
-      <v-layout 
-        align-center
-        justify-center
-        align-baseline
-        wrap>
-        <v-flex xs9>
-          <v-textarea
-            rounded
-            auto-grow
-            rows="2"
-            row-height="35"
-            value=""
-            placeholder="@ Type a group name"
-          ></v-textarea>
-        </v-flex>
-        <v-flex xs3>
-          <v-btn
-            v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.spaceBindingForm.selectList')"
-            icon
-            class="rightIcon"
-            @click="showSelectGroupsTree = true">
-            <i class="uiIconSpaceBinding uiIconGroup"></i>
-          </v-btn>
-        </v-flex>
-      </v-layout>
-      <v-layout column>
-        <v-flex>
-          <span class="subtitle-1">
-            {{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.boundGroups') }}
-          </span>
-        </v-flex>
-        <v-flex class="boundGroups">
-          <v-list flat subheader>
-            <v-list-item-group>
-              <v-list-item>
-                <v-list-item-content>
-                  Hello
-                </v-list-item-content>
-                <v-list-item-action class="delete">
-                  <v-btn
-                    icon
-                    class="rightIcon"
-                    @click="$emit('close')">
-                    <i class="uiIconDeleteUser uiIconLightGray"></i>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-flex>
-      </v-layout>
-      <v-card-actions class="drawerActions">
+      <div class="content">
+        <v-layout 
+          align-center
+          justify-center
+          align-baseline
+          wrap>
+          <v-flex xs9>
+            <v-textarea
+              :value="value"
+              rounded
+              auto-grow
+              rows="2"
+              row-height="35"
+              placeholder="@ Type a group name"
+            ></v-textarea>
+          </v-flex>
+          <v-flex xs3>
+            <v-btn
+              v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.spaceBindingForm.selectList')"
+              icon
+              class="rightIcon"
+              @click="showSelectGroupsTree = true">
+              <i class="uiIconSpaceBinding uiIconGroup"></i>
+            </v-btn>
+          </v-flex>
+        </v-layout>
+        <v-layout column>
+          <v-flex>
+            <span class="subtitle-1">
+              {{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.boundGroups') }}
+            </span>
+          </v-flex>
+          <v-flex class="boundGroups">
+            <v-list flat subheader dense>
+              <v-list-item-group>
+                <div v-for="i in items" :key="i">
+                  <v-list-item>
+                    <v-list-item-content>
+                      *:/platform/users {{ i }}
+                    </v-list-item-content>
+                    <v-list-item-action class="delete">
+                      <v-btn
+                        small
+                        icon
+                        class="rightIcon"
+                        @click="$emit('close')">
+                        <i class="uiIconDeleteUser uiIconLightGray"></i>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-content>
+                      *:/organization/employees {{ i }}
+                    </v-list-item-content>
+                    <v-list-item-action class="delete">
+                      <v-btn
+                        small
+                        icon
+                        class="rightIcon"
+                        @click="$emit('close')">
+                        <i class="uiIconDeleteUser uiIconLightGray"></i>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-content>
+                      *:/platform {{ i }}
+                    </v-list-item-content>
+                    <v-list-item-action absolute class="delete">
+                      <v-btn
+                        small
+                        icon
+                        class="rightIcon"
+                        @click="$emit('close')">
+                        <i class="uiIconDeleteUser uiIconLightGray"></i>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+                </div>              
+              </v-list-item-group>
+            </v-list>
+          </v-flex>
+        </v-layout>
+      </div>
+      <v-card-actions absolute class="drawerActions">
         <v-layout>
           <v-flex class="xs7"></v-flex>
-          <button type="button" class="btn ml-2">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</button>
+          <button type="button" class="btn ml-2" @click="$emit('close')">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</button>
           <button :disabled="!isAllowToSave" type="button" class="btn btn-primary ml-6" @click="isAllowToSave = false">
-            {{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.save') }}
+            {{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.apply') }}
           </button>
         </v-layout>
-      </v-card-actions>
+      </v-card-actions>      
     </v-flex>
   </div>
   <div v-else>
@@ -129,8 +162,10 @@
 export default {
   data() {
     return {
+      value: '',
       showSelectGroupsTree : false,
-      isAllowToSave : true
+      isAllowToSave : false,
+      items: [1]
     };
   }
 };
