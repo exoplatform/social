@@ -141,7 +141,30 @@ public class SpaceTemplateServiceTest extends AbstractCoreTest {
    */
   public void testExtendSpaceTemplatePlugin() {
     List<SpaceApplication> applicationList = new ArrayList<>();
-    for (int i = 0; i < 3; i++) {
+    SpaceTemplateConfigPlugin spaceTemplateConfigPlugin = getSpaceTemplateList(applicationList, 3, 6);
+
+    // Given
+    SpaceTemplate template = spaceTemplateService.getSpaceTemplateByName("classic");
+    assertEquals(3, template.getSpaceApplicationList().size());
+    // when
+    spaceTemplateService.extendSpaceTemplatePlugin(spaceTemplateConfigPlugin);
+    // Then
+    ((SpaceTemplateServiceImpl) spaceTemplateService).start();
+    template = spaceTemplateService.getSpaceTemplateByName("classic");
+    assertEquals(6, template.getSpaceApplicationList().size());
+
+    spaceTemplateConfigPlugin = getSpaceTemplateList(applicationList, 0, 3);
+
+    // when
+    spaceTemplateService.extendSpaceTemplatePlugin(spaceTemplateConfigPlugin);
+    // Then
+    ((SpaceTemplateServiceImpl) spaceTemplateService).start();
+    template = spaceTemplateService.getSpaceTemplateByName("classic");
+    assertEquals(9, template.getSpaceApplicationList().size());
+  }
+
+  private SpaceTemplateConfigPlugin getSpaceTemplateList(List<SpaceApplication> applicationList, int from, int to) {
+    for (int i = from; i < to; i++) {
       SpaceApplication app = new SpaceApplication();
       app.setAppTitle("fakeTitle" + i);
       app.setPortletApp("fakeApp" + i);
@@ -157,15 +180,8 @@ public class SpaceTemplateServiceTest extends AbstractCoreTest {
     objParam.setName("template");
     objParam.setObject(spaceTemplate);
     params.addParameter(objParam);
-    // Given
-    SpaceTemplate template = spaceTemplateService.getSpaceTemplateByName("classic");
-    assertEquals(3, template.getSpaceApplicationList().size());
-    // when
-    spaceTemplateService.extendSpaceTemplatePlugin(new SpaceTemplateConfigPlugin(params));
-    // Then
-    ((SpaceTemplateServiceImpl) spaceTemplateService).start();
-    template = spaceTemplateService.getSpaceTemplateByName("classic");
-    assertEquals(6, template.getSpaceApplicationList().size());
+    SpaceTemplateConfigPlugin spaceTemplateConfigPlugin = new SpaceTemplateConfigPlugin(params);
+    return spaceTemplateConfigPlugin;
   }
 
   /**

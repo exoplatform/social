@@ -58,7 +58,7 @@ public class SpaceTemplateServiceImpl implements SpaceTemplateService, Startable
 
   private Map<String, SpaceTemplate> registeredSpaceTemplates = new HashMap<>();
 
-  private Map<String, SpaceTemplate> extendedSpaceTemplates = new HashMap<>();
+  private Map<String, List<SpaceTemplate>> extendedSpaceTemplates = new HashMap<>();
 
   private String defaultSpaceTemplate;
 
@@ -171,11 +171,15 @@ public class SpaceTemplateServiceImpl implements SpaceTemplateService, Startable
   @Override
   public void extendSpaceTemplatePlugin(SpaceTemplateConfigPlugin spaceTemplateConfigPlugin) {
     SpaceTemplate spaceTemplateExtension = spaceTemplateConfigPlugin.getSpaceTemplate();
-    if(spaceTemplateExtension == null || StringUtils.isBlank(spaceTemplateExtension.getName())) {
+    if (spaceTemplateExtension == null || StringUtils.isBlank(spaceTemplateExtension.getName())) {
       LOG.warn("Space template plugin doesn't have mandatory object: {}. The plugin will be ignored.", spaceTemplateConfigPlugin);
       return;
     }
-    extendedSpaceTemplates.put(spaceTemplateExtension.getName(), spaceTemplateExtension);
+    String templateName = spaceTemplateExtension.getName();
+    if (!extendedSpaceTemplates.containsKey(templateName)) {
+      extendedSpaceTemplates.put(templateName, new ArrayList<>());
+    }
+    extendedSpaceTemplates.get(templateName).add(spaceTemplateExtension);
   }
 
   /**
@@ -240,23 +244,25 @@ public class SpaceTemplateServiceImpl implements SpaceTemplateService, Startable
   public void start() {
     spaceTemplates = registeredSpaceTemplates;
     for (String spaceTemplateExtensionName : extendedSpaceTemplates.keySet()) {
-      SpaceTemplate spaceTemplateExtension = extendedSpaceTemplates.get(spaceTemplateExtensionName);
-      List<SpaceApplication> apps = spaceTemplateExtension.getSpaceApplicationList();
-      SpaceTemplate toExtendSpaceTemplate = this.spaceTemplates.get(spaceTemplateExtensionName);
-      if (toExtendSpaceTemplate == null) {
-        LOG.warn("Can't extend Space template '{}' with applications {} because the space template can't be found.",
-                 spaceTemplateExtensionName,
-                 apps == null ? "" : apps.stream().map(SpaceApplication::getPortletName).collect(Collectors.toList()));
-      }
-      if (spaceTemplateExtension.getBannerPath() != null) {
-        LOG.warn("Banner path defined in extension of space template {} isn't extensible", spaceTemplateExtensionName);
-      }
-      if (spaceTemplateExtension.getSpaceHomeApplication() != null) {
-        LOG.warn("Space home defined in extension of space template {} isn't extensible", spaceTemplateExtensionName);
-      }
-      if (apps != null && toExtendSpaceTemplate != null) {
-        for (SpaceApplication application : apps) {
-          toExtendSpaceTemplate.addToSpaceApplicationList(application);
+      List<SpaceTemplate> spaceTemplateExtensions = extendedSpaceTemplates.get(spaceTemplateExtensionName);
+      for (SpaceTemplate spaceTemplateExtension : spaceTemplateExtensions) {
+        List<SpaceApplication> apps = spaceTemplateExtension.getSpaceApplicationList();
+        SpaceTemplate toExtendSpaceTemplate = this.spaceTemplates.get(spaceTemplateExtensionName);
+        if (toExtendSpaceTemplate == null) {
+          LOG.warn("Can't extend Space template '{}' with applications {} because the space template can't be found.",
+                   spaceTemplateExtensionName,
+                   apps == null ? "" : apps.stream().map(SpaceApplication::getPortletName).collect(Collectors.toList()));
+        }
+        if (spaceTemplateExtension.getBannerPath() != null) {
+          LOG.warn("Banner path defined in extension of space template {} isn't extensible", spaceTemplateExtensionName);
+        }
+        if (spaceTemplateExtension.getSpaceHomeApplication() != null) {
+          LOG.warn("Space home defined in extension of space template {} isn't extensible", spaceTemplateExtensionName);
+        }
+        if (apps != null && toExtendSpaceTemplate != null) {
+          for (SpaceApplication application : apps) {
+            toExtendSpaceTemplate.addToSpaceApplicationList(application);
+          }
         }
       }
     }
