@@ -191,11 +191,9 @@ public class UIUserNavigationPortlet extends UIPortletApplication {
   public Map<String, String> getUserNodes() throws Exception {
     if (userNodes == null) {
       userNodes = new LinkedHashMap<>();
-      if (ExoContainer.hasProfile("social")) {
-        userNodes.put(PROFILE_URI, getProfileLink());
-        userNodes.put(ACTIVITIES_URI, getactivitesURL());
-        userNodes.put(CONNEXIONS_URI, getrelationURL());
-      }
+      userNodes.put(PROFILE_URI, getProfileLink());
+      userNodes.put(ACTIVITIES_URI, getactivitesURL());
+      userNodes.put(CONNEXIONS_URI, getrelationURL());
       if (ExoContainer.hasProfile("wiki")) {
         userNodes.put(WIKI_URI, getWikiURL());
       }
