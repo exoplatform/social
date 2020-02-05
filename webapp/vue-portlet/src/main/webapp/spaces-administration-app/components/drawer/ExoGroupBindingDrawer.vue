@@ -24,22 +24,14 @@
         </v-layout>
       </v-card-title>
       <div class="content">
-        <v-layout 
-          align-center
-          justify-center
-          align-baseline
+        <v-layout
+          class="pt-7 pl-3 mb-4"
           wrap>
           <v-flex xs9>
-            <v-textarea
-              :value="value"
-              rounded
-              auto-grow
-              rows="2"
-              row-height="35"
-              placeholder="@ Type a group name"
-            ></v-textarea>
+            <input id="add-groups" type="text"/>
           </v-flex>
-          <v-flex xs3>
+          <v-flex xs1/>
+          <v-flex xs1>
             <v-btn
               v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.spaceBindingForm.selectList')"
               icon
@@ -67,8 +59,7 @@
                       <v-btn
                         small
                         icon
-                        class="rightIcon"
-                        @click="$emit('close')">
+                        class="rightIcon">
                         <i class="uiIconDeleteUser uiIconLightGray"></i>
                       </v-btn>
                     </v-list-item-action>
@@ -81,8 +72,7 @@
                       <v-btn
                         small
                         icon
-                        class="rightIcon"
-                        @click="$emit('close')">
+                        class="rightIcon">
                         <i class="uiIconDeleteUser uiIconLightGray"></i>
                       </v-btn>
                     </v-list-item-action>
@@ -95,8 +85,7 @@
                       <v-btn
                         small
                         icon
-                        class="rightIcon"
-                        @click="$emit('close')">
+                        class="rightIcon">
                         <i class="uiIconDeleteUser uiIconLightGray"></i>
                       </v-btn>
                     </v-list-item-action>
@@ -132,7 +121,7 @@
           <v-btn
             icon
             class="leftIcon"
-            @click="showSelectGroupsTree = !showSelectGroupsTree">
+            @click="back">
             <v-icon small>arrow_back</v-icon>
           </v-btn>
         </v-flex>
@@ -159,14 +148,123 @@
 </template>
 
 <script>
+import * as spacesAdministrationServices from '../../spacesAdministrationServices';
+
 export default {
+  props: {
+    spaceId: {
+      type: String,
+      default: null,
+    }
+  },
   data() {
     return {
-      value: '',
+      textAreaValue : '',
+      groups: [],
       showSelectGroupsTree : false,
       isAllowToSave : false,
       items: [1]
     };
+  },  
+  mounted() {
+    this.initSuggesterGroupsToBind();
+  },
+  updated() {
+    this.initSuggesterGroupsToBind();
+  },
+  methods : {
+    initSuggesterGroupsToBind() {
+      const suggesterContainer = $('#add-groups');
+      if(suggesterContainer && suggesterContainer.length && suggesterContainer.suggester) {
+        const component = this;
+        const suggesterData = {
+          type: 'tag',
+          plugins: ['remove_button', 'restore_on_backspace'],
+          create: false,
+          createOnBlur: false,
+          highlight: false,
+          openOnFocus: false,
+          sourceProviders: ['exo:spacesAdministration'],
+          valueField: 'text',
+          labelField: 'text',
+          searchField: ['text'],
+          closeAfterSelect: true,
+          dropdownParent: 'body',
+          hideSelected: true,
+          placeholder:`@ ${this.$t('social.spaces.administration.manageSpaces.spaceBindingForm.textField.placeHolder')}`,
+          renderMenuItem (item, escape) {
+            return component.renderMenuItem(item, escape);
+          },
+          renderItem(item) {
+            return `<div class="item">${item.text}</div>`;
+          },
+          onItemAdd(item) {
+            component.addSuggestedItemCreate(item);
+          },
+          onItemRemove(item) {
+            component.removeSuggestedItemCreators(item);
+          },
+          sortField: [{field: 'order'}, {field: '$score'}],
+          providers: {
+            'exo:spacesAdministration': component.findGroups
+          }
+        };
+        suggesterContainer.suggester(suggesterData);
+        $('#add-groups')[0].selectize.clear();
+        if(this.groups && this.groups !== null) {
+          for(const permission of this.groups) {
+            suggesterContainer[0].selectize.addOption({text: permission});
+            suggesterContainer[0].selectize.addItem(permission);
+          }
+        }
+      }
+    },
+    addSuggestedItemCreate(item) {
+      if($('#add-groups') && $('#add-groups').length && $('#add-groups')[0].selectize) {
+        const selectize = $('#add-groups')[0].selectize;
+        item = selectize.options[item];
+      }
+      if(!this.groups.find(creator => creator === item.text)) {
+        this.groups.push(item.text);
+      }
+    },
+    removeSuggestedItemCreators(item) {
+      const suggesterContainer = $('#add-groups');
+      for(let i=this.groups.length-1; i>=0; i--) {
+        if(this.groups[i] === item) {
+          this.groups.splice(i, 1);
+          suggesterContainer[0].selectize.removeOption(item);
+          suggesterContainer[0].selectize.removeItem(item);
+        }
+      }
+    },
+    findGroups (query, callback) {
+      if (!query.length) {
+        return callback();
+      }
+
+      spacesAdministrationServices.getGroups(query).then(data => {
+        const groups = [];
+        for(const group of data) {
+          groups.push({
+            avatarUrl: null,
+            text: `*:${group.id}`,
+            value: `*:${group.id}`,
+            type: 'group'
+          });
+        }
+        callback(groups);
+      });
+    },
+    renderMenuItem (item, escape) {
+      return `
+        <div class="item">${escape(item.value)}</div>
+      `;
+    },
+    back() {
+      this.initSuggesterGroupsToBind();
+      this.showSelectGroupsTree = !this.showSelectGroupsTree;
+    }
   }
 };
 </script>

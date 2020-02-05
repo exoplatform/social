@@ -86,7 +86,7 @@
       temporary
       width="500"
       max-width="100vw">
-      <exo-group-binding-drawer @close="closeGroupBindingDrawer"/>
+      <exo-group-binding-drawer :space-id="spaceToBindId" @close="closeGroupBindingDrawer"/>
     </v-navigation-drawer>
   </div>
 </template>
