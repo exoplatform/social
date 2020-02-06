@@ -7,7 +7,8 @@ let config = {
   // can use multiple entry
   entry: {
     spaceInfos: './src/main/webapp/space-infos-app/main.js',
-    whoIsOnline: './src/main/webapp/who-is-online-app/main.js'
+    whoIsOnline: './src/main/webapp/who-is-online-app/main.js',
+    activityComposer: './src/main/webapp/activity-composer-app/main.js'
   },
   module: {
     rules: [

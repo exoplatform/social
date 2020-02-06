@@ -20,6 +20,24 @@
 -->
 */
 %>
+
+<%
+  import org.exoplatform.container.ExoContainerContext;
+  import org.exoplatform.commons.api.settings.ExoFeatureService;
+
+  ExoFeatureService featureService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ExoFeatureService.class);
+  if(featureService.isActiveFeature("new-composer")) {
+%>
+<div id="activityComposer"></div>
+<script>
+  require(['SHARED/ActivityComposer'], function(activityComposerApp) {
+    activityComposerApp.init();
+  });
+</script>
+<%
+  }
+%>
+
 <%
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.webui.form.UIFormTextAreaInput;

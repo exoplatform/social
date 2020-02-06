@@ -3,6 +3,7 @@
   import org.exoplatform.social.webui.Utils;
   import org.apache.commons.lang.StringUtils;
   import org.exoplatform.portal.application.PortalRequestContext;
+  import org.exoplatform.social.core.space.model.Space;
 
   def rcontext = _ctx.getRequestContext() ;
   def jsManager = rcontext.getJavascriptManager();
@@ -11,10 +12,13 @@
     frequency = Integer.parseInt(System.getProperty("user.status.ping.frequency"));
   }
   jsManager.require("SHARED/presence", "presence").addScripts("presence.sendPing(" + frequency + ");");
+
+  Space space = SpaceUtils.getSpaceByContext();
 %>
 <script type="text/javascript">
-     eXo.env.portal.spaceId = "<%=SpaceUtils.getSpaceByContext() == null ? "" : SpaceUtils.getSpaceByContext().getId()%>" ;
-     eXo.env.portal.spaceName = "<%=SpaceUtils.getSpaceByContext() == null ? "" : SpaceUtils.getSpaceByContext().getPrettyName()%>" ;
-     eXo.env.portal.spaceGroup = "<%=SpaceUtils.getSpaceByContext() == null ? "" : SpaceUtils.getSpaceByContext().getGroupId().replace("/spaces/", "")%>" ;
+     eXo.env.portal.spaceId = "<%=space == null ? "" : space.getId()%>" ;
+     eXo.env.portal.spaceName = "<%=space == null ? "" : space.getPrettyName()%>" ;
+     eXo.env.portal.spaceDisplayName = "<%=space == null ? "" : space.getDisplayName()%>" ;
+     eXo.env.portal.spaceGroup = "<%=space == null ? "" : space.getGroupId().replace("/spaces/", "")%>" ;
      eXo.env.portal.profileOwner = "<%=Utils.getOwnerRemoteId()%>" ;
 </script>
