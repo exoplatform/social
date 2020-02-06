@@ -100,7 +100,7 @@
         <v-layout>
           <v-flex class="xs7"></v-flex>
           <button type="button" class="btn ml-2" @click="$emit('close')">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</button>
-          <button :disabled="!isAllowToSave" type="button" class="btn btn-primary ml-6" @click="isAllowToSave = false">
+          <button :disabled="!isAllowToSave" type="button" class="btn btn-primary ml-6" @click="$emit('openBindingModal')">
             {{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.apply') }}
           </button>
         </v-layout>
@@ -162,10 +162,14 @@ export default {
       textAreaValue : '',
       groups: [],
       showSelectGroupsTree : false,
-      isAllowToSave : false,
-      items: [1]
+      items: [1],
     };
-  },  
+  },
+  computed : {
+    isAllowToSave() {
+      return this.groups && this.groups.length > 0;
+    }
+  },
   mounted() {
     this.initSuggesterGroupsToBind();
   },
@@ -262,7 +266,6 @@ export default {
       `;
     },
     back() {
-      this.initSuggesterGroupsToBind();
       this.showSelectGroupsTree = !this.showSelectGroupsTree;
     }
   }

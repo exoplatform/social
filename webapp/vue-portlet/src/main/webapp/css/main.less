@@ -89,9 +89,11 @@
         font-size: 12px;
       }
     }
+    
     .closeIcon {
       color: @greyWhiteColor!important;
     }
+    
     .close {
       margin-right: 2%;
     }
@@ -117,6 +119,36 @@
       }
       .btn-primary:hover {
         background-color: #578DC9;
+      }
+    }
+  }
+  
+  .bindingModal {
+    z-index: 1055!important;
+    
+    .modal-content {
+      right: 9%!important;
+      bottom: 9%!important;
+      width: auto;
+
+      .popupHeader {
+        margin-bottom: auto;
+        background-color: white;
+        display: inline-flex;
+        
+        .closeBindingModal {
+          position: relative;
+          left: 84%;
+        }
+      }
+      
+      p {
+        margin-bottom: 60px;
+      }
+      
+      .btn.btn-primary, .btn {
+        position: relative;
+        left: 32%;
       }
     }
   }

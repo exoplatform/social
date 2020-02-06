@@ -25,7 +25,7 @@
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td v-html="space.description"></td>
         <td class="center actionContainer" >
-          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" class="actionIcon" @click="openSpaceBindingDrawer(space.id, index)">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" class="actionIcon" @click="openSpaceBindingDrawer(space.id, index, space.displayName)">
             <i class="uiIconSpaceBinding uiIconGroup"></i>
           </a>
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName,space.groupId)" class="actionIcon" target="_blank">
@@ -86,8 +86,20 @@
       temporary
       width="500"
       max-width="100vw">
-      <exo-group-binding-drawer :space-id="spaceToBindId" @close="closeGroupBindingDrawer"/>
+      <exo-group-binding-drawer :space-id="spaceToBindId" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal"/>
     </v-navigation-drawer>
+    <exo-modal 
+      v-show="showConfirmMessageBindingModal"
+      :title="$t('social.spaces.administration.manageSpaces.spaceBindingForm.confirmation.title')"
+      :display-close="false"
+      class="bindingModal"
+      @modal-closed="closeBindingModal">
+      <p>{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.confirmation', {0: spaceName}) }}</p>
+      <div class="uiAction uiActionBorder">
+        <div class="btn btn-primary" @click="confirmBinding">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.confirmation.confirm') }}</div>
+        <div class="btn" @click="closeBindingModal">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</div>
+      </div>
+    </exo-modal>
   </div>
 </template>
 <script>
@@ -100,6 +112,7 @@ export default {
       showGroupBindingForm: false,
       showConfirmMessageModal: false,
       spaces: [],
+      spaceName: '',
       spaceToBindId: null,
       spaceToBindIndex: null,
       spaceToDeleteId: null,
@@ -109,6 +122,7 @@ export default {
       searchText: '',
       maxVisiblePagesButtons: 3,
       maxVisibleButtons: 5,
+      showConfirmMessageBindingModal : false,
       avatar : spacesConstants.DEFAULT_SPACE_AVATAR
     };
   },
@@ -203,12 +217,24 @@ export default {
     closeModal(){
       this.showConfirmMessageModal = false;
     },
-    openSpaceBindingDrawer(id, index) {
+    openSpaceBindingDrawer(id, index, spaceName) {
+      this.spaceName = spaceName;
       this.spaceToBindId = id;
       this.spaceToBindIndex = index;
       this.showGroupBindingForm = true;
     },
     closeGroupBindingDrawer() {
+      this.showGroupBindingForm = false;
+    },
+    openBindingModal() {
+      this.showConfirmMessageBindingModal = true;
+    },
+    closeBindingModal(){
+      this.showConfirmMessageBindingModal = false;
+      this.showGroupBindingForm = false;
+    },
+    confirmBinding() {
+      this.showConfirmMessageBindingModal = false;
       this.showGroupBindingForm = false;
     }
   }
