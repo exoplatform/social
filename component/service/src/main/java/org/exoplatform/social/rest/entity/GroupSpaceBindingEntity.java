@@ -61,22 +61,4 @@ public class GroupSpaceBindingEntity extends BaseEntity {
   public String getGroup() {
     return getString("group");
   }
-
-  public GroupSpaceBindingEntity setSpaceRole(String spaceRole) {
-    setProperty("spaceRole", spaceRole);
-    return this;
-  }
-
-  public String getSpaceRole() {
-    return getString("spaceRole");
-  }
-
-  public GroupSpaceBindingEntity setGroupRole(String groupRole) {
-    setProperty("groupRole", groupRole);
-    return this;
-  }
-
-  public String getGroupRole() {
-    return getString("groupRole");
-  }
 }

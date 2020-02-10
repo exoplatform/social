@@ -29,7 +29,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
  * Unit Tests for
@@ -147,9 +146,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     GroupSpaceBinding groupSpaceBinding = new GroupSpaceBinding();
     groupSpaceBinding.setId(id);
     groupSpaceBinding.setSpaceId(spaceId);
-    groupSpaceBinding.setSpaceRole(spaceRole);
     groupSpaceBinding.setGroup(group);
-    groupSpaceBinding.setGroupRole(groupRole);
     return groupSpaceBinding;
   }
 
@@ -170,7 +167,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
 
   /**
    * Test
-   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findGroupSpaceBindingsBySpace(String, String)}
+   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findGroupSpaceBindingsBySpace(String)}
    *
    * @throws Exception
    **/
@@ -189,7 +186,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     }
     assertEquals("groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(" + spaceId + ",'member') must return: " + totalBindings,
                  totalBindings,
-                 groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId, "member").size());
+                 groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId).size());
   }
 
   /**
@@ -236,7 +233,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     tearDownGroupbindingList.add(groupSpaceBinding);
     assertEquals("groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(" + spaceId + ",'member') must return after creation: " + 1,
                  1,
-                 groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId, "member").size());
+                 groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId).size());
   }
 
   /**
@@ -284,9 +281,8 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupBinding(groupSpaceBinding, false);
     assertEquals("groupSpaceBindingStorage.findGroupSpaceBindingsBySpace('1','member') must return after update: " + 1,
                  1,
-                 groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId, "member").size());
+                 groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId).size());
     assertEquals("Updated binding group must be: " + 1, "/platform/users", groupSpaceBinding.getGroup());
-    assertEquals("Updated binding group role must be: " + 1, "*", groupSpaceBinding.getGroupRole());
   }
 
   /**
@@ -306,7 +302,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     groupSpaceBindingStorage.deleteGroupBinding(groupSpaceBinding.getId());
     assertEquals("groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(" + groupSpaceBinding.getId() + ") must return after deletion: " + 0,
                  0,
-                 groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId, "member").size());
+                 groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId).size());
   }
 
   /**
@@ -391,7 +387,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
 
     /**
      * Test
-     * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserAllBindingsbyGroupMembership(String, String)}
+     * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserAllBindingsbyGroup(String)}
      *
      * @throws Exception
      **/
@@ -420,17 +416,11 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
             userSpaceBinding = groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
             tearDownUserbindingList.add(userSpaceBinding);
         }
-        assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + totalBindings,
-                totalBindings,
-                groupSpaceBindingStorage.findUserAllBindingsbyGroupMembership("/platform/administrators","Any").size());
-        assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + 0,
-                0,
-                groupSpaceBindingStorage.findUserAllBindingsbyGroupMembership("/platform/users","Any").size());
     }
 
     /**
      * Test
-     * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserSpaceBindingsByGroup(String, String, String)}
+     * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserSpaceBindingsByGroup(String, String)}
      *
      * @throws Exception
      **/
@@ -461,10 +451,10 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
         }
         assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + totalBindings,
                 totalBindings,
-                groupSpaceBindingStorage.findUserSpaceBindingsByGroup("/platform/administrators","Any","john").size());
+                groupSpaceBindingStorage.findUserSpaceBindingsByGroup("/platform/administrators","john").size());
 
         assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + 0,
                 0,
-                groupSpaceBindingStorage.findUserSpaceBindingsByGroup("/platform/users","Any","john").size());
+                groupSpaceBindingStorage.findUserSpaceBindingsByGroup("/platform/users","john").size());
     }
 }

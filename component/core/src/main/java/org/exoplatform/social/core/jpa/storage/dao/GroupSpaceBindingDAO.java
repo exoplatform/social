@@ -25,20 +25,18 @@ import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingEntity;
 public interface GroupSpaceBindingDAO extends GenericDAO<GroupSpaceBindingEntity, Long> {
 
   /**
-   * Get groups binding for a specific role(member or manager) in space
+   * Get groups binding for a specific space
    *
    * @param spaceId Id of the space
-   * @param role role in the space
-   * @return A list of group+membership bindings
+   * @return A list of group bindings
    */
-  List<GroupSpaceBindingEntity> findGroupSpaceBindingsBySpace(Long spaceId, String role);
+  List<GroupSpaceBindingEntity> findGroupSpaceBindingsBySpace(Long spaceId);
 
   /**
-  * Get groups binding for a specific role(member or manager) in space
-  *
-  * @param group group
-  * @param role role in the group
-  * @return A list of group+membership bindings
-  */
-  List<GroupSpaceBindingEntity> findGroupSpaceBindingsByGroup(String group, String role);
+   * Get groups binding for a specific group
+   *
+   * @param group group
+   * @return A list of group bindings
+   */
+  List<GroupSpaceBindingEntity> findGroupSpaceBindingsByGroup(String group);
 }
