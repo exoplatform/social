@@ -30,25 +30,23 @@ import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 public interface GroupSpaceBindingService {
 
   /**
-   * Get a list containing all the groups binding for a space/role.
+   * Get a list containing all the groups binding for a space.
    *
    * @param spaceId The space Id.
-   * @param spaceRole The role in the space (manager or member).
    * @return The list of binding.
    */
-  List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId, String spaceRole);
+  List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId);
 
   /**
-  * Get a list containing all the groups binding for a space/role.
+  * Get a list containing all the groups binding for a space.
   *
   * @param group The group Id.
-  * @param role The role in group (manager,member...).
   * @return The list of binding.
   */
-  List<GroupSpaceBinding> findGroupSpaceBindingsByGroup(String group, String role);
+  List<GroupSpaceBinding> findGroupSpaceBindingsByGroup(String group);
 
   /**
-   * Get a list containing all the groups binding for a space/role.
+   * Get a list containing all the groups binding for a space.
    *
    * @param spaceId The space Id.
    * @param userName The space member's username.
@@ -57,20 +55,19 @@ public interface GroupSpaceBindingService {
   List<UserSpaceBinding> findUserBindingsBySpace(String spaceId, String userName);
 
   /**
-   * Get user bindings for a membership (group+role) in space
+   * Get user bindings in space
    *
    * @param group the group
-   * @param groupRole the role in group
    * @param userName Member in the space
-   * @return A list of group+membership bindings
+   * @return A list of group bindings
    */
-  List<UserSpaceBinding> findUserBindingsByGroup(String group, String groupRole, String userName);
+  List<UserSpaceBinding> findUserBindingsByGroup(String group, String userName);
 
   /**
   * Get user bindings for a user
   *
   * @param userName the user
-  * @return A list of group+membership bindings
+  * @return A list of group bindings
   */
   List<UserSpaceBinding> findUserBindingsByUser(String userName);
 
@@ -114,13 +111,12 @@ public interface GroupSpaceBindingService {
   void deleteAllUserBindings(String user);
 
   /**
-   * Delete all group bindings for a specific space / role. When bindings is
+   * Delete all group bindings for a specific space. When bindings is
    * deleted, all users in the group will be remove from space.
    * 
    * @param spaceId The space Id.
-   * @param spaceRole The role in the space (manager or member).
    */
-  void deleteAllSpaceBindingsBySpace(String spaceId, String spaceRole);
+  void deleteAllSpaceBindingsBySpace(String spaceId);
 
   /**
    * Check if member has binding for this space

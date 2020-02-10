@@ -16,15 +16,11 @@
  */
 package org.exoplatform.social.core.binding.spi;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.organization.*;
-import org.exoplatform.services.organization.cache.CacheableMembershipHandlerImpl;
 import org.exoplatform.services.organization.impl.MembershipImpl;
-import org.exoplatform.services.organization.impl.mock.DummyOrganizationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -36,12 +32,10 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.binding.impl.GroupSpaceBindingServiceImpl;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage;
-import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -64,7 +58,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
   /**
    * Test
-   * {@link GroupSpaceBindingService#findGroupSpaceBindingsBySpace(String spaceId, String role)}
+   * {@link GroupSpaceBindingService#findGroupSpaceBindingsBySpace(String spaceId)}
    *
    * @throws Exception
    */
@@ -74,21 +68,17 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     List<GroupSpaceBinding> groupSpaceBindings = new LinkedList<>();
     GroupSpaceBinding binding1 = new GroupSpaceBinding();
     binding1.setId(1);
-    binding1.setGroupRole("any");
-    binding1.setSpaceRole("member");
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId("1");
     groupSpaceBindings.add(binding1);
 
     GroupSpaceBinding binding2 = new GroupSpaceBinding();
     binding2.setId(2);
-    binding2.setGroupRole("any");
-    binding2.setSpaceRole("member");
     binding2.setGroup("/platform/web-contributors");
     binding2.setSpaceId("1");
     groupSpaceBindings.add(binding2);
 
-    Mockito.when(groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(Mockito.eq("1"), Mockito.eq("member")))
+    Mockito.when(groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(Mockito.eq("1")))
            .thenReturn(groupSpaceBindings);
 
     // When
@@ -96,7 +86,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
                                                                                          groupSpaceBindingStorage,
                                                                                          orgService,
                                                                                          spaceService);
-    List<GroupSpaceBinding> results = groupSpaceBindingService.findGroupSpaceBindingsBySpace("1", "member");
+    List<GroupSpaceBinding> results = groupSpaceBindingService.findGroupSpaceBindingsBySpace("1");
     GroupSpaceBinding result1 = results.get(0);
     GroupSpaceBinding result2 = results.get(1);
 
@@ -105,15 +95,11 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
     assertEquals(1, result1.getId());
     assertEquals("/platform/administrators", result1.getGroup());
-    assertEquals("any", result1.getGroupRole());
     assertEquals("1", result1.getSpaceId());
-    assertEquals("member", result1.getSpaceRole());
 
     assertEquals(2, result2.getId());
     assertEquals("/platform/web-contributors", result2.getGroup());
-    assertEquals("any", result2.getGroupRole());
     assertEquals("1", result2.getSpaceId());
-    assertEquals("member", result2.getSpaceRole());
   }
 
   /**
@@ -126,15 +112,11 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     // Given
     GroupSpaceBinding binding1 = new GroupSpaceBinding();
     binding1.setId(1);
-    binding1.setGroupRole("any");
-    binding1.setSpaceRole("member");
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId("1");
 
     GroupSpaceBinding binding2 = new GroupSpaceBinding();
     binding2.setId(1);
-    binding2.setGroupRole("any");
-    binding2.setSpaceRole("member");
     binding2.setGroup("/platform/users");
     binding2.setSpaceId("1");
 
@@ -185,8 +167,6 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     // Given
     GroupSpaceBinding binding1 = new GroupSpaceBinding();
     binding1.setId(1);
-    binding1.setGroupRole("any");
-    binding1.setSpaceRole("member");
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId("1");
 
@@ -223,8 +203,6 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     // Given
     GroupSpaceBinding binding1 = new GroupSpaceBinding();
     binding1.setId(1);
-    binding1.setGroupRole("any");
-    binding1.setSpaceRole("member");
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId("1");
 
@@ -244,7 +222,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
   /**
    * Test
-   * {@link GroupSpaceBindingService#deleteAllSpaceBindingsBySpace(String spaceId, String spaceRole)}
+   * {@link GroupSpaceBindingService#deleteAllSpaceBindingsBySpace(String spaceId)}
    *
    * @throws Exception
    */
@@ -255,8 +233,6 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     List<GroupSpaceBinding> resultSpaceBindings = new LinkedList<>();
     GroupSpaceBinding binding1 = new GroupSpaceBinding();
     binding1.setId(1);
-    binding1.setGroupRole("any");
-    binding1.setSpaceRole("member");
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId("1");
     groupSpaceBindings.add(binding1);
@@ -264,29 +240,23 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
     GroupSpaceBinding binding2 = new GroupSpaceBinding();
     binding2.setId(2);
-    binding2.setGroupRole("any");
-    binding2.setSpaceRole("member");
     binding2.setGroup("/platform/web-contributors");
     binding2.setSpaceId("2");
     groupSpaceBindings.add(binding2);
 
     GroupSpaceBinding binding3 = new GroupSpaceBinding();
     binding3.setId(3);
-    binding3.setGroupRole("any");
-    binding3.setSpaceRole("manager");
     binding3.setGroup("/platform/web-contributors");
     binding3.setSpaceId("1");
     groupSpaceBindings.add(binding3);
 
     GroupSpaceBinding binding4 = new GroupSpaceBinding();
     binding4.setId(4);
-    binding4.setGroupRole("any");
-    binding4.setSpaceRole("member");
     binding4.setGroup("/platform/web-contributors");
     binding4.setSpaceId("1");
     groupSpaceBindings.add(binding4);
     resultSpaceBindings.add(binding4);
-    Mockito.when(groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(Mockito.eq("1"), Mockito.eq("member")))
+    Mockito.when(groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(Mockito.eq("1")))
            .thenReturn(resultSpaceBindings);
 
     // When
@@ -294,7 +264,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
                                                                                          groupSpaceBindingStorage,
                                                                                          orgService,
                                                                                          spaceService);
-    groupSpaceBindingService.deleteAllSpaceBindingsBySpace("1", "member");
+    groupSpaceBindingService.deleteAllSpaceBindingsBySpace("1");
 
     // Then
     ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
@@ -401,8 +371,6 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     List<UserSpaceBinding> userSpaceBindings = new LinkedList<>();
     GroupSpaceBinding binding1 = new GroupSpaceBinding();
     binding1.setId(1);
-    binding1.setGroupRole("any");
-    binding1.setSpaceRole("member");
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId("1");
 
@@ -415,12 +383,6 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
     // When
     Mockito.when(orgService.getMembershipHandler()).thenReturn(membershipHandler);
-
-    Mockito.when(orgService.getMembershipHandler()
-              .findMembershipByUserGroupAndType(ub1.getUser(),
-                      ub1.getGroupBinding().getGroup(),
-                      ub1.getGroupBinding().getGroupRole()))
-            .thenReturn(new MembershipImpl());
 
 
     GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams,

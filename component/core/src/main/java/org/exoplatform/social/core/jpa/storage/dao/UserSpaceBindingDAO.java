@@ -25,38 +25,36 @@ import org.exoplatform.social.core.jpa.storage.entity.UserSpaceBindingEntity;
 public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, Long> {
 
   /**
-   * Get user bindings for a specific role(member or manager) in space
+   * Get user bindings for a specific space
    *
    * @param spaceId Id of the space
    * @param userName Member in the space
-   * @return A list of group+membership bindings
+   * @return A list of group bindings
    */
   List<UserSpaceBindingEntity> findUserBindingsBySpace(Long spaceId, String userName);
 
   /**
-   * Get user bindings of a user for a membership (group+role) in space
+   * Get user bindings of a user in a space
    *
    * @param group the group
-   * @param groupRole the role in group
    * @param userName Member in the space
-   * @return A list of group+membership bindings
+   * @return A list of group bindings
    */
-  List<UserSpaceBindingEntity> findUserBindingsByGroup(String group, String groupRole, String userName);
+  List<UserSpaceBindingEntity> findUserBindingsByGroup(String group, String userName);
 
   /**
-   * Get all user bindings for a membership (group+role)
+   * Get all user bindings
    *
    * @param group the group
-   * @param groupRole the role in group
-   * @return A list of group+membership bindings
+   * @return A list of group bindings
    */
-  List<UserSpaceBindingEntity> findUserAllBindingsByGroupMembership(String group, String groupRole);
+  List<UserSpaceBindingEntity> findUserAllBindingsByGroup(String group);
 
   /**
    * Get user bindings of a user
    *
    * @param userName the user
-   * @return A list of group+membership bindings
+   * @return A list of group bindings
    */
   List<UserSpaceBindingEntity> findUserAllBindingsByUser(String userName);
 
