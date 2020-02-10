@@ -32,13 +32,11 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
         + " WHERE userSpaceBinding.space.id = :spaceId and userSpaceBinding.user = :userName"),
     @NamedQuery(name = "SocUserSpaceBinding.findUserBindingsByGroup", query = "SELECT userSpaceBinding "
         + " FROM SocUserSpaceBinding userSpaceBinding"
-        + " WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.groupRole = :groupRole and userSpaceBinding.groupSpaceBinding.group = :group"),
-    @NamedQuery(name = "SocUserSpaceBinding.findUserAllBindingsByGroupMembership", query = "SELECT userSpaceBinding "
-        + " FROM SocUserSpaceBinding userSpaceBinding"
-        + " WHERE userSpaceBinding.groupSpaceBinding.groupRole = :groupRole and userSpaceBinding.groupSpaceBinding.group = :group"),
+        + " WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.group = :group"),
+    @NamedQuery(name = "SocUserSpaceBinding.findUserAllBindingsByGroup", query = "SELECT userSpaceBinding "
+        + " FROM SocUserSpaceBinding userSpaceBinding" + " WHERE userSpaceBinding.groupSpaceBinding.group = :group"),
     @NamedQuery(name = "SocUserSpaceBinding.findUserAllBindingsByUser", query = "SELECT userSpaceBinding "
-        + " FROM SocUserSpaceBinding userSpaceBinding"
-        + " WHERE userSpaceBinding.user = :userName"),
+        + " FROM SocUserSpaceBinding userSpaceBinding" + " WHERE userSpaceBinding.user = :userName"),
     @NamedQuery(name = "SocUserSpaceBinding.deleteAllUserBindings", query = "DELETE FROM SocUserSpaceBinding userSpaceBinding WHERE userSpaceBinding.user = :userName"),
     @NamedQuery(name = "SocUserSpaceBinding.countBindingsForMembers", query = "SELECT count(*) FROM SocUserSpaceBinding userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.space.id = :spaceId") })
 public class UserSpaceBindingEntity implements Serializable {

@@ -19,7 +19,6 @@ package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingDAO;
-import org.exoplatform.social.core.jpa.storage.entity.ActivityEntity;
 import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingEntity;
 
 import javax.persistence.TypedQuery;
@@ -27,20 +26,22 @@ import java.util.List;
 
 public class GroupSpaceBindingDAOImpl extends GenericDAOJPAImpl<GroupSpaceBindingEntity, Long> implements GroupSpaceBindingDAO {
 
-    @Override
-    public List<GroupSpaceBindingEntity> findGroupSpaceBindingsBySpace(Long spaceId, String role) {
-        TypedQuery<GroupSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocGroupSpaceBinding.findGroupSpaceBindingsBySpace", GroupSpaceBindingEntity.class);
-        query.setParameter("spaceId",spaceId);
-        query.setParameter("role",role);
-        return query.getResultList();
-    }
+  @Override
+  public List<GroupSpaceBindingEntity> findGroupSpaceBindingsBySpace(Long spaceId) {
+    TypedQuery<GroupSpaceBindingEntity> query =
+                                              getEntityManager().createNamedQuery("SocGroupSpaceBinding.findGroupSpaceBindingsBySpace",
+                                                                                  GroupSpaceBindingEntity.class);
+    query.setParameter("spaceId", spaceId);
+    return query.getResultList();
+  }
 
-    @Override
-    public List<GroupSpaceBindingEntity> findGroupSpaceBindingsByGroup(String group, String role) {
-        TypedQuery<GroupSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocGroupSpaceBinding.findGroupSpaceBindingsByGroup", GroupSpaceBindingEntity.class);
-        query.setParameter("group",group);
-        query.setParameter("role",role);
-        return query.getResultList();
-    }
+  @Override
+  public List<GroupSpaceBindingEntity> findGroupSpaceBindingsByGroup(String group) {
+    TypedQuery<GroupSpaceBindingEntity> query =
+                                              getEntityManager().createNamedQuery("SocGroupSpaceBinding.findGroupSpaceBindingsByGroup",
+                                                                                  GroupSpaceBindingEntity.class);
+    query.setParameter("group", group);
+    return query.getResultList();
+  }
 
 }

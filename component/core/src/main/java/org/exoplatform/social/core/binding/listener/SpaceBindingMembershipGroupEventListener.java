@@ -36,8 +36,7 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
 
   @Override
   public void postSave(Membership m, boolean isNew) throws Exception {
-      for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindingService.findGroupSpaceBindingsByGroup(m.getGroupId(),
-              m.getMembershipType())) {
+      for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindingService.findGroupSpaceBindingsByGroup(m.getGroupId())) {
            List<UserSpaceBinding> userSpaceBindings = new LinkedList<>();
            UserSpaceBinding ub1 = new UserSpaceBinding();
            ub1.setGroupBinding(groupSpaceBinding);
@@ -51,7 +50,6 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
   @Override
   public void postDelete(Membership m) throws Exception {
     for (UserSpaceBinding userSpaceBinding : groupSpaceBindingService.findUserBindingsByGroup(m.getGroupId(),
-                                                                                              m.getMembershipType(),
                                                                                               m.getUserName())) {
       groupSpaceBindingService.deleteUserBinding(userSpaceBinding);
     }

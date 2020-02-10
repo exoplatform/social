@@ -85,7 +85,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
 
         List<GroupSpaceBinding> list = null;
 
-        list = groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId,spaceRole);
+        list = groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId);
 
         List<DataEntity> bindings = new ArrayList<DataEntity>();
 
@@ -130,7 +130,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
         }
 
         List<GroupSpaceBinding> groupSpaceBindings = groupSpaceBindingEntityList.stream().
-                map(binding -> new GroupSpaceBinding(binding.getId(),binding.getSpaceId(),binding.getSpaceRole(),binding.getGroup(),binding.getGroupRole())).
+                map(binding -> new GroupSpaceBinding(binding.getId(),binding.getSpaceId(),binding.getGroup())).
                 collect(Collectors.toList());
 
         groupSpaceBindingService.saveSpaceBindings(spaceId,groupSpaceBindings);
@@ -153,15 +153,14 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
             @ApiResponse (code = 500, message = "Internal server error"),
             @ApiResponse (code = 400, message = "Invalid query input") })
     public Response deleteSpaceBindings(@Context UriInfo uriInfo,
-                                    @ApiParam(value = "spaceId", required = true) @PathParam("spaceId") String spaceId,
-                                    @ApiParam(value = "spaceRole", required = true) @PathParam("spaceRole") String spaceRole
+                                    @ApiParam(value = "spaceId", required = true) @PathParam("spaceId") String spaceId
                                     ) throws Exception {
         String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
 
         if(!spaceService.isSuperManager(authenticatedUser)) {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
-        groupSpaceBindingService.deleteAllSpaceBindingsBySpace(spaceId,spaceRole);
+        groupSpaceBindingService.deleteAllSpaceBindingsBySpace(spaceId);
 
         return Response.ok().build();
     }

@@ -72,12 +72,10 @@ public interface GroupSpaceBindingRestResources extends SocialRest{
      *
      * @param uriInfo
      * @param spaceId Id of the space
-     * @param spaceRole Role in the space (member/manager)
      * @return Status
      * @throws Exception
      */
     @DELETE
     public abstract Response deleteSpaceBindings(@Context UriInfo uriInfo,
-                                               @PathParam("spaceId") String spaceId,
-                                               @PathParam("spaceRole") String spaceRole) throws Exception;
+                                               @PathParam("spaceId") String spaceId) throws Exception;
 }

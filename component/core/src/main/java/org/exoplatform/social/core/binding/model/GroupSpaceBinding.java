@@ -28,24 +28,16 @@ public class GroupSpaceBinding {
   /** The space id */
   private String spaceId;
 
-  /** The space role (member/manager) */
-  private String spaceRole;
-
   /** The group id. */
   private String group;
-
-  /** The group role */
-  private String groupRole;
 
   public GroupSpaceBinding() {
   }
 
-  public GroupSpaceBinding(String id,String spaceId, String spaceRole,String group, String groupRole) {
-        this.id = Long.parseLong(id);
-        this.spaceId = spaceId;
-        this.spaceRole = spaceRole;
-        this.group = group;
-        this.groupRole = groupRole;
+  public GroupSpaceBinding(String id, String spaceId, String group) {
+    this.id = Long.parseLong(id);
+    this.spaceId = spaceId;
+    this.group = group;
   }
 
   public long getId() {
@@ -64,27 +56,11 @@ public class GroupSpaceBinding {
     this.spaceId = spaceId;
   }
 
-  public String getSpaceRole() {
-    return spaceRole;
-  }
-
-  public void setSpaceRole(String spaceRole) {
-    this.spaceRole = spaceRole;
-  }
-
   public String getGroup() {
     return group;
   }
 
   public void setGroup(String group) {
     this.group = group;
-  }
-
-  public String getGroupRole() {
-    return groupRole;
-  }
-
-  public void setGroupRole(String groupRole) {
-    this.groupRole = groupRole;
   }
 }

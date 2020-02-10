@@ -599,12 +599,6 @@
       <column name="GROUP_NAME" type="NVARCHAR(200)">
         <constraints nullable="false"/>
       </column>
-      <column name="SPACE_ROLE" type="NVARCHAR(200)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="GROUP_ROLE" type="NVARCHAR(200)">
-        <constraints nullable="false"/>
-      </column>
     </createTable>
     <createTable tableName="SOC_USER_SPACE_BINDING">
       <column name="USER_SPACE_BINDING_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
