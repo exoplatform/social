@@ -49,7 +49,7 @@
       }
 
       .selectize-input {
-        max-height: fit-content;
+        max-height: inherit;
         min-height: 80px;
         height: max-content;
         padding: 8px;
@@ -64,14 +64,14 @@
           font-size: 13px;
 
           a {
-            color: white;
+            color: #ccddef;
             background-color: #568dc9;
             border-radius: 50%;
-            font-size: 10px;
+            font-size: 12px;
             width: 16px;
-            height: 16px;
+            height: 17px;
             top: 3px;
-            right: 4px;
+            right: 10px;
           }
         }
       }
@@ -127,9 +127,9 @@
     z-index: 1055!important;
     
     .modal-content {
-      right: 9%!important;
-      bottom: 9%!important;
-      width: auto;
+      right: 9%;
+      bottom: 9% !important;
+      width: auto!important;
 
       .popupHeader {
         margin-bottom: auto;
@@ -137,19 +137,47 @@
         display: inline-flex;
         
         .closeBindingModal {
-          position: relative;
           left: 84%;
         }
       }
       
-      p {
-        margin-bottom: 60px;
-      }
-      
-      .btn.btn-primary, .btn {
-        position: relative;
-        left: 32%;
-      }
+      .popupContent {
+        p {
+          margin-bottom: 60px;
+        }
+
+        .btn.btn-primary, .btn {
+          position: relative;
+          left: 32%;
+        }
+      }      
     }
   }
+}
+
+@media (max-width: 1024px) {
+  .bindingModal {
+    .modal-content {
+      right: 0%!important;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .bindingModal {
+    .modal-content {
+      .popupContent {
+        .btn.btn-primary, .btn {
+          position: relative;
+          left: 25%!important;
+        }
+      }
+      
+      .popupHeader {
+        .closeBindingModal {
+          left: 38% !important;
+        }
+      }
+    }
+  }  
 }
