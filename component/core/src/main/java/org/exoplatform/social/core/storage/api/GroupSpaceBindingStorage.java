@@ -38,11 +38,11 @@ public interface GroupSpaceBindingStorage {
   List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId) throws GroupSpaceBindingStorageException;
 
   /**
-  * Get a list containing all the groups binding for a space.
-  *
-  * @param group The group Id.
-  * @return The list of binding.
-  */
+   * Get a list containing all the groups binding for a space.
+   *
+   * @param group The group Id.
+   * @return The list of binding.
+   */
   List<GroupSpaceBinding> findGroupSpaceBindingsByGroup(String group) throws GroupSpaceBindingStorageException;
 
   /**
@@ -55,24 +55,20 @@ public interface GroupSpaceBindingStorage {
   List<UserSpaceBinding> findUserSpaceBindingsBySpace(String spaceId, String userName) throws GroupSpaceBindingStorageException;
 
   /**
-   * Get a list containing all the group binding for a user
-   * (user/group).
+   * Get a list containing all the group binding for a user (user/group).
    *
    * @param group The group.
    * @param userName The space member.
    * @return The list of binding.
    */
-  List<UserSpaceBinding> findUserSpaceBindingsByGroup(String group,
-                                                      String userName) throws GroupSpaceBindingStorageException;
-
+  List<UserSpaceBinding> findUserSpaceBindingsByGroup(String group, String userName) throws GroupSpaceBindingStorageException;
 
   /**
-   * Get a all the group binding for a user
-   * (user/group).
+   * Get a all the group binding for a user (user/group).
    *
    * @param userName The group.
    * @return The list of binding.
-  */
+   */
   List<UserSpaceBinding> findUserSpaceBindingsByUser(String userName) throws GroupSpaceBindingStorageException;
 
   /**
