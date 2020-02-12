@@ -11,7 +11,7 @@
           @click="closeModal">
           <v-icon
             large
-            color="grey"
+            color="#e1e8ee"
             class="closeIcon">
             close
           </v-icon>
