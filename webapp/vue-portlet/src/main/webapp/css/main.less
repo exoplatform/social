@@ -91,7 +91,7 @@
     }
     
     .closeIcon {
-      color: @greyWhiteColor!important;
+      color: @greyBackground!important;
     }
     
     .close {
@@ -146,11 +146,18 @@
           margin-bottom: 60px;
         }
 
-        .btn.btn-primary, .btn {
-          position: relative;
-          left: 32%;
+        .uiAction.uiActionBorder {
+          padding-bottom: 8px!important;
+          .btn.btn-primary, .btn {
+            position: relative;
+            left: 27%;
+            font-weight: normal!important;
+          }
+          .btn {
+            min-width: 13%;
+          }
         }
-      }      
+      }
     }
   }
 }
@@ -166,16 +173,18 @@
 @media (max-width: 767px) {
   .bindingModal {
     .modal-content {
-      .popupContent {
-        .btn.btn-primary, .btn {
-          position: relative;
-          left: 25%!important;
-        }
-      }
-      
       .popupHeader {
         .closeBindingModal {
           left: 38% !important;
+        }
+      }
+      
+      .popupContent {
+        .btn.btn-primary, .btn {
+          left: 22%!important;
+        }
+        .btn {
+          min-width: 16% !important;
         }
       }
     }

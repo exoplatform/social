@@ -231,11 +231,9 @@ export default {
     },
     closeBindingModal(){
       this.showConfirmMessageBindingModal = false;
-      this.showGroupBindingForm = false;
     },
     confirmBinding() {
       this.showConfirmMessageBindingModal = false;
-      this.showGroupBindingForm = false;
     }
   }
 };
