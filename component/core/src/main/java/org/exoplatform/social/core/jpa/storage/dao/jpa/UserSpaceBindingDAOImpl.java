@@ -48,16 +48,18 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
 
   @Override
   public List<UserSpaceBindingEntity> findUserAllBindingsByGroup(String group) {
-    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserAllBindingsByGroup",
-                                                                                   UserSpaceBindingEntity.class);
+    TypedQuery<UserSpaceBindingEntity> query =
+                                             getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserAllBindingsByGroup",
+                                                                                 UserSpaceBindingEntity.class);
     query.setParameter("group", group);
     return query.getResultList();
   }
 
   @Override
   public List<UserSpaceBindingEntity> findUserAllBindingsByUser(String userName) {
-    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserAllBindingsByUser",
-                UserSpaceBindingEntity.class);
+    TypedQuery<UserSpaceBindingEntity> query =
+                                             getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserAllBindingsByUser",
+                                                                                 UserSpaceBindingEntity.class);
     query.setParameter("userName", userName);
     return query.getResultList();
   }

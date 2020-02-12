@@ -38,11 +38,11 @@ public interface GroupSpaceBindingService {
   List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId);
 
   /**
-  * Get a list containing all the groups binding for a space.
-  *
-  * @param group The group Id.
-  * @return The list of binding.
-  */
+   * Get a list containing all the groups binding for a space.
+   *
+   * @param group The group Id.
+   * @return The list of binding.
+   */
   List<GroupSpaceBinding> findGroupSpaceBindingsByGroup(String group);
 
   /**
@@ -64,11 +64,11 @@ public interface GroupSpaceBindingService {
   List<UserSpaceBinding> findUserBindingsByGroup(String group, String userName);
 
   /**
-  * Get user bindings for a user
-  *
-  * @param userName the user
-  * @return A list of group bindings
-  */
+   * Get user bindings for a user
+   *
+   * @param userName the user
+   * @return A list of group bindings
+   */
   List<UserSpaceBinding> findUserBindingsByUser(String userName);
 
   /**
@@ -111,8 +111,8 @@ public interface GroupSpaceBindingService {
   void deleteAllUserBindings(String user);
 
   /**
-   * Delete all group bindings for a specific space. When bindings is
-   * deleted, all users in the group will be remove from space.
+   * Delete all group bindings for a specific space. When bindings is deleted, all
+   * users in the group will be remove from space.
    * 
    * @param spaceId The space Id.
    */

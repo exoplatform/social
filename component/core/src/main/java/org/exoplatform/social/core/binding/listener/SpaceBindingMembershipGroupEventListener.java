@@ -36,21 +36,20 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
 
   @Override
   public void postSave(Membership m, boolean isNew) throws Exception {
-      for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindingService.findGroupSpaceBindingsByGroup(m.getGroupId())) {
-           List<UserSpaceBinding> userSpaceBindings = new LinkedList<>();
-           UserSpaceBinding ub1 = new UserSpaceBinding();
-           ub1.setGroupBinding(groupSpaceBinding);
-           ub1.setSpaceId(groupSpaceBinding.getSpaceId());
-           ub1.setUser(m.getUserName());
-           userSpaceBindings.add(ub1);
-           groupSpaceBindingService.saveUserBindings(m.getUserName(), userSpaceBindings);
+    for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindingService.findGroupSpaceBindingsByGroup(m.getGroupId())) {
+      List<UserSpaceBinding> userSpaceBindings = new LinkedList<>();
+      UserSpaceBinding ub1 = new UserSpaceBinding();
+      ub1.setGroupBinding(groupSpaceBinding);
+      ub1.setSpaceId(groupSpaceBinding.getSpaceId());
+      ub1.setUser(m.getUserName());
+      userSpaceBindings.add(ub1);
+      groupSpaceBindingService.saveUserBindings(m.getUserName(), userSpaceBindings);
     }
   }
 
   @Override
   public void postDelete(Membership m) throws Exception {
-    for (UserSpaceBinding userSpaceBinding : groupSpaceBindingService.findUserBindingsByGroup(m.getGroupId(),
-                                                                                              m.getUserName())) {
+    for (UserSpaceBinding userSpaceBinding : groupSpaceBindingService.findUserBindingsByGroup(m.getGroupId(), m.getUserName())) {
       groupSpaceBindingService.deleteUserBinding(userSpaceBinding);
     }
   }
