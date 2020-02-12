@@ -7,16 +7,16 @@ import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 
 public class SpaceBindingUserEventListener extends UserEventListener {
 
-    private GroupSpaceBindingService groupSpaceBindingService;
+  private GroupSpaceBindingService groupSpaceBindingService;
 
-    public SpaceBindingUserEventListener(GroupSpaceBindingService groupSpaceBindingService) {
-        this.groupSpaceBindingService = groupSpaceBindingService;
-    }
+  public SpaceBindingUserEventListener(GroupSpaceBindingService groupSpaceBindingService) {
+    this.groupSpaceBindingService = groupSpaceBindingService;
+  }
 
-    @Override
-    public void postDelete(User user) throws Exception {
-        for (UserSpaceBinding userSpaceBinding : groupSpaceBindingService.findUserBindingsByUser(user.getUserName())) {
-            groupSpaceBindingService.deleteUserBinding(userSpaceBinding);
-        }
+  @Override
+  public void postDelete(User user) throws Exception {
+    for (UserSpaceBinding userSpaceBinding : groupSpaceBindingService.findUserBindingsByUser(user.getUserName())) {
+      groupSpaceBindingService.deleteUserBinding(userSpaceBinding);
     }
+  }
 }

@@ -20,14 +20,15 @@ package org.exoplatform.social.core.storage;
 import org.exoplatform.social.common.ExoSocialException;
 
 /**
- * Class to handle group/space binding  exception
+ * Class to handle group/space binding exception
  */
 public class GroupSpaceBindingStorageException extends ExoSocialException {
 
   private static final String MESSAGE_BUNDLE_DELIMITER = ".";
 
   public static enum Type {
-    ILLEGAL_ARGUMENTS("Illegal_Arguments");;
+    ILLEGAL_ARGUMENTS("Illegal_Arguments");
+    ;
 
     private final String msgKey;
 
@@ -41,11 +42,9 @@ public class GroupSpaceBindingStorageException extends ExoSocialException {
     }
   }
 
-
   public GroupSpaceBindingStorageException(Type type) {
     super(type.toString());
   }
-
 
   public GroupSpaceBindingStorageException(Type type, String[] messageArguments) {
     super(type.toString(), messageArguments);

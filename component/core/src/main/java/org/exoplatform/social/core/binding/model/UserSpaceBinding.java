@@ -22,47 +22,47 @@ package org.exoplatform.social.core.binding.model;
  */
 
 public class UserSpaceBinding {
-    /** The id. */
-    private long              id;
+  /** The id. */
+  private long              id;
 
-    /** The space id */
-    private String              spaceId;
+  /** The space id */
+  private String            spaceId;
 
-    /** The user */
-    private String            user;
+  /** The user */
+  private String            user;
 
-    /** The group binding */
-    private GroupSpaceBinding groupBinding;
+  /** The group binding */
+  private GroupSpaceBinding groupBinding;
 
-    public long getId() {
-        return id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public String getSpaceId() {
-        return spaceId;
-    }
+  public String getSpaceId() {
+    return spaceId;
+  }
 
-    public void setSpaceId(String spaceId) {
-        this.spaceId = spaceId;
-    }
+  public void setSpaceId(String spaceId) {
+    this.spaceId = spaceId;
+  }
 
-    public String getUser() {
-        return user;
-    }
+  public String getUser() {
+    return user;
+  }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+  public void setUser(String user) {
+    this.user = user;
+  }
 
-    public GroupSpaceBinding getGroupBinding() {
-        return groupBinding;
-    }
+  public GroupSpaceBinding getGroupBinding() {
+    return groupBinding;
+  }
 
-    public void setGroupBinding(GroupSpaceBinding groupBinding) {
-        this.groupBinding = groupBinding;
-    }
+  public void setGroupBinding(GroupSpaceBinding groupBinding) {
+    this.groupBinding = groupBinding;
+  }
 }
