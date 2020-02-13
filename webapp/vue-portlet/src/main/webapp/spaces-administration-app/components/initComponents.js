@@ -2,7 +2,6 @@ import ExoModal from './modal/ExoModal.vue';
 import ExoSpacesAdministrationManageSpaces from './ExoSpacesAdministrationManageSpaces.vue';
 import ExoSpacesAdministrationSpacesPermissions from './ExoSpacesAdministrationSpacesPermissions.vue';
 import ExoSpacesAdministrationSpaces  from './ExoSpacesAdministrationSpaces.vue';
-import ExoSpaceBindingModal from './modal/ExoSpaceBindingModal.vue';
 import ExoGroupBindingDrawer from './drawer/ExoGroupBindingDrawer.vue';
 
 const components = {
@@ -10,7 +9,6 @@ const components = {
   'exo-spaces-administration-manage-permissions' : ExoSpacesAdministrationSpacesPermissions,
   'exo-spaces-administration-spaces' : ExoSpacesAdministrationSpaces,
   'exo-modal' : ExoModal,
-  'exo-spaces-binding-modal' : ExoSpaceBindingModal,
   'exo-group-binding-drawer' : ExoGroupBindingDrawer
 };
 

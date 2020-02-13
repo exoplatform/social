@@ -2,20 +2,6 @@
                   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/gatein_resources_1_4 http://www.exoplatform.org/xml/ns/gatein_resources_1_4"
                   xmlns="http://www.exoplatform.org/xml/ns/gatein_resources_1_4">
 
-    <portal-skin>
-        <skin-name>Default</skin-name>
-        <skin-module>social</skin-module>
-        <css-path>/css/main.css</css-path>
-        <css-priority>10</css-priority>
-    </portal-skin>
-    
-    <portal-skin>
-        <skin-name>Enterprise</skin-name>
-        <skin-module>social</skin-module>
-        <css-path>/css/main.css</css-path>
-        <css-priority>10</css-priority>
-    </portal-skin>
-    
     <portlet>
         <name>SpacesAdministration</name>
         <module>
