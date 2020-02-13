@@ -24,11 +24,10 @@ import io.swagger.annotations.ApiResponses;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -39,7 +38,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
@@ -52,8 +56,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.IdentityRestResources;
 import org.exoplatform.social.rest.api.RestProperties;
@@ -439,5 +441,49 @@ public class IdentityRestResourcesV1 implements IdentityRestResources {
       collectionRelationship.setSize(relationshipManager.getRelationshipsCountByStatus(identity, Relationship.Type.ALL));
     }
     return EntityBuilder.getResponse(collectionRelationship, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+
+  @GET
+  @Path("{id}/commonConnections")
+  @RolesAllowed("users")
+  @ApiOperation(value = "Gets common connections with identity",
+      httpMethod = "GET",
+      response = Response.class,
+      notes = "This returns the common connections between a the authenticated user and a given identity.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Request fulfilled"),
+      @ApiResponse(code = 500, message = "Internal server error"),
+      @ApiResponse(code = 400, message = "Invalid query input") })
+  public Response getCommonConnectionsWithIdentity(@Context UriInfo uriInfo,
+                                                   @ApiParam(value = "The given identity id", required = true) @PathParam("id") String id,
+                                                   @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
+                                                   @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                                   @ApiParam(value = "Returning the number of common connections or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize,
+                                                   @ApiParam(value = "Asking for a full representation of a specific subresource if any", required = false) @QueryParam("expand") String expand) throws Exception {
+
+    RelationshipManager relationshipManager = CommonsUtils.getService(RelationshipManager.class);
+
+    Identity authenticatedUser = CommonsUtils.getService(IdentityManager.class)
+                                             .getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                  ConversationState.getCurrent().getIdentity().getUserId());
+
+    List<Identity> currentUserConnections = Arrays.asList(relationshipManager.getConnections(authenticatedUser).load(0, 0));
+
+    Identity withIdentity = CommonsUtils.getService(IdentityManager.class).getIdentity(id, true);
+    List<Identity> withConnections = Arrays.asList(relationshipManager.getConnections(withIdentity).load(0, 0));
+
+    List<Identity> commonConnections = currentUserConnections.stream()
+                                                             .filter(withConnections::contains)
+                                                             .collect(Collectors.toList());
+
+    List<DataEntity> identityEntities = new ArrayList<DataEntity>();
+    for (Identity identity : commonConnections) {
+      identityEntities.add(EntityBuilder.buildEntityIdentity(identity, uriInfo.getPath(), expand).getDataEntity());
+    }
+    CollectionEntity collectionIdentity = new CollectionEntity(identityEntities, EntityBuilder.IDENTITIES_TYPE, offset, limit);
+    if (returnSize) {
+      collectionIdentity.setSize(commonConnections.size());
+    }
+    return EntityBuilder.getResponse(collectionIdentity, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
 }
