@@ -19,8 +19,12 @@ package org.exoplatform.social.webui.composer;
 
 import java.util.List;
 
+import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.utils.HTMLSanitizer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -28,6 +32,7 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivityLoader;
+import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -55,6 +60,8 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
   }
 )
 public class UIComposer extends UIForm {
+
+  private static Log LOG = ExoLogger.getLogger(UIComposer.class);
 
   public enum PostContext {
     SPACE,
@@ -213,6 +220,8 @@ public class UIComposer extends UIForm {
 
       //post activity via the current activity composer
       ExoSocialActivity activity = activityComposer.postActivity(postContext, message);
+
+      logMetrics(activity, postContext, activityComposer);
       
       //clear client cache
       Utils.clearUserProfilePopup();
@@ -238,6 +247,44 @@ public class UIComposer extends UIForm {
           context.addUIComponentToUpdateByAjax(uiComposer);
         }
         activityComposerManager.clearComposerData();
+      }
+    }
+
+    /**
+     * Log metric when this composer is used
+     * @param activity The posted activity
+     * @param postContext The context of the posted activity
+     * @param activityComposer The activity composer object
+     */
+    private void logMetrics(ExoSocialActivity activity, PostContext postContext, UIActivityComposer activityComposer) {
+      ExoFeatureService featureService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ExoFeatureService.class);
+      if(!featureService.isActiveFeature("new-composer")) {
+        return;
+      }
+
+      if(activity == null || activityComposer == null) {
+        return;
+      }
+
+      String activityType;
+      switch (activityComposer.getId()) {
+        case "UIActivityComposerContainer_DOC_ACTIVITY_": activityType = "file"; break;
+        case "UIActivityComposerContainer_LINK_ACTIVITY_": activityType = "link"; break;
+        default: activityType = "message"; break;
+      }
+
+      if(postContext == PostContext.SPACE) {
+        Space space = ((UISpaceActivitiesDisplay)activityComposer.getActivityDisplay()).getSpace();
+        LOG.info("service=composer operation=post parameters=\"composer_type:legacy,activity_type:{},activity_id:{},space_id:{},user_id:{}\"",
+                activityType,
+                activity.getId(),
+                space.getId(),
+                activity.getPosterId());
+      } else {
+        LOG.info("service=composer operation=post parameters=\"composer_type:legacy,activity_type:{},activity_id:{},user_id:{}\"",
+                activityType,
+                activity.getId(),
+                activity.getPosterId());
       }
     }
   }

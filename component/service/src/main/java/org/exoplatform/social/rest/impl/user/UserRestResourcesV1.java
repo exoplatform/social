@@ -19,8 +19,10 @@ package org.exoplatform.social.rest.impl.user;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.common.http.HTTPStatus;
+import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
@@ -659,7 +661,46 @@ public class UserRestResourcesV1 implements UserRestResources {
     }
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(target, activity);
 
+    logMetrics(activity);
+
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+
+  /**
+   * Log metric about composer usage
+   * @param activity The posted activity
+   */
+  private void logMetrics(ExoSocialActivity activity) {
+    ExoFeatureService featureService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ExoFeatureService.class);
+    if(!featureService.isActiveFeature("new-composer")) {
+      return;
+    }
+
+    if(activity == null) {
+      return;
+    }
+
+    String activityType;
+    if(activity.getType() != null) {
+      switch (activity.getType()) {
+        case "files:spaces":
+          activityType = "file";
+          break;
+        case "LINK_ACTIVITY":
+          activityType = "link";
+          break;
+        default:
+          activityType = "message";
+          break;
+      }
+    } else {
+      activityType = "message";
+    }
+
+    LOG.info("service=composer operation=post parameters=\"composer_type:new,activity_type:{},activity_id:{},user_id:{}\"",
+            activityType,
+            activity.getId(),
+            activity.getPosterId());
   }
   
   private void fillUserFromModel(User user, UserEntity model) {

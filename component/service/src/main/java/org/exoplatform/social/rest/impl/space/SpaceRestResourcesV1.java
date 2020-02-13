@@ -44,11 +44,13 @@ import javax.ws.rs.core.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.exoplatform.commons.api.settings.ExoFeatureService;
 import org.exoplatform.commons.file.model.FileItem;
 import org.exoplatform.commons.file.services.FileService;
 import org.exoplatform.commons.file.services.FileStorageException;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -618,8 +620,49 @@ public class SpaceRestResourcesV1 implements SpaceRestResources {
               .collect(Collectors.toList()));
     }
     CommonsUtils.getService(ActivityManager.class).saveActivityNoReturn(spaceIdentity, activity);
-    
+
+    logMetrics(activity, space);
+
     return EntityBuilder.getResponse(EntityBuilder.buildEntityFromActivity(activity, uriInfo.getPath(), expand), uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+
+  /**
+   * Log metric about composer usage
+   * @param activity The posted activity
+   * @param space The space of the posted activity
+   */
+  private void logMetrics(ExoSocialActivity activity, Space space) {
+    ExoFeatureService featureService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ExoFeatureService.class);
+    if(!featureService.isActiveFeature("new-composer")) {
+      return;
+    }
+
+    if(activity == null || space == null) {
+      return;
+    }
+
+    String activityType;
+    if(activity.getType() != null) {
+      switch (activity.getType()) {
+        case "files:spaces":
+          activityType = "file";
+          break;
+        case "LINK_ACTIVITY":
+          activityType = "link";
+          break;
+        default:
+          activityType = "message";
+          break;
+      }
+    } else {
+      activityType = "message";
+    }
+
+    LOG.info("service=composer operation=post parameters=\"composer_type:new,activity_type:{},activity_id:{},space_id:{},user_id:{}\"",
+            activityType,
+            activity.getId(),
+            space.getId(),
+            activity.getPosterId());
   }
 
   private void fillSpaceFromModel(Space space, SpaceEntity model) {
