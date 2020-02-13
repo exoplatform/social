@@ -1,9 +1,7 @@
 <template>
   <v-app
-    id="appId"
-    class="VuetifyApp"
+    class="spacesAdministration"
     flat>
-    <div class="spacesAdministration">
       <div class="uiTabAdvanced uiTabInPage">
         <ul class="nav nav-tabs">
           <li :class="{active: activeTab === 1}" @click="activeTab=1">
@@ -22,7 +20,6 @@
           </div>
         </div> 
       </div>
-    </div>
   </v-app>
 </template>
 
