@@ -99,39 +99,6 @@ if (uicomponent.isProfileOwner()) {
      <% uicomponent.renderChild(org.exoplatform.social.portlet.UIRelationshipAction.class); %>
     </div>
 
-<ul class="nav nav-tabs userNavigation" style="">
-<%
-boolean isOwner=  Utils.isOwner();
-for (node in uicomponent.getUserNodes()) {
-    def nodeName = node.key;
-    def pageURL = node.value;
-    def nodeLabel;
-    def str = "UIUserNavigationPortlet.label." + nodeName;
-    if (isOwner && !nodeName.equals(uicomponent.NOTIFICATION_SETTINGS)) {
-        str = "UIUserNavigationPortlet.label.My" + nodeName;
-    }
-    def navigationTabClass = "";
-    if (uicomponent.isSelectedUserNavigation(nodeName)) {
-        navigationTabClass = "active";
-    }
-    %>
-
-    <% if  ((nodeName.equals(uicomponent.WALLET_URI) || nodeName.equals(uicomponent.GAMIFICATION_URI) ||   nodeName.equals(uicomponent.NOTIFICATION_SETTINGS)) && (!isOwner))  continue;
-    nodeLabel = _ctx.appRes(str);
-    %>
-
-    <li class="<%=navigationTabClass%>">
-        <a href="$pageURL">
-            <div class="uiIconApp<%=nodeName%> uiIconDefaultApp"></div>
-            <span class="tabName"><%=nodeLabel%></span>
-        </a>
-    </li>
-
-    <%
-}
-%>
-</ul>
-
   </div>
   <div class="uiBannerUploader"><% uicomponent.renderChild(org.exoplatform.social.webui.UIBannerUploader.class); %></div>
 </div>
