@@ -311,4 +311,11 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
     RequestLifeCycle.begin(PortalContainer.getInstance());
   }
 
+  protected void sleep(int time) {
+    try {
+      Thread.sleep(time);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+  }
 }

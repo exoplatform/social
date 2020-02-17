@@ -186,6 +186,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.put(key, new IdentityData(identity));
     exoIdentityIndexCache.put(new IdentityCompositeKey(identity.getProviderId(), identity.getRemoteId()), key);
+    exoProfileCache.remove(key);
 
     clearCache();
   }
@@ -198,8 +199,8 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.remove(key);
-    exoProfileCache.remove(key);
     exoIdentityIndexCache.remove(key);
+    exoProfileCache.remove(key);
     clearCache();
 
     //
@@ -393,9 +394,10 @@ public class CachedIdentityStorage implements IdentityStorage {
 
     //
     IdentityKey key = new IdentityKey(new Identity(profile.getIdentity().getId()));
+    exoIdentityCache.remove(key);
     exoProfileCache.remove(key);
-    clearCache();
 
+    clearCache();
   }
 
   /**

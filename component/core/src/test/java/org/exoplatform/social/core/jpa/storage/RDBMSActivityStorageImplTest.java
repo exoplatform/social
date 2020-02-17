@@ -952,17 +952,18 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
   }
   
   private void createActivities(int number, Identity owner) {
+    restartTransaction();
     for (int i = 0; i < number; i++) {
-      restartTransaction();
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("activity title " + i);
       activity.setUserId(owner.getId());
       activityStorage.saveActivity(owner, activity);
+      sleep(10);
       LOG.info("owner = " + owner.getRemoteId() + " PostedTime = " + activity.getPostedTime());
     }
     restartTransaction();
   }
-  
+
   private ExoSocialActivity createActivity(int num) {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -1011,4 +1012,5 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     }
     restartTransaction();
   }
+
 }
