@@ -29,7 +29,7 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
 @NamedQueries({
     @NamedQuery(name = "SocUserSpaceBinding.findUserBindingsBySpace", query = "SELECT userSpaceBinding "
         + " FROM SocUserSpaceBinding userSpaceBinding"
-        + " WHERE userSpaceBinding.space.id = :spaceId and userSpaceBinding.user = :userName"),
+        + " WHERE userSpaceBinding.groupSpaceBinding.space.id = :spaceId and userSpaceBinding.user = :userName"),
     @NamedQuery(name = "SocUserSpaceBinding.findUserBindingsByGroup", query = "SELECT userSpaceBinding "
         + " FROM SocUserSpaceBinding userSpaceBinding"
         + " WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.group = :group"),
@@ -38,7 +38,8 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
     @NamedQuery(name = "SocUserSpaceBinding.findUserAllBindingsByUser", query = "SELECT userSpaceBinding "
         + " FROM SocUserSpaceBinding userSpaceBinding" + " WHERE userSpaceBinding.user = :userName"),
     @NamedQuery(name = "SocUserSpaceBinding.deleteAllUserBindings", query = "DELETE FROM SocUserSpaceBinding userSpaceBinding WHERE userSpaceBinding.user = :userName"),
-    @NamedQuery(name = "SocUserSpaceBinding.countBindingsForMembers", query = "SELECT count(*) FROM SocUserSpaceBinding userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.space.id = :spaceId") })
+    @NamedQuery(name = "SocUserSpaceBinding.countBindingsForMembers", query = "SELECT count(*) FROM SocUserSpaceBinding "
+        + "userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.space.id = :spaceId") })
 public class UserSpaceBindingEntity implements Serializable {
 
   private static final long       serialVersionUID = -3088537806368295223L;
@@ -48,10 +49,6 @@ public class UserSpaceBindingEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_SOC_USER_SPACE_BINDING_ID")
   @Column(name = "USER_SPACE_BINDING_ID")
   private long                    id;
-
-  @ManyToOne
-  @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID", nullable = false)
-  private SpaceEntity             space;
 
   @Column(name = "USERNAME")
   private String                  user;
@@ -66,14 +63,6 @@ public class UserSpaceBindingEntity implements Serializable {
 
   public void setId(long id) {
     this.id = id;
-  }
-
-  public SpaceEntity getSpace() {
-    return space;
-  }
-
-  public void setSpace(SpaceEntity space) {
-    this.space = space;
   }
 
   public String getUser() {
