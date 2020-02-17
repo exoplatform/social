@@ -33,6 +33,7 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -95,6 +96,9 @@ public class SearchTestIT extends BaseESTest {
     reindexProfileById(paulIdentity.getId());
 
     ProfileFilter filter = new ProfileFilter();
+    List<Identity> excludedIdentities = new ArrayList<>();
+    excludedIdentities.add(ghostIdentity);
+    filter.setExcludedIdentityList(excludedIdentities);
     // When
     List<Identity> results = searchConnector.search(ghostIdentity, filter, null, 0, 10);
     // Then
