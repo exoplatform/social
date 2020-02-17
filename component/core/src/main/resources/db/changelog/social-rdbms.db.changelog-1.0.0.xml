@@ -626,4 +626,9 @@
     <sql dbms="postgresql">UPDATE SOC_USER_SPACE_BINDING SET USER_SPACE_BINDING_ID=nextval('SEQ_SOC_USER_SPACE_BINDING_ID');UPDATE SOC_GROUP_SPACE_BINDING SET GROUP_SPACE_BINDING_ID=nextval('SEQ_SOC_GROUP_SPACE_BINDING_ID');</sql>
     <sql dbms="oracle">UPDATE SOC_USER_SPACE_BINDING SET USER_SPACE_BINDING_ID=SEQ_SOC_USER_SPACE_BINDING_ID.nextval;UPDATE SOC_GROUP_SPACE_BINDING SET GROUP_SPACE_BINDING_ID=SEQ_SOC_GROUP_SPACE_BINDING_ID'.nextval</sql>
   </changeSet>
+    
+    
+    <changeSet author="social" id="1.0.0-66">
+        <dropColumn tableName="SOC_USER_SPACE_BINDING" columnName="SPACE_ID"/>
+    </changeSet>
 </databaseChangeLog>
