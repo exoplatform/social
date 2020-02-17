@@ -107,12 +107,6 @@ public class SpaceEntity implements Serializable {
   @Column(name = "TEMPLATE")
   private String            template;
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<GroupSpaceBindingEntity> groupSpaceBindingEntity = new HashSet<>();
-
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<UserSpaceBindingEntity>  userSpaceBindingEntity  = new HashSet<>();
-
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "CREATED_DATE", nullable = false)
   private Date              createdDate      = new Date();
@@ -235,22 +229,6 @@ public class SpaceEntity implements Serializable {
 
   public void setMembers(Set<SpaceMemberEntity> members) {
     this.members = members;
-  }
-
-  public Set<UserSpaceBindingEntity> getUserSpaceBindingEntity() {
-    return userSpaceBindingEntity;
-  }
-
-  public void setUserSpaceBindingEntity(Set<UserSpaceBindingEntity> userSpaceBindingEntity) {
-    this.userSpaceBindingEntity = userSpaceBindingEntity;
-  }
-
-  public Set<GroupSpaceBindingEntity> getGroupSpaceBindingEntity() {
-    return groupSpaceBindingEntity;
-  }
-
-  public void setGroupSpaceBindingEntity(Set<GroupSpaceBindingEntity> groupSpaceBindingEntity) {
-    this.groupSpaceBindingEntity = groupSpaceBindingEntity;
   }
 
   @Override

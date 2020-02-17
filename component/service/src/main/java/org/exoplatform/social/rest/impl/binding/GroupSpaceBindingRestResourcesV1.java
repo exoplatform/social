@@ -105,7 +105,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
   @ApiOperation(value = "Save space group bindings", httpMethod = "POST", response = Response.class, notes = "This method update bindings for a specific space if the authenticated user is a spaces super manager")
   @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
       @ApiResponse(code = 500, message = "Internal server error due to data encoding") })
-  public Response saveSpaceBindings(@Context UriInfo uriInfo,
+  public Response saveGroupBindings(@Context UriInfo uriInfo,
                                     @ApiParam(value = "SpaceId of the space", required = true) @QueryParam("spaceId") String spaceId,
                                     @ApiParam(value = "List of space bindings to be updated", required = true) List<GroupSpaceBindingEntity> groupSpaceBindingEntityList) {
 
@@ -126,7 +126,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
                                                                                                                 binding.getGroup()))
                                                                           .collect(Collectors.toList());
 
-    groupSpaceBindingService.saveSpaceBindings(spaceId, groupSpaceBindings);
+    groupSpaceBindingService.saveGroupSpaceBindings(groupSpaceBindings);
 
     return EntityBuilder.getResponse("", uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
   }
