@@ -123,14 +123,12 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     UserSpaceBinding ub1 = new UserSpaceBinding();
     ub1.setId(1);
     ub1.setGroupBinding(binding1);
-    ub1.setSpaceId("1");
     ub1.setUser("john");
     userSpaceBindings.add(ub1);
 
     UserSpaceBinding ub2 = new UserSpaceBinding();
     ub2.setId(2);
     ub2.setGroupBinding(binding2);
-    ub2.setSpaceId("1");
     ub2.setUser("john");
     userSpaceBindings.add(ub2);
 
@@ -173,7 +171,6 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     UserSpaceBinding ub1 = new UserSpaceBinding();
     ub1.setId(1);
     ub1.setGroupBinding(binding1);
-    ub1.setSpaceId("1");
     ub1.setUser("john");
     userSpaceBindings.add(ub1);
 
@@ -193,7 +190,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
 
   /**
    * Test
-   * {@link GroupSpaceBindingService#deleteAllSpaceBindingsByGroup(GroupSpaceBinding GroupSpaceBinding)}
+   * {@link GroupSpaceBindingService#deleteGroupSpaceBinding(GroupSpaceBinding)}
    *
    * @throws Exception
    */
@@ -210,7 +207,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
                                                                                          groupSpaceBindingStorage,
                                                                                          orgService,
                                                                                          spaceService);
-    groupSpaceBindingService.deleteAllSpaceBindingsByGroup(binding1);
+    groupSpaceBindingService.deleteGroupSpaceBinding(binding1);
 
     // Then
     ArgumentCaptor<Long> idCaptor = ArgumentCaptor.forClass(Long.class);
@@ -272,29 +269,6 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link GroupSpaceBindingService#deleteAllUserBindings(String)}
-   *
-   * @throws Exception
-   */
-  @Test
-  public void deleteAllUserBindings() throws Exception {
-    // Given
-
-    // When
-    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams,
-                                                                                         groupSpaceBindingStorage,
-                                                                                         orgService,
-                                                                                         spaceService);
-    groupSpaceBindingService.deleteAllUserBindings("john");
-
-    // Then
-    ArgumentCaptor<String> idCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).deleteAllUserBindings(idCaptor.capture());
-    String user = idCaptor.getValue();
-    assertTrue(user.equals("john"));
-  }
-
-  /**
    * Test {@link GroupSpaceBindingService#saveSpaceBindings(String
    * spaceId,List<GroupSpaceBinding> GroupSpaceBinding)}
    *
@@ -341,7 +315,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
    */
 
   /**
-   * Test {@link GroupSpaceBindingService#saveUserBindings(String, List)}
+   * Test {@link GroupSpaceBindingService#saveUserBindings(List)}
    *
    * @throws Exception
    */
@@ -357,7 +331,6 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     UserSpaceBinding ub1 = new UserSpaceBinding();
     ub1.setId(1);
     ub1.setGroupBinding(binding1);
-    ub1.setSpaceId("1");
     ub1.setUser("john");
     userSpaceBindings.add(ub1);
 
@@ -368,7 +341,7 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
                                                                                          groupSpaceBindingStorage,
                                                                                          orgService,
                                                                                          spaceService);
-    groupSpaceBindingService.saveUserBindings("john", userSpaceBindings);
+    groupSpaceBindingService.saveUserBindings(userSpaceBindings);
 
     // Then
     Mockito.verify(groupSpaceBindingStorage, Mockito.times(1)).saveUserBinding(ub1);

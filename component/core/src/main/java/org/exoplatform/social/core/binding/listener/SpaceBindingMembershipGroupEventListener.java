@@ -40,10 +40,9 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
       List<UserSpaceBinding> userSpaceBindings = new LinkedList<>();
       UserSpaceBinding ub1 = new UserSpaceBinding();
       ub1.setGroupBinding(groupSpaceBinding);
-      ub1.setSpaceId(groupSpaceBinding.getSpaceId());
       ub1.setUser(m.getUserName());
       userSpaceBindings.add(ub1);
-      groupSpaceBindingService.saveUserBindings(m.getUserName(), userSpaceBindings);
+      groupSpaceBindingService.saveUserBindings(userSpaceBindings);
     }
   }
 

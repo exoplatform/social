@@ -25,9 +25,6 @@ public class UserSpaceBinding {
   /** The id. */
   private long              id;
 
-  /** The space id */
-  private String            spaceId;
-
   /** The user */
   private String            user;
 
@@ -40,14 +37,6 @@ public class UserSpaceBinding {
 
   public void setId(long id) {
     this.id = id;
-  }
-
-  public String getSpaceId() {
-    return spaceId;
-  }
-
-  public void setSpaceId(String spaceId) {
-    this.spaceId = spaceId;
   }
 
   public String getUser() {
