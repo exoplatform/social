@@ -62,7 +62,7 @@ public interface GroupSpaceBindingRestResources extends SocialRest{
      * @throws Exception
      */
     @POST
-    public abstract Response saveSpaceBindings(@Context UriInfo uriInfo,
+    public abstract Response saveGroupBindings(@Context UriInfo uriInfo,
                                                        @QueryParam("spaceId") String spaceId,
                                                        List<GroupSpaceBindingEntity> groupSpaceBindingEntityList) throws Exception;
 

@@ -70,10 +70,10 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
 
   protected void deleteAllBindings() {
     for (GroupSpaceBinding binding : groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId1)) {
-      groupSpaceBindingService.deleteAllSpaceBindingsByGroup(binding);
+      groupSpaceBindingService.deleteGroupSpaceBinding(binding);
     }
     for (GroupSpaceBinding binding : groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId1)) {
-      groupSpaceBindingService.deleteAllSpaceBindingsByGroup(binding);
+      groupSpaceBindingService.deleteGroupSpaceBinding(binding);
     }
   }
 
@@ -105,8 +105,7 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
     binding3.setSpaceId(spaceId1);
     groupSpaceBindings.add(binding3);
     tearDownbindingList.add(binding3);
-    groupSpaceBindingService.saveSpaceBindings(spaceId1, groupSpaceBindings);
-
+    groupSpaceBindingService.saveGroupSpaceBindings(groupSpaceBindings);
     // when
     ContainerResponse response = service("GET",
                                          getURLResource("groupspacebindings?spaceId=1&spaceRole=manager&limit=5&offset=0"),
@@ -135,7 +134,7 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
     groupSpaceBindings.add(binding1);
     tearDownbindingList.add(binding1);
 
-    groupSpaceBindingService.saveSpaceBindings(spaceId1, groupSpaceBindings);
+    groupSpaceBindingService.saveGroupSpaceBindings(groupSpaceBindings);
 
     // when
     ContainerResponse response = service("DELETE", getURLResource("groupspacebindings/" + spaceId1 + "/manager"), "", null, null);

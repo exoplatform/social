@@ -168,8 +168,6 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     UserSpaceBinding userSpaceBinding = new UserSpaceBinding();
     userSpaceBinding.setId(entity.getId());
     userSpaceBinding.setGroupBinding(fillGroupBindingFromEntity(entity.getGroupSpaceBinding()));
-    String spaceId = Long.toString(entity.getSpace().getId());
-    userSpaceBinding.setSpaceId(spaceId);
     userSpaceBinding.setUser(entity.getUser());
     return userSpaceBinding;
   }
@@ -230,9 +228,6 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     userSpaceBindingEntity.setUser(userSpaceBinding.getUser());
     GroupSpaceBindingEntity groupBindingEntity = groupSpaceBindingDAO.find(userSpaceBinding.getGroupBinding().getId());
     userSpaceBindingEntity.setGroupSpaceBinding(groupBindingEntity);
-    Long spaceId = Long.parseLong(userSpaceBinding.getSpaceId());
-    SpaceEntity spaceEntity = spaceDAO.find(spaceId);
-    userSpaceBindingEntity.setSpace(spaceEntity);
     return userSpaceBindingEntity;
   }
 
