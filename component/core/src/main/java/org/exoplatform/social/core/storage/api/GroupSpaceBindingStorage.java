@@ -20,6 +20,7 @@ package org.exoplatform.social.core.storage.api;
 import java.util.List;
 
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.storage.GroupSpaceBindingStorageException;
 
@@ -28,7 +29,15 @@ import org.exoplatform.social.core.storage.GroupSpaceBindingStorageException;
  */
 
 public interface GroupSpaceBindingStorage {
-
+  
+  /**
+   * Get the first GroupSpaceBindingQueue to treat
+   *
+   * @return The GroupSpaceBindingQueue
+   */
+  GroupSpaceBindingQueue findFirstGroupSpaceBindingQueue() throws GroupSpaceBindingStorageException;
+  
+  
   /**
    * Get a list containing all the groups binding for a space.
    *
@@ -88,6 +97,14 @@ public interface GroupSpaceBindingStorage {
    * @throws GroupSpaceBindingStorageException
    */
   GroupSpaceBinding saveGroupBinding(GroupSpaceBinding binding, boolean isNew) throws GroupSpaceBindingStorageException;
+  
+  /**
+   * Create Group Space Binding queue
+   *
+   * @param binding
+   * @throws GroupSpaceBindingStorageException
+   */
+  GroupSpaceBindingQueue createGroupSpaceBindingQueue(GroupSpaceBindingQueue binding) throws GroupSpaceBindingStorageException;
 
   /**
    * Saves a user binding. binding an saves it.
@@ -104,6 +121,14 @@ public interface GroupSpaceBindingStorage {
    * @throws GroupSpaceBindingStorageException
    */
   void deleteGroupBinding(long id) throws GroupSpaceBindingStorageException;
+  
+  /**
+   * Deletes a binding by binding id.
+   *
+   * @param id
+   * @throws GroupSpaceBindingStorageException
+   */
+  void deleteGroupBindingQueue(long id) throws GroupSpaceBindingStorageException;
 
   /**
    * Delete a user binding by binding id.

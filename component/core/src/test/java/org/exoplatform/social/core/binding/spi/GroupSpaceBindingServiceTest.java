@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.exoplatform.services.organization.*;
 import org.exoplatform.services.organization.impl.MembershipImpl;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
+import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingQueueEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -389,4 +391,43 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     space.setUrl(space.getPrettyName());
     return space;
   }
+  /**
+   * Test {@link GroupSpaceBindingService#findFirstGroupSpaceBindingQueue()} ()}
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testFindFirstGroupSpaceBindingQueue() throws Exception {
+    // Given
+    GroupSpaceBindingQueue bindingQueue1 = new GroupSpaceBindingQueue();
+    bindingQueue1.setId(1);
+    bindingQueue1.setGroup("/platform/administrators");
+    bindingQueue1.setSpaceId("1");
+    bindingQueue1.setAction(GroupSpaceBindingQueue.ACTION_CREATE);
+  
+    GroupSpaceBindingQueue bindingQueue2 = new GroupSpaceBindingQueue();
+    bindingQueue2.setId(2);
+    bindingQueue2.setGroup("/platform/administrators");
+    bindingQueue2.setSpaceId("2");
+    bindingQueue2.setAction(GroupSpaceBindingQueue.ACTION_CREATE);
+  
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams,
+                                                                                         groupSpaceBindingStorage,
+                                                                                         orgService,
+                                                                                         spaceService);
+    groupSpaceBindingService.createGroupSpaceBindingQueue(bindingQueue1);
+    groupSpaceBindingService.createGroupSpaceBindingQueue(bindingQueue2);
+  
+    Mockito.when(groupSpaceBindingStorage.findFirstGroupSpaceBindingQueue()).thenReturn(bindingQueue1,bindingQueue2);
+  
+  
+    // When
+    GroupSpaceBindingQueue firstGroupSpaceBindingQueue = groupSpaceBindingService.findFirstGroupSpaceBindingQueue();
+    assertNotNull(firstGroupSpaceBindingQueue);
+    assertEquals(1, firstGroupSpaceBindingQueue.getId());
+    GroupSpaceBindingQueue secondGroupSpaceBindingQueue = groupSpaceBindingService.findFirstGroupSpaceBindingQueue();
+    assertNotNull(secondGroupSpaceBindingQueue);
+    assertEquals(2, secondGroupSpaceBindingQueue.getId());
+  }
+  
 }

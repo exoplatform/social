@@ -20,6 +20,7 @@ package org.exoplatform.social.core.binding.spi;
 import java.util.List;
 
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 
 /**
@@ -28,7 +29,14 @@ import org.exoplatform.social.core.binding.model.UserSpaceBinding;
  */
 
 public interface GroupSpaceBindingService {
-
+  
+  /**
+   * Get the first GroupSpaceBindingQueue to treat
+   *
+   * @return The list of binding.
+   */
+  GroupSpaceBindingQueue findFirstGroupSpaceBindingQueue();
+  
   /**
    * Get a list containing all the groups binding for a space.
    *
@@ -84,6 +92,13 @@ public interface GroupSpaceBindingService {
    * @param userSpaceBindings The list of user bindings to be created
    */
   void saveUserBindings(List<UserSpaceBinding> userSpaceBindings);
+  
+  /**
+   * Saves a group space binding queue
+   *
+   * @param groupSpaceBindingsQueue The group space binding queue to save
+   */
+  void createGroupSpaceBindingQueue(GroupSpaceBindingQueue groupSpaceBindingsQueue);
 
   /**
    * Delete a group binding. When a binding is deleted, all user in the group will
