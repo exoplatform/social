@@ -114,6 +114,10 @@
         <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingDAO</key>
         <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingDAOImpl</type>
     </component>
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingQueueDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingQueueDAOImpl</type>
+    </component>
     <!--
       Identity storage components.
     -->
@@ -765,25 +769,47 @@
         </component-plugin>
     </external-component-plugins>
 
+<!--    <external-component-plugins>-->
+<!--        <target-component>org.exoplatform.services.organization.OrganizationService</target-component>-->
+<!--        <component-plugin>-->
+<!--            <name>space.binding.group.event.listener</name>-->
+<!--            <set-method>addListenerPlugin</set-method>-->
+<!--            <type>org.exoplatform.social.core.binding.listener.SpaceBindingGroupEventListener</type>-->
+<!--            <description>Remove group binding when group is deleted</description>-->
+<!--        </component-plugin>-->
+<!--        <component-plugin>-->
+<!--            <name>space.binding.membership.event.listener</name>-->
+<!--            <set-method>addListenerPlugin</set-method>-->
+<!--            <type>org.exoplatform.social.core.binding.listener.SpaceBindingMembershipGroupEventListener</type>-->
+<!--            <description>Add remove user space binding when user join/leave a group</description>-->
+<!--        </component-plugin>-->
+<!--        <component-plugin>-->
+<!--            <name>space.binding.user.event.listener</name>-->
+<!--            <set-method>addListenerPlugin</set-method>-->
+<!--            <type>org.exoplatform.social.core.binding.listener.SpaceBindingUserEventListener</type>-->
+<!--            <description>Remove user space binding when user is deleted</description>-->
+<!--        </component-plugin>-->
+<!--    </external-component-plugins>-->
+    
+    
     <external-component-plugins>
-        <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
-        <component-plugin>
-            <name>space.binding.group.event.listener</name>
-            <set-method>addListenerPlugin</set-method>
-            <type>org.exoplatform.social.core.binding.listener.SpaceBindingGroupEventListener</type>
-            <description>Remove group binding when group is deleted</description>
-        </component-plugin>
-        <component-plugin>
-            <name>space.binding.membership.event.listener</name>
-            <set-method>addListenerPlugin</set-method>
-            <type>org.exoplatform.social.core.binding.listener.SpaceBindingMembershipGroupEventListener</type>
-            <description>Add remove user space binding when user join/leave a group</description>
-        </component-plugin>
-        <component-plugin>
-            <name>space.binding.user.event.listener</name>
-            <set-method>addListenerPlugin</set-method>
-            <type>org.exoplatform.social.core.binding.listener.SpaceBindingUserEventListener</type>
-            <description>Remove user space binding when user is deleted</description>
+        <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
+        <component-plugin profiles="all">
+            <name>AddCronJob</name>
+            <set-method>addCronJob</set-method>
+            <type>org.exoplatform.services.scheduler.CronJob</type>
+            <description>Job to treat GroupSpaceBinding Queue</description>
+            <init-params>
+                <properties-param>
+                    <name>cronjob.info</name>
+                    <description>Configuration for queue messages processing</description>
+                    <property name="jobName" value="QueueGroupSpaceBindingJob"/>
+                    <property name="groupName" value="GroupSpaceBinding"/>
+                    <property name="job" value="org.exoplatform.social.core.binding.job.QueueGroupSpaceBindingJob"/>
+                    <property name="expression" value="${exo.social.QueueGroupSpaceBindingJob.expression:0 0/5 * * * ?}"/>
+                    <!-- Runs every 5 minutes -->
+                </properties-param>
+            </init-params>
         </component-plugin>
     </external-component-plugins>
 

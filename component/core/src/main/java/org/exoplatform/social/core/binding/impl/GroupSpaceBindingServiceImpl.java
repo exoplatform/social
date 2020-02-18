@@ -27,6 +27,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -66,7 +67,16 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
     this.organizationService = organizationService;
     this.spaceService = spaceService;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public GroupSpaceBindingQueue findFirstGroupSpaceBindingQueue() {
+    LOG.info("Retrieving First GroupSpaceBindingQueue to treat");
+    return groupSpaceBindingStorage.findFirstGroupSpaceBindingQueue();
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -156,7 +166,12 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
       throw new RuntimeException("Failed saving user bindings", e);
     }
   }
-
+  
+  @Override
+  public void createGroupSpaceBindingQueue(GroupSpaceBindingQueue groupSpaceBindingsQueue) {
+    groupSpaceBindingStorage.createGroupSpaceBindingQueue(groupSpaceBindingsQueue);
+  }
+  
   /**
    * {@inheritDoc}
    */
