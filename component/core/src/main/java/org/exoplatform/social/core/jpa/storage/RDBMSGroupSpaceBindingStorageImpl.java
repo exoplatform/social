@@ -24,11 +24,14 @@ import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingDAO;
+import org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingQueueDAO;
 import org.exoplatform.social.core.jpa.storage.dao.SpaceDAO;
 import org.exoplatform.social.core.jpa.storage.dao.UserSpaceBindingDAO;
 import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingEntity;
+import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingQueueEntity;
 import org.exoplatform.social.core.jpa.storage.entity.SpaceEntity;
 import org.exoplatform.social.core.jpa.storage.entity.UserSpaceBindingEntity;
 import org.exoplatform.social.core.storage.GroupSpaceBindingStorageException;
@@ -49,17 +52,25 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   private final org.exoplatform.social.core.jpa.storage.dao.SpaceDAO spaceDAO;
 
   private GroupSpaceBindingDAO                                       groupSpaceBindingDAO;
+  private GroupSpaceBindingQueueDAO                                  groupSpaceBindingQueueDAO;
 
   private UserSpaceBindingDAO                                        userSpaceBindingDAO;
 
   public RDBMSGroupSpaceBindingStorageImpl(GroupSpaceBindingDAO groupSpaceBindingDAO,
+                                           GroupSpaceBindingQueueDAO groupSpaceBindingQueueDAO,
                                            UserSpaceBindingDAO userSpaceBindingDAO,
                                            SpaceDAO spaceDAO) {
     this.groupSpaceBindingDAO = groupSpaceBindingDAO;
+    this.groupSpaceBindingQueueDAO = groupSpaceBindingQueueDAO;
     this.userSpaceBindingDAO = userSpaceBindingDAO;
     this.spaceDAO = spaceDAO;
   }
-
+  
+  @Override
+  public GroupSpaceBindingQueue findFirstGroupSpaceBindingQueue() throws GroupSpaceBindingStorageException {
+    return fillGroupBindingQueueFromEntity(groupSpaceBindingQueueDAO.findFirstGroupSpaceBindingQueue());
+  }
+  
   @ExoTransactional
   public List<GroupSpaceBinding> findGroupSpaceBindingsBySpace(String spaceId) throws GroupSpaceBindingStorageException {
     return buildGroupBindingListFromEntities(groupSpaceBindingDAO.findGroupSpaceBindingsBySpace(Long.parseLong(spaceId)));
@@ -108,7 +119,13 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     }
     return fillGroupBindingFromEntity(entity);
   }
-
+  
+  @Override
+  public GroupSpaceBindingQueue createGroupSpaceBindingQueue(GroupSpaceBindingQueue binding) throws GroupSpaceBindingStorageException {
+    GroupSpaceBindingQueueEntity entity = groupSpaceBindingQueueDAO.create(buildEntityGroupBindingQueueFrom(binding));
+    return fillGroupBindingQueueFromEntity(entity);
+  }
+  
   @ExoTransactional
   public UserSpaceBinding saveUserBinding(UserSpaceBinding binding) throws GroupSpaceBindingStorageException {
     UserSpaceBindingEntity entity;
@@ -119,6 +136,11 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   @ExoTransactional
   public void deleteGroupBinding(long id) throws GroupSpaceBindingStorageException {
     groupSpaceBindingDAO.delete(groupSpaceBindingDAO.find(id));
+  }
+  
+  @ExoTransactional
+  public void deleteGroupBindingQueue(long id) throws GroupSpaceBindingStorageException {
+    groupSpaceBindingQueueDAO.delete(groupSpaceBindingQueueDAO.find(id));
   }
 
   @ExoTransactional
@@ -153,6 +175,25 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     String spaceId = Long.toString(entity.getSpace().getId());
     groupSpaceBinding.setSpaceId(spaceId);
     return groupSpaceBinding;
+  }
+  
+  /**
+   * Fills {@link GroupSpaceBinding}'s properties to
+   * {@link GroupSpaceBindingEntity}'s.
+   *
+   * @param entity the GroupSpaceBinding entity
+   */
+  private GroupSpaceBindingQueue fillGroupBindingQueueFromEntity(GroupSpaceBindingQueueEntity entity) {
+    if (entity == null) {
+      return null;
+    }
+    GroupSpaceBindingQueue groupSpaceBindingQueue = new GroupSpaceBindingQueue();
+    groupSpaceBindingQueue.setId(entity.getId());
+    groupSpaceBindingQueue.setGroup(entity.getGroup());
+    groupSpaceBindingQueue.setAction(entity.getAction());
+    String spaceId = Long.toString(entity.getSpace().getId());
+    groupSpaceBindingQueue.setSpaceId(spaceId);
+    return groupSpaceBindingQueue;
   }
 
   /**
@@ -215,6 +256,22 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     SpaceEntity entity = spaceDAO.find(spaceId);
     groupSpaceBindingEntity.setSpace(entity);
     return groupSpaceBindingEntity;
+  }
+  
+  /**
+   * build {@link GroupSpaceBindingQueueEntity} from {@link GroupSpaceBindingQueue} object
+   * list.
+   *
+   * @param groupSpaceBindingQueue the GroupSpaceBinding object
+   */
+  private GroupSpaceBindingQueueEntity buildEntityGroupBindingQueueFrom(GroupSpaceBindingQueue groupSpaceBindingQueue) {
+    GroupSpaceBindingQueueEntity groupSpaceBindingQueueEntity = new GroupSpaceBindingQueueEntity();
+    groupSpaceBindingQueueEntity.setGroup(groupSpaceBindingQueue.getGroup());
+    Long spaceId = Long.parseLong(groupSpaceBindingQueue.getSpaceId());
+    SpaceEntity entity = spaceDAO.find(spaceId);
+    groupSpaceBindingQueueEntity.setSpace(entity);
+    groupSpaceBindingQueueEntity.setAction(groupSpaceBindingQueue.getAction());
+    return groupSpaceBindingQueueEntity;
   }
 
   /**

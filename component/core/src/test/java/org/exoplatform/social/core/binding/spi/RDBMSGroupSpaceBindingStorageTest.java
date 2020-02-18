@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingQueueEntity;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -38,6 +40,7 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
 
   private List<GroupSpaceBinding>  tearDownGroupbindingList = new ArrayList<>();
+  private List<GroupSpaceBindingQueue>  tearDownGroupbindingQueueList = new ArrayList<>();
 
   private List<UserSpaceBinding>   tearDownUserbindingList  = new ArrayList<>();
 
@@ -99,6 +102,9 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     for (GroupSpaceBinding binding : tearDownGroupbindingList) {
       groupSpaceBindingStorage.deleteGroupBinding(binding.getId());
     }
+    for (GroupSpaceBindingQueue binding : tearDownGroupbindingQueueList) {
+      groupSpaceBindingStorage.deleteGroupBindingQueue(binding.getId());
+    }
     tearDownGroupbindingList = new ArrayList<>();
     tearDownUserbindingList = new ArrayList<>();
   }
@@ -148,6 +154,24 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     groupSpaceBinding.setSpaceId(spaceId);
     groupSpaceBinding.setGroup(group);
     return groupSpaceBinding;
+  }
+  
+  /**
+   * Gets an instance of GroupSpaceBindingQueue.
+   *
+   * @param id
+   * @return an instance of GgroupSpaceBindingQueue
+   **/
+  private GroupSpaceBindingQueue getGroupSpaceBindingQueueInstance(long id,
+                                                         String spaceId,
+                                                         String group,
+                                                         String action) {
+    GroupSpaceBindingQueue groupSpaceBindingQueue = new GroupSpaceBindingQueue();
+    groupSpaceBindingQueue.setId(id);
+    groupSpaceBindingQueue.setSpaceId(spaceId);
+    groupSpaceBindingQueue.setGroup(group);
+    groupSpaceBindingQueue.setAction(action);
+    return groupSpaceBindingQueue;
   }
 
   /**
@@ -232,6 +256,24 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     tearDownGroupbindingList.add(groupSpaceBinding);
     assertEquals("groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(" + spaceId + ",'member') must return after creation: "
         + 1, 1, groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId).size());
+  }
+  
+  /**
+   * Test
+   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#createGroupSpaceBindingQueue(GroupSpaceBindingQueue)}
+   *
+   * @throws Exception
+   **/
+  
+  public void testSaveGroupBindingQueue() throws Exception {
+    GroupSpaceBindingQueue groupSpaceBindingQueue = this.getGroupSpaceBindingQueueInstance(1,
+                                                                            spaceId,
+                                                                            "/platform/administrators",
+                                                                             GroupSpaceBindingQueue.ACTION_CREATE);
+    groupSpaceBindingQueue = groupSpaceBindingStorage.createGroupSpaceBindingQueue(groupSpaceBindingQueue);
+    tearDownGroupbindingQueueList.add(groupSpaceBindingQueue);
+    assertEquals("groupSpaceBindingStorage.findFirstGroupSpaceBindingQueue() must return after creation: "
+                     + 1, 1, groupSpaceBindingStorage.findFirstGroupSpaceBindingQueue().getId());
   }
 
   /**
