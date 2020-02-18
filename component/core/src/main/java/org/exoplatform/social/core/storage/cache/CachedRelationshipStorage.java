@@ -35,8 +35,7 @@ import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
 import org.exoplatform.social.core.storage.cache.model.data.*;
 import org.exoplatform.social.core.storage.cache.model.key.*;
-import org.exoplatform.social.core.storage.cache.selector.RelationshipCacheSelector;
-import org.exoplatform.social.core.storage.cache.selector.SuggestionCacheSelector;
+import org.exoplatform.social.core.storage.cache.selector.*;
 
 /**
  * Cache support for RelationshipStorage.
@@ -60,6 +59,10 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   private final ExoCache<ListRelationshipsKey, ListIdentitiesData>                                           exoRelationshipsCache;
 
   private final ExoCache<SuggestionKey, SuggestionsData>                                                     exoSuggestionCache;
+
+  private final ExoCache<ActivityCountKey, IntegerData>                                                      exoActivitiesCountCache;
+
+  private final ExoCache<ListActivitiesKey, ListActivitiesData>                                              exoActivitiesCache;
 
   //
   private final FutureExoCache<RelationshipKey, RelationshipData, ServiceContext<RelationshipData>>          relationshipCache;
@@ -99,6 +102,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
       exoRelationshipsCache.select(new RelationshipCacheSelector(identities.toArray(new String[] {})));
       exoRelationshipCountCache.select(new RelationshipCacheSelector(identities.toArray(new String[] {})));
       exoSuggestionCache.select(new SuggestionCacheSelector(identities.toArray(new String[] {})));
+      exoActivitiesCache.select(new CacheSelector<ListActivitiesKey, ListActivitiesData>());
+      exoActivitiesCountCache.select(new CacheSelector<ActivityCountKey, IntegerData>());
     } catch (Exception e) {
       LOG.error(e);
     }
@@ -202,6 +207,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     this.exoRelationshipCountCache = cacheService.getRelationshipsCount();
     this.exoRelationshipsCache = cacheService.getRelationshipsCache();
     this.exoSuggestionCache = cacheService.getSuggestionCache();
+    this.exoActivitiesCountCache = cacheService.getActivitiesCountCache();
+    this.exoActivitiesCache = cacheService.getActivitiesCache();
 
     //
     this.relationshipCache = CacheType.RELATIONSHIP.createFutureCache(exoRelationshipCache);

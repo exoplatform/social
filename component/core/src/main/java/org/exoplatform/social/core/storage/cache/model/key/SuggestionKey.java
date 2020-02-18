@@ -43,8 +43,7 @@ public class SuggestionKey <T> implements CacheKey {
   @Override
   public int hashCode() {
     final int prime = 31;
-    int result = super.hashCode();
-    result = prime * result + ((key == null) ? 0 : key.hashCode());
+    int result = ((key == null) ? 0 : key.hashCode());
     result = prime * result + maxConnections;
     result = prime * result + maxConnectionsToLoad;
     result = prime * result + maxSuggestions;
@@ -55,8 +54,6 @@ public class SuggestionKey <T> implements CacheKey {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (!super.equals(obj))
-      return false;
     if (getClass() != obj.getClass())
       return false;
     @SuppressWarnings("rawtypes")

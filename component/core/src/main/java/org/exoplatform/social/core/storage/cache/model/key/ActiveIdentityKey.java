@@ -68,9 +68,6 @@ public class ActiveIdentityKey implements CacheKey {
     if (!(o instanceof ActiveIdentityKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     ActiveIdentityKey that = (ActiveIdentityKey) o;
 
@@ -87,8 +84,7 @@ public class ActiveIdentityKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + days;
+    int result = days;
     result = 31 * result + (userGroup != null ? userGroup.hashCode() : 0);
     return result;
   }

@@ -529,16 +529,15 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void deleteSpace(Space space) {
     try {
-      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
-
-      if (spaceIdentity != null) {
-        identityStorage.hardDeleteIdentity(spaceIdentity);
-      }
-
       // remove memberships of users with deleted space.
       SpaceUtils.removeMembershipFromGroup(space);
 
       spaceStorage.deleteSpace(space.getId());
+
+      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+      if (spaceIdentity != null) {
+        identityStorage.hardDeleteIdentity(spaceIdentity);
+      }
 
       OrganizationService orgService = getOrgService();
       UserACL acl = getUserACL();

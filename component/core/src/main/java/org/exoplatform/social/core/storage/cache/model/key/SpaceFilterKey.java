@@ -76,7 +76,6 @@ public class SpaceFilterKey implements CacheKey {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof SpaceFilterKey)) return false;
-    if (!super.equals(o)) return false;
 
     SpaceFilterKey that = (SpaceFilterKey) o;
     
@@ -96,8 +95,7 @@ public class SpaceFilterKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (userId != null ? userId.hashCode() : 0);
+    int result = (userId != null ? userId.hashCode() : 0);
     result = 31 * result + (appId != null ? appId.hashCode() : 0);
     result = 31 * result + (int) firstCharacterOfSpaceName;
     result = 31 * result + (spaceNameSearchCondition != null ? spaceNameSearchCondition.hashCode() : 0);

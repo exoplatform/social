@@ -50,9 +50,6 @@ public class IdentityKey implements CacheKey {
     if (!(o instanceof IdentityKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     IdentityKey that = (IdentityKey) o;
 
@@ -65,8 +62,7 @@ public class IdentityKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (id != null ? id.hashCode() : 0);
+    int result = (id != null ? id.hashCode() : 0);
     return result;
   }
 

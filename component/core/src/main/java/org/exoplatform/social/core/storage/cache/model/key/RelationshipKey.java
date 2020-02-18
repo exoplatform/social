@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.storage.cache.model.key;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Immutable relationship key.
  *
@@ -44,24 +46,14 @@ public class RelationshipKey implements CacheKey {
     if (!(o instanceof RelationshipKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     RelationshipKey that = (RelationshipKey) o;
-
-    if (id != null ? !id.equals(that.id) : that.id != null) {
-      return false;
-    }
-
-    return true;
+    return StringUtils.equals(that.id, id);
   }
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (id != null ? id.hashCode() : 0);
-    return result;
+    return id != null ? id.hashCode() : 0;
   }
 
 }

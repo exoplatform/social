@@ -117,7 +117,6 @@ public class IdentityFilterKey implements CacheKey {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof IdentityFilterKey)) return false;
-    if (!super.equals(o)) return false;
 
     IdentityFilterKey that = (IdentityFilterKey) o;
 
@@ -139,8 +138,7 @@ public class IdentityFilterKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
+    int result = (providerId != null ? providerId.hashCode() : 0);
     result = 31 * result + (remoteId != null ? remoteId.hashCode() : 0);
     result = 31 * result + (name != null ? name.hashCode() : 0);
     result = 31 * result + (position != null ? position.hashCode() : 0);

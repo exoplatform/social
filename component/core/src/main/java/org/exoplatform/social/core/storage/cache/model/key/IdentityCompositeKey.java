@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.storage.cache.model.key;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Immutable identity composite key.
  * This key is used to index the identities by remoteId.
@@ -52,26 +54,13 @@ public class IdentityCompositeKey implements CacheKey {
     if (!(o instanceof IdentityCompositeKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
-
     IdentityCompositeKey that = (IdentityCompositeKey) o;
-
-    if (providerId != null ? !providerId.equals(that.providerId) : that.providerId != null) {
-      return false;
-    }
-    if (remoteId != null ? !remoteId.equals(that.remoteId) : that.remoteId != null) {
-      return false;
-    }
-
-    return true;
+    return StringUtils.equals(providerId, that.providerId) && StringUtils.equals(remoteId, that.remoteId);
   }
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
+    int result = (providerId != null ? providerId.hashCode() : 0);
     result = 31 * result + (remoteId != null ? remoteId.hashCode() : 0);
     return result;
   }

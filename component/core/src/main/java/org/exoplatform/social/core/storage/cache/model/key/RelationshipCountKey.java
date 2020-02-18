@@ -48,9 +48,6 @@ public class RelationshipCountKey <T> implements CacheKey {
     if (!(o instanceof RelationshipCountKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     RelationshipCountKey<?> that = (RelationshipCountKey<?>) o;
 
@@ -66,8 +63,7 @@ public class RelationshipCountKey <T> implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (key != null ? key.hashCode() : 0);
+    int result = (key != null ? key.hashCode() : 0);
     result = 31 * result + (type != null ? type.hashCode() : 0);
     return result;
   }

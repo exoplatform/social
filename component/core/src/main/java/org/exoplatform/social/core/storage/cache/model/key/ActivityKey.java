@@ -44,12 +44,8 @@ public class ActivityKey implements CacheKey {
     if (!(o instanceof ActivityKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     ActivityKey that = (ActivityKey) o;
-
     if (id != null ? !id.equals(that.id) : that.id != null) {
       return false;
     }
@@ -59,9 +55,7 @@ public class ActivityKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (id != null ? id.hashCode() : 0);
-    return result;
+    return (id != null ? id.hashCode() : 0);
   }
 
 }

@@ -97,9 +97,6 @@ public class ActivityCountKey implements CacheKey {
     if (!(o instanceof ActivityCountKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     ActivityCountKey that = (ActivityCountKey) o;
 
@@ -129,8 +126,7 @@ public class ActivityCountKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (key != null ? key.hashCode() : 0);
+    int result = (key != null ? key.hashCode() : 0);
     result = 31 * result + (activityKey != null ? activityKey.hashCode() : 0);
     result = 31 * result + (activityTypes != null ? activityTypes.hashCode() : 0);
     result = 31 * result + (viewerKey != null ? viewerKey.hashCode() : 0);

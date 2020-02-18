@@ -51,9 +51,6 @@ public class RelationshipIdentityKey implements CacheKey {
     if (!(o instanceof RelationshipIdentityKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     RelationshipIdentityKey that = (RelationshipIdentityKey) o;
 
@@ -70,8 +67,7 @@ public class RelationshipIdentityKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (identityId1 != null ? identityId1.hashCode() : 0);
+    int result = (identityId1 != null ? identityId1.hashCode() : 0);
     result = 31 * result + (identityId2 != null ? identityId2.hashCode() : 0);
     return result;
   }

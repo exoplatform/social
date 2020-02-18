@@ -50,9 +50,6 @@ public class ListCacheKey implements CacheKey {
     if (!(o instanceof ListCacheKey)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     ListCacheKey that = (ListCacheKey) o;
 
@@ -68,8 +65,7 @@ public class ListCacheKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (int) (offset ^ (offset >>> 32));
+    int result = (int) (offset ^ (offset >>> 32));
     result = 31 * result + (int) (limit ^ (limit >>> 32));
     return result;
   }
