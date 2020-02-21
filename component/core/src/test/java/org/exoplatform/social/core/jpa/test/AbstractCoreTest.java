@@ -88,7 +88,8 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   @Override
   protected void setUp() throws Exception {
     begin();
-    
+    ExoContainerContext.setCurrentContainer(getContainer());
+
     identityManager = getService(IdentityManager.class);
     activityManager =  getService(ActivityManager.class);
     activityStorage = getService(ActivityStorage.class);
@@ -103,7 +104,8 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
 
   @Override
   protected void tearDown() throws Exception {
-    EntityManagerHolder.get().clear();
+    restartTransaction();
+
     deleteAllRelationships();
     deleteAllSpaces();
     deleteAllIdentitiesWithActivities();

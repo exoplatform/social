@@ -23,6 +23,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.component.test.*;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -68,6 +69,8 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
     ApplicationContextImpl.setCurrent(new ApplicationContextImpl(null, null, providerBinder));
     resourceBinder.clear();
     configures();
+
+    ExoContainerContext.setCurrentContainer(getContainer());
     begin();
 
     deleteAllRelationships();
@@ -85,6 +88,8 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
   }
 
   protected void tearDown() throws Exception {
+    restartTransaction();
+
     deleteAllRelationships();
     deleteAllSpaces();
     deleteAllIdentitiesWithActivities();

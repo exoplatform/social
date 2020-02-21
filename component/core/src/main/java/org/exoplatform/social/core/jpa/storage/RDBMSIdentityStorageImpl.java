@@ -512,6 +512,7 @@ public class RDBMSIdentityStorageImpl implements IdentityStorage {
    * @throws IdentityStorageException if has any error
    * @since 1.2.0-GA
    */
+  @ExoTransactional
   public void updateProfile(final Profile profile) throws IdentityStorageException {
     long id = EntityConverterUtils.parseId(profile.getIdentity().getId());
     IdentityEntity entity = identityDAO.find(id);
