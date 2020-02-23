@@ -154,13 +154,13 @@ window.initSearch = function initSearch() {
     }
 
     function getRegistry(callback) {
-      $.getJSON("/rest/search/registry", function(registry){
+      $.getJSON("/portal/rest/search/registry", function(registry){
         if(callback) callback(registry);
       });
     }
 
     function getSearchSetting(callback) {
-      $.getJSON("/rest/search/setting", function(setting){
+      $.getJSON("/portal/rest/search/setting", function(setting){
         if(callback) callback(setting);
       });
     }
@@ -189,7 +189,7 @@ window.initSearch = function initSearch() {
     }
 
     function loadSiteFilter(callback) {
-      $.getJSON("/rest/search/sites", function(sites){
+      $.getJSON("/portal/rest/search/sites", function(sites){
         var siteNames = [];
         $.each(sites, function(i, site){
           siteNames.push("<li><span class='uiCheckbox'><input type='checkbox' class='checkbox' name='site' value='" + site + "'><span></span></span>" + site.toProperCase() + "</li>");
@@ -502,7 +502,7 @@ window.initSearch = function initSearch() {
         lang: eXo.env.portal.language
       };
 
-      $.getJSON("/rest/search", searchParams, function(resultMap){
+      $.getJSON("/portal/rest/search", searchParams, function(resultMap){
         RESULT_CACHE = [];
         $.each(resultMap, function(searchType, results){
           //results.map(function(result){result.type = searchType;});
@@ -798,9 +798,8 @@ window.initSearchSetting = function initSearchSetting(allMsg,alertOk,alertNotOk)
 
     // Call REST service to save the setting
     $("#btnSave").click(function () {
-      //var url = "/rest/search/setting/"+$("#resultsPerPage").val()+"/"+getSelectedTypes()+"/"+$("#searchCurrentSiteOnly").is(":checked").toString()+"/"+$("#hideSearchForm").is(":checked").toString()+"/"+$("#hideFacetsFilter").is(":checked").toString();
       $.ajax({
-        url: '/rest/search/setting',
+        url: '/portal/rest/search/setting',
         method: 'POST',
         data: {
           resultsPerPage: $("#resultsPerPage").val(),
@@ -829,7 +828,7 @@ window.initSearchSetting = function initSearchSetting(allMsg,alertOk,alertNotOk)
     });
 
     // Load all needed configurations and settings from the service to build the UI
-    $.getJSON("/rest/search/registry", function(registry){
+    $.getJSON("/portal/rest/search/registry", function(registry){
       CONNECTORS = registry[0];
       var searchInOpts=[];
       searchInOpts.push(CHECKBOX_TEMPLATE.
@@ -845,7 +844,7 @@ window.initSearchSetting = function initSearchSetting(allMsg,alertOk,alertNotOk)
       $("#lstSearchInOptions").html(searchInOpts.join(""));
 
       // Display the previously saved (or default) search setting
-      $.getJSON("/rest/search/setting", function(setting){
+      $.getJSON("/portal/rest/search/setting", function(setting){
         if(-1 != $.inArray("all", setting.searchTypes)) {
           $(":checkbox[name='searchInOption']").prop('checked', true);
         } else {

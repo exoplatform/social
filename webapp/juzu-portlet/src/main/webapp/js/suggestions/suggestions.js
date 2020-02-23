@@ -42,7 +42,7 @@
 
     return {
         initSuggestion: function() {
-            $.getJSON("/rest/homepage/intranet/people/contacts/suggestions", function(list){
+            $.getJSON("/portal/rest/homepage/intranet/people/contacts/suggestions", function(list){
 
                 if (list.items.length > 0){
                     $("#content").show();
@@ -81,7 +81,7 @@
                     });
 
                     $("#"+item.suggestionId).on('click', "a.connect", function(){
-                        $.getJSON("/rest/homepage/intranet/people/contacts/connect/"+item.suggestionId, null);
+                        $.getJSON("/portal/rest/homepage/intranet/people/contacts/connect/"+item.suggestionId, null);
 
                         if($("#suggestions").children().length == 1) {
                             $("#peopleSuggest").fadeOut(500, function () {
@@ -105,7 +105,7 @@
 
                     $("#"+item.suggestionId).on('click', "a.ignore", function(){
                         $.ajax({
-                            url: "/rest/v1/social/usersRelationships/",
+                            url: "/portal/rest/v1/social/usersRelationships/",
                             contentType: "application/json",
                             data: JSON.stringify({"sender": list.username,"receiver": item.username,"status":"IGNORED"}),
                             type: "POST"
@@ -138,7 +138,7 @@
 
 
 
-            $.getJSON("/rest/homepage/intranet/spaces/suggestions", function(list){
+            $.getJSON("/portal/rest/homepage/intranet/spaces/suggestions", function(list){
 
                 if (list.items.length > 0){
                     $("#content").show();
@@ -199,7 +199,7 @@
                     });
 
                     $('body').on('click', "#" + item.spaceId + " a.connect", function() {
-                      $.getJSON("/rest/homepage/intranet/spaces/request/"+item.spaceId, null);
+                      $.getJSON("/portal/rest/homepage/intranet/spaces/request/"+item.spaceId, null);
 
                       if($("#suggestionsspace").children().length == 1) {
                         $("#spaceSuggest").fadeOut(500, function () {
@@ -223,7 +223,7 @@
 
                     $('body').on('click', "#" + item.spaceId + " a.ignore", function() {
                       $.ajax({
-                        url: "/rest/v1/social/spacesMemberships/",
+                        url: "/portal/rest/v1/social/spacesMemberships/",
                         contentType: "application/json",
                         data: JSON.stringify({"user": item.username,"space": item.displayName, "status":"IGNORED"}),
                         type: "POST"

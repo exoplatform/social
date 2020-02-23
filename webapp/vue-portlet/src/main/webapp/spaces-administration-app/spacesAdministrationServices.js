@@ -13,7 +13,7 @@ export function getSpacesPerPage(offset){
 }
 
 export function deleteSpaceById(id){
-  return fetch(`/rest/v1/social/spaces/${id}`, {
+  return fetch(`/portal/rest/v1/social/spaces/${id}`, {
     credentials: 'include', 
     method: 'delete'});
 }

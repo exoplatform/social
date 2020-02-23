@@ -21,7 +21,7 @@
 
     var jqInvitations = {
         initInvitations: function() {
-            $.getJSON("/rest/homepage/intranet/invitations/allInvitations", function(items){
+            $.getJSON("/portal/rest/homepage/intranet/invitations/allInvitations", function(items){
                 $("#requests").empty();
                 $("#inviteCounter").empty();
                 $("#InvitationsPortlet").hide();
@@ -62,7 +62,7 @@
                         $("#"+item.relationId).mouseout(function() { $("#"+item.relationId+" .peopleInvitePosition").removeClass("actionInviteAppears"); $("#"+item.relationId+" .peopleInviteAction").removeClass('active'); });
 
                         $('body').on('click', "#" + item.relationId + " a.connect", function() {
-                          $.getJSON("/rest/homepage/intranet/people/contacts/confirm/"+item.relationId, null);
+                          $.getJSON("/portal/rest/homepage/intranet/people/contacts/confirm/"+item.relationId, null);
 
                           if($("#requests").children().length == 1) {
                             $("#InvitationsPortlet").fadeOut(500, function () {
@@ -81,7 +81,7 @@
                         });
 
                         $('body').on('click', "#" + item.relationId + " a.deny", function(){
-                          $.getJSON("/rest/homepage/intranet/people/contacts/deny/"+item.relationId, null);
+                          $.getJSON("/portal/rest/homepage/intranet/people/contacts/deny/"+item.relationId, null);
 
                           if($("#requests").children().length == 1) {
                             $("#InvitationsPortlet").fadeOut(500, function () {
@@ -138,7 +138,7 @@
                         });
 
                         $('body').on('click', "#" + item.spaceId + " a.accept", function() {
-                          $.getJSON("/rest/homepage/intranet/spaces/accept/"+item.spaceId, null);
+                          $.getJSON("/portal/rest/homepage/intranet/spaces/accept/"+item.spaceId, null);
 
                           if($("#requests").children().length == 1) {
                             $("#InvitationsPortlet").fadeOut(500, function () {
@@ -158,7 +158,7 @@
                         });
 
                         $('body').on('click', "#" + item.spaceId + " a.deny", function() {
-                          $.getJSON("/rest/homepage/intranet/spaces/deny/"+item.spaceId, null);
+                          $.getJSON("/portal/rest/homepage/intranet/spaces/deny/"+item.spaceId, null);
 
                           if($("#requests").children().length == 1) {
                             $("#InvitationsPortlet").fadeOut(500, function () {

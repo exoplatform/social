@@ -167,14 +167,14 @@ window.initQuickSearch = function initQuickSearch(portletId,seeAllMsg, noResultM
 
 
     function getRegistry(callback) {
-      $.getJSON("/rest/search/registry", function(registry){
+      $.getJSON("/portal/rest/search/registry", function(registry){
         if(callback) callback(registry);
       });
     }
 
 
     function getQuicksearchSetting(callback) {
-      $.getJSON("/rest/search/setting/quicksearch", function(setting){
+      $.getJSON("/portal/rest/search/setting/quicksearch", function(setting){
         if(callback) callback(setting);
       });
     }
@@ -212,7 +212,7 @@ window.initQuickSearch = function initQuickSearch(portletId,seeAllMsg, noResultM
       
       
       // get results of all search types in a map
-      $.getJSON("/rest/search", searchParams, function(resultMap){
+      $.getJSON("/portal/rest/search", searchParams, function(resultMap){
         var rows = []; //one row per type
         index = 0;
         $.each(SEARCH_TYPES, function(i, searchType){          
@@ -534,7 +534,7 @@ window.initQuickSearchSetting = function(allMsg,alertOk,alertNotOk){
     // Call REST service to save the setting
     $("#btnSave").click(function(){
       $.ajax({
-        url: '/rest/search/setting/quicksearch',
+        url: '/portal/rest/search/setting/quicksearch',
         method: 'POST',
         data: {
           resultsPerPage: $("#resultsPerPage").val(),
@@ -563,7 +563,7 @@ window.initQuickSearchSetting = function(allMsg,alertOk,alertNotOk){
 
 
     // Load all needed configurations and settings from the service to build the UI
-    $.getJSON("/rest/search/registry", function(registry){
+    $.getJSON("/portal/rest/search/registry", function(registry){
       CONNECTORS = registry[0];
       var searchInOpts=[];
       searchInOpts.push(CHECKBOX_TEMPLATE.
@@ -579,7 +579,7 @@ window.initQuickSearchSetting = function(allMsg,alertOk,alertNotOk){
       $("#lstSearchInOptions").html(searchInOpts.join(""));
 
       // Display the previously saved (or default) quick search setting
-      $.getJSON("/rest/search/setting/quicksearch", function(setting){
+      $.getJSON("/portal/rest/search/setting/quicksearch", function(setting){
         if(-1 != $.inArray("all", setting.searchTypes)) {
           $(":checkbox[name='searchInOption']").attr('checked', true);
         } else {

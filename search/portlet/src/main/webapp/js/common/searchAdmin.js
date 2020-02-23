@@ -11,7 +11,7 @@ function initSearchAdmin() {
       .then(resp => resp && resp.ok && resp.json())
       .then(data => data && Object.assign(i18NData, data))
       .then(() => {
-        $.getJSON("/rest/search/registry", function(registry){
+        $.getJSON("/portal/rest/search/registry", function(registry){
           var row_template =
             "<tr>" +
               "<td>%{displayName}</td>" +
@@ -55,7 +55,7 @@ function initSearchAdmin() {
       });
 
       $.ajax({
-        url: '/rest/search/enabled-searchtypes/' + enabledTypes,
+        url: '/portal/rest/search/enabled-searchtypes/' + enabledTypes,
         method: 'POST',
         data: {
           searchTypes: enabledTypes.join(",")
