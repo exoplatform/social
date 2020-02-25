@@ -69,7 +69,7 @@ export default {
         extraPlugins: extraPlugins,
         removePlugins: 'image,confirmBeforeReload,maximize,resize',
         toolbar: [
-          ['Bold','Italic','Underline','BulletedList'],
+          ['Bold','Italic','BulletedList', 'NumberedList', 'Blockquote'],
         ],
         typeOfRelation: 'mention_activity_stream',
         autoGrow_onStartup: false,
