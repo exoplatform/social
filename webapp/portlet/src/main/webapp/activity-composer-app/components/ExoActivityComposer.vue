@@ -2,7 +2,7 @@
   <div class="activityComposer">
     <div class="openLink">
       <a @click="showMessageComposer = true">
-        <i class="uiIconPlus"></i>{{ $t('activity.composer.link').replace('{0}', postTarget) }}
+        <i class="uiIconGoUp"></i>{{ $t('activity.composer.link') }}
       </a>
     </div>
 
@@ -38,7 +38,6 @@ export default {
     return {
       MESSAGE_MAX_LENGTH: 2000,
       MESSAGE_TIMEOUT: 5000,
-      postTarget: '',
       showMessageComposer: false,
       message: '',
       showErrorMessage: false
@@ -57,12 +56,6 @@ export default {
       }
     }
 
-  },
-  mounted() {
-    this.postTarget = eXo.env.portal.spaceDisplayName;
-    if(!this.postTarget) {
-      this.postTarget = this.$t('activity.composer.link.network');
-    }
   },
   methods: {
     postMessage() {
