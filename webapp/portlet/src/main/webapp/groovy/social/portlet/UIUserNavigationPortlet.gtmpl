@@ -21,6 +21,7 @@
 <%
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.portal.webui.util.Util;
 
 def uicomponentId = uicomponent.id;
 
@@ -59,6 +60,8 @@ if (uicomponent.isProfileOwner()) {
             .require("SHARED/ui-user-navigation", "uiusernav")
             .addScripts("uiusernav.initNavigation('" + moreLabel + "');");
 }
+
+def portalOwner = Util.getPortalRequestContext().getPortalOwner();
 %>
 
 <div class="uiUserNavigationPortlet ClearFix" id="$uicomponentId">
@@ -89,7 +92,7 @@ if (uicomponent.isProfileOwner()) {
 <ul class="profileMenuApps menuApps pull-left">
 <% if (Utils.isOwner() && !uicomponent.isEditProfilePage()) { %>
     <li>
-    <a class="changeAvatar btn" onclick="window.location.href=window.location.origin + '/portal/intranet/edit-profile'"
+    <a class="changeAvatar btn" onclick="window.location.href=window.location.origin + '/portal/$portalOwner/edit-profile'"
     href="javascript:void(0)"><i class="uiIconEdit"></i> <span><%=_ctx.appRes("UIUserNavigationPortlet.label.EditProfile")%></span></a>
     </li>
 <% } %>
