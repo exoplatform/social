@@ -485,7 +485,8 @@ public class UIEditUserProfileForm extends UIForm {
    * @return
    */
   protected String getViewProfileURL() {
-    return this.currentProfile.getUrl();
+    String portalOwner = Util.getPortalRequestContext().getPortalOwner();
+    return this.currentProfile.getUrl().replace("intranet", portalOwner);
   }
 
   public static class SaveActionListener extends EventListener<UIEditUserProfileForm> {
@@ -570,9 +571,10 @@ public class UIEditUserProfileForm extends UIForm {
       //
       uiForm.resetForm();
       //
+      String portalOwner = Util.getPortalRequestContext().getPortalOwner();
       event.getRequestContext().getJavascriptManager().getRequireJS()
            .addScripts("setTimeout(function() {window.open(window.location.origin + '" +
-            profile.getUrl() + "', '_self')}, 200);");
+            profile.getUrl().replace("intranet", portalOwner) + "', '_self')}, 200);");
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
     }
     
