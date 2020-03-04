@@ -631,7 +631,10 @@
     <dropColumn tableName="SOC_USER_SPACE_BINDING" columnName="SPACE_ID"/>
   </changeSet>
 
-  <changeSet author="social" id="1.0.0-67" dbms="mysql,postgresql">
+  <changeSet author="social" id="1.0.0-67" dbms="mysql,postgresql" onValidationFail="MARK_RAN" failOnError="false">
+    <preConditions>
+      <foreignKeyConstraintExists foreignKeyTableName="SOC_USER_SPACE_BINDING" foreignKeyName="FK_SOC_USER_SPACE_BINDING_SPACEID" />
+    </preConditions>
     <dropForeignKeyConstraint baseTableName="SOC_USER_SPACE_BINDING" constraintName="FK_SOC_USER_SPACE_BINDING_SPACEID"/>
     <dropIndex indexName="IDX_SOC_USER_SPACE_BINDING_01" tableName="SOC_USER_SPACE_BINDING"/>
     <dropColumn tableName="SOC_USER_SPACE_BINDING" columnName="SPACE_ID"/>
