@@ -66,11 +66,29 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
   void deleteAllUserBindings(String userName);
 
   /**
-   * Check if member has binding for this space
-   *
+   * Gets user's bindings for this space
+   * 
    * @param spaceId The space Id.
    * @param userName The space Id.
+   * @return a List of UserSpaceBindingEntity
    */
-  boolean hasUserBindings(Long spaceId, String userName);
+  List<UserSpaceBindingEntity> getUserBindings(Long spaceId, String userName);
 
+  /**
+   * Get bound users by a binding.
+   * 
+   * @param id
+   * @return a list of UserSpaceBindingEntities
+   */
+  List<UserSpaceBindingEntity> findBoundUsersByBindingId(long id);
+
+  /**
+   * Checks if user is already bound and returns true if is member of the space,
+   * false if not. else returns null.
+   * 
+   * @param spaceId
+   * @param userId
+   * @return
+   */
+  Boolean isUserBoundAndMemberBefore(Long spaceId, String userId);
 }

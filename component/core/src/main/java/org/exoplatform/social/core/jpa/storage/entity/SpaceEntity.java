@@ -62,7 +62,10 @@ public class SpaceEntity implements Serializable {
   private Long              id;
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<SpaceMemberEntity>  members          = new HashSet<>();
+  private Set<SpaceMemberEntity> members          = new HashSet<>();
+
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<GroupSpaceBindingEntity> spaceBindingEntities          = new HashSet<>();
 
   /**
    * The list of applications with portlet Id, application name, and its state
@@ -229,6 +232,14 @@ public class SpaceEntity implements Serializable {
 
   public void setMembers(Set<SpaceMemberEntity> members) {
     this.members = members;
+  }
+
+  public Set<GroupSpaceBindingEntity> getSpaceBindingEntities() {
+    return spaceBindingEntities;
+  }
+
+  public void setSpaceBindingEntities(Set<GroupSpaceBindingEntity> spaceBindingEntities) {
+    this.spaceBindingEntities = spaceBindingEntities;
   }
 
   @Override

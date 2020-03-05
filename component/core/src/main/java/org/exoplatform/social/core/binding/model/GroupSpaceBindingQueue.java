@@ -25,11 +25,8 @@ public class GroupSpaceBindingQueue {
   /** The id */
   private long   id;
 
-  /** The space id */
-  private String spaceId;
-
-  /** The group id. */
-  private String group;
+  /** The GroupSpaceBinding */
+  private GroupSpaceBinding groupSpaceBinding;
   
   /** The action. */
   private String action;
@@ -40,11 +37,9 @@ public class GroupSpaceBindingQueue {
   public GroupSpaceBindingQueue() {
   }
 
-  public GroupSpaceBindingQueue(String id, String spaceId, String group, String action) {
-    this.id = Long.parseLong(id);
-    this.spaceId = spaceId;
-    this.group = group;
-    this.action=action;
+  public GroupSpaceBindingQueue(GroupSpaceBinding groupSpaceBinding, String action) {
+    this.groupSpaceBinding = groupSpaceBinding;
+    this.action = action;
   }
 
   public long getId() {
@@ -55,22 +50,14 @@ public class GroupSpaceBindingQueue {
     this.id = id;
   }
 
-  public String getSpaceId() {
-    return spaceId;
+  public GroupSpaceBinding getGroupSpaceBinding() {
+    return groupSpaceBinding;
   }
 
-  public void setSpaceId(String spaceId) {
-    this.spaceId = spaceId;
+  public void setGroupSpaceBinding(GroupSpaceBinding groupSpaceBinding) {
+    this.groupSpaceBinding = groupSpaceBinding;
   }
 
-  public String getGroup() {
-    return group;
-  }
-
-  public void setGroup(String group) {
-    this.group = group;
-  }
-  
   public String getAction() {
     return action;
   }
