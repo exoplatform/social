@@ -38,7 +38,11 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
     @NamedQuery(name = "SocUserSpaceBinding.findUserAllBindingsByUser", query = "SELECT userSpaceBinding "
         + " FROM SocUserSpaceBinding userSpaceBinding" + " WHERE userSpaceBinding.user = :userName"),
     @NamedQuery(name = "SocUserSpaceBinding.deleteAllUserBindings", query = "DELETE FROM SocUserSpaceBinding userSpaceBinding WHERE userSpaceBinding.user = :userName"),
-    @NamedQuery(name = "SocUserSpaceBinding.getUserBindingsBySpace", query = "SELECT userSpaceBinding FROM SocUserSpaceBinding "
+    @NamedQuery(name = "SocUserSpaceBinding.findAllUserBindingsByUserAndSpace", query = "SELECT userSpaceBinding FROM "
+        + "SocUserSpaceBinding "
+        + "userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.space.id = :spaceId"),
+    @NamedQuery(name = "SocUserSpaceBinding.countAllUserBindingsByUserAndSpace", query = "SELECT count(*) FROM "
+        + "SocUserSpaceBinding "
         + "userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.space.id = :spaceId"),
     @NamedQuery(name = "SocUserSpaceBinding.findBoundUsersByBindingId", query = "SELECT userSpaceBinding FROM SocUserSpaceBinding "
         + "userSpaceBinding WHERE userSpaceBinding.groupSpaceBinding.id= :bindingId"),

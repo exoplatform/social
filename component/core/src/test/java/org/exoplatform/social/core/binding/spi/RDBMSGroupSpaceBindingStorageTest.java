@@ -405,6 +405,27 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
                  false,
                  groupSpaceBindingStorage.getUserBindings(spaceId, "mary").size() > 0);
   }
+  /**
+   * Test
+   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#getUserBindings(String, String)}
+   *
+   * @throws Exception
+   **/
+  
+  public void countUserBindings() throws Exception {
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
+    groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
+    tearDownGroupbindingList.add(groupSpaceBinding);
+    UserSpaceBinding userSpaceBinding = this.getUserBindingInstance(1, "john", groupSpaceBinding);
+    userSpaceBinding = groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
+    tearDownUserbindingList.add(userSpaceBinding);
+    assertEquals("groupSpaceBindingStorage.countUserBindings(" + spaceId + ",'john') must return 1 ",
+                 1,
+                 groupSpaceBindingStorage.countUserBindings(spaceId, "john"));
+    assertEquals("groupSpaceBindingStorage.countUserBindings(" + spaceId + ",'mary') must return 0 ",
+                 0,
+                 groupSpaceBindingStorage.countUserBindings(spaceId, "mary"));
+  }
 
   /**
    * Test
