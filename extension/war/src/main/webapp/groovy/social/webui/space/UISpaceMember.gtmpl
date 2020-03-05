@@ -215,15 +215,17 @@
 			<td class="center" width="15%">
 				<% if(uicomponent.isCurrentUser(user)) { 
                 if (uicomponent.hasUserBindings(user)){%>
-                    <a title="<%=_ctx.appRes(uicomponent.getId() + ".label.msg_error_user_binding")%><%=uicomponent.getGroupbindingTooltips(user)%>" class="actionIcon"  data-placement="bottom" rel="tooltip" >
-                    <i class="uiIconDelete uiIconLightGray" style="color:#a8b3c5"></i></a>
+                    <span class="boundUser" title="<%=_ctx.appRes(uicomponent.getId() + ".label.msg_error_user_binding")%><%=uicomponent.getGroupbindingTooltips(user)%>" data-placement="bottom" rel="tooltip">
+                      <%=_ctx.appRes(uicomponent.getId() + ".label.bound_user")%>
+                    </span>
                 <%} else {%>
                     <a  onclick="$removeOwnerAction" title="$labelRemoveMember"  href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" >
                     <i class="uiIconDelete uiIconLightGray"></i></a>
 				<% }} else { 
                 if (uicomponent.hasUserBindings(user)){%>
-                    <a title="<%=_ctx.appRes(uicomponent.getId() + ".label.msg_error_user_binding")%><%=uicomponent.getGroupbindingTooltips(user)%>" class="actionIcon"  data-placement="bottom" rel="tooltip" >
-                    <i class="uiIconDelete uiIconLightGray"style="color:#a8b3c5;"></i></a>
+                   <span class="boundUser" title="<%=_ctx.appRes(uicomponent.getId() + ".label.msg_error_user_binding")%><%=uicomponent.getGroupbindingTooltips(user)%>" data-placement="bottom" rel="tooltip">
+                     <%=_ctx.appRes(uicomponent.getId() + ".label.bound_user")%>
+                   </span>
                 <%} else {%>
                     <a  onclick="$removeAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" >
                     <i class="uiIconDelete uiIconLightGray"></i></a>

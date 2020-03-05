@@ -204,10 +204,17 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
    */
   @Override
   public List<UserSpaceBinding> getUserBindings(String spaceId, String userName) {
-    LOG.debug("Checking if member has binding :" + userName + " space:" + spaceId);
+    LOG.debug("List member binding :" + userName + " space:" + spaceId);
     return groupSpaceBindingStorage.getUserBindings(spaceId, userName);
   }
+  
+  @Override
+  public long countUserBindings(String spaceId, String userName) {
+    LOG.debug("Count member binding :" + userName + " space:" + spaceId);
+    return groupSpaceBindingStorage.countUserBindings(spaceId, userName);
 
+  }
+  
   @Override
   public void saveGroupSpaceBindings(List<GroupSpaceBinding> groupSpaceBindings) {
     LOG.debug("Saving group space binding between spaceId: {} and groups: {}.",
