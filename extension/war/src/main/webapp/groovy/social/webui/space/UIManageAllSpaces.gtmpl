@@ -6,6 +6,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.webui.space.UISpaceSearch;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.services.security.ConversationState;
+
 
 	def uicomponentId = uicomponent.id;
 	
@@ -109,6 +111,13 @@ import org.exoplatform.social.core.service.LinkProvider;
 		        def isPublic = false;
 		        def isClose = false;
 		        def hasEditPermission = false;
+
+            def leaveButtonDisabled = "";
+            String userName = ConversationState.getCurrent().getIdentity().getUserId();
+            if (Utils.isUserBoundToSpace(userName,space)) {
+              leaveButtonDisabled="disabled";
+              leaveSpaceAction="";
+            }
 		        
 		        if ("INVITED".equals(typeOfSpace.toString())) {
 		          // Action{Accept-Deny}, Icon {Clock}
@@ -175,12 +184,12 @@ import org.exoplatform.social.core.service.LinkProvider;
 		        <div class="connectionBtn clearfix">
    		        <% if ("MANAGER".equals(typeOfSpace.toString())) {  %>
                   <button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$deleteSpaceLabel</button>
-                  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
+                  <button type="button" class="btn pull-right <%= leaveButtonDisabled %>" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
                   <button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'">$editSpaceLabel</button>                  
 		          <% } else if (uicomponent.isSuperManager(space)) { %>
 		              <button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$deleteSpaceLabel</button>
 		             <% if ("MEMBER".equals(typeOfSpace.toString())) { %>
-                  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
+                  <button type="button" class="btn pull-right <%= leaveButtonDisabled %>" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
 		             <% } %>
 		              <button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'">$editSpaceLabel</button>
 		          <% } else if ("INVITED".equals(typeOfSpace.toString())) { %>
@@ -189,7 +198,7 @@ import org.exoplatform.social.core.service.LinkProvider;
               <% } else if ("SENT".equals(typeOfSpace.toString())) {  %>
                   <button type="button" class="btn pull-right" onclick="<%= cancelInvitationAction %>">$cancelInvitationLabel</button>
               <% } else if ("MEMBER".equals(typeOfSpace.toString())) {  %>
-                  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
+                  <button type="button" class="btn pull-right <%= leaveButtonDisabled %>" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
               <% } else {
                    if (Space.VALIDATION.equals(registration)) { %>
                      <button type="button" class="btn btn-primary pull-right" onclick="<%= requestToJoinSpaceAction %>">$requestToJoinSpaceLabel</button>
