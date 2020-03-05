@@ -35,8 +35,10 @@ import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.router.ExoRouter;
 import org.exoplatform.social.common.router.ExoRouter.Route;
+import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -853,5 +855,11 @@ public class Utils {
     
     context.getJavascriptManager().getRequireJS().require("SHARED/socialUtil", "socialUtil")
            .addScripts("socialUtil.applyConfirmPopup(" + object.toString() + ");");
+  }
+  
+  public static boolean isUserBoundToSpace(String username,Space space) {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    GroupSpaceBindingService groupSpaceBindingService = container.getComponentInstanceOfType(GroupSpaceBindingService.class);
+    return groupSpaceBindingService.getUserBindings(space.getId(),username).size()>0;
   }
 }
