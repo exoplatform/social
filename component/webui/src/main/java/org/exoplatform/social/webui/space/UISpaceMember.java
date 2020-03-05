@@ -693,8 +693,8 @@ public class UISpaceMember extends UIContainer {
      * @param userId
      * @return true if the user has exiting group binding for this space
      */
-    public List<UserSpaceBinding> hasUserBindings(String userId) {
-        return groupSpaceBindingService.getUserBindings(spaceId,userId);
+    public boolean hasUserBindings(String userId) {
+        return Utils.isUserBoundToSpace(userId,spaceId);
     }
 
     /**

@@ -378,6 +378,33 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     // Then
     assertEquals(true, groupSpaceBindingService.getUserBindings("1", "john").size() > 0);
   }
+  
+  /**
+   * Test {@link GroupSpaceBindingService#countUserBindings(String, String)}
+   *
+   * @throws Exception
+   */
+  @Test
+  public void countUserBindings() throws Exception {
+    // Given
+    GroupSpaceBinding binding1 = new GroupSpaceBinding();
+    binding1.setId(1);
+    binding1.setGroup("/platform/administrators");
+    binding1.setSpaceId("1");
+    
+    List<UserSpaceBinding> userSpaceBindings = new ArrayList<>();
+    userSpaceBindings.add(new UserSpaceBinding());
+    Mockito.when(groupSpaceBindingStorage.countUserBindings(Mockito.eq("1"), Mockito.eq("john"))).thenReturn(1L);
+    
+    // When
+    GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams,
+                                                                                         groupSpaceBindingStorage,
+                                                                                         orgService,
+                                                                                         spaceService);
+    
+    // Then
+    assertEquals(1, groupSpaceBindingService.countUserBindings("1", "john"));
+  }
 
   private Space getSpaceInstance(int number) {
     Space space = new Space();

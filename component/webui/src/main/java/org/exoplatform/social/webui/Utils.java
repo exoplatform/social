@@ -857,9 +857,9 @@ public class Utils {
            .addScripts("socialUtil.applyConfirmPopup(" + object.toString() + ");");
   }
   
-  public static boolean isUserBoundToSpace(String username,Space space) {
+  public static boolean isUserBoundToSpace(String username,String spaceId) {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     GroupSpaceBindingService groupSpaceBindingService = container.getComponentInstanceOfType(GroupSpaceBindingService.class);
-    return groupSpaceBindingService.getUserBindings(space.getId(),username).size()>0;
+    return groupSpaceBindingService.countUserBindings(spaceId,username)>0;
   }
 }

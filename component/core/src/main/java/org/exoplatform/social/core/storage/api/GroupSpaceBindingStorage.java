@@ -152,6 +152,16 @@ public interface GroupSpaceBindingStorage {
    * @return a List of UserSpaceBinding
    */
   List<UserSpaceBinding> getUserBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
+  
+  /**
+   * Count user's bindings of the space.
+   *
+   * @param spaceId The space Id.
+   * @param userName
+   * @throws GroupSpaceBindingStorageException
+   * @return number of UserSpaceBinding
+   */
+  long countUserBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
 
   /**
    * Get GroupSpaceBinding by id

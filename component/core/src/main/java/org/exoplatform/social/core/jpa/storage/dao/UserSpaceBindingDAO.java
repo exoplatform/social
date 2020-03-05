@@ -73,6 +73,14 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @return a List of UserSpaceBindingEntity
    */
   List<UserSpaceBindingEntity> getUserBindings(Long spaceId, String userName);
+  
+  /**
+   * Count user's bindings for this space
+   *  @param spaceId The space Id.
+   * @param userName The space Id.
+   * @return number UserSpaceBindingEntity
+   */
+  long countUserBindings(Long spaceId, String userName);
 
   /**
    * Get bound users by a binding.

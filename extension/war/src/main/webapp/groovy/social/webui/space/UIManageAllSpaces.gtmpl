@@ -114,7 +114,7 @@ import org.exoplatform.services.security.ConversationState;
 
             def leaveButtonDisabled = "";
             String userName = ConversationState.getCurrent().getIdentity().getUserId();
-            if (Utils.isUserBoundToSpace(userName,space)) {
+            if (Utils.isUserBoundToSpace(userName,space.getId())) {
               leaveButtonDisabled="disabled";
               leaveSpaceAction="";
             }
