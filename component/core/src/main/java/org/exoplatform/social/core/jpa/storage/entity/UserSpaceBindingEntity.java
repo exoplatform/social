@@ -38,7 +38,11 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
     @NamedQuery(name = "SocUserSpaceBinding.findUserAllBindingsByUser", query = "SELECT userSpaceBinding "
         + " FROM SocUserSpaceBinding userSpaceBinding" + " WHERE userSpaceBinding.user = :userName"),
     @NamedQuery(name = "SocUserSpaceBinding.deleteAllUserBindings", query = "DELETE FROM SocUserSpaceBinding userSpaceBinding WHERE userSpaceBinding.user = :userName"),
-    @NamedQuery(name = "SocUserSpaceBinding.countBindingsForMembers", query = "SELECT count(*) FROM SocUserSpaceBinding "
+    @NamedQuery(name = "SocUserSpaceBinding.getUserBindingsBySpace", query = "SELECT userSpaceBinding FROM SocUserSpaceBinding "
+        + "userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.space.id = :spaceId"),
+    @NamedQuery(name = "SocUserSpaceBinding.findBoundUsersByBindingId", query = "SELECT userSpaceBinding FROM SocUserSpaceBinding "
+        + "userSpaceBinding WHERE userSpaceBinding.groupSpaceBinding.id= :bindingId"),
+    @NamedQuery(name = "SocUserSpaceBinding.isUserBoundAndMemberBefore", query = "SELECT userSpaceBinding FROM SocUserSpaceBinding "
         + "userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.space.id = :spaceId") })
 public class UserSpaceBindingEntity implements Serializable {
 
@@ -52,6 +56,9 @@ public class UserSpaceBindingEntity implements Serializable {
 
   @Column(name = "USERNAME")
   private String                  user;
+
+  @Column(name = "IS_MEMBER_BEFORE")
+  private Boolean                 isMemberBefore   = false;
 
   @ManyToOne
   @JoinColumn(name = "GROUP_SPACE_BINDING_ID", referencedColumnName = "GROUP_SPACE_BINDING_ID", nullable = false)
@@ -71,6 +78,14 @@ public class UserSpaceBindingEntity implements Serializable {
 
   public void setUser(String user) {
     this.user = user;
+  }
+
+  public Boolean isMemberBefore() {
+    return isMemberBefore;
+  }
+
+  public void setIsMemberBefore(Boolean memberBefore) {
+    isMemberBefore = memberBefore;
   }
 
   public GroupSpaceBindingEntity getGroupSpaceBinding() {

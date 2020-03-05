@@ -624,7 +624,6 @@
     <createSequence sequenceName="SEQ_SOC_USER_SPACE_BINDING_ID" startValue="1"/>
     <createSequence sequenceName="SEQ_SOC_GROUP_SPACE_BINDING_ID" startValue="1"/>
     <sql dbms="postgresql">UPDATE SOC_USER_SPACE_BINDING SET USER_SPACE_BINDING_ID=nextval('SEQ_SOC_USER_SPACE_BINDING_ID');UPDATE SOC_GROUP_SPACE_BINDING SET GROUP_SPACE_BINDING_ID=nextval('SEQ_SOC_GROUP_SPACE_BINDING_ID');</sql>
-    <sql dbms="oracle">UPDATE SOC_USER_SPACE_BINDING SET USER_SPACE_BINDING_ID=SEQ_SOC_USER_SPACE_BINDING_ID.nextval;UPDATE SOC_GROUP_SPACE_BINDING SET GROUP_SPACE_BINDING_ID=SEQ_SOC_GROUP_SPACE_BINDING_ID'.nextval</sql>
   </changeSet>
 
   <changeSet author="social" id="1.0.0-66" dbms="hsqldb">
@@ -645,4 +644,30 @@
       <column name="USERNAME"/>
     </createIndex>
   </changeSet>
+
+  <changeSet author="social" id="1.0.0-69">
+    <addColumn tableName="SOC_USER_SPACE_BINDING">
+      <column name="IS_MEMBER_BEFORE" type="BOOLEAN"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-70">
+    <createTable tableName="SOC_GROUP_SPACE_BINDING_QUEUE">
+      <column name="GROUP_SPACE_BINDING_QUEUE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GROUP_SPACE_BINDING_QUEUE_ID"/>
+      </column>
+      <column name="GROUP_SPACE_BINDING_ID" type="BIGINT">
+        <constraints foreignKeyName="FK_SOC_GROUP_SPACE_BINDING_QUEUE_BINDING_ID" references="SOC_GROUP_SPACE_BINDING(GROUP_SPACE_BINDING_ID)"
+        nullable="false"/>
+      </column>
+      <column name="ACTION" type="NVARCHAR(200)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="social" id="1.0.0-71" dbms="postgresql">
+    <createSequence sequenceName="SEQ_SOC_GROUP_SPACE_BINDING_QUEUE_ID" startValue="1"/>
+  </changeSet>
+
 </databaseChangeLog>

@@ -18,8 +18,8 @@
 package org.exoplatform.social.core.jpa.storage.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -32,7 +32,9 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
     @NamedQuery(name = "SocGroupSpaceBinding.findGroupSpaceBindingsBySpace", query = "SELECT groupSpacebinding "
         + " FROM SocGroupSpaceBinding groupSpacebinding " + " WHERE groupSpacebinding.space.id = :spaceId"),
     @NamedQuery(name = "SocGroupSpaceBinding.findGroupSpaceBindingsByGroup", query = "SELECT groupSpacebinding "
-        + " FROM SocGroupSpaceBinding groupSpacebinding " + " WHERE groupSpacebinding.group = :group") })
+        + " FROM SocGroupSpaceBinding groupSpacebinding " + " WHERE groupSpacebinding.group = :group"),
+    @NamedQuery(name = "SocGroupSpaceBinding.findBoundUsersByBindingId", query = "SELECT groupSpacebinding.userSpaceBindingEntities "
+        + " FROM SocGroupSpaceBinding groupSpacebinding " + " WHERE groupSpacebinding.id = :bindingId") })
 public class GroupSpaceBindingEntity implements Serializable {
 
   private static final long           serialVersionUID         = -1901782610164740670L;
@@ -48,7 +50,7 @@ public class GroupSpaceBindingEntity implements Serializable {
   private SpaceEntity                 space;
 
   @OneToMany(mappedBy = "groupSpaceBinding", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<UserSpaceBindingEntity> userSpaceBindingEntities = new HashSet<UserSpaceBindingEntity>();
+  private List<UserSpaceBindingEntity> userSpaceBindingEntities = new ArrayList<>();
 
   @Column(name = "GROUP_NAME")
   private String                      group;
@@ -77,11 +79,11 @@ public class GroupSpaceBindingEntity implements Serializable {
     this.group = group;
   }
 
-  public Set<UserSpaceBindingEntity> getUserSpaceBindingEntities() {
+  public List<UserSpaceBindingEntity> getUserSpaceBindingEntities() {
     return userSpaceBindingEntities;
   }
 
-  public void setUserSpaceBindingEntity(Set<UserSpaceBindingEntity> userSpaceBindingEntities) {
+  public void setUserSpaceBindingEntity(List<UserSpaceBindingEntity> userSpaceBindingEntities) {
     this.userSpaceBindingEntities = userSpaceBindingEntities;
   }
 }

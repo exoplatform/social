@@ -28,6 +28,9 @@ public class UserSpaceBinding {
   /** The user */
   private String            user;
 
+  /** Is the user a member of the space before the binding. */
+  private Boolean           isMemberBefore;
+
   /** The group binding */
   private GroupSpaceBinding groupBinding;
 
@@ -45,6 +48,14 @@ public class UserSpaceBinding {
 
   public void setUser(String user) {
     this.user = user;
+  }
+
+  public Boolean isMemberBefore() {
+    return isMemberBefore;
+  }
+
+  public void setIsMemberBefore(Boolean memberBefore) {
+    isMemberBefore = memberBefore;
   }
 
   public GroupSpaceBinding getGroupBinding() {

@@ -80,7 +80,7 @@
     <v-navigation-drawer
       id="GroupBindingDrawer"        
       v-model="showGroupBindingForm"
-      fixed
+      absolute
       right
       stateless
       temporary
@@ -129,6 +129,7 @@ export default {
       maxVisiblePagesButtons: 3,
       maxVisibleButtons: 5,
       showConfirmMessageBindingModal : false,
+      groupsToBind: [],
       avatar : spacesConstants.DEFAULT_SPACE_AVATAR
     };
   },
@@ -232,13 +233,18 @@ export default {
     closeGroupBindingDrawer() {
       this.showGroupBindingForm = false;
     },
-    openBindingModal() {
+    openBindingModal(groups) {
+      this.groupsToBind = groups;
       this.showConfirmMessageBindingModal = true;
     },
-    closeBindingModal(){
+    closeBindingModal() {
       this.showConfirmMessageBindingModal = false;
     },
     confirmBinding() {
+      const groups = this.groupsToBind.map(group => {
+        return group.split(':')[1];
+      });
+      spacesAdministrationServices.saveGroupsSpaceBindings(this.spaceToBindId, groups);
       this.showConfirmMessageBindingModal = false;
     }
   }

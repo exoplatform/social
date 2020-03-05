@@ -17,12 +17,11 @@
 
 package org.exoplatform.social.rest.api;
 
-import org.exoplatform.social.rest.entity.GroupSpaceBindingEntity;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -36,7 +35,6 @@ public interface GroupSpaceBindingRestResources extends SocialRest{
      *
      * @param uriInfo
      * @param spaceId Id of the space
-     * @param spaceRole Role in the space (member/manager)
      * @param offset Bindings list offset
      * @param limit Bindings list limit
      * @param returnSize Return Size of the list?
@@ -44,12 +42,11 @@ public interface GroupSpaceBindingRestResources extends SocialRest{
      * @throws Exception
      */
     @GET
-    public abstract Response getBindingsBySpaceContext(@Context UriInfo uriInfo,
-                                                       @QueryParam("spaceId") String spaceId,
-                                                       @QueryParam("spaceRole") String spaceRole,
-                                                       @QueryParam("offset") int offset,
-                                                       @QueryParam("limit") int limit,
-                                                       @QueryParam("returnSize") boolean returnSize) throws Exception;
+    Response getBindingsBySpaceId(@Context UriInfo uriInfo,
+                                  @QueryParam("spaceId") String spaceId,
+                                  @QueryParam("offset") int offset,
+                                  @QueryParam("limit") int limit,
+                                  @QueryParam("returnSize") boolean returnSize) throws Exception;
 
 
     /**
@@ -57,14 +54,14 @@ public interface GroupSpaceBindingRestResources extends SocialRest{
      *
      * @param uriInfo
      * @param spaceId Id of the space
-     * @param groupSpaceBindingEntityList list of bindings to be created for the space
+     * @param groupNamesList List of group names to be bound to the space
      * @return Status
      * @throws Exception
      */
     @POST
-    public abstract Response saveGroupBindings(@Context UriInfo uriInfo,
-                                                       @QueryParam("spaceId") String spaceId,
-                                                       List<GroupSpaceBindingEntity> groupSpaceBindingEntityList) throws Exception;
+    Response saveGroupSpaceBindings(@Context UriInfo uriInfo,
+                                    @PathParam("spaceId") String spaceId,
+                                    List<String> groupNamesList) throws Exception;
 
 
     /**
@@ -76,6 +73,6 @@ public interface GroupSpaceBindingRestResources extends SocialRest{
      * @throws Exception
      */
     @DELETE
-    public abstract Response deleteSpaceBindings(@Context UriInfo uriInfo,
+    Response deleteSpaceBindings(@Context UriInfo uriInfo,
                                                @PathParam("spaceId") String spaceId) throws Exception;
 }
