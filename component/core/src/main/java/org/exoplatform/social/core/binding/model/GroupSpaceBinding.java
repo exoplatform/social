@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.core.binding.model;
 
+import java.util.List;
+
 /**
  * Group Binding Model (between space ang organization group)
  */
@@ -32,6 +34,11 @@ public class GroupSpaceBinding {
   private String group;
 
   public GroupSpaceBinding() {
+  }
+
+  public GroupSpaceBinding(String spaceId, String group) {
+    this.spaceId = spaceId;
+    this.group = group;
   }
 
   public GroupSpaceBinding(String id, String spaceId, String group) {

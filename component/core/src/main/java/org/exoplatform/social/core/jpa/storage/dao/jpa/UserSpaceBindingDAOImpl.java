@@ -19,6 +19,7 @@ package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -72,11 +73,38 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
   }
 
   @Override
-  public boolean hasUserBindings(Long spaceId, String userName) {
-    TypedQuery<Long> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.countBindingsForMembers", Long.class);
+  public List<UserSpaceBindingEntity> getUserBindings(Long spaceId, String userName) {
+    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.getUserBindingsBySpace",
+                                                                                   UserSpaceBindingEntity.class);
     query.setParameter("spaceId", spaceId);
     query.setParameter("userName", userName);
-    return query.getSingleResult().intValue() > 0;
+    return query.getResultList();
+  }
+
+  @Override
+  public List<UserSpaceBindingEntity> findBoundUsersByBindingId(long bindingId) {
+    TypedQuery<UserSpaceBindingEntity> query =
+                                             getEntityManager().createNamedQuery("SocUserSpaceBinding.findBoundUsersByBindingId",
+                                                                                 UserSpaceBindingEntity.class);
+    query.setParameter("bindingId", bindingId);
+    return query.getResultList();
+  }
+
+  @Override
+  public Boolean isUserBoundAndMemberBefore(Long spaceId, String userName) {
+    UserSpaceBindingEntity userSpaceBindingEntity;
+    TypedQuery<UserSpaceBindingEntity> query =
+                                             getEntityManager().createNamedQuery("SocUserSpaceBinding.isUserBoundAndMemberBefore",
+                                                                                 UserSpaceBindingEntity.class);
+    query.setParameter("spaceId", spaceId);
+    query.setParameter("userName", userName);
+    query.setMaxResults(1);
+    try {
+      userSpaceBindingEntity = query.getSingleResult();
+    } catch (NoResultException ex) {
+      return null;
+    }
+    return userSpaceBindingEntity.isMemberBefore();
   }
 
 }

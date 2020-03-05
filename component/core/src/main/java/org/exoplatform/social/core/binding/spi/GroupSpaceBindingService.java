@@ -29,14 +29,14 @@ import org.exoplatform.social.core.binding.model.UserSpaceBinding;
  */
 
 public interface GroupSpaceBindingService {
-  
+
   /**
    * Get the first GroupSpaceBindingQueue to treat
    *
    * @return The list of binding.
    */
   GroupSpaceBindingQueue findFirstGroupSpaceBindingQueue();
-  
+
   /**
    * Get a list containing all the groups binding for a space.
    *
@@ -80,19 +80,12 @@ public interface GroupSpaceBindingService {
   List<UserSpaceBinding> findUserBindingsByUser(String userName);
 
   /**
-   * Saves a list of group binding.
-   *
-   * @param groupSpaceBindings The list of bindings to create.
-   */
-  void saveGroupSpaceBindings(List<GroupSpaceBinding> groupSpaceBindings);
-
-  /**
    * Saves a list of user bindings
    *
    * @param userSpaceBindings The list of user bindings to be created
    */
   void saveUserBindings(List<UserSpaceBinding> userSpaceBindings);
-  
+
   /**
    * Saves a group space binding queue
    *
@@ -114,7 +107,6 @@ public interface GroupSpaceBindingService {
    * @param userSpaceBinding The user binding to be deleted.
    */
   void deleteUserBinding(UserSpaceBinding userSpaceBinding);
-  
 
   /**
    * Delete all group bindings for a specific space. When bindings is deleted, all
@@ -123,7 +115,7 @@ public interface GroupSpaceBindingService {
    * @param spaceId The space Id.
    */
   void deleteAllSpaceBindingsBySpace(String spaceId);
-  
+
   /**
    * Delete all group bindings for a specific group. When bindings is deleted, all
    * users in the group will be remove from associated space.
@@ -131,14 +123,45 @@ public interface GroupSpaceBindingService {
    * @param group The group Id.
    */
   void deleteAllSpaceBindingsByGroup(String group);
-  
+
   /**
-   * Check if member has binding for this space
+   * Gets user's bindings for the space.
    *
    * @param spaceId The space Id.
    * @param userName The username of the member.
-   * @return true if the member has binding for this space.
+   * @return a List of UserSpaceBinding.
    */
-  boolean hasUserBindings(String spaceId, String userName);
+  List<UserSpaceBinding> getUserBindings(String spaceId, String userName);
+
+  /**
+   * Checks if user is already bound and returns true if is member of the space,
+   * false if not. else returns null.
+   * 
+   * @param spaceId
+   * @param userName
+   * @return
+   */
+  Boolean isUserBoundAndMemberBefore(String spaceId, String userName);
+
+  /**
+   * Saves a list of group binding.
+   * 
+   * @param groupSpaceBindings
+   */
+  void saveGroupSpaceBindings(List<GroupSpaceBinding> groupSpaceBindings);
+
+  /**
+   * Save a UserSpaceBinding for each user of the group
+   * 
+   * @param groupSpaceBinding
+   */
+  void bindUsersFromGroupSpaceBinding(GroupSpaceBinding groupSpaceBinding);
+
+  /**
+   * Delete a bindingQueue when its groupSpaceBinding is totally proceeded
+   * 
+   * @param bindingQueue
+   */
+  void deleteFromBindingQueue(GroupSpaceBindingQueue bindingQueue);
 
 }

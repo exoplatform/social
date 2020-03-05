@@ -16,25 +16,27 @@
  */
 package org.exoplatform.social.core.binding.job;
 
-import org.exoplatform.commons.search.index.IndexingOperationProcessor;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
 @DisallowConcurrentExecution
 public class QueueGroupSpaceBindingJob implements Job {
-  private static final Log LOG = ExoLogger.getLogger(QueueGroupSpaceBindingJob.class);
+  private static final Log         LOG = ExoLogger.getLogger(QueueGroupSpaceBindingJob.class);
 
-  private GroupSpaceBindingService groupBindingService;
+  private GroupSpaceBindingService groupSpaceBindingService;
+
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
+    groupSpaceBindingService = CommonsUtils.getService(GroupSpaceBindingService.class);
     LOG.info("Start treating GroupSpaceBinding queue");
     GroupSpaceBindingQueue firstBindingQueue = null;
     do {
@@ -57,13 +59,6 @@ public class QueueGroupSpaceBindingJob implements Job {
       }
     } while (firstBindingQueue!=null);
     LOG.info("End treating GroupSpaceBinding queue");
-  }
-  
-  private GroupSpaceBindingService getGroupBindingService() {
-    if(groupBindingService == null) {
-      groupBindingService = CommonsUtils.getService(GroupSpaceBindingService.class);
-    }
-    return groupBindingService;
   }
 
 }

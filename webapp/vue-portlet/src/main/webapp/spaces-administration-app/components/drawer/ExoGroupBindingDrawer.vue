@@ -36,7 +36,7 @@
               v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.spaceBindingForm.selectList')"
               icon
               class="rightIcon"
-              @click="showSelectGroupsTree = true">
+              @click="goToSelectGroups">
               <i class="uiIconSpaceBinding uiIconGroup"></i>
             </v-btn>
           </v-flex>
@@ -100,7 +100,7 @@
         <v-layout>
           <v-flex class="xs7"></v-flex>
           <button type="button" class="btn ml-2" @click="$emit('close')">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</button>
-          <button :disabled="!isAllowToSave" type="button" class="btn btn-primary ml-6" @click="$emit('openBindingModal')">
+          <button :disabled="!isAllowToSave" type="button" class="btn btn-primary ml-6" @click="$emit('openBindingModal', groups)">
             {{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.apply') }}
           </button>
         </v-layout>
@@ -264,6 +264,9 @@ export default {
       return `
         <div class="item">${escape(item.value)}</div>
       `;
+    },
+    goToSelectGroups() {
+      this.showSelectGroupsTree = true;
     },
     back() {
       this.showSelectGroupsTree = !this.showSelectGroupsTree;

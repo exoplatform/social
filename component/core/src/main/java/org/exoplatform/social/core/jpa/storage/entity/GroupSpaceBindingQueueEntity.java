@@ -18,10 +18,7 @@
 package org.exoplatform.social.core.jpa.storage.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,7 +28,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -53,11 +49,8 @@ public class GroupSpaceBindingQueueEntity implements Serializable {
   private long                        id;
 
   @ManyToOne
-  @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID", nullable = false)
-  private SpaceEntity                 space;
-
-  @Column(name = "GROUP_NAME")
-  private String                      group;
+  @JoinColumn(name = "GROUP_SPACE_BINDING_ID", referencedColumnName = "GROUP_SPACE_BINDING_ID", nullable = false)
+  private GroupSpaceBindingEntity groupSpaceBindingEntity;
   
   @Column(name = "ACTION")
   private String                      action;
@@ -70,22 +63,14 @@ public class GroupSpaceBindingQueueEntity implements Serializable {
     this.id = id;
   }
 
-  public SpaceEntity getSpace() {
-    return space;
+  public GroupSpaceBindingEntity getGroupSpaceBindingEntity() {
+    return groupSpaceBindingEntity;
   }
 
-  public void setSpace(SpaceEntity space) {
-    this.space = space;
+  public void setGroupSpaceBindingEntity(GroupSpaceBindingEntity groupSpaceBindingEntity) {
+    this.groupSpaceBindingEntity = groupSpaceBindingEntity;
   }
 
-  public String getGroup() {
-    return group;
-  }
-
-  public void setGroup(String group) {
-    this.group = group;
-  }
-  
   public String getAction() {
     return action;
   }

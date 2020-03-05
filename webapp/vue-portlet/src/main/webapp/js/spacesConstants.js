@@ -7,6 +7,7 @@ export const spacesConstants = {
   SOCIAL_USER_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/users/`,
   SOCIAL_SPACE_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/spaces`,
   SPACES_ADMINISTRATION_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/spacesAdministration`,
+  SPACE_GROUP_BINDING_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/spaceGroupBindings`,
   USER_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/users`,
   GROUP_API: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/groups`,
   SPACES_PER_PAGE: 30,

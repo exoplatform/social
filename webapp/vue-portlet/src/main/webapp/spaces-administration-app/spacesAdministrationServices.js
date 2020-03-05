@@ -1,18 +1,18 @@
 import { spacesConstants } from '../js/spacesConstants.js';
 
-export function getSpaces(){
+export function getSpaces() {
   return fetch(`${spacesConstants.SOCIAL_SPACE_API}?sort=date&order=desc&limit=${spacesConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
-export function searchSpaces(search){
+export function searchSpaces(search) {
   return fetch(`${spacesConstants.SOCIAL_SPACE_API}?q=${search}&sort=date&order=desc&limit=${spacesConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
-export function getSpacesPerPage(offset){
+export function getSpacesPerPage(offset) {
   return fetch(`${spacesConstants.SOCIAL_SPACE_API}?offset=${offset}&sort=date&order=desc&limit=${spacesConstants.SPACES_PER_PAGE}&returnSize=true`, {credentials: 'include'}).then(resp => resp.json());
 }
 
-export function deleteSpaceById(id){
+export function deleteSpaceById(id) {
   return fetch(`/rest/v1/social/spaces/${id}`, {
     credentials: 'include', 
     method: 'delete'});
@@ -37,7 +37,7 @@ export function getGroups(query) {
   return fetch(`${spacesConstants.GROUP_API}?q=${query}`, {credentials: 'include'}).then(resp => resp.json());
 }
 
-export function getSpacesAdministrationSetting(key){
+export function getSpacesAdministrationSetting(key) {
   return fetch(`${spacesConstants.SPACES_ADMINISTRATION_API}/permissions/${key}`, {
     headers: {
       'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ export function getSpacesAdministrationSetting(key){
   });
 }
 
-export function updateSpacesAdministrationSetting(key, value){
+export function updateSpacesAdministrationSetting(key, value) {
   return fetch(`${spacesConstants.SPACES_ADMINISTRATION_API}/permissions/${key}`, {
     headers: {
       'Content-Type': 'application/json'
@@ -62,6 +62,17 @@ export function updateSpacesAdministrationSetting(key, value){
     credentials: 'include',
     method: 'PUT',
     body: JSON.stringify(value)
+  });
+}
+
+export function saveGroupsSpaceBindings(spaceId, groupNames) {
+  return fetch(`${spacesConstants.SPACE_GROUP_BINDING_API}/saveGroupsSpaceBindings/${spaceId}`, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    method: 'POST',
+    body: JSON.stringify(groupNames)
   });
 }
 
