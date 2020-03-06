@@ -19,7 +19,6 @@ package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -74,20 +73,22 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
 
   @Override
   public List<UserSpaceBindingEntity> getUserBindings(Long spaceId, String userName) {
-    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findAllUserBindingsByUserAndSpace", UserSpaceBindingEntity.class);
+    TypedQuery<UserSpaceBindingEntity> query =
+                                             getEntityManager().createNamedQuery("SocUserSpaceBinding.findAllUserBindingsByUserAndSpace",
+                                                                                 UserSpaceBindingEntity.class);
     query.setParameter("spaceId", spaceId);
     query.setParameter("userName", userName);
     return query.getResultList();
   }
-  
+
   @Override
   public long countUserBindings(Long spaceId, String userName) {
     return (Long) getEntityManager().createNamedQuery("SocUserSpaceBinding.countAllUserBindingsByUserAndSpace")
-                                     .setParameter("userName", userName)
-                                     .setParameter("spaceId", spaceId)
-                                     .getSingleResult();
+                                    .setParameter("userName", userName)
+                                    .setParameter("spaceId", spaceId)
+                                    .getSingleResult();
   }
-  
+
   @Override
   public List<UserSpaceBindingEntity> findBoundUsersByBindingId(long bindingId) {
     TypedQuery<UserSpaceBindingEntity> query =
@@ -98,20 +99,15 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
   }
 
   @Override
-  public Boolean isUserBoundAndMemberBefore(Long spaceId, String userName) {
-    UserSpaceBindingEntity userSpaceBindingEntity;
+  public boolean isUserBoundAndMemberBefore(Long spaceId, String userName) {
     TypedQuery<UserSpaceBindingEntity> query =
                                              getEntityManager().createNamedQuery("SocUserSpaceBinding.isUserBoundAndMemberBefore",
                                                                                  UserSpaceBindingEntity.class);
     query.setParameter("spaceId", spaceId);
     query.setParameter("userName", userName);
+    // check on first binding if exists.
     query.setMaxResults(1);
-    try {
-      userSpaceBindingEntity = query.getSingleResult();
-    } catch (NoResultException ex) {
-      return null;
-    }
-    return userSpaceBindingEntity.isMemberBefore();
+    return query.getResultList().size() > 0;
   }
 
 }
