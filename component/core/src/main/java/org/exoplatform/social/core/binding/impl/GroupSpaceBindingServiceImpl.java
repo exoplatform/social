@@ -207,14 +207,14 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
     LOG.debug("List member binding :" + userName + " space:" + spaceId);
     return groupSpaceBindingStorage.getUserBindings(spaceId, userName);
   }
-  
+
   @Override
   public long countUserBindings(String spaceId, String userName) {
     LOG.debug("Count member binding :" + userName + " space:" + spaceId);
     return groupSpaceBindingStorage.countUserBindings(spaceId, userName);
 
   }
-  
+
   @Override
   public void saveGroupSpaceBindings(List<GroupSpaceBinding> groupSpaceBindings) {
     LOG.debug("Saving group space binding between spaceId: {} and groups: {}.",
@@ -262,17 +262,18 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
           userSpaceBinding.setUser(userId);
           // If user exists in space members before any binding set isMemberBefore to
           // true.
-          Boolean isBoundAndMemberBefore = isUserBoundAndMemberBefore(groupSpaceBinding.getSpaceId(), userId);
-          // If user is already bound.
-          if (isBoundAndMemberBefore != null) {
-            userSpaceBinding.setIsMemberBefore(isBoundAndMemberBefore);
-          } else {
+          boolean isUserAlreadyBound = countUserBindings(groupSpaceBinding.getSpaceId(), userId) > 0;
+          if (!isUserAlreadyBound) {
+            // If user is not already bound then check if is member of the space.
             userSpaceBinding.setIsMemberBefore(ArrayUtils.contains(members, userId));
+          } else {
+            // If user is already bound then check if is member before.
+            userSpaceBinding.setIsMemberBefore(isUserBoundAndMemberBefore(groupSpaceBinding.getSpaceId(), userId));
           }
           userSpaceBinding.setGroupBinding(groupSpaceBinding);
           userSpaceBindings.add(userSpaceBinding);
           spaceService.addMember(space, userId);
-          saveUserBindings(userSpaceBindings);
+          groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
         }
         offset += count;
         LOG.info("Binding process: Bound Users({})", offset);
@@ -283,7 +284,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
     }
   }
 
-  public Boolean isUserBoundAndMemberBefore(String spaceId, String userId) {
+  public boolean isUserBoundAndMemberBefore(String spaceId, String userId) {
     return groupSpaceBindingStorage.isUserBoundAndMemberBefore(spaceId, userId);
   }
 

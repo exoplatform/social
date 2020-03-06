@@ -150,12 +150,12 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   public List<UserSpaceBinding> getUserBindings(String spaceId, String userName) {
     return buildUserBindingListFromEntities(userSpaceBindingDAO.getUserBindings(Long.parseLong(spaceId), userName));
   }
-  
+
   @Override
   public long countUserBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException {
-    return userSpaceBindingDAO.countUserBindings(Long.parseLong(spaceId),userName);
+    return userSpaceBindingDAO.countUserBindings(Long.parseLong(spaceId), userName);
   }
-  
+
   @ExoTransactional
   public GroupSpaceBinding findGroupSpaceBindingById(long id) {
     return null;
@@ -167,7 +167,7 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   }
 
   @Override
-  public Boolean isUserBoundAndMemberBefore(String spaceId, String userId) {
+  public boolean isUserBoundAndMemberBefore(String spaceId, String userId) {
     return userSpaceBindingDAO.isUserBoundAndMemberBefore(Long.parseLong(spaceId), userId);
   }
 

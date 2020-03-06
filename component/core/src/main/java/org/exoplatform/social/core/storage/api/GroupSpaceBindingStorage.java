@@ -152,7 +152,7 @@ public interface GroupSpaceBindingStorage {
    * @return a List of UserSpaceBinding
    */
   List<UserSpaceBinding> getUserBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
-  
+
   /**
    * Count user's bindings of the space.
    *
@@ -181,12 +181,11 @@ public interface GroupSpaceBindingStorage {
   List<UserSpaceBinding> findBoundUsersByBindingId(long id) throws GroupSpaceBindingStorageException;
 
   /**
-   * Checks if user is already bound and returns true if is member of the space,
-   * false if not. else returns null.
+   * Checks if user is already bound and member of the space.
    * 
    * @param spaceId
    * @param userId
    * @return
    */
-  Boolean isUserBoundAndMemberBefore(String spaceId, String userId);
+  boolean isUserBoundAndMemberBefore(String spaceId, String userId);
 }

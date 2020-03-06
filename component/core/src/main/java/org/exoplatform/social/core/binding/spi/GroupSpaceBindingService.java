@@ -132,7 +132,7 @@ public interface GroupSpaceBindingService {
    * @return a List of UserSpaceBinding.
    */
   List<UserSpaceBinding> getUserBindings(String spaceId, String userName);
-  
+
   /**
    * Count user's bindings for the space.
    *
@@ -141,16 +141,15 @@ public interface GroupSpaceBindingService {
    * @return a List of UserSpaceBinding.
    */
   long countUserBindings(String spaceId, String userName);
-  
+
   /**
-   * Checks if user is already bound and returns true if is member of the space,
-   * false if not. else returns null.
+   * Checks if user is already bound and member of the space.
    * 
    * @param spaceId
    * @param userName
    * @return
    */
-  Boolean isUserBoundAndMemberBefore(String spaceId, String userName);
+  boolean isUserBoundAndMemberBefore(String spaceId, String userName);
 
   /**
    * Saves a list of group binding.

@@ -73,10 +73,11 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @return a List of UserSpaceBindingEntity
    */
   List<UserSpaceBindingEntity> getUserBindings(Long spaceId, String userName);
-  
+
   /**
    * Count user's bindings for this space
-   *  @param spaceId The space Id.
+   * 
+   * @param spaceId The space Id.
    * @param userName The space Id.
    * @return number UserSpaceBindingEntity
    */
@@ -91,12 +92,11 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
   List<UserSpaceBindingEntity> findBoundUsersByBindingId(long id);
 
   /**
-   * Checks if user is already bound and returns true if is member of the space,
-   * false if not. else returns null.
+   * Checks if user is already bound and member of the space.
    * 
    * @param spaceId
    * @param userId
    * @return
    */
-  Boolean isUserBoundAndMemberBefore(Long spaceId, String userId);
+  boolean isUserBoundAndMemberBefore(Long spaceId, String userId);
 }
