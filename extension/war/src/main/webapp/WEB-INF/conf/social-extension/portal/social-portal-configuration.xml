@@ -97,6 +97,49 @@
   </external-component-plugins>
 
   <external-component-plugins>
+    <target-component>org.exoplatform.portal.config.DynamicPortalLayoutService</target-component>
+    <component-plugin>
+      <name>space.layout.matcher</name>
+      <set-method>addDynamicLayoutMatcher</set-method>
+      <type>org.exoplatform.portal.config.DynamicPortalLayoutMatcherPlugin</type>
+      <description>Dynamic space layout matcher to use current site</description>
+      <priority>20</priority>
+      <init-params>
+        <value-param>
+          <name>enabled</name>
+          <description>Wheter the matcher is disabled or not</description>
+          <value>${exo.portal.dynamic.space.layout.enabled:true}</value>
+        </value-param>
+        <value-param>
+          <name>useCurrentPortalLayout</name>
+          <description>Wheter use current site layout for spaces or not</description>
+          <value>${exo.portal.dynamic.space.layout.useCurrentPortalLayout:true}</value>
+        </value-param>
+        <value-param>
+          <name>layoutTemplatePath</name>
+          <description>Dynamic space layout template path</description>
+          <value>${exo.portal.dynamic.space.layout.layoutTemplatePath:}</value>
+        </value-param>
+        <object-param>
+          <name>matcher</name>
+          <description>Dynamic space layout matcher</description>
+          <object type="org.exoplatform.social.core.space.impl.DynamicSpacePortalLayoutMatcher">
+            <field name="siteTypeRegex">
+              <string>group</string>
+            </field>
+            <field name="siteNameRegex">
+              <string>/spaces/.*</string>
+            </field>
+            <field name="spaceTemplateRegex">
+              <string>${exo.portal.dynamic.space.layout.spaceTemplateRegex:.*}</string>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
     <!-- The full qualified name of the UserPortalConfigService -->
     <target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>
     <component-plugin>
