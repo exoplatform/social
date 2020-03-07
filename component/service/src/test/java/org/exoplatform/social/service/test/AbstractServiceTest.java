@@ -90,10 +90,6 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
   protected void tearDown() throws Exception {
     restartTransaction();
 
-    deleteAllRelationships();
-    deleteAllSpaces();
-    deleteAllIdentitiesWithActivities();
-
     endSession();
     end();
   }
