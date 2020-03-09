@@ -102,6 +102,6 @@ public class EditActivityMailBuilderTest extends AbstractPluginTest {
         ctx.setNotificationInfos(list);
         Writer writer = new StringWriter();
         buildDigest(ctx, writer);
-        assertDigest(writer, "Notification.digest.one.EditActivityPluginedited activity");
+        assertDigest(writer, "Root Root edited activity:edited activity");
     }
 }

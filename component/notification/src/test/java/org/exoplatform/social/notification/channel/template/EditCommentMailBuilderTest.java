@@ -103,6 +103,6 @@ public class EditCommentMailBuilderTest extends AbstractPluginTest {
         ctx.setNotificationInfos(list);
         Writer writer = new StringWriter();
         buildDigest(ctx, writer);
-        assertDigest(writer, "Notification.digest.one.EditCommentPluginedited comment");
+        assertDigest(writer, "Demo exo edited comment:edited comment");
     }
 }
