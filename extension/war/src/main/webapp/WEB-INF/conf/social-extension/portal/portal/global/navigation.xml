@@ -26,6 +26,149 @@
   <page-nodes>
 
     <node>
+      <name>spaces</name>
+      <label>#{portal.global.spaces}</label>
+      <page-reference>portal::global::spaces</page-reference>
+    </node>
+
+    <node>
+      <name>connexions</name>
+      <label>#{portal.global.people}</label>
+      <page-reference>portal::global::people</page-reference>
+
+      <node>
+        <name>people</name>
+        <label>#{portal.global.people}</label>
+        <page-reference>portal::global::people</page-reference>
+      </node>
+
+      <node>
+        <name>network</name>
+        <label>#{portal.global.people}</label>
+        <page-reference>portal::global::connections</page-reference>
+      </node>
+
+      <node>
+        <name>receivedInvitations</name>
+        <label>#{portal.global.people}</label>
+        <page-reference>portal::global::invitations</page-reference>
+      </node>
+
+      <node>
+        <name>pendingRequests</name>
+        <label>#{portal.global.people}</label>
+        <page-reference>portal::global::requests</page-reference>
+      </node>
+    </node>
+
+    <node>
+      <name>activities</name>
+      <label>#{portal.global.activities}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::activities</page-reference>
+    </node>
+
+    <node>
+      <name>activity</name>
+      <label>#{portal.global.activity}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::activity</page-reference>
+    </node>
+
+    <node>
+      <name>profile</name>
+      <label>#{portal.global.profile}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::profile</page-reference>
+    </node>
+
+    <node>
+      <name>edit-profile</name>
+      <label>#{portal.global.edit-profile}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::edit-profile</page-reference>
+    </node>
+
+    <node>
+      <name>allNotifications</name>
+      <label>#{portal.global.allNotifications}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::allNotifications</page-reference>
+    </node>
+
+    <node>
+      <name>notifications</name>
+      <label>#{portal.global.notifications}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::notifications</page-reference>
+    </node>
+
+    <node>
+      <name>connections</name>
+      <label>#{portal.global.connections}</label>
+      <visibility>SYSTEM</visibility>
+      <node>
+        <name>all-people</name>
+        <label>#{portal.global.yours}</label>
+        <page-reference>portal::global::all-people</page-reference>
+      </node>
+
+      <node>
+        <name>network</name>
+        <label>#{portal.global.yours}</label>
+        <page-reference>portal::global::network</page-reference>
+      </node>
+
+      <node>
+        <name>receivedInvitations</name>
+        <label>#{portal.global.invitations}</label>
+        <page-reference>portal::global::receivedInvitations</page-reference>
+      </node>
+
+      <node>
+        <name>pendingRequests</name>
+        <label>#{portal.global.requests}</label>
+        <page-reference>portal::global::pendingRequests</page-reference>
+      </node>
+      <node>
+        <name>yours</name>
+        <label>#{portal.global.yours}</label>
+        <page-reference>portal::global::connections</page-reference>
+      </node>
+      <node>
+        <name>invitations</name>
+        <label>#{portal.global.invitations}</label>
+        <page-reference>portal::global::invitations</page-reference>
+      </node>
+      <node>
+        <name>requests</name>
+        <label>#{portal.global.requests}</label>
+        <page-reference>portal::global::requests</page-reference>
+      </node>
+    </node>
+
+    <node>
+      <name>all-spaces</name>
+      <label>#{portal.global.allSpaces}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::all-spaces</page-reference>
+    </node>
+
+    <node>
+      <name>invitationSpace</name>
+      <label>#{portal.global.invitationSpace}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::invitationSpace</page-reference>
+    </node>
+
+    <node>
+      <name>pendingSpace</name>
+      <label>#{portal.global.pendingSpace}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::pendingSpace</page-reference>
+    </node>
+
+    <node>
       <name>space-access</name>
       <label>#{portal.global.spaces}</label>
       <visibility>SYSTEM</visibility>
