@@ -7,7 +7,7 @@
         <i class="uiArrowBackIcon"></i>
       </v-list-item-icon>
       <v-list-item-content class="recentSpacesTitleLabel body-1" @click="showFilter=!showFilter">
-        {{ $t('homepage.spaces.recentVisited.tilte') }}
+        {{ $t('menu.spaces.recentSpaces') }}
       </v-list-item-content>
       <v-list-item-action class="recentSpacesTitleIcon my-2" @click="showFilter=!showFilter">
         <v-btn
@@ -50,7 +50,7 @@
           tile>
 
         <i class="uiPlusEmptyIcon"></i></v-list-item-avatar>
-        <v-list-item-content class="py-0 body-2 grey--text darken-4">{{ $t('homepage.spaces.recentVisited.createSpace') }}</v-list-item-content>
+        <v-list-item-content class="py-0 body-2 grey--text darken-4">{{ $t('menu.spaces.createSpace') }}</v-list-item-content>
       </v-list-item>
       <v-list-item
         v-for="(item,i) in itemsToShow"
@@ -73,7 +73,7 @@
         v-if="showButton"
         small
         depressed
-        @click="getSpacesPage(5)">{{ $t('homepage.spaces.recentVisited.showMore') }}</v-btn>
+        @click="getSpacesPage(5)">{{ $t('menu.spaces.showMore') }}</v-btn>
     </v-row>
   </v-container>
 </template>

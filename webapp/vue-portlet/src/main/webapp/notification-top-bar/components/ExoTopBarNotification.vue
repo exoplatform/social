@@ -148,16 +148,13 @@ export default {
 
     openDrawer() {
       this.drawerNotification = !this.drawerNotification;
-      $('body').addClass('open-notif-drawer');
       if(this.badge > 0) {
         notificationlAPI.updateNotification(null, 'resetNew');
         this.badge = 0;
       }
     },
-
     closeDrawer() {
       this.drawerNotification = !this.drawerNotification;
-      $('body').removeClass('open-notif-drawer');
     },
 
     navigateTo(pagelink) {

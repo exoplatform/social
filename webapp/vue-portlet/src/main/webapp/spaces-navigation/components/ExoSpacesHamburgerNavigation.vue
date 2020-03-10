@@ -4,7 +4,7 @@
       <v-list-item>
         <v-list-item-icon class="mb-2 mt-3 mr-6 titleIcon"><i class="uiIcon uiIconToolbarNavItem spacesIcon"></i></v-list-item-icon>
         <v-list-item-content class="subtitle-1 titleLabel">
-          {{ this.$t('homepage.spaces.title') }}
+          {{ $t('menu.spaces.lastVisitedSpaces') }}
         </v-list-item-content>
 
         <v-list-item-action class="my-0">
