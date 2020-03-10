@@ -1,5 +1,4 @@
 const path = require('path');
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
 let config = {
   context: path.resolve(__dirname, '.'),
@@ -10,33 +9,11 @@ let config = {
     spaceTemplates: './src/main/webapp/space-templates-app/main.js',
     spacesHamburgerMenu: './src/main/webapp/spaces-navigation/main.js',
     profileHamburgerMenu: './src/main/webapp/profile-navigation/main.js',
+    topBarLogo: './src/main/webapp/logo-top-bar/main.js',
+    topBarNotification: './src/main/webapp/notification-top-bar/main.js',
   },
   module: {
     rules: [
-      {
-        test: /\.css$/,
-        use: ['vue-style-loader', 'css-loader']
-      },
-      {
-        test: /\.less$/,
-        use: ExtractTextWebpackPlugin.extract({
-          fallback: 'vue-style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'less-loader',
-              options: {
-                sourceMap: true
-              }
-            }
-          ]
-        })
-      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -55,12 +32,9 @@ let config = {
     ]
   },
   externals: {
+    vue: 'Vue',
     vuetify: 'Vuetify',
   },
-  plugins: [
-    // we use ExtractTextWebpackPlugin to extract the css code on a css file
-    new ExtractTextWebpackPlugin('css/main.css')
-  ]
 };
 
 module.exports = config;
