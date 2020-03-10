@@ -29,15 +29,6 @@ import org.exoplatform.social.core.jpa.storage.entity.UserSpaceBindingEntity;
 public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingEntity, Long> implements UserSpaceBindingDAO {
 
   @Override
-  public List<UserSpaceBindingEntity> findUserBindingsBySpace(Long spaceId, String userName) {
-    TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserBindingsBySpace",
-                                                                                   UserSpaceBindingEntity.class);
-    query.setParameter("spaceId", spaceId);
-    query.setParameter("userName", userName);
-    return query.getResultList();
-  }
-
-  @Override
   public List<UserSpaceBindingEntity> findUserBindingsByGroup(String group, String userName) {
     TypedQuery<UserSpaceBindingEntity> query = getEntityManager().createNamedQuery("SocUserSpaceBinding.findUserBindingsByGroup",
                                                                                    UserSpaceBindingEntity.class);
@@ -72,7 +63,7 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
   }
 
   @Override
-  public List<UserSpaceBindingEntity> getUserBindings(Long spaceId, String userName) {
+  public List<UserSpaceBindingEntity> findUserSpaceBindingsBySpace(Long spaceId, String userName) {
     TypedQuery<UserSpaceBindingEntity> query =
                                              getEntityManager().createNamedQuery("SocUserSpaceBinding.findAllUserBindingsByUserAndSpace",
                                                                                  UserSpaceBindingEntity.class);

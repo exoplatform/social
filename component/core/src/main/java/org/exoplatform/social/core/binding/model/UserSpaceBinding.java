@@ -34,6 +34,14 @@ public class UserSpaceBinding {
   /** The group binding */
   private GroupSpaceBinding groupBinding;
 
+  public UserSpaceBinding() {
+  }
+
+  public UserSpaceBinding(String user, GroupSpaceBinding groupBinding) {
+    this.user = user;
+    this.groupBinding = groupBinding;
+  }
+
   public long getId() {
     return id;
   }

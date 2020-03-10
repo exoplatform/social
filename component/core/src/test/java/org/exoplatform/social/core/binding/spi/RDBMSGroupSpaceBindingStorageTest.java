@@ -38,28 +38,29 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 
 public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
 
-  private List<GroupSpaceBinding>  tearDownGroupbindingList = new ArrayList<>();
-  private List<GroupSpaceBindingQueue>  tearDownGroupbindingQueueList = new ArrayList<>();
+  private List<GroupSpaceBinding>      tearDownGroupbindingList      = new ArrayList<>();
 
-  private List<UserSpaceBinding>   tearDownUserbindingList  = new ArrayList<>();
+  private List<GroupSpaceBindingQueue> tearDownGroupbindingQueueList = new ArrayList<>();
 
-  private SpaceStorage             spaceStorage;
+  private List<UserSpaceBinding>       tearDownUserbindingList       = new ArrayList<>();
 
-  private IdentityStorage          identityStorage;
+  private SpaceStorage                 spaceStorage;
 
-  private GroupSpaceBindingStorage groupSpaceBindingStorage;
+  private IdentityStorage              identityStorage;
 
-  private Identity                 demo;
+  private GroupSpaceBindingStorage     groupSpaceBindingStorage;
 
-  private Identity                 mary;
+  private Identity                     demo;
 
-  private Identity                 jame;
+  private Identity                     mary;
 
-  private Identity                 root;
+  private Identity                     jame;
 
-  private Identity                 john;
+  private Identity                     root;
 
-  private String                   spaceId;
+  private Identity                     john;
+
+  private String                       spaceId;
 
   @Override
   protected void setUp() throws Exception {
@@ -143,16 +144,14 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    * @param id
    * @return an instance of space
    **/
-  private GroupSpaceBinding getGroupSpaceBindingInstance(long id,
-                                                         String spaceId,
-                                                         String group) {
+  private GroupSpaceBinding getGroupSpaceBindingInstance(long id, String spaceId, String group) {
     GroupSpaceBinding groupSpaceBinding = new GroupSpaceBinding();
     groupSpaceBinding.setId(id);
     groupSpaceBinding.setSpaceId(spaceId);
     groupSpaceBinding.setGroup(group);
     return groupSpaceBinding;
   }
-  
+
   /**
    * Gets an instance of GroupSpaceBindingQueue.
    *
@@ -171,7 +170,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    * @param id
    * @return an instance of space
    **/
-  private UserSpaceBinding getUserBindingInstance(long id, String userName,GroupSpaceBinding groupSpaceBinding) {
+  private UserSpaceBinding getUserBindingInstance(long id, String userName, GroupSpaceBinding groupSpaceBinding) {
     UserSpaceBinding userSpaceBinding = new UserSpaceBinding();
     userSpaceBinding.setId(id);
     userSpaceBinding.setUser(userName);
@@ -190,10 +189,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     int totalBindings = 5;
 
     for (int i = 1; i <= totalBindings; i++) {
-      GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(i,
-                                                                              spaceId,
-              "/platform/administrators"
-      );
+      GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(i, spaceId, "/platform/administrators");
       groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
       tearDownGroupbindingList.add(groupSpaceBinding);
     }
@@ -212,10 +208,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
   public void testFindUserBindings() throws Exception {
     int totalBindings = 5;
 
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
     for (int i = 1; i <= totalBindings; i++) {
@@ -236,16 +229,13 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    **/
 
   public void testSaveGroupBinding() throws Exception {
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
     assertEquals("groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(" + spaceId + ",'member') must return after creation: "
         + 1, 1, groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(spaceId).size());
   }
-  
+
   /**
    * Test
    * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#createGroupSpaceBindingQueue(GroupSpaceBindingQueue)}
@@ -275,10 +265,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    **/
 
   public void testSaveUserBinding() throws Exception {
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
     UserSpaceBinding userSpaceBinding = this.getUserBindingInstance(1, "john", groupSpaceBinding);
@@ -300,10 +287,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    **/
 
   public void testUpdateGroupBinding() throws Exception {
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
     groupSpaceBinding = this.getGroupSpaceBindingInstance(groupSpaceBinding.getId(), spaceId, "/platform/users");
@@ -322,10 +306,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    **/
 
   public void testDeleteGroupBinding() throws Exception {
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     groupSpaceBindingStorage.deleteGroupBinding(groupSpaceBinding.getId());
     assertEquals("groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(" + groupSpaceBinding.getId()
@@ -340,10 +321,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    **/
 
   public void testDeleteUserBinding() throws Exception {
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
     UserSpaceBinding userSpaceBinding = this.getUserBindingInstance(1, "john", groupSpaceBinding);
@@ -362,10 +340,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    **/
 
   public void testDeleteAllUserBindings() throws Exception {
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
     UserSpaceBinding userSpaceBinding = this.getUserBindingInstance(1, "john", groupSpaceBinding);
@@ -386,7 +361,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
 
   /**
    * Test
-   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#getUserBindings(String, String)}
+   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserSpaceBindingsBySpace(String, String)}
    *
    * @throws Exception
    **/
@@ -398,20 +373,21 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     UserSpaceBinding userSpaceBinding = this.getUserBindingInstance(1, "john", groupSpaceBinding);
     userSpaceBinding = groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
     tearDownUserbindingList.add(userSpaceBinding);
-    assertEquals("groupSpaceBindingStorage.getUserBindings(" + spaceId + ",'john') must return true ",
+    assertEquals("groupSpaceBindingStorage.findUserSpaceBindingsBySpace(" + spaceId + ",'john') must return true ",
                  true,
-                 groupSpaceBindingStorage.getUserBindings(spaceId, "john").size() > 0);
-    assertEquals("groupSpaceBindingStorage.getUserBindings(" + spaceId + ",'mary') must return false ",
+                 groupSpaceBindingStorage.findUserSpaceBindingsBySpace(spaceId, "john").size() > 0);
+    assertEquals("groupSpaceBindingStorage.findUserSpaceBindingsBySpace(" + spaceId + ",'mary') must return false ",
                  false,
-                 groupSpaceBindingStorage.getUserBindings(spaceId, "mary").size() > 0);
+                 groupSpaceBindingStorage.findUserSpaceBindingsBySpace(spaceId, "mary").size() > 0);
   }
+
   /**
    * Test
-   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#getUserBindings(String, String)}
+   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserSpaceBindingsBySpace(String, String)}
    *
    * @throws Exception
    **/
-  
+
   public void countUserBindings() throws Exception {
     GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
@@ -429,7 +405,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
 
   /**
    * Test
-   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserAllBindingsbyGroup(String)}
+   * {@link org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage#findUserAllBindingsByGroup(String)}
    *
    * @throws Exception
    **/
@@ -437,10 +413,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
   public void testfindUserAllBindingsbyGroupMembership() throws Exception {
     int totalBindings = 5;
 
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
 
@@ -465,10 +438,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
   public void testfindUserSpaceBindingsByGroup() throws Exception {
     int totalBindings = 5;
 
-    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1,
-                                                                            spaceId,
-            "/platform/administrators"
-    );
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
 

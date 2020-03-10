@@ -25,7 +25,7 @@
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td v-html="space.description"></td>
         <td class="center actionContainer" >
-          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" v-if="canBindGroupsAndSpaces" class="actionIcon" @click="openSpaceBindingDrawer(space.id, index, space.displayName)">
+          <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" v-if="canBindGroupsAndSpaces" class="actionIcon" @click="openSpaceBindingDrawer(space, index)">
             <i :class="{'bound': space.hasBindings}" class="uiIconSpaceBinding uiIconGroup"></i>
           </a>
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName,space.groupId)" class="actionIcon" target="_blank">
@@ -86,7 +86,7 @@
       temporary
       width="500"
       max-width="100vw">
-      <exo-group-binding-drawer :group-space-bindings="groupSpaceBindings" :space-id="spaceToBindId" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal" @openRemoveBindingModal="openRemoveBindingModal" />
+      <exo-group-binding-drawer :group-space-bindings="groupSpaceBindings" :space-to-bind="spaceToBind" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal" @openRemoveBindingModal="openRemoveBindingModal" />
     </v-navigation-drawer>
     <exo-modal 
       v-show="showConfirmMessageBindingModal"
@@ -108,7 +108,7 @@
       @modal-closed="closeRemoveBindingModal">
       <p>{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.removeBinding.confirmation', {0: groupPrettyName}) }}</p>
       <div class="uiAction uiActionBorder">
-        <div class="btn btn-primary" @click="confirmRemoveBinding">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.confirmation.confirm') }}</div>
+        <div class="btn btn-primary" @click="confirmRemoveBinding">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.removeBinding.confirm') }}</div>
         <div class="btn" @click="closeRemoveBindingModal">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</div>
       </div>
     </exo-modal>
@@ -131,7 +131,7 @@ export default {
       showConfirmMessageModal: false,
       spaces: [],
       spaceName: '',
-      spaceToBindId: null,
+      spaceToBind: null,
       spaceToBindIndex: null,
       spaceToDeleteId: null,
       spaceToDeleteIndex: null,
@@ -240,12 +240,12 @@ export default {
     closeModal(){
       this.showConfirmMessageModal = false;
     },
-    openSpaceBindingDrawer(spaceId, index, spaceName) {
-      this.spaceName = spaceName;
-      this.spaceToBindId = spaceId;
+    openSpaceBindingDrawer(space, index) {
+      this.spaceToBind = space;
+      this.spaceName = space.displayName;
       this.spaceToBindIndex = index;
       this.showGroupBindingForm = true;
-      spacesAdministrationServices.getGroupSpaceBindings(spaceId).then(data => {
+      spacesAdministrationServices.getGroupSpaceBindings(space.id).then(data => {
         this.groupSpaceBindings = data.groupSpaceBindings;
       });
     },
@@ -268,7 +268,7 @@ export default {
       this.showConfirmMessageRemoveBindingModal = false;
     },
     confirmBinding() {
-      spacesAdministrationServices.saveGroupsSpaceBindings(this.spaceToBindId, this.groupsToBind);
+      spacesAdministrationServices.saveGroupsSpaceBindings(this.spaceToBind.id, this.groupsToBind);
       this.showConfirmMessageBindingModal = false;
       this.goToBindingReports();
     },

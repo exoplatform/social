@@ -22,6 +22,7 @@ import java.util.List;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
+import org.exoplatform.social.core.space.model.Space;
 
 /**
  * Provides methods to manage the binding between a space and an organization
@@ -60,7 +61,7 @@ public interface GroupSpaceBindingService {
    * @param userName The space member's username.
    * @return The list of users binding for this space member.
    */
-  List<UserSpaceBinding> findUserBindingsBySpace(String spaceId, String userName);
+  List<UserSpaceBinding> findUserSpaceBindingsBySpace(String spaceId, String userName);
 
   /**
    * Get user bindings in space
@@ -106,7 +107,7 @@ public interface GroupSpaceBindingService {
    *
    * @param userSpaceBinding The user binding to be deleted.
    */
-  void deleteUserBinding(UserSpaceBinding userSpaceBinding);
+  void deleteUserBindingAndSpaceMembership(UserSpaceBinding userSpaceBinding);
 
   /**
    * Delete all group bindings for a specific space. When bindings is deleted, all
@@ -123,15 +124,6 @@ public interface GroupSpaceBindingService {
    * @param group The group Id.
    */
   void deleteAllSpaceBindingsByGroup(String group);
-
-  /**
-   * Gets user's bindings for the space.
-   *
-   * @param spaceId The space Id.
-   * @param userName The username of the member.
-   * @return a List of UserSpaceBinding.
-   */
-  List<UserSpaceBinding> getUserBindings(String spaceId, String userName);
 
   /**
    * Count user's bindings for the space.
@@ -195,4 +187,20 @@ public interface GroupSpaceBindingService {
    * @return
    */
   List<GroupSpaceBinding> getGroupSpaceBindingsFromQueueByAction(String action);
+
+  /**
+   * Save a user Binding given a space, a binding and a user name.
+   * 
+   * @param userId
+   * @param groupSpaceBinding
+   * @param space
+   */
+  void saveUserBinding(String userId, GroupSpaceBinding groupSpaceBinding, Space space);
+
+  /**
+   * Delete a user space binding.
+   * 
+   * @param userSpaceBinding
+   */
+  void deleteUserSpaceBinding(UserSpaceBinding userSpaceBinding);
 }
