@@ -27,9 +27,6 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
 @ExoEntity
 @Table(name = "SOC_USER_SPACE_BINDING")
 @NamedQueries({
-    @NamedQuery(name = "SocUserSpaceBinding.findUserBindingsBySpace", query = "SELECT userSpaceBinding "
-        + " FROM SocUserSpaceBinding userSpaceBinding"
-        + " WHERE userSpaceBinding.groupSpaceBinding.space.id = :spaceId and userSpaceBinding.user = :userName"),
     @NamedQuery(name = "SocUserSpaceBinding.findUserBindingsByGroup", query = "SELECT userSpaceBinding "
         + " FROM SocUserSpaceBinding userSpaceBinding"
         + " WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.group = :group"),

@@ -86,7 +86,7 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   @ExoTransactional
   public List<UserSpaceBinding> findUserSpaceBindingsBySpace(String spaceId,
                                                              String username) throws GroupSpaceBindingStorageException {
-    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserBindingsBySpace(Long.parseLong(spaceId), username));
+    return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserSpaceBindingsBySpace(Long.parseLong(spaceId), username));
   }
 
   @ExoTransactional
@@ -96,7 +96,7 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   }
 
   @ExoTransactional
-  public List<UserSpaceBinding> findUserAllBindingsbyGroup(String group) {
+  public List<UserSpaceBinding> findUserAllBindingsByGroup(String group) {
     return buildUserBindingListFromEntities(userSpaceBindingDAO.findUserAllBindingsByGroup(group));
   }
 
@@ -149,11 +149,6 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   @ExoTransactional
   public void deleteAllUserBindings(String userName) throws GroupSpaceBindingStorageException {
     userSpaceBindingDAO.deleteAllUserBindings(userName);
-  }
-
-  @ExoTransactional
-  public List<UserSpaceBinding> getUserBindings(String spaceId, String userName) {
-    return buildUserBindingListFromEntities(userSpaceBindingDAO.getUserBindings(Long.parseLong(spaceId), userName));
   }
 
   @Override

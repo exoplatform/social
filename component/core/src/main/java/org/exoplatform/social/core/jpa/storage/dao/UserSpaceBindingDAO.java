@@ -25,15 +25,6 @@ import org.exoplatform.social.core.jpa.storage.entity.UserSpaceBindingEntity;
 public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, Long> {
 
   /**
-   * Get user bindings for a specific space
-   *
-   * @param spaceId Id of the space
-   * @param userName Member in the space
-   * @return A list of group bindings
-   */
-  List<UserSpaceBindingEntity> findUserBindingsBySpace(Long spaceId, String userName);
-
-  /**
    * Get user bindings of a user in a space
    *
    * @param group the group
@@ -72,7 +63,7 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @param userName The space Id.
    * @return a List of UserSpaceBindingEntity
    */
-  List<UserSpaceBindingEntity> getUserBindings(Long spaceId, String userName);
+  List<UserSpaceBindingEntity> findUserSpaceBindingsBySpace(Long spaceId, String userName);
 
   /**
    * Count user's bindings for this space

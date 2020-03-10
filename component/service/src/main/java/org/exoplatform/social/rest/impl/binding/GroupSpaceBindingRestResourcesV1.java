@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
@@ -35,7 +35,9 @@ import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.GroupSpaceBindingRestResources;
 import org.exoplatform.social.rest.api.RestUtils;
-import org.exoplatform.social.rest.entity.*;
+import org.exoplatform.social.rest.entity.CollectionEntity;
+import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.rest.entity.GroupSpaceBindingEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 import io.swagger.annotations.*;
@@ -146,7 +148,16 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
                                                             .stream()
                                                             .map(groupSpaceBinding -> groupSpaceBinding.getGroup())
                                                             .collect(Collectors.toList());
-    // Get rid of already bound groups to the space
+    // Get bound groups to the space that are already removed bindings.
+    List<String> spaceRemovedBoundGroups =
+                                         groupSpaceBindingService.getGroupSpaceBindingsFromQueueByAction(GroupSpaceBindingQueue.ACTION_REMOVE)
+                                                                 .stream()
+                                                                 .filter(groupSpaceBinding -> groupSpaceBinding.getSpaceId()
+                                                                                                               .equals(spaceId))
+                                                                 .map(groupSpaceBinding -> groupSpaceBinding.getGroup())
+                                                                 .collect(Collectors.toList());
+    // Get rid of only bound groups to the space that are not of removed bindings.
+    spaceBoundGroups.removeAll(spaceRemovedBoundGroups);
     groupNames.removeAll(spaceBoundGroups);
     if (groupNames.size() == 0) {
       return Response.ok("Already bound!").build();

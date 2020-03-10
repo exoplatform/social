@@ -85,7 +85,7 @@ public interface GroupSpaceBindingStorage {
    * @param group the group
    * @return A list of group bindings
    */
-  List<UserSpaceBinding> findUserAllBindingsbyGroup(String group) throws GroupSpaceBindingStorageException;
+  List<UserSpaceBinding> findUserAllBindingsByGroup(String group) throws GroupSpaceBindingStorageException;
 
   /**
    * Saves a new binding.
@@ -142,16 +142,6 @@ public interface GroupSpaceBindingStorage {
    * @throws GroupSpaceBindingStorageException
    */
   void deleteAllUserBindings(String userName) throws GroupSpaceBindingStorageException;
-
-  /**
-   * Gets user's bindings of the space.
-   *
-   * @param spaceId The space Id.
-   * @param userName
-   * @throws GroupSpaceBindingStorageException
-   * @return a List of UserSpaceBinding
-   */
-  List<UserSpaceBinding> getUserBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
 
   /**
    * Count user's bindings of the space.
