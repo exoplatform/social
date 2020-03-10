@@ -157,6 +157,11 @@ public class Utils {
     return getUserIdentity(getOwnerRemoteId(), false);
   }
 
+  public static String getOwnerIdentityId() {
+    Identity identity = getOwnerIdentity();
+    return identity == null ? null : identity.getId();
+  }
+
   /**
    * Gets identity of viewer user (logged-in user). Do not load profile.
    *
@@ -165,6 +170,11 @@ public class Utils {
    */
   public static Identity getViewerIdentity() {
     return getUserIdentity(getViewerRemoteId(), false);
+  }
+
+  public static String getViewerIdentityId() {
+    Identity identity = getViewerIdentity();
+    return identity == null ? null : identity.getId();
   }
 
   /**

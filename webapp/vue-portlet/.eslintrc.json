@@ -12,6 +12,7 @@
     "globals": {
         "Vue": true,
         "Vuetify": true,
+        "VueI18n": true,
         "eXo": true,
         "$": true,
         "global": true,
