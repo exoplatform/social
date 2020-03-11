@@ -86,7 +86,7 @@
       temporary
       width="500"
       max-width="100vw">
-      <exo-group-binding-drawer :space-id="spaceToBindId" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal"/>
+      <exo-group-binding-drawer :group-space-bindings="groupSpaceBindings" :space-id="spaceToBindId" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal"/>
     </v-navigation-drawer>
     <exo-modal 
       v-show="showConfirmMessageBindingModal"
@@ -130,6 +130,7 @@ export default {
       maxVisibleButtons: 5,
       showConfirmMessageBindingModal : false,
       groupsToBind: [],
+      groupSpaceBindings: [],
       avatar : spacesConstants.DEFAULT_SPACE_AVATAR
     };
   },
@@ -224,11 +225,14 @@ export default {
     closeModal(){
       this.showConfirmMessageModal = false;
     },
-    openSpaceBindingDrawer(id, index, spaceName) {
+    openSpaceBindingDrawer(spaceId, index, spaceName) {
       this.spaceName = spaceName;
-      this.spaceToBindId = id;
+      this.spaceToBindId = spaceId;
       this.spaceToBindIndex = index;
       this.showGroupBindingForm = true;
+      spacesAdministrationServices.getGroupSpaceBindings(spaceId).then(data => {
+        this.groupSpaceBindings = data.groupSpaceBindings;
+      });
     },
     closeGroupBindingDrawer() {
       this.showGroupBindingForm = false;
@@ -241,10 +245,7 @@ export default {
       this.showConfirmMessageBindingModal = false;
     },
     confirmBinding() {
-      const groups = this.groupsToBind.map(group => {
-        return group.split(':')[1];
-      });
-      spacesAdministrationServices.saveGroupsSpaceBindings(this.spaceToBindId, groups);
+      spacesAdministrationServices.saveGroupsSpaceBindings(this.spaceToBindId, this.groupsToBind);
       this.showConfirmMessageBindingModal = false;
     }
   }

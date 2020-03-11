@@ -50,7 +50,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
 
   private GroupSpaceBindingService groupSpaceBindingService;
 
-  private UserACL userACL;
+  private UserACL                  userACL;
 
   public GroupSpaceBindingRestResourcesV1(GroupSpaceBindingService groupSpaceBindingService, UserACL userACL) {
     this.groupSpaceBindingService = groupSpaceBindingService;
@@ -61,18 +61,19 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
    * {@inheritDoc}
    */
   @GET
-  @Path("getSpaceBindings/{spaceId}")
   @RolesAllowed("administrators")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("{spaceId}")
   @ApiOperation(value = "Gets list of binding for a space.", httpMethod = "GET", response = Response.class, notes = "Returns a list of bindings in the following cases if the authenticated user is a member of space administrator group.")
   @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
       @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 400, message = "Invalid query input") })
   public Response getBindingsBySpaceId(@Context UriInfo uriInfo,
                                        @ApiParam(value = "Space id", required = true) @PathParam("spaceId") String spaceId,
-                                       @ApiParam(value = "Offset", required = false, defaultValue = "0") @QueryParam("offset") int offset,
-                                       @ApiParam(value = "Limit", required = false, defaultValue = "20") @QueryParam("limit") int limit,
+                                       @ApiParam(value = "Offset", defaultValue = "0") @QueryParam("offset") int offset,
+                                       @ApiParam(value = "Limit", defaultValue = "10") @QueryParam("limit") int limit,
                                        @ApiParam(value = "Returning the number of spaces found or not", defaultValue = "false") @QueryParam("returnSize") boolean returnSize) throws Exception {
 
-    if(!userACL.isSuperUser() && !userACL.isUserInGroup(userACL.getAdminGroups())) {
+    if (!userACL.isSuperUser() && !userACL.isUserInGroup(userACL.getAdminGroups())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
@@ -87,7 +88,10 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
       bindingEntities.add(bindingEntity.getDataEntity());
     }
 
-    CollectionEntity collectionBinding = new CollectionEntity(bindingEntities, EntityBuilder.GROUP_SPACE_BINDING_TYPE, offset, limit);
+    CollectionEntity collectionBinding = new CollectionEntity(bindingEntities,
+                                                              EntityBuilder.GROUP_SPACE_BINDING_TYPE,
+                                                              offset,
+                                                              limit);
     if (returnSize) {
       collectionBinding.setSize(bindingEntities.size());
     }
@@ -99,10 +103,10 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
    * {@inheritDoc}
    */
   @POST
+  @RolesAllowed("administrators")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("saveGroupsSpaceBindings/{spaceId}")
-  @RolesAllowed("administrators")
   @ApiOperation(value = "Save space group bindings", httpMethod = "POST", response = Response.class, notes = "This method update bindings for a specific space if the authenticated user is a spaces super manager")
   @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
       @ApiResponse(code = 500, message = "Internal server error due to data encoding") })
@@ -127,15 +131,15 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
    * {@inheritDoc}
    */
   @DELETE
-  @Path("{spaceId}/{spaceRole}")
   @RolesAllowed("administrators")
+  @Path("{bindingId}")
   @ApiOperation(value = "Deletes all the  binding by space/space role", httpMethod = "DELETE", response = Response.class, notes = "This method delete all the bindings in the following cases the authenticated user is a spaces super manager")
   @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
       @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 400, message = "Invalid query input") })
   public Response deleteSpaceBindings(@Context UriInfo uriInfo,
                                       @ApiParam(value = "spaceId", required = true) @PathParam("spaceId") String spaceId) throws Exception {
 
-    if(!userACL.isSuperUser() && !userACL.isUserInGroup(userACL.getAdminGroups())) {
+    if (!userACL.isSuperUser() && !userACL.isUserInGroup(userACL.getAdminGroups())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
     groupSpaceBindingService.deleteAllSpaceBindingsBySpace(spaceId);
