@@ -101,7 +101,7 @@ public class EntityBuilder {
   private static final String LINK                    = "Link";
 
   /** Groupe Space Binding */
-  public static final String  GROUP_SPACE_BINDING_TYPE = "groupSpaceBinding";
+  public static final String  GROUP_SPACE_BINDING_TYPE = "groupSpaceBindings";
 
   /**
    * Get a IdentityEntity from an identity in order to build a json object for the rest service
