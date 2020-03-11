@@ -10,7 +10,6 @@
         <v-list-item-action class="my-0">
           <i class="uiIcon uiArrowRightIcon" color="grey lighten-1"></i>
         </v-list-item-action>
-
       </v-list-item>
     </v-row>
     <v-row class="mx-0 spacesNavigationContent">
