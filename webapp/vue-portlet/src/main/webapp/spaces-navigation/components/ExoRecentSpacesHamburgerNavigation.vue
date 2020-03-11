@@ -2,7 +2,7 @@
   <v-container class="recentDrawer" flat>
     <v-flex class="filterSpaces">
       <v-list-item class="recentSpacesTitle">
-        <v-list-item-icon class="d-flex d-sm-none backToMenu">
+        <v-list-item-icon class="d-flex d-sm-none backToMenu" @click="closeMenu()">
           <i class="uiIcon uiArrowBackIcon"></i>
         </v-list-item-icon>
         <v-list-item-content v-if="showFilter" class="recentSpacesTitleLabel body-1">
@@ -59,12 +59,6 @@
 </template>
 <script>
 export default {
-  props: {
-    drawer: {
-      type: Object,
-      default: null
-    }
-  },
   data () {
     return {
       itemsToShow: 15,
@@ -74,6 +68,9 @@ export default {
     };
   },
   methods: {
+    closeMenu() {
+      this.$emit('close-menu');
+    },
     closeFilter() {
       this.keyword = '';
       this.showFilter = false;

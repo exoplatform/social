@@ -15,23 +15,20 @@
   </v-container>
 </template>
 <script>
+import RecentSpacesHamburgerNavigation from './ExoRecentSpacesHamburgerNavigation.vue';
+
 export default {
   data() {
     return {
       spaces : [],
       spacesLimit: 5,
-      drawer: null,
       secondLevelVueInstance: null,
     };
   },
   methods: {
     mountSecondLevel(parentId) {
       if (!this.secondLevelVueInstance) {
-        const VueHamburgerMenuItem = Vue.extend({
-          template: `
-            <exo-recent-spaces-hamburger-menu-navigation />
-          `,
-        });
+        const VueHamburgerMenuItem = Vue.extend(RecentSpacesHamburgerNavigation);
         const vuetify = this.vuetify;
         this.secondLevelVueInstance = new VueHamburgerMenuItem({
           i18n: new VueI18n({
@@ -39,13 +36,18 @@ export default {
             messages: this.$i18n.messages,
           }),
           vuetify,
+          el: parentId,
         });
-        this.secondLevelVueInstance.$mount(parentId);
       } else {
         const element = $(parentId)[0];
         element.innerHTML = '';
         element.appendChild(this.secondLevelVueInstance.$el);
       }
+      this.$nextTick().then(() => {
+        this.secondLevelVueInstance.$on('close-menu', () => {
+          this.$emit('close-second-level');
+        });
+      });
     },
     openDrawer() {
       this.$emit('open-second-level');
