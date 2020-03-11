@@ -50,6 +50,11 @@ public class SpaceRest {
   private String url;
   
   /**
+   * The link to access the space.
+   */
+  private String link;
+  
+  /**
    * The url of the space's avatar.
    */
   private String avatarUrl;
@@ -131,6 +136,14 @@ public class SpaceRest {
    */
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  public void setLink(String link) {
+    this.link = link;
+  }
+
+  public String getLink() {
+    return link;
   }
 
   /**

@@ -1,9 +1,11 @@
 import ExoSpacesHamburgerNavigation from './components/ExoSpacesHamburgerNavigation.vue';
 import ExoRecentSpacesHamburgerNavigation from './components/ExoRecentSpacesHamburgerNavigation.vue';
+import ExoSpacesNavigationContent from './components/ExoSpacesNavigationContent.vue';
 
 const components = {
   'exo-spaces-hamburger-menu-navigation': ExoSpacesHamburgerNavigation,
   'exo-recent-spaces-hamburger-menu-navigation': ExoRecentSpacesHamburgerNavigation,
+  'exo-spaces-navigation-content': ExoSpacesNavigationContent,
 };
 
 for(const key in components) {
