@@ -13,7 +13,7 @@
             <v-btn
               icon
               class="rightIcon"
-              @click="$emit('close')">
+              @click="closeDrawer">
               <v-icon 
                 large
                 class="closeIcon">
@@ -41,7 +41,7 @@
             </v-btn>
           </v-flex>
         </v-layout>
-        <v-layout column>
+        <v-layout v-if="groupSpaceBindings.length > 0" column>
           <v-flex>
             <span class="subtitle-1">
               {{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.boundGroups') }}
@@ -50,38 +50,12 @@
           <v-flex class="boundGroups">
             <v-list flat subheader dense>
               <v-list-item-group>
-                <div v-for="i in items" :key="i">
+                <div v-for="(binding, index) in groupSpaceBindings" :key="index">
                   <v-list-item>
                     <v-list-item-content>
-                      *:/platform/users {{ i }}
+                      {{ binding.group }}
                     </v-list-item-content>
                     <v-list-item-action class="delete">
-                      <v-btn
-                        small
-                        icon
-                        class="rightIcon">
-                        <i class="uiIconDeleteUser uiIconLightGray"></i>
-                      </v-btn>
-                    </v-list-item-action>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      *:/organization/employees {{ i }}
-                    </v-list-item-content>
-                    <v-list-item-action class="delete">
-                      <v-btn
-                        small
-                        icon
-                        class="rightIcon">
-                        <i class="uiIconDeleteUser uiIconLightGray"></i>
-                      </v-btn>
-                    </v-list-item-action>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      *:/platform {{ i }}
-                    </v-list-item-content>
-                    <v-list-item-action absolute class="delete">
                       <v-btn
                         small
                         icon
@@ -99,7 +73,7 @@
       <v-card-actions absolute class="drawerActions">
         <v-layout>
           <v-flex class="xs7"></v-flex>
-          <button type="button" class="btn ml-2" @click="$emit('close')">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</button>
+          <button type="button" class="btn ml-2" @click="cancelBinding">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</button>
           <button :disabled="!isAllowToSave" type="button" class="btn btn-primary ml-6" @click="$emit('openBindingModal', groups)">
             {{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.apply') }}
           </button>
@@ -134,7 +108,7 @@
           <v-btn
             icon
             class="rightIcon"
-            @click="$emit('close')">
+            @click="cancelBinding">
             <v-icon 
               large
               class="closeIcon">
@@ -155,6 +129,10 @@ export default {
     spaceId: {
       type: String,
       default: null,
+    },
+    groupSpaceBindings: {
+      type: Array,
+      default: null,
     }
   },
   data() {
@@ -162,7 +140,6 @@ export default {
       textAreaValue : '',
       groups: [],
       showSelectGroupsTree : false,
-      items: [1],
     };
   },
   computed : {
@@ -192,7 +169,7 @@ export default {
           valueField: 'text',
           labelField: 'text',
           searchField: ['text'],
-          closeAfterSelect: true,
+          closeAfterSelect: false,
           dropdownParent: 'body',
           hideSelected: true,
           placeholder:`@ ${this.$t('social.spaces.administration.manageSpaces.spaceBindingForm.textField.placeHolder')}`,
@@ -216,9 +193,9 @@ export default {
         suggesterContainer.suggester(suggesterData);
         $('#add-groups')[0].selectize.clear();
         if(this.groups && this.groups !== null) {
-          for(const permission of this.groups) {
-            suggesterContainer[0].selectize.addOption({text: permission});
-            suggesterContainer[0].selectize.addItem(permission);
+          for(const group of this.groups) {
+            suggesterContainer[0].selectize.addOption({text: group});
+            suggesterContainer[0].selectize.addItem(group);
           }
         }
       }
@@ -237,7 +214,6 @@ export default {
       for(let i=this.groups.length-1; i>=0; i--) {
         if(this.groups[i] === item) {
           this.groups.splice(i, 1);
-          suggesterContainer[0].selectize.removeOption(item);
           suggesterContainer[0].selectize.removeItem(item);
         }
       }
@@ -252,8 +228,8 @@ export default {
         for(const group of data) {
           groups.push({
             avatarUrl: null,
-            text: `*:${group.id}`,
-            value: `*:${group.id}`,
+            text: group.id,
+            value: group.id,
             type: 'group'
           });
         }
@@ -270,6 +246,25 @@ export default {
     },
     back() {
       this.showSelectGroupsTree = !this.showSelectGroupsTree;
+    },
+    closeDrawer() {
+      this.groupSpaceBindings = null;
+      this.$emit('close');
+    },
+    cancelBinding() {
+      this.groups = [];
+      let items;
+      const selectizeInput = document.getElementById('GroupBindingForm').getElementsByClassName('has-items')[0];
+      if (selectizeInput && selectizeInput !== null) {
+        items = selectizeInput.getElementsByClassName('item');
+        if (items) {
+          Array.prototype.forEach.call(items, function (item) {
+            item.remove();
+          });
+        }
+      }
+      this.initSuggesterGroupsToBind();
+      this.$emit('close');
     }
   }
 };
