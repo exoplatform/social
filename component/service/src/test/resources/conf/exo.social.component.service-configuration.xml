@@ -84,6 +84,106 @@
     </init-params>
   </component>
 
+  <component>
+    <type>org.exoplatform.web.WebAppController</type>
+    <init-params>
+      <value-param>
+        <name>controller.config</name>
+        <value>target/test-classes/conf/controller.xml</value>
+      </value-param>
+    </init-params>
+  </component>
+
+
+  <component>
+    <type>org.exoplatform.web.url.URLFactoryService</type>
+    <component-plugins>
+      <component-plugin>
+        <name>navigation.urlfactory.plugin</name>
+        <set-method>addPlugin</set-method>
+        <type>org.exoplatform.web.url.navigation.NodeURLFactoryPlugin</type>
+      </component-plugin>
+      <component-plugin>
+        <name>navigation.urlfactory.plugin</name>
+        <set-method>addPlugin</set-method>
+        <type>org.exoplatform.portal.url.component.ComponentURLFactoryPlugin</type>
+      </component-plugin>
+      <component-plugin>
+        <name>navigation.urlfactory.plugin</name>
+        <set-method>addPlugin</set-method>
+        <type>org.exoplatform.web.url.simple.SimpleURLFactoryPlugin</type>
+      </component-plugin>
+    </component-plugins>
+  </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.web.WebAppController</target-component>
+    <component-plugin>
+      <name>UploadHandler</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.web.handler.UploadHandler</type>
+    </component-plugin>
+    <component-plugin>
+      <name>DownloadHandler</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.web.handler.DownloadHandler</type>
+    </component-plugin>
+    <component-plugin>
+      <name>PortalRequestHandler</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.portal.application.PortalRequestHandler</type>
+    </component-plugin>
+    <component-plugin>
+      <name>LegacyRequestHandler</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.portal.application.LegacyRequestHandler</type>
+    </component-plugin>
+    <component-plugin>
+      <name>DefaultRequestHandler</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.portal.application.DefaultRequestHandler</type>
+    </component-plugin>
+    <component-plugin>
+      <name>ScriptRequestHandler</name>
+      <set-method>register</set-method>
+      <type>org.gatein.portal.controller.resource.ResourceRequestHandler</type>
+    </component-plugin>
+    <component-plugin>
+      <name>SkinRequestHandler</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.portal.resource.SkinResourceRequestHandler</type>
+    </component-plugin>
+    <component-plugin>
+      <name>StaticResourceRequestHandler</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.portal.application.StaticResourceRequestHandler</type>
+    </component-plugin>
+    <component-plugin>
+      <name>RedirectRequestHandler</name>
+      <set-method>register</set-method>
+      <type>org.gatein.web.redirect.RedirectRequestHandler</type>
+      <init-params> <!--browser.detection.path-->
+        <value-param>
+          <name>browser.detection.path</name>
+          <description>Where the device detection page is located with respect to the portal web application
+          </description>
+          <value>/device/detection.jsp</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>StandaloneAppRequestHandler</name>
+      <set-method>register</set-method>
+      <type>org.exoplatform.portal.application.StandaloneAppRequestHandler</type>
+      <init-params>
+        <value-param>
+          <name>webui.configuration</name>
+          <value>app:/WEB-INF/standalone-webui-configuration.xml</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
   <external-component-plugins>
       <target-component>org.exoplatform.services.rest.impl.RequestHandlerImpl</target-component>
       <component-plugin>
