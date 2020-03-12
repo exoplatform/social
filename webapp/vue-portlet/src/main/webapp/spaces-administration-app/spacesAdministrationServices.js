@@ -80,8 +80,8 @@ export function getGroupSpaceBindings(spaceId) {
   return fetch(`${spacesConstants.SPACE_GROUP_BINDING_API}/${spaceId}`, {credentials: 'include'}).then(resp => resp.json());
 }
 
-export function removeBindingId(bindingId) {
-  return fetch(`${spacesConstants.SPACE_GROUP_BINDING_API}/${bindingId}`, {
+export function removeBinding(bindingId) {
+  return fetch(`${spacesConstants.SPACE_GROUP_BINDING_API}/removeGroupSpaceBinding/${bindingId}`, {
     credentials: 'include',
     method: 'delete'});
 }

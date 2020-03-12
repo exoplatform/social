@@ -86,7 +86,7 @@
       temporary
       width="500"
       max-width="100vw">
-      <exo-group-binding-drawer :group-space-bindings="groupSpaceBindings" :space-id="spaceToBindId" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal"/>
+      <exo-group-binding-drawer :group-space-bindings="groupSpaceBindings" :space-id="spaceToBindId" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal" @openRemoveBindingModal="openRemoveBindingModal" />
     </v-navigation-drawer>
     <exo-modal 
       v-show="showConfirmMessageBindingModal"
@@ -98,6 +98,18 @@
       <div class="uiAction uiActionBorder">
         <div class="btn btn-primary" @click="confirmBinding">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.confirmation.confirm') }}</div>
         <div class="btn" @click="closeBindingModal">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</div>
+      </div>
+    </exo-modal>
+    <exo-modal
+      v-show="showConfirmMessageRemoveBindingModal"
+      :title="$t('social.spaces.administration.manageSpaces.spaceBindingForm.confirmation.title')"
+      :display-close="false"
+      class="bindingModal"
+      @modal-closed="closeRemoveBindingModal">
+      <p>{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.removeBinding.confirmation', {0: groupPrettyName}) }}</p>
+      <div class="uiAction uiActionBorder">
+        <div class="btn btn-primary" @click="confirmRemoveBinding">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.confirmation.confirm') }}</div>
+        <div class="btn" @click="closeRemoveBindingModal">{{ $t('social.spaces.administration.manageSpaces.spaceBindingForm.cancel') }}</div>
       </div>
     </exo-modal>
   </div>
@@ -129,8 +141,11 @@ export default {
       maxVisiblePagesButtons: 3,
       maxVisibleButtons: 5,
       showConfirmMessageBindingModal : false,
+      showConfirmMessageRemoveBindingModal: false,
       groupsToBind: [],
       groupSpaceBindings: [],
+      binding: {},
+      groupPrettyName: '',
       avatar : spacesConstants.DEFAULT_SPACE_AVATAR
     };
   },
@@ -217,7 +232,7 @@ export default {
       return spacesAdministrationServices.getSpaceLinkSetting(spaceDisplayName,groupId);
     },
     searchSpaces(){
-      spacesAdministrationServices.searchSpaces(this.searchText).then(data =>{
+      spacesAdministrationServices.searchSpaces(this.searchText).then(data => {
         this.spaces = data.spaces;
         this.totalPages = Math.ceil(data.size / spacesConstants.SPACES_PER_PAGE);
       });
@@ -241,14 +256,40 @@ export default {
       this.groupsToBind = groups;
       this.showConfirmMessageBindingModal = true;
     },
+    openRemoveBindingModal(binding) {
+      this.binding = binding;
+      this.groupPrettyName = this.renderGroupName(binding.group);
+      this.showConfirmMessageRemoveBindingModal = true;
+    },
     closeBindingModal() {
       this.showConfirmMessageBindingModal = false;
+    },
+    closeRemoveBindingModal() {
+      this.showConfirmMessageRemoveBindingModal = false;
     },
     confirmBinding() {
       spacesAdministrationServices.saveGroupsSpaceBindings(this.spaceToBindId, this.groupsToBind);
       this.showConfirmMessageBindingModal = false;
+      this.goToBindingReports();
+    },
+    confirmRemoveBinding() {
+      spacesAdministrationServices.removeBinding(this.binding.id);
+      this.showConfirmMessageRemoveBindingModal = false;
+      this.goToBindingReports();
+    },
+    goToBindingReports() {
+      this.showGroupBindingForm = false;
+      this.$emit('bindingReports');
+      this.navigateTo('g/:platform:users/spacesAdministration#bindingReports');
+    },
+    navigateTo(pagelink) {
+      location.href=`${ eXo.env.portal.context }/${ pagelink }` ;
+    },
+    renderGroupName(groupName) {
+      let groupPrettyName = groupName.slice(groupName.lastIndexOf('/') + 1, groupName.length);
+      groupPrettyName = groupPrettyName.charAt(0).toUpperCase() + groupPrettyName.slice(1);
+      return `${groupPrettyName} (${groupName})`;
     }
   }
 };
 </script>
-

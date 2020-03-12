@@ -18,9 +18,25 @@
 package org.exoplatform.social.core.jpa.storage.dao;
 
 import org.exoplatform.commons.api.persistence.GenericDAO;
+import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingEntity;
 import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingQueueEntity;
+
+import java.util.List;
 
 public interface GroupSpaceBindingQueueDAO extends GenericDAO<GroupSpaceBindingQueueEntity, Long> {
 
+  /**
+   * Gets first GroupSpaceBindingQueue in the queue.
+   * 
+   * @return
+   */
   GroupSpaceBindingQueueEntity findFirstGroupSpaceBindingQueue();
+
+  /**
+   * Gets GroupSpaceBindings by action from the queue.
+   * 
+   * @param action
+   * @return
+   */
+  List<GroupSpaceBindingEntity> getGroupSpaceBindingsFromQueueByAction(String action);
 }

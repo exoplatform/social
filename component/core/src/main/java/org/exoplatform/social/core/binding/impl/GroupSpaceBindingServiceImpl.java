@@ -156,6 +156,8 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
     for (UserSpaceBinding userSpaceBinding : groupSpaceBindingStorage.findUserAllBindingsbyGroup(groupSpaceBinding.getGroup())) {
       deleteUserBinding(userSpaceBinding);
     }
+    // The deletion of the groupSpaceBinding will also remove it from the
+    // groupSpaceBindingQueue.
     groupSpaceBindingStorage.deleteGroupBinding(groupSpaceBinding.getId());
   }
 
@@ -291,6 +293,16 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   @Override
   public void deleteFromBindingQueue(GroupSpaceBindingQueue bindingQueue) {
     groupSpaceBindingStorage.deleteGroupBindingQueue(bindingQueue.getId());
+  }
+
+  @Override
+  public GroupSpaceBinding findGroupSpaceBindingById(String bindingId) {
+    return groupSpaceBindingStorage.findGroupSpaceBindingById(bindingId);
+  }
+
+  @Override
+  public List<GroupSpaceBinding> getGroupSpaceBindingsFromQueueByAction(String action) {
+    return groupSpaceBindingStorage.getGroupSpaceBindingsFromQueueByAction(action);
   }
 
 }

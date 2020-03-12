@@ -164,14 +164,6 @@ public interface GroupSpaceBindingStorage {
   long countUserBindings(String spaceId, String userName) throws GroupSpaceBindingStorageException;
 
   /**
-   * Get GroupSpaceBinding by id
-   * 
-   * @param id
-   * @return
-   */
-  GroupSpaceBinding findGroupSpaceBindingById(long id) throws GroupSpaceBindingStorageException;
-
-  /**
    * Get a list containing UserSpaceBinding of a binding.
    * 
    * @param id
@@ -188,4 +180,20 @@ public interface GroupSpaceBindingStorage {
    * @return
    */
   boolean isUserBoundAndMemberBefore(String spaceId, String userId);
+
+  /**
+   * Gets GroupSpaceBinding by Id.
+   * 
+   * @param bindingId
+   * @return
+   */
+  GroupSpaceBinding findGroupSpaceBindingById(String bindingId);
+
+  /**
+   * Gets GroupSpaceBindings by action from the queue.
+   * 
+   * @param action
+   * @return
+   */
+  List<GroupSpaceBinding> getGroupSpaceBindingsFromQueueByAction(String action);
 }
