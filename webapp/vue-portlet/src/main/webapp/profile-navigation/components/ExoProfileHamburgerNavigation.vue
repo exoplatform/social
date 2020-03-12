@@ -3,7 +3,7 @@
     <v-row class="accountTitleWrapper mx-0">
       <v-list-item
         class="accountTitleItem py-3 "
-        @click="navigateTo('profile')">
+        :href="PROFILE_URI">
         <v-list-item-avatar size="44" class="mr-3 mt-0 mb-0 elevation-1">
           <v-img :src="avatar"/>
         </v-list-item-avatar>
@@ -19,8 +19,9 @@
 export default {
   data() {
     return {
-      IDENTITY_REST_API_URI: '/portal/rest/v1/social/identities/',
-      avatar: `/portal/rest/v1/social/users/${eXo.env.portal.userName}/avatar`,
+      PROFILE_URI: `${eXo.env.portal.context}/${eXo.env.portal.portalName}/profile`,
+      IDENTITY_REST_API_URI: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/identities/${eXo.env.portal.userIdentityId}`,
+      avatar: `${eXo.env.portal.context}/${eXo.env.portal.rest}/v1/social/users/${eXo.env.portal.userName}/avatar`,
       profile: null,
     };
   },
@@ -33,7 +34,7 @@ export default {
     },
   },
   created() {
-    fetch(`${this.IDENTITY_REST_API_URI}${eXo.env.portal.userIdentityId}`, {
+    fetch(this.IDENTITY_REST_API_URI, {
       method: 'GET',
       credentials: 'include',
     })
