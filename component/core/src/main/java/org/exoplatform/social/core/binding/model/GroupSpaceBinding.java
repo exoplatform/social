@@ -17,8 +17,6 @@
 
 package org.exoplatform.social.core.binding.model;
 
-import java.util.List;
-
 /**
  * Group Binding Model (between space ang organization group)
  */

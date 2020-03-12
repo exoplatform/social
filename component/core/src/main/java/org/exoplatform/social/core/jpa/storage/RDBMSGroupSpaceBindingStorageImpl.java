@@ -128,7 +128,12 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
 
   @ExoTransactional
   public void deleteGroupBinding(long id) throws GroupSpaceBindingStorageException {
-    groupSpaceBindingDAO.delete(groupSpaceBindingDAO.find(id));
+    GroupSpaceBindingEntity bindingEntity = groupSpaceBindingDAO.find(id);
+    if (bindingEntity != null) {
+      groupSpaceBindingDAO.delete(bindingEntity);
+    } else {
+      LOG.warn("The GroupSpaceBinding's {} not found.", id);
+    }
   }
 
   @ExoTransactional
@@ -156,11 +161,6 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     return userSpaceBindingDAO.countUserBindings(Long.parseLong(spaceId), userName);
   }
 
-  @ExoTransactional
-  public GroupSpaceBinding findGroupSpaceBindingById(long id) {
-    return null;
-  }
-
   @Override
   public List<UserSpaceBinding> findBoundUsersByBindingId(long id) {
     return buildUserBindingListFromEntities(userSpaceBindingDAO.findBoundUsersByBindingId(id));
@@ -169,6 +169,18 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
   @Override
   public boolean isUserBoundAndMemberBefore(String spaceId, String userId) {
     return userSpaceBindingDAO.isUserBoundAndMemberBefore(Long.parseLong(spaceId), userId);
+  }
+
+  @Override
+  public GroupSpaceBinding findGroupSpaceBindingById(String bindingId) {
+    GroupSpaceBindingEntity entity;
+    entity = groupSpaceBindingDAO.find(Long.parseLong(bindingId));
+    return fillGroupBindingFromEntity(entity);
+  }
+
+  @Override
+  public List<GroupSpaceBinding> getGroupSpaceBindingsFromQueueByAction(String action) {
+    return buildGroupBindingListFromEntities(groupSpaceBindingQueueDAO.getGroupSpaceBindingsFromQueueByAction(action));
   }
 
   /**

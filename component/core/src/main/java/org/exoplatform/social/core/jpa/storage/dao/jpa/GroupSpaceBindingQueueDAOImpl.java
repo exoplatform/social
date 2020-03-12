@@ -19,10 +19,12 @@ package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingQueueDAO;
+import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingEntity;
 import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingQueueEntity;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class GroupSpaceBindingQueueDAOImpl extends GenericDAOJPAImpl<GroupSpaceBindingQueueEntity, Long>
     implements GroupSpaceBindingQueueDAO {
@@ -38,5 +40,14 @@ public class GroupSpaceBindingQueueDAOImpl extends GenericDAOJPAImpl<GroupSpaceB
     } catch (NoResultException ex) {
       return null;
     }
+  }
+
+  @Override
+  public List<GroupSpaceBindingEntity> getGroupSpaceBindingsFromQueueByAction(String action) {
+    TypedQuery<GroupSpaceBindingEntity> query =
+                                              getEntityManager().createNamedQuery("SocGroupSpaceBindingQueue.getGroupSpaceBindingsFromQueueByAction",
+                                                                                  GroupSpaceBindingEntity.class);
+    query.setParameter("action", action);
+    return query.getResultList();
   }
 }

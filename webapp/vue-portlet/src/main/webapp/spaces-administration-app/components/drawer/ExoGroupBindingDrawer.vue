@@ -53,13 +53,14 @@
                 <div v-for="(binding, index) in groupSpaceBindings" :key="index">
                   <v-list-item>
                     <v-list-item-content>
-                      {{ binding.group }}
+                      {{ renderGroupName(binding.group) }}
                     </v-list-item-content>
                     <v-list-item-action class="delete">
                       <v-btn
                         small
                         icon
-                        class="rightIcon">
+                        class="rightIcon"
+                        @click="$emit('openRemoveBindingModal', binding)">
                         <i class="uiIconDeleteUser uiIconLightGray"></i>
                       </v-btn>
                     </v-list-item-action>
@@ -108,7 +109,7 @@
           <v-btn
             icon
             class="rightIcon"
-            @click="cancelBinding">
+            @click="closeDrawer">
             <v-icon 
               large
               class="closeIcon">
@@ -226,12 +227,14 @@ export default {
       spacesAdministrationServices.getGroups(query).then(data => {
         const groups = [];
         for(const group of data) {
-          groups.push({
-            avatarUrl: null,
-            text: group.id,
-            value: group.id,
-            type: 'group'
-          });
+          if (!group.id.startsWith('/spaces')) {
+            groups.push({
+              avatarUrl: null,
+              text: group.id,
+              value: group.id,
+              type: 'group'
+            });
+          }
         }
         callback(groups);
       });
@@ -248,7 +251,7 @@ export default {
       this.showSelectGroupsTree = !this.showSelectGroupsTree;
     },
     closeDrawer() {
-      this.groupSpaceBindings = null;
+      this.showSelectGroupsTree = false;
       this.$emit('close');
     },
     cancelBinding() {
@@ -265,6 +268,11 @@ export default {
       }
       this.initSuggesterGroupsToBind();
       this.$emit('close');
+    },
+    renderGroupName(groupName) {
+      let groupPrettyName = groupName.slice(groupName.lastIndexOf('/') + 1, groupName.length);
+      groupPrettyName = groupPrettyName.charAt(0).toUpperCase() + groupPrettyName.slice(1);
+      return `${groupPrettyName} (${groupName})`;
     }
   }
 };
