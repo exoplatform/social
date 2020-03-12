@@ -69,12 +69,16 @@
                 small
                 class="text-uppercase caption markAllAsRead"
                 color="primary"
-                @click="markAllAsRead()">{{ $t('UIIntranetNotificationsPortlet.label.MarkAllAsRead') }}</v-btn>
+                @click="markAllAsRead()">
+                {{ $t('UIIntranetNotificationsPortlet.label.MarkAllAsRead') }}
+              </v-btn>
               <v-btn 
                 class="text-uppercase caption primary--text seeAllNotif"
                 outlined 
                 small
-                @click="navigateTo('allNotifications/')">{{ $t('UIIntranetNotificationsPortlet.label.seeAll') }}</v-btn>
+                @click="navigateTo('allNotifications/')">
+                {{ $t('UIIntranetNotificationsPortlet.label.seeAll') }}
+              </v-btn>
             </v-card>
           </v-row>
         </v-navigation-drawer>
@@ -163,13 +167,15 @@ export default {
     applyActions(item) {
       $(`#${item}`).find('li').each(function () {
         const dataLink = $(this).find('.contentSmall:first').data('link');
-        const linkId = dataLink.split('/portal/intranet/');
+        dataLink.replace('/portal/intranet', `${eXo.env.portal.context}/${eXo.env.portal.portalName}`);
+        const linkId = dataLink.split(`${eXo.env.portal.context}/${eXo.env.portal.portalName}/`);
         const dataId = $(this).data('id').toString();
 
         // ----------------- Mark as read
 
         $(this).on('click', function(evt) {
           evt.stopPropagation();
+
           if($(this).hasClass('unread')) {
             $(this).removeClass('unread').addClass('read');
           }
