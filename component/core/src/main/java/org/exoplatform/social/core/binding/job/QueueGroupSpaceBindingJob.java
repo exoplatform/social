@@ -41,23 +41,34 @@ public class QueueGroupSpaceBindingJob implements Job {
     GroupSpaceBindingQueue firstBindingQueue = null;
     do {
       try {
-        firstBindingQueue=groupSpaceBindingService.findFirstGroupSpaceBindingQueue();
+        firstBindingQueue = groupSpaceBindingService.findFirstGroupSpaceBindingQueue();
         if (firstBindingQueue != null) {
           // Get first binding from groupSpaceBindingQueue.
           GroupSpaceBinding firstBindingInBindingQueue = firstBindingQueue.getGroupSpaceBinding();
-          LOG.info("Proceeding binding between space with ID: {} and group: {}",
-                   firstBindingInBindingQueue.getSpaceId(),
-                   firstBindingInBindingQueue.getGroup());
-          // Bind users to space.
-          groupSpaceBindingService.bindUsersFromGroupSpaceBinding(firstBindingInBindingQueue);
-      
-          // If totally proceeded remove it from groupSpaceBindingQueue.
-          groupSpaceBindingService.deleteFromBindingQueue(firstBindingQueue);
+          String queueAction = firstBindingQueue.getAction();
+          // Switch the bindingQueue action we proceed.
+          if (queueAction.equals(GroupSpaceBindingQueue.ACTION_CREATE)) {
+            LOG.info("Proceeding binding between space with ID: {} and group: {}",
+                     firstBindingInBindingQueue.getSpaceId(),
+                     firstBindingInBindingQueue.getGroup());
+            // Bind users to space.
+            groupSpaceBindingService.bindUsersFromGroupSpaceBinding(firstBindingInBindingQueue);
+
+            // If totally proceeded remove it from groupSpaceBindingQueue.
+            groupSpaceBindingService.deleteFromBindingQueue(firstBindingQueue);
+          } else {
+            LOG.info("Proceeding removing binding between space with ID: {} and group: {}",
+                     firstBindingInBindingQueue.getSpaceId(),
+                     firstBindingInBindingQueue.getGroup());
+            // Remove users from space except members before or which has over bindings.
+            // Once the binding deleted it will be removed from groupSpaceBindingQueue.
+            groupSpaceBindingService.deleteGroupSpaceBinding(firstBindingInBindingQueue);
+          }
         }
       } catch (Exception e) {
         LOG.error("Failed to treat GroupSpaceBinding queue", e);
       }
-    } while (firstBindingQueue!=null);
+    } while (firstBindingQueue != null);
     LOG.info("End treating GroupSpaceBinding queue");
   }
 

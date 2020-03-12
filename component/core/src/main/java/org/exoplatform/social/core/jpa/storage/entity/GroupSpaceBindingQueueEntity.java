@@ -38,22 +38,23 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
 @Table(name = "SOC_GROUP_SPACE_BINDING_QUEUE")
 @NamedQueries({
     @NamedQuery(name = "SocGroupSpaceBindingQueue.findFirstGroupSpaceBindingQueue", query = "SELECT q FROM SocGroupSpaceBindingQueue q "
-        + " ORDER BY q.id ASC")
-    })
+        + " ORDER BY q.id ASC"),
+    @NamedQuery(name = "SocGroupSpaceBindingQueue.getGroupSpaceBindingsFromQueueByAction", query = "SELECT q.groupSpaceBindingEntity FROM SocGroupSpaceBindingQueue q "
+        + " where q.action = :action"), })
 public class GroupSpaceBindingQueueEntity implements Serializable {
-  
+
   @Id
   @SequenceGenerator(name = "SEQ_SOC_GROUP_SPACE_BINDING_QUEUE_ID", sequenceName = "SEQ_SOC_GROUP_SPACE_BINDING_QUEUE_ID")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_SOC_GROUP_SPACE_BINDING_QUEUE_ID")
   @Column(name = "GROUP_SPACE_BINDING_QUEUE_ID")
-  private long                        id;
+  private long                    id;
 
   @ManyToOne
   @JoinColumn(name = "GROUP_SPACE_BINDING_ID", referencedColumnName = "GROUP_SPACE_BINDING_ID", nullable = false)
   private GroupSpaceBindingEntity groupSpaceBindingEntity;
-  
+
   @Column(name = "ACTION")
-  private String                      action;
+  private String                  action;
 
   public long getId() {
     return id;
@@ -74,7 +75,7 @@ public class GroupSpaceBindingQueueEntity implements Serializable {
   public String getAction() {
     return action;
   }
-  
+
   public void setAction(String action) {
     this.action = action;
   }

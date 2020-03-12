@@ -25,54 +25,52 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Provides REST/JSON API  to manage the binding between a space and an organization group.
+ * Provides REST/JSON API to manage the binding between a space and an
+ * organization group.
  */
 
-public interface GroupSpaceBindingRestResources extends SocialRest{
+public interface GroupSpaceBindingRestResources extends SocialRest {
 
-    /**
-     * Return a list of binding in json format
-     *
-     * @param uriInfo
-     * @param spaceId Id of the space
-     * @param offset Bindings list offset
-     * @param limit Bindings list limit
-     * @param returnSize Return Size of the list?
-     * @return List of binding object for this context (space + role)
-     * @throws Exception
-     */
-    @GET
-    Response getBindingsBySpaceId(@Context UriInfo uriInfo,
-                                  @QueryParam("spaceId") String spaceId,
-                                  @QueryParam("offset") int offset,
-                                  @QueryParam("limit") int limit,
-                                  @QueryParam("returnSize") boolean returnSize) throws Exception;
+  /**
+   * Return a list of binding in json format
+   *
+   * @param uriInfo
+   * @param spaceId Id of the space
+   * @param offset Bindings list offset
+   * @param limit Bindings list limit
+   * @param returnSize Return Size of the list?
+   * @return List of binding object for this context (space + role)
+   * @throws Exception
+   */
+  @GET
+  Response getBindingsBySpaceId(@Context UriInfo uriInfo,
+                                @QueryParam("spaceId") String spaceId,
+                                @QueryParam("offset") int offset,
+                                @QueryParam("limit") int limit,
+                                @QueryParam("returnSize") boolean returnSize) throws Exception;
 
+  /**
+   * Return a list of binding in json format
+   *
+   * @param uriInfo
+   * @param spaceId Id of the space
+   * @param groupNamesList List of group names to be bound to the space
+   * @return Status
+   * @throws Exception
+   */
+  @POST
+  Response saveGroupSpaceBindings(@Context UriInfo uriInfo,
+                                  @PathParam("spaceId") String spaceId,
+                                  List<String> groupNamesList) throws Exception;
 
-    /**
-     * Return a list of binding in json format
-     *
-     * @param uriInfo
-     * @param spaceId Id of the space
-     * @param groupNamesList List of group names to be bound to the space
-     * @return Status
-     * @throws Exception
-     */
-    @POST
-    Response saveGroupSpaceBindings(@Context UriInfo uriInfo,
-                                    @PathParam("spaceId") String spaceId,
-                                    List<String> groupNamesList) throws Exception;
-
-
-    /**
-     * Deletes all the  binding by space/space role
-     *
-     * @param uriInfo
-     * @param spaceId Id of the space
-     * @return Status
-     * @throws Exception
-     */
-    @DELETE
-    Response deleteSpaceBindings(@Context UriInfo uriInfo,
-                                               @PathParam("spaceId") String spaceId) throws Exception;
+  /**
+   * Delete a binding by id.
+   *
+   * @param uriInfo
+   * @param bindingId Id of the space
+   * @return Status
+   * @throws Exception
+   */
+  @DELETE
+  Response deleteSpaceBinding(@Context UriInfo uriInfo, @PathParam("bindingId") String bindingId) throws Exception;
 }

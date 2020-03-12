@@ -19,6 +19,7 @@ package org.exoplatform.social.rest.impl.binding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.social.rest.api.GroupSpaceBindingRestResources;
@@ -77,9 +79,33 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
+    // Retrieve all removed bindings.
+    List<Long> removedSpaceBindingsIds =
+                                       groupSpaceBindingService.getGroupSpaceBindingsFromQueueByAction(GroupSpaceBindingQueue.ACTION_REMOVE)
+                                                               .stream()
+                                                               .map(groupSpaceBinding -> groupSpaceBinding.getId())
+                                                               .collect(Collectors.toList());
     List<GroupSpaceBinding> spaceBindings;
 
     spaceBindings = groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId);
+
+    // Get rid of removed bindings.
+    if (removedSpaceBindingsIds.size() > 0 && spaceBindings.size() > 0) {
+      spaceBindings.stream()
+                   .filter(spaceBinding -> removedSpaceBindingsIds.contains(spaceBinding.getId()))
+                   .collect(Collectors.toList());
+
+    }
+
+    if (spaceBindings.size() == 0) {
+      return EntityBuilder.getResponse(new CollectionEntity(new ArrayList<>(),
+                                                            EntityBuilder.GROUP_SPACE_BINDING_TYPE,
+                                                            offset,
+                                                            limit),
+                                       uriInfo,
+                                       RestUtils.getJsonMediaType(),
+                                       Response.Status.OK);
+    }
 
     List<DataEntity> bindingEntities = new ArrayList<>();
 
@@ -119,6 +145,16 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
     if (groupNames == null || groupNames.isEmpty()) {
       return Response.status(Response.Status.BAD_REQUEST).build();
     }
+    // Get already bound groups to the space.
+    List<String> spaceBoundGroups = groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId)
+                                                            .stream()
+                                                            .map(groupSpaceBinding -> groupSpaceBinding.getGroup())
+                                                            .collect(Collectors.toList());
+    // Get rid of already bound groups to the space
+    groupNames.removeAll(spaceBoundGroups);
+    if (groupNames.size() == 0) {
+      return Response.ok("Already bound!").build();
+    }
     List<GroupSpaceBinding> groupSpaceBindings = new ArrayList<>();
     groupNames.stream().forEach(groupName -> groupSpaceBindings.add(new GroupSpaceBinding(spaceId, groupName)));
 
@@ -131,19 +167,24 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
    * {@inheritDoc}
    */
   @DELETE
+  @Consumes(MediaType.APPLICATION_JSON)
   @RolesAllowed("administrators")
-  @Path("{bindingId}")
-  @ApiOperation(value = "Deletes all the  binding by space/space role", httpMethod = "DELETE", response = Response.class, notes = "This method delete all the bindings in the following cases the authenticated user is a spaces super manager")
+  @Path("removeGroupSpaceBinding/{bindingId}")
+  @ApiOperation(value = "Deletes a binding.", httpMethod = "DELETE", response = Response.class, notes = "This method deletes a binding in the following cases the authenticated user is an administrator.")
   @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
       @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 400, message = "Invalid query input") })
-  public Response deleteSpaceBindings(@Context UriInfo uriInfo,
-                                      @ApiParam(value = "spaceId", required = true) @PathParam("spaceId") String spaceId) throws Exception {
+  public Response deleteSpaceBinding(@Context UriInfo uriInfo,
+                                     @ApiParam(value = "spaceId", required = true) @PathParam("bindingId") String bindingId) throws Exception {
 
     if (!userACL.isSuperUser() && !userACL.isUserInGroup(userACL.getAdminGroups())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
-    groupSpaceBindingService.deleteAllSpaceBindingsBySpace(spaceId);
-
+    GroupSpaceBinding binding;
+    binding = groupSpaceBindingService.findGroupSpaceBindingById(bindingId);
+    if (binding != null) {
+      GroupSpaceBindingQueue bindingQueue = new GroupSpaceBindingQueue(binding, GroupSpaceBindingQueue.ACTION_REMOVE);
+      groupSpaceBindingService.createGroupSpaceBindingQueue(bindingQueue);
+    }
     return Response.ok().build();
   }
 

@@ -172,4 +172,19 @@ public interface GroupSpaceBindingService {
    */
   void deleteFromBindingQueue(GroupSpaceBindingQueue bindingQueue);
 
+  /**
+   * Gets GroupSpaceBinding by Id.
+   * 
+   * @param bindingId
+   * @return
+   */
+  GroupSpaceBinding findGroupSpaceBindingById(String bindingId);
+
+  /**
+   * Gets GroupSpaceBindings by action from the queue.
+   * 
+   * @param action
+   * @return
+   */
+  List<GroupSpaceBinding> getGroupSpaceBindingsFromQueueByAction(String action);
 }

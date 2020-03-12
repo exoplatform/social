@@ -34,26 +34,29 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
     @NamedQuery(name = "SocGroupSpaceBinding.findGroupSpaceBindingsByGroup", query = "SELECT groupSpacebinding "
         + " FROM SocGroupSpaceBinding groupSpacebinding " + " WHERE groupSpacebinding.group = :group"),
     @NamedQuery(name = "SocGroupSpaceBinding.findBoundUsersByBindingId", query = "SELECT groupSpacebinding.userSpaceBindingEntities "
-        + " FROM SocGroupSpaceBinding groupSpacebinding " + " WHERE groupSpacebinding.id = :bindingId") })
+        + " FROM SocGroupSpaceBinding groupSpacebinding " + " WHERE groupSpacebinding.id = :bindingId"), })
 public class GroupSpaceBindingEntity implements Serializable {
 
-  private static final long           serialVersionUID         = -1901782610164740670L;
+  private static final long                  serialVersionUID         = -1901782610164740670L;
 
   @Id
   @SequenceGenerator(name = "SEQ_SOC_GROUP_SPACE_BINDING_ID", sequenceName = "SEQ_SOC_GROUP_SPACE_BINDING_ID")
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_SOC_GROUP_SPACE_BINDING_ID")
   @Column(name = "GROUP_SPACE_BINDING_ID")
-  private long                        id;
+  private long                               id;
 
   @ManyToOne
   @JoinColumn(name = "SPACE_ID", referencedColumnName = "SPACE_ID", nullable = false)
-  private SpaceEntity                 space;
-
-  @OneToMany(mappedBy = "groupSpaceBinding", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<UserSpaceBindingEntity> userSpaceBindingEntities = new ArrayList<>();
+  private SpaceEntity                        space;
 
   @Column(name = "GROUP_NAME")
-  private String                      group;
+  private String                             group;
+
+  @OneToMany(mappedBy = "groupSpaceBinding", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<UserSpaceBindingEntity>       userSpaceBindingEntities = new ArrayList<>();
+
+  @OneToMany(mappedBy = "groupSpaceBindingEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<GroupSpaceBindingQueueEntity> bindingQueueEntities     = new ArrayList<>();
 
   public long getId() {
     return id;
@@ -85,5 +88,13 @@ public class GroupSpaceBindingEntity implements Serializable {
 
   public void setUserSpaceBindingEntity(List<UserSpaceBindingEntity> userSpaceBindingEntities) {
     this.userSpaceBindingEntities = userSpaceBindingEntities;
+  }
+
+  public List<GroupSpaceBindingQueueEntity> getBindingQueueEntities() {
+    return bindingQueueEntities;
+  }
+
+  public void setBindingQueueEntities(List<GroupSpaceBindingQueueEntity> bindingQueueEntities) {
+    this.bindingQueueEntities = bindingQueueEntities;
   }
 }
