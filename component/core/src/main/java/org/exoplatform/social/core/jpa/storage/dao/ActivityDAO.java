@@ -437,8 +437,16 @@ public interface ActivityDAO extends GenericDAO<ActivityEntity, Long> {
    * @return
    */
   List<ActivityEntity> findCommentsOfActivities(List<Long> ids);
-
-
+  
+  /**
+   * find comments and Sub Comments of some activity
+   *
+   * @param activityId
+   * @return
+   */
+  List<ActivityEntity> findCommentsAndSubCommentOfActivity(Long activityId);
+  
+  
   /**
    * Get list of activities switch list of IDs
    * 

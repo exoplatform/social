@@ -48,6 +48,8 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
         @NamedQuery(name = "SocActivity.findCommentsOfActivities", query = "SELECT a FROM SocActivity a "
             + " WHERE a.parent.id IN (:ids) "
             + " ORDER BY a.posted ASC"),
+        @NamedQuery(name = "SocActivity.findCommentsAndSubCommentOfActivity", query = "SELECT a FROM SocActivity a "
+        + " WHERE a.parent.id = :activityId OR a.parent.parent.id = :activityId ORDER BY a.posted ASC"),
         @NamedQuery(name = "SocActivity.numberCommentsOfActivity", query = "SELECT count(distinct a.id) FROM SocActivity a WHERE a.parent.id = :activityId"),
         @NamedQuery(name = "SocActivity.findNewerCommentsOfActivity",
                 query = "SELECT a FROM SocActivity a WHERE a.parent.id = :activityId AND a.updatedDate > :sinceTime ORDER BY a.updatedDate ASC"),

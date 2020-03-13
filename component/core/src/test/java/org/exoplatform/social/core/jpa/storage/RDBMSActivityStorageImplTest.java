@@ -717,6 +717,20 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(2, got.getReplyToId().length);
     assertEquals(2, got.getCommentedIds().length);
     assertEquals(2, got.getMentionedIds().length);
+  
+  
+    ExoSocialActivity subComment1 = new ExoSocialActivityImpl();
+    subComment1.setTitle("subcomment 1");
+    subComment1.setUserId(maryIdentity.getId());
+    subComment1.setParentCommentId(comment1.getId());
+    activityStorage.saveComment(activity, subComment1);
+    got = activityStorage.getActivity(activity.getId());
+    
+    assertEquals(3, got.getReplyToId().length);
+    assertEquals(3, got.getCommentedIds().length);
+    assertEquals(2, got.getMentionedIds().length);
+    
+    
   }
 
   @MaxQueryNumber(57)
