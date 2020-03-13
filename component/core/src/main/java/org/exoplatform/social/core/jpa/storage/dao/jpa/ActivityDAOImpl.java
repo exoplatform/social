@@ -753,6 +753,14 @@ public class ActivityDAOImpl extends GenericDAOJPAImpl<ActivityEntity, Long> imp
     query.setParameter("ids", ids);
     return query.getResultList();
   }
+  
+  @Override
+  public List<ActivityEntity> findCommentsAndSubCommentsOfActivity(Long activityId) {
+    TypedQuery<ActivityEntity> query = getEntityManager().createNamedQuery("SocActivity.findCommentsAndSubCommentsOfActivity",
+                                                                           ActivityEntity.class);
+    query.setParameter("activityId", activityId);
+    return query.getResultList();
+  }
 
   @Override
   public List<ActivityEntity> getComments(long activityId, int offset, int limit) {

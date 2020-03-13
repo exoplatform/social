@@ -140,9 +140,7 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
     //
     List<String> commentPosterIds = new ArrayList<>();
     List<String> replyToIds = new ArrayList<>();
-    List<ActivityEntity> comments = activityEntity.getComments() != null ? activityEntity.getComments()
-                                                                         : new ArrayList<>();
-    fillCommentsIdsAndPosters(comments, commentPosterIds, replyToIds, false);
+    fillCommentsIdsAndPosters(activityEntity, commentPosterIds, replyToIds, false);
     activity.setCommentedIds(commentPosterIds.toArray(new String[commentPosterIds.size()]));
     activity.setReplyToId(replyToIds.toArray(new String[replyToIds.size()]));
     activity.setMentionedIds(activityEntity.getMentionerIds().toArray(new String[activityEntity.getMentionerIds().size()]));
@@ -150,13 +148,12 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
     return activity;
   }
 
-  private void fillCommentsIdsAndPosters(List<ActivityEntity> comments,
+  private void fillCommentsIdsAndPosters(ActivityEntity activity,
                                          List<String> commentPosterIds,
                                          List<String> replyToIds,
                                          boolean isSubComment) {
-    if (comments == null || comments.isEmpty()) {
-      return;
-    }
+    
+    List<ActivityEntity> comments = activityDAO.findCommentsAndSubCommentsOfActivity(activity.getId());
     List<Long> commentIds = new ArrayList<>();
     for (ActivityEntity comment : comments) {
       if (!commentPosterIds.contains(comment.getPosterId())) {
@@ -164,10 +161,6 @@ public class RDBMSActivityStorageImpl implements ActivityStorage {
       }
       replyToIds.add(getExoCommentID(comment.getId()));
       commentIds.add(comment.getId());
-    }
-    if (!isSubComment) {
-      List<ActivityEntity> subComments = activityDAO.findCommentsOfActivities(commentIds);
-      fillCommentsIdsAndPosters(subComments, commentPosterIds, replyToIds, true);
     }
   }
 
