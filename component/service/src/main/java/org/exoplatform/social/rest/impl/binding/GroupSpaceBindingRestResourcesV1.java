@@ -79,22 +79,18 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
-    // Retrieve all removed bindings.
+    // Retrieve all removed bindings ids.
     List<Long> removedSpaceBindingsIds =
                                        groupSpaceBindingService.getGroupSpaceBindingsFromQueueByAction(GroupSpaceBindingQueue.ACTION_REMOVE)
                                                                .stream()
                                                                .map(groupSpaceBinding -> groupSpaceBinding.getId())
                                                                .collect(Collectors.toList());
-    List<GroupSpaceBinding> spaceBindings;
 
-    spaceBindings = groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId);
+    List<GroupSpaceBinding> spaceBindings = groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId);
 
     // Get rid of removed bindings.
     if (removedSpaceBindingsIds.size() > 0 && spaceBindings.size() > 0) {
-      spaceBindings.stream()
-                   .filter(spaceBinding -> removedSpaceBindingsIds.contains(spaceBinding.getId()))
-                   .collect(Collectors.toList());
-
+      spaceBindings.removeIf(spaceBinding -> removedSpaceBindingsIds.contains(Long.valueOf(spaceBinding.getId())));
     }
 
     if (spaceBindings.size() == 0) {

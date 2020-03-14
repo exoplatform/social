@@ -152,6 +152,14 @@ public interface GroupSpaceBindingService {
   boolean isUserBoundAndMemberBefore(String spaceId, String userName);
 
   /**
+   * Checks if the space has bindings.
+   * 
+   * @param spaceId
+   * @return
+   */
+  boolean isBoundSpace(String spaceId);
+
+  /**
    * Saves a list of group binding.
    * 
    * @param groupSpaceBindings

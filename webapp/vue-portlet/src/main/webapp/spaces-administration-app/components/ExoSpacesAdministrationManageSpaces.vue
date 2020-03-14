@@ -26,7 +26,7 @@
         <td v-html="space.description"></td>
         <td class="center actionContainer" >
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" v-if="canBindGroupsAndSpaces" class="actionIcon" @click="openSpaceBindingDrawer(space.id, index, space.displayName)">
-            <i class="uiIconSpaceBinding uiIconGroup"></i>
+            <i :class="{'bound': space.hasBindings}" class="uiIconSpaceBinding uiIconGroup"></i>
           </a>
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.edit')" :href="getSpaceLinkSetting(space.displayName,space.groupId)" class="actionIcon" target="_blank">
             <i class="uiIconEdit uiIconLightGray"></i>
