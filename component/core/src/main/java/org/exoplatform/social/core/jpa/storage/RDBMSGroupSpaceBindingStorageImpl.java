@@ -183,6 +183,18 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
     return buildGroupBindingListFromEntities(groupSpaceBindingQueueDAO.getGroupSpaceBindingsFromQueueByAction(action));
   }
 
+  @Override
+  public boolean isBoundSpace(String spaceId) {
+    long countSpaceRemovedBindings =
+                                   groupSpaceBindingQueueDAO.getGroupSpaceBindingsFromQueueByAction(GroupSpaceBindingQueue.ACTION_REMOVE)
+                                                            .stream()
+                                                            .filter(groupSpaceBindingEntity -> groupSpaceBindingEntity.getSpace()
+                                                                                                                      .getId()
+                                                                                                                      .equals(Long.parseLong(spaceId)))
+                                                            .count();
+    return groupSpaceBindingDAO.findGroupSpaceBindingsBySpace(Long.parseLong(spaceId)).size() > countSpaceRemovedBindings;
+  }
+
   /**
    * Fills {@link GroupSpaceBinding}'s properties to
    * {@link GroupSpaceBindingEntity}'s.

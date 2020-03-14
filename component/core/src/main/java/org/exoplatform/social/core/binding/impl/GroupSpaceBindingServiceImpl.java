@@ -291,6 +291,11 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   }
 
   @Override
+  public boolean isBoundSpace(String spaceId) {
+    return groupSpaceBindingStorage.isBoundSpace(spaceId);
+  }
+
+  @Override
   public void deleteFromBindingQueue(GroupSpaceBindingQueue bindingQueue) {
     groupSpaceBindingStorage.deleteGroupBindingQueue(bindingQueue.getId());
   }

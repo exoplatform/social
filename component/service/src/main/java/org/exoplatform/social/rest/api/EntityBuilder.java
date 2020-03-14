@@ -210,6 +210,7 @@ public class EntityBuilder {
       }
       spaceEntity.setIdentity(identity);
       spaceEntity.setGroupId(space.getGroupId());
+      spaceEntity.setHasBindings(space.hasBindings());
       spaceEntity.setApplications(getSpaceApplications(space));
       LinkEntity managers, memebers;
       if(RestProperties.MANAGERS.equals(expand)) {

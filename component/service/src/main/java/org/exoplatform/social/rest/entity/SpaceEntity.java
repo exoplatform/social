@@ -59,6 +59,15 @@ public class SpaceEntity extends BaseEntity {
   public String getGroupId() {
     return getString("groupId");
   }
+  
+  public SpaceEntity setHasBindings(boolean hasBindings) {
+    setProperty("hasBindings", hasBindings);
+    return this;
+  }
+
+  public String hasBindings() {
+    return getString("hasBindings");
+  }
 
   public SpaceEntity setAvatarUrl(String avatarUrl) {
     setProperty("avatarUrl", avatarUrl);
