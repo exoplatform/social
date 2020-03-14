@@ -196,4 +196,13 @@ public interface GroupSpaceBindingStorage {
    * @return
    */
   List<GroupSpaceBinding> getGroupSpaceBindingsFromQueueByAction(String action);
+
+  /**
+   * Checks if the space has bindings by counting space's available bindings and
+   * space's bindings to be removed from the binding queue.
+   * 
+   * @param spaceId
+   * @return
+   */
+  boolean isBoundSpace(String spaceId);
 }

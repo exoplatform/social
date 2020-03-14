@@ -36,6 +36,9 @@ public class Space {
   /** The group id. */
   private String groupId;
 
+  /** If the space has at least one binding. */
+  private boolean hasBindings;
+
   /** The app. */
   private String app;
 
@@ -270,6 +273,24 @@ public class Space {
    */
   public String getGroupId() {
     return groupId;
+  }
+  
+  /**
+   * Sets if the space is bound or not.
+   * 
+   * @param hasBindings
+   */
+  public void setHasBindings(boolean hasBindings) {
+    this.hasBindings = hasBindings;
+  }
+
+  /**
+   * Checks if the space has bindings.
+   *
+   * @return
+   */
+  public boolean hasBindings() {
+    return hasBindings;
   }
 
   /**
