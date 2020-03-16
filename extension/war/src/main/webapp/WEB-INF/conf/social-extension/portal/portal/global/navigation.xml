@@ -181,6 +181,14 @@
       <visibility>SYSTEM</visibility>
       <page-reference>portal::global::search</page-reference>
     </node>
+	
+	<node>
+      <uri>settings</uri>
+      <name>settings</name>
+      <label>#{portal.dw.settings}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::global::settings</page-reference>
+    </node>
 
   </page-nodes>
 </node-navigation>
