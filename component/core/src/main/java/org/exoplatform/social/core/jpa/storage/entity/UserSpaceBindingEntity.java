@@ -44,7 +44,13 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
     @NamedQuery(name = "SocUserSpaceBinding.findBoundUsersByBindingId", query = "SELECT userSpaceBinding FROM SocUserSpaceBinding "
         + "userSpaceBinding WHERE userSpaceBinding.groupSpaceBinding.id= :bindingId"),
     @NamedQuery(name = "SocUserSpaceBinding.isUserBoundAndMemberBefore", query = "SELECT userSpaceBinding FROM SocUserSpaceBinding "
-        + "userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.space.id = :spaceId and userSpaceBinding.isMemberBefore = true ") })
+        + "userSpaceBinding WHERE userSpaceBinding.user = :userName and userSpaceBinding.groupSpaceBinding.space.id = :spaceId "
+        + "and userSpaceBinding.isMemberBefore = true "),
+    @NamedQuery(name = "SocUserSpaceBinding.countAllDistinctUserBindingsBySpace", query = "SELECT COUNT(DISTINCT "
+        + "userSpaceBinding.user) "
+        + "FROM "
+        + "SocUserSpaceBinding "
+        + "userSpaceBinding WHERE userSpaceBinding.groupSpaceBinding.space.id = :spaceId")})
 public class UserSpaceBindingEntity implements Serializable {
 
   private static final long       serialVersionUID = -3088537806368295223L;

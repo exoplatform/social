@@ -56,9 +56,9 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   private OrganizationService      organizationService;
 
   private SpaceService             spaceService;
-
-  private static Boolean           requestStarted          = false;
-
+  
+  private static Boolean requestStarted = false;
+  
   /**
    * GroupSpaceBindingServiceImpl constructor Initialize
    * 
@@ -141,7 +141,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
         groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
       }
     } catch (Exception e) {
-      LOG.error("Error Binding" + e);
+      LOG.error("Error when saving user binding "+userSpaceBindings,e);
       throw new RuntimeException("Failed saving user bindings", e);
     }
   }
@@ -157,6 +157,9 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
   @Override
   public void deleteGroupSpaceBinding(GroupSpaceBinding groupSpaceBinding) {
     LOG.debug("Delete binding group :" + groupSpaceBinding.getGroup() + " for space :" + groupSpaceBinding.getSpaceId());
+    long startTime = System.currentTimeMillis();
+    Space space = spaceService.getSpaceById(groupSpaceBinding.getSpaceId());
+  
     // Call the delete user binding to also update space membership.
     for (UserSpaceBinding userSpaceBinding : groupSpaceBindingStorage.findUserAllBindingsByGroup(groupSpaceBinding.getGroup())) {
       deleteUserBindingAndSpaceMembership(userSpaceBinding);
@@ -164,6 +167,14 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
     // The deletion of the groupSpaceBinding will also remove it from the
     // groupSpaceBindingQueue.
     groupSpaceBindingStorage.deleteGroupBinding(groupSpaceBinding.getId());
+  
+    long endTime = System.currentTimeMillis();
+    long totalTime = endTime-startTime;
+    LOG.info("service={} operation={} parameters=\"space:{},totalSpaceMembers:{},boundSpaceMembers:{}\" status=ok "
+                 + "duration_ms={}",
+             LOG_SERVICE_NAME, LOG_REMOVE_OPERATION_NAME, space.getPrettyName(),space.getMembers().length,
+             countBoundUsers(space.getId()),
+             totalTime);
   }
 
   /**
@@ -215,7 +226,13 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
     return groupSpaceBindingStorage.countUserBindings(spaceId, userName);
 
   }
-
+  
+  @Override
+  public long countBoundUsers(String spaceId) {
+    LOG.debug("Count bound users for space:" + spaceId);
+    return groupSpaceBindingStorage.countBoundUsers(spaceId);
+  }
+  
   @Override
   public void saveGroupSpaceBindings(List<GroupSpaceBinding> groupSpaceBindings) {
     LOG.debug("Saving group space binding between spaceId: {} and groups: {}.",
@@ -235,7 +252,7 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
       // Add group space bindings to the binding queue.
       bindingQueueList.stream().forEach(groupSpaceBindingQueue -> createGroupSpaceBindingQueue(groupSpaceBindingQueue));
     } catch (Exception e) {
-      LOG.error("Error Binding" + e);
+      LOG.error("Error when saving group space binding "+groupSpaceBindings,e);
       throw new RuntimeException("Failed saving groupSpaceBindings: " + groupSpaceBindings.toString(), e);
     }
   }
@@ -294,14 +311,27 @@ public class GroupSpaceBindingServiceImpl implements GroupSpaceBindingService {
         long totalBunchTime = endBunchTime - startBunchTime;
         LOG.info("Time to treat " + count + " (" + offset + "/" + totalGroupMembersSize + ") users : " + totalBunchTime + " ms");
       } while (offset < totalGroupMembersSize);
+  
+      
+      
     } catch (Exception e) {
-      LOG.error("Error Binding" + e);
+      LOG.error("Error when binding users from group "+groupSpaceBinding.getGroup()+", to space "+groupSpaceBinding.getSpaceId(),e);
+      long endTime = System.currentTimeMillis();
+      long totalTime = endTime-startTime;
+      LOG.info("service={} operation={} parameters=\"space:{},totalSpaceMembers:{},boundSpaceMembers:{}\" status=ko "
+                   + "duration_ms={}",
+               LOG_SERVICE_NAME, LOG_NEW_OPERATION_NAME, space.getPrettyName(),space.getMembers().length,
+               countBoundUsers(space.getId()),
+               totalTime);
       throw new RuntimeException("Failed saving groupSpaceBinding", e);
     }
     long endTime = System.currentTimeMillis();
-
-    long totalTime = endTime - startTime;
-    LOG.debug("Time to treat all users : (" + offset + ") : " + totalTime + " ms");
+    long totalTime = endTime-startTime;
+    LOG.info("service={} operation={} parameters=\"space:{},totalSpaceMembers:{},boundSpaceMembers:{}\" status=ok "
+                 + "duration_ms={}",
+             LOG_SERVICE_NAME, LOG_NEW_OPERATION_NAME, space.getPrettyName(),space.getMembers().length,
+             countBoundUsers(space.getId()),
+             totalTime);
   }
 
   public boolean isUserBoundAndMemberBefore(String spaceId, String userId) {

@@ -30,6 +30,11 @@ import org.exoplatform.social.core.space.model.Space;
  */
 
 public interface GroupSpaceBindingService {
+  
+  public final static String LOG_SERVICE_NAME = "group-binding";
+  public final static String LOG_NEW_OPERATION_NAME = "new-binding";
+  public final static String LOG_REMOVE_OPERATION_NAME = "remove-binding";
+  public final static String LOG_UPDATE_OPERATION_NAME = "update-binding";
 
   /**
    * Get the first GroupSpaceBindingQueue to treat
@@ -133,7 +138,15 @@ public interface GroupSpaceBindingService {
    * @return a List of UserSpaceBinding.
    */
   long countUserBindings(String spaceId, String userName);
-
+  
+  /**
+   * Count number of bound users for the space.
+   *
+   * @param spaceId The space Id.
+   * @return number of bound users.
+   */
+  long countBoundUsers(String spaceId);
+  
   /**
    * Checks if user is already bound and member of the space.
    * 

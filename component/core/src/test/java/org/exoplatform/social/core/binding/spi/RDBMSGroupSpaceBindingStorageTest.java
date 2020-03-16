@@ -387,8 +387,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    **/
-
-  public void countUserBindings() throws Exception {
+  public void testCountUserBindings() throws Exception {
     GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
     groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
     tearDownGroupbindingList.add(groupSpaceBinding);
@@ -458,5 +457,32 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
     assertEquals("findUserAllBindingsbyGroupMembership('/platform/administrators','Any') must return: " + 0,
                  0,
                  groupSpaceBindingStorage.findUserSpaceBindingsByGroup("/platform/users", "john").size());
+  }
+  
+  public void testCountUserBindingsBySpace() throws Exception {
+    GroupSpaceBinding groupSpaceBinding = this.getGroupSpaceBindingInstance(1, spaceId, "/platform/administrators");
+    groupSpaceBinding = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding);
+    GroupSpaceBinding groupSpaceBinding2 = this.getGroupSpaceBindingInstance(2, spaceId, "/platform/developers");
+    groupSpaceBinding2 = groupSpaceBindingStorage.saveGroupSpaceBinding(groupSpaceBinding2);
+  
+  
+    tearDownGroupbindingList.add(groupSpaceBinding);
+    tearDownGroupbindingList.add(groupSpaceBinding2);
+    
+    UserSpaceBinding userSpaceBinding = this.getUserBindingInstance(1, "john", groupSpaceBinding);
+    userSpaceBinding = groupSpaceBindingStorage.saveUserBinding(userSpaceBinding);
+    UserSpaceBinding userSpaceBinding2 = this.getUserBindingInstance(2, "mary", groupSpaceBinding);
+    userSpaceBinding2 = groupSpaceBindingStorage.saveUserBinding(userSpaceBinding2);
+    UserSpaceBinding userSpaceBinding3 = this.getUserBindingInstance(1, "john", groupSpaceBinding2);
+    userSpaceBinding3 = groupSpaceBindingStorage.saveUserBinding(userSpaceBinding3);
+    
+    tearDownUserbindingList.add(userSpaceBinding);
+    tearDownUserbindingList.add(userSpaceBinding2);
+    tearDownUserbindingList.add(userSpaceBinding3);
+    
+    
+    assertEquals("groupSpaceBindingStorage.countBoundUsers(" + spaceId + ") must return 2 ",
+                 2,
+                 groupSpaceBindingStorage.countBoundUsers(spaceId));
   }
 }

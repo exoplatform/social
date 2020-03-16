@@ -100,5 +100,12 @@ public class UserSpaceBindingDAOImpl extends GenericDAOJPAImpl<UserSpaceBindingE
     query.setMaxResults(1);
     return query.getResultList().size() > 0;
   }
-
+  
+  @Override
+  public long countBoundUsers(Long spaceId) {
+    return (Long) getEntityManager().createNamedQuery("SocUserSpaceBinding.countAllDistinctUserBindingsBySpace")
+                                    .setParameter("spaceId", spaceId)
+                                    .getSingleResult();
+  }
+  
 }
