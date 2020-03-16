@@ -1,8 +1,10 @@
 <template>
-  <v-container px-0 pt-0 class="border-box-sizing" @mouseover="openDrawer()">
-    <v-row class="mx-0 spacesNavigationTitle">
-      <v-list-item>
-        <v-list-item-icon class="mb-2 mt-3 mr-6 titleIcon"><i class="uiIcon uiIconToolbarNavItem spacesIcon"></i></v-list-item-icon>
+  <v-container px-0 pt-0 class="border-box-sizing">
+    <v-row class="mx-0 clickable spacesNavigationTitle">
+      <v-list-item link @mouseover="openDrawer()" @click="openDrawer()">
+        <v-list-item-icon class="mb-2 mt-3 mr-6 titleIcon">
+          <i class="uiIcon uiIconToolbarNavItem spacesIcon"></i>
+        </v-list-item-icon>
         <v-list-item-content class="subtitle-1 titleLabel">
           {{ $t('menu.spaces.lastVisitedSpaces') }}
         </v-list-item-content>
