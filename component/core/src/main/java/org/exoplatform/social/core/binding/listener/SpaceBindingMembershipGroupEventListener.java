@@ -55,11 +55,21 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
           spaceService = CommonsUtils.getService(SpaceService.class);
 
           // Retrieve all bindings of the group.
-          List<GroupSpaceBinding> groupSpaceBindings = groupSpaceBindingService.findGroupSpaceBindingsByGroup(groupId);
+          List<GroupSpaceBinding> groupSpaceBindings = groupSpaceBindingService.findGroupSpaceBindingsByGroup(m.getGroupId());
           // For each bound space of the group add a user binding to it.
           for (GroupSpaceBinding groupSpaceBinding : groupSpaceBindings) {
             Space space = spaceService.getSpaceById(groupSpaceBinding.getSpaceId());
+            long startTime = System.currentTimeMillis();
             groupSpaceBindingService.saveUserBinding(userName, groupSpaceBinding, space);
+            long totalTime = System.currentTimeMillis() - startTime;
+    
+            LOG.info("service={} operation={} parameters=\"space:{},totalSpaceMembers:{},boundSpaceMembers:{}\" status=ok "
+                         + "duration_ms={}",
+                     GroupSpaceBindingService.LOG_SERVICE_NAME, GroupSpaceBindingService.LOG_UPDATE_OPERATION_NAME,
+                     space.getPrettyName(),
+                     space.getMembers().length,
+                     groupSpaceBindingService.countBoundUsers(space.getId()),
+                     totalTime);
           }
         }
       } catch (Exception e) {
@@ -84,6 +94,9 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
           List<UserSpaceBinding> userSpaceBindings = groupSpaceBindingService.findUserBindingsByGroup(groupId, userName);
           // Remove them.
           for (UserSpaceBinding userSpaceBinding : userSpaceBindings) {
+            Space space = spaceService.getSpaceById(userSpaceBinding.getGroupBinding().getSpaceId());
+            long startTime=System.currentTimeMillis();
+  
             // Delete user binding.
             groupSpaceBindingService.deleteUserSpaceBinding(userSpaceBinding);
             // Check if user has other bindings to the space.
@@ -93,10 +106,17 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
                                                                                              userSpaceBinding.getUser())
                                                                .size() > 0;
             if (!hasOtherBindings) {
-              Space space = spaceService.getSpaceById(userSpaceBinding.getGroupBinding().getSpaceId());
               // Remove user membership from the space.
               spaceService.removeMember(space, userName);
             }
+            long totalTime=System.currentTimeMillis() - startTime;
+            LOG.info("service={} operation={} parameters=\"space:{},totalSpaceMembers:{},boundSpaceMembers:{}\" status=ok "
+                         + "duration_ms={}",
+                     GroupSpaceBindingService.LOG_SERVICE_NAME, GroupSpaceBindingService.LOG_UPDATE_OPERATION_NAME,
+                     space.getPrettyName(),
+                     space.getMembers().length,
+                     groupSpaceBindingService.countBoundUsers(space.getId()),
+                     totalTime);
           }
         }
       } catch (Exception e) {

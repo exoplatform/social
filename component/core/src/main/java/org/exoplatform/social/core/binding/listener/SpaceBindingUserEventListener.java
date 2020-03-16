@@ -28,11 +28,14 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserEventListener;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 
 public class SpaceBindingUserEventListener extends UserEventListener {
   private static final Log         LOG = ExoLogger.getLogger(SpaceBindingUserEventListener.class);
 
   private GroupSpaceBindingService groupSpaceBindingService;
+  private SpaceService spaceService;
 
   @Override
   public void postDelete(User user) throws Exception {
@@ -43,7 +46,17 @@ public class SpaceBindingUserEventListener extends UserEventListener {
       List<UserSpaceBinding> userSpaceBindings = groupSpaceBindingService.findUserBindingsByUser(user.getUserName());
       // Remove all user's bindings.
       for (UserSpaceBinding userSpaceBinding : userSpaceBindings) {
+        Space space = spaceService.getSpaceById(userSpaceBinding.getGroupBinding().getSpaceId());
+        long startTime=System.currentTimeMillis();
         groupSpaceBindingService.deleteUserBindingAndSpaceMembership(userSpaceBinding);
+        long totalTime=System.currentTimeMillis() - startTime;
+        LOG.info("service={} operation={} parameters=\"space:{},totalSpaceMembers:{},boundSpaceMembers:{}\" status=ok "
+                     + "duration_ms={}",
+                 GroupSpaceBindingService.LOG_SERVICE_NAME, GroupSpaceBindingService.LOG_UPDATE_OPERATION_NAME,
+                 space.getPrettyName(),
+                 space.getMembers().length,
+                 groupSpaceBindingService.countBoundUsers(space.getId()),
+                 totalTime);
       }
     } catch (Exception e) {
       LOG.warn("Problem occurred when removing user bindings for user ({}): ", user.getUserName(), e);

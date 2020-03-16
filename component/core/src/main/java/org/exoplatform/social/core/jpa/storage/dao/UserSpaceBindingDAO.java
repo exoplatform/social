@@ -90,4 +90,12 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @return
    */
   boolean isUserBoundAndMemberBefore(Long spaceId, String userId);
+  
+  /**
+   * Count the number of bound users in a space
+   *
+   * @param spaceId
+   * @return number of bound users
+   */
+  long countBoundUsers(Long spaceId);
 }

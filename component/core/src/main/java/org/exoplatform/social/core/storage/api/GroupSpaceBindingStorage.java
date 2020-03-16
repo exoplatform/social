@@ -195,4 +195,12 @@ public interface GroupSpaceBindingStorage {
    * @return
    */
   boolean isBoundSpace(String spaceId);
+  
+  /**
+   * Count the number of bound users in a space
+   *
+   * @param spaceId
+   * @return number of bound users
+   */
+  long countBoundUsers(String spaceId);
 }

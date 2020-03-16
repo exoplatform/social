@@ -210,6 +210,14 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     binding1.setId(1);
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId("1");
+  
+    Space space = new Space();
+    space.setId("1");
+    space.setDisplayName("space1");
+    space.setPrettyName("space1");
+    space.setMembers(new String[] {"root"});
+    Mockito.when(spaceService.getSpaceById(Mockito.any())).thenReturn(space);
+    Mockito.when(groupSpaceBindingStorage.countBoundUsers(Mockito.any())).thenReturn(0L);
 
     // When
     GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams,
@@ -262,6 +270,14 @@ public class GroupSpaceBindingServiceTest extends AbstractCoreTest {
     groupSpaceBindings.add(binding4);
     resultSpaceBindings.add(binding4);
     Mockito.when(groupSpaceBindingStorage.findGroupSpaceBindingsBySpace(Mockito.eq("1"))).thenReturn(resultSpaceBindings);
+    
+    Space space = new Space();
+    space.setId("1");
+    space.setDisplayName("space1");
+    space.setPrettyName("space1");
+    space.setMembers(new String[] {"root"});
+    Mockito.when(spaceService.getSpaceById(Mockito.any())).thenReturn(space);
+    Mockito.when(groupSpaceBindingStorage.countBoundUsers(Mockito.any())).thenReturn(0L);
 
     // When
     GroupSpaceBindingService groupSpaceBindingService = new GroupSpaceBindingServiceImpl(initParams,

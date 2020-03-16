@@ -189,7 +189,13 @@ public class RDBMSGroupSpaceBindingStorageImpl implements GroupSpaceBindingStora
                                                             .count();
     return groupSpaceBindingDAO.findGroupSpaceBindingsBySpace(Long.parseLong(spaceId)).size() > countSpaceRemovedBindings;
   }
-
+  
+  @Override
+  public long countBoundUsers(String spaceId) {
+    return userSpaceBindingDAO.countBoundUsers(Long.parseLong(spaceId));
+  
+  }
+  
   /**
    * Fills {@link GroupSpaceBinding}'s properties to
    * {@link GroupSpaceBindingEntity}'s.
