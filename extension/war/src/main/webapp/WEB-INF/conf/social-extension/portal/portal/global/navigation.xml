@@ -185,7 +185,7 @@
 	<node>
       <uri>settings</uri>
       <name>settings</name>
-      <label>#{portal.dw.settings}</label>
+      <label>#{portal.global.settings}</label>
       <visibility>SYSTEM</visibility>
       <page-reference>portal::global::settings</page-reference>
     </node>
