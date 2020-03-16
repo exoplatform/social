@@ -9,7 +9,7 @@
     <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
     <init-param>
       <name>portlet-view-dispatched-file-path</name>
-      <value>/html/hambergerMenuItem.jsp</value>
+      <value>/html/hamburgerMenuItem.jsp</value>
     </init-param>
     <expiration-cache>-1</expiration-cache>
     <supports>
@@ -31,7 +31,7 @@
     <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
     <init-param>
       <name>portlet-view-dispatched-file-path</name>
-      <value>/html/hambergerMenuItem.jsp</value>
+      <value>/html/hamburgerMenuItem.jsp</value>
     </init-param>
     <expiration-cache>-1</expiration-cache>
     <supports>

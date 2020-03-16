@@ -4,27 +4,6 @@
 
 <page-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_2 http://www.gatein.org/xml/ns/gatein_objects_1_2" xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_2">
   <page>
-    <name>registry</name>
-    <title>Registry</title>
-    <access-permissions>manager:/platform/administrators</access-permissions>
-    <edit-permission>manager:/platform/administrators</edit-permission>
-    <portlet-application>
-      <portlet>
-        <application-ref>exoadmin</application-ref>
-        <portlet-ref>ApplicationRegistryPortlet</portlet-ref>
-        <preferences>
-          <preference>
-            <name>showImport</name>
-            <value>false</value>
-          </preference>
-        </preferences>
-      </portlet>
-      <title>Application Registry</title>
-      <access-permissions>manager:/platform/administrators</access-permissions>
-      <show-info-bar>false</show-info-bar>
-    </portlet-application>
-  </page>
-  <page>
     <name>newStaff</name>
     <title>New Staff</title>
     <access-permissions>manager:/platform/administrators</access-permissions>
