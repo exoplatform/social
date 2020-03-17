@@ -28,7 +28,7 @@ import org.exoplatform.social.core.binding.model.GroupSpaceBindingReportAction;
 import org.exoplatform.social.core.binding.model.GroupSpaceBindingReportUser;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.jpa.test.AbstractCoreTest;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage;
@@ -91,6 +91,7 @@ public class RDBMSGroupSpaceBindingStorageTest extends AbstractCoreTest {
   @Override
   protected void tearDown() throws Exception {
     deleteAllBindings();
+    
     super.tearDown();
   }
 

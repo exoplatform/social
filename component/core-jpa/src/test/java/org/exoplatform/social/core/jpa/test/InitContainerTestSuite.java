@@ -18,6 +18,8 @@ package org.exoplatform.social.core.jpa.test;
 
 import org.exoplatform.commons.testing.BaseExoContainerTestSuite;
 import org.exoplatform.commons.testing.ConfigTestCase;
+import org.exoplatform.social.core.binding.spi.GroupSpaceBindingServiceTest;
+import org.exoplatform.social.core.binding.spi.RDBMSGroupSpaceBindingStorageTest;
 import org.exoplatform.social.core.jpa.storage.*;
 import org.exoplatform.social.core.jpa.storage.dao.*;
 import org.exoplatform.social.core.jpa.updater.SpaceMemberAnyMembershipUpgradeTest;
@@ -40,7 +42,9 @@ import org.junit.runners.Suite.SuiteClasses;
   SpaceMemberDAOTest.class,
   SpaceMemberAnyMembershipUpgradeTest.class,
   SpaceDAOTest.class,
-  SpaceDAOTest.class
+  SpaceDAOTest.class,
+  GroupSpaceBindingServiceTest.class,
+  RDBMSGroupSpaceBindingStorageTest.class
 })
 
 @ConfigTestCase(AbstractCoreTest.class)

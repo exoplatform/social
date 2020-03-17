@@ -200,7 +200,45 @@
     <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
     <type>org.exoplatform.social.core.jpa.cache.RDBMSCachedRelationshipStorage</type>
   </component>
-
+  <!-- Spaces Groups Binding -->
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.UserSpaceBindingDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.UserSpaceBindingDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingQueueDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingQueueDAOImpl</type>
+  </component>
+  
+  
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingReportActionDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingReportActionDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingReportUserDAO</key>
+    <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingReportUserDAOImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.binding.spi.GroupSpaceBindingService</key>
+    <type>org.exoplatform.social.core.binding.impl.GroupSpaceBindingServiceImpl</type>
+  </component>
+  
+  <!--
+    GroupSpaceBinding storage components.
+   -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage</key>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSGroupSpaceBindingStorageImpl</type>
+  </component>
   <!--
     Activity storage components.
   -->
