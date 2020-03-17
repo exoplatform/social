@@ -752,4 +752,13 @@ public class ActivityManagerImpl implements ActivityManager {
     return activityFile;
   }
 
+  /**
+   * Checks if the Activity Type is enabled or not
+   * @param activityType the name of activity type to check
+   * @return
+   */
+  public boolean isActivityTypeEnabled (String activityType) {
+    return activityTypesRegistry.get(activityType) == null || activityTypesRegistry.get(activityType);
+  }
+
 }

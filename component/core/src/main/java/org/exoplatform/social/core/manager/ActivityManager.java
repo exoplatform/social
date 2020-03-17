@@ -533,4 +533,13 @@ public interface ActivityManager {
   default ActivityFile getActivityFileById(long fileId) throws Exception{
     return null;
   }
+
+  /**
+   * Checks if the Activity Type is enabled or not
+   * @param activityType the name of activity type to check
+   * @return true if the activity type is enabled
+   */
+  default boolean isActivityTypeEnabled(String activityType) {
+    return true;
+  }
 }
