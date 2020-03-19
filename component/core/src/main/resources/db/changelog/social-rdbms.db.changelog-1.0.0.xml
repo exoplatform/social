@@ -589,6 +589,7 @@
   </changeSet>
 
   <changeSet author="social" id="1.0.0-65">
+    <validCheckSum>7:7ca5c5299bebdaac7f2a7ec495a9fe40</validCheckSum>
     <createTable tableName="SOC_GROUP_SPACE_BINDING">
       <column name="GROUP_SPACE_BINDING_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_GROUP_SPACE_BINDING_ID"/>
