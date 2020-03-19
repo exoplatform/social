@@ -24,21 +24,21 @@
         </v-layout>
       </v-card-title>
       <div class="content">
-        <v-layout align-content-center
-                  class="mt-2 pl-1"
-                  wrap>
+        <v-layout
+          class="mt-4 pl-2"
+          wrap>
           <v-flex align-center xs1>
             <img v-if="spaceToBind && spaceToBind.avatarUrl != null" :src="spaceToBind.avatarUrl" class="avatar" />
             <img v-else :src="avatar" class="avatar" />
           </v-flex>
-          <v-flex class="spaceName">
+          <v-flex pt-1 class="spaceName">
             <span> {{ spaceToBind.displayName }} </span>
           <v-flex pt-1 class="spaceName">
             <span> {{ spaceDisplayName }} </span>
           </v-flex>
         </v-layout>
         <v-layout
-          class="pt-7 pl-3 mb-4"
+          class="pt-5 pl-3 mb-4"
           wrap>
           <v-flex xs9>
             <input id="add-groups" type="text"/>
@@ -152,10 +152,10 @@ export default {
   },
   data() {
     return {
-      textAreaValue : '',
+      textAreaValue: '',
       groups: [],
-      showSelectGroupsTree : false,
-      avatar : spacesConstants.DEFAULT_SPACE_AVATAR,
+      showSelectGroupsTree: false,
+      avatar: spacesConstants.DEFAULT_SPACE_AVATAR,
     };
   },
   computed : {
