@@ -44,8 +44,12 @@ export default {
     value(val) {
       // watch value to reset the editor value if the value has been updated by the component parent
       const editorData = CKEDITOR.instances['activityContent'].getData();
-      if(editorData != null && val !== editorData) {
-        CKEDITOR.instances['activityContent'].setData(val);
+      if (editorData != null && val !== editorData) {
+        if (val === '') {
+          this.initCKEditor();
+        } else {
+          CKEDITOR.instances['activityContent'].setData(val);
+        }
       }
     }
   },
@@ -54,6 +58,9 @@ export default {
   },
   methods: {
     initCKEditor: function () {
+      if (typeof CKEDITOR.instances['activityContent'] !== 'undefined') {
+        CKEDITOR.instances['activityContent'].destroy(true);
+      }
       let extraPlugins = 'simpleLink,suggester';
       const windowWidth = $(window).width();
       const windowHeight = $(window).height();
@@ -85,6 +92,9 @@ export default {
 
             const pureText = newData ? newData.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim() : '';
             self.charsCount = pureText.length;
+          },
+          destroy: function () {
+            self.inputVal = '';
           }
         }
       });
