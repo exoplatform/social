@@ -88,6 +88,9 @@ export default {
           }
         }
       });
+    },
+    setFocus: function() {
+      CKEDITOR.instances['activityContent'].focus();
     }
   }
 };

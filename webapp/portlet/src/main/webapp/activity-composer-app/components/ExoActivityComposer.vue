@@ -1,7 +1,7 @@
 <template>
   <div class="activityComposer">
     <div class="openLink">
-      <a @click="showMessageComposer = true">
+      <a @click="openMessageComposer()">
         <i class="uiIconGoUp"></i>{{ $t('activity.composer.link') }}
       </a>
     </div>
@@ -14,7 +14,7 @@
           <a class="closebtn" href="javascript:void(0)" @click="closeMessageComposer()">×</a>
         </div>
         <div class="content">
-          <exo-activity-rich-editor v-model="message" :max-length="MESSAGE_MAX_LENGTH" :placeholder="$t('activity.composer.placeholder').replace('{0}', MESSAGE_MAX_LENGTH)"></exo-activity-rich-editor>
+          <exo-activity-rich-editor ref="richEditor" v-model="message" :max-length="MESSAGE_MAX_LENGTH" :placeholder="$t('activity.composer.placeholder').replace('{0}', MESSAGE_MAX_LENGTH)"></exo-activity-rich-editor>
           <div class="composerActions">
             <button :disabled="postDisabled" type="button" class="btn btn-primary ignore-vuetify-classes" @click="postMessage()">{{ $t('activity.composer.post') }}</button>
           </div>
@@ -58,6 +58,10 @@ export default {
 
   },
   methods: {
+    openMessageComposer: function() {
+      this.$refs.richEditor.setFocus();
+      this.showMessageComposer = true;
+    },
     postMessage() {
       if(eXo.env.portal.spaceId) {
         composerServices.postMessageInSpace(this.message, eXo.env.portal.spaceId)
