@@ -101,6 +101,11 @@ export default {
     },
     setFocus: function() {
       CKEDITOR.instances['activityContent'].focus();
+    },
+    getMessage: function() {
+      const newData = CKEDITOR.instances['activityContent'].getData();
+      const pureText = newData ? newData.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim() : '';
+      return pureText;
     }
   }
 };

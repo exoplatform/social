@@ -63,8 +63,11 @@ export default {
       this.showMessageComposer = true;
     },
     postMessage() {
+      // Using a ref to the editor component and the getMessage method is mandatory to
+      // be sure to get the most up to date value of the message
+      const msg = this.$refs.richEditor.getMessage();
       if(eXo.env.portal.spaceId) {
-        composerServices.postMessageInSpace(this.message, eXo.env.portal.spaceId)
+        composerServices.postMessageInSpace(msg, eXo.env.portal.spaceId)
           .then(() => this.refreshActivityStream())
           .then(() => this.closeMessageComposer())
           .then(() => this.message = '')
@@ -73,7 +76,7 @@ export default {
             this.showErrorMessage = true;
           });
       } else {
-        composerServices.postMessageInUserStream(this.message, eXo.env.portal.userName)
+        composerServices.postMessageInUserStream(msg, eXo.env.portal.userName)
           .then(() => this.refreshActivityStream())
           .then(() => this.closeMessageComposer())
           .then(() => this.message = '')
