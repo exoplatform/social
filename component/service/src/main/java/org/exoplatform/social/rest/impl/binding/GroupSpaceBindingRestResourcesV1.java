@@ -18,6 +18,7 @@
 package org.exoplatform.social.rest.impl.binding;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang3.StringUtils;
+
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.binding.model.GroupNode;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
@@ -37,6 +44,7 @@ import org.exoplatform.social.rest.api.GroupSpaceBindingRestResources;
 import org.exoplatform.social.rest.api.RestUtils;
 import org.exoplatform.social.rest.entity.CollectionEntity;
 import org.exoplatform.social.rest.entity.DataEntity;
+import org.exoplatform.social.rest.entity.GroupNodeEntity;
 import org.exoplatform.social.rest.entity.GroupSpaceBindingEntity;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
@@ -68,7 +76,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
   @RolesAllowed("administrators")
   @Produces(MediaType.APPLICATION_JSON)
   @Path("{spaceId}")
-  @ApiOperation(value = "Gets list of binding for a space.", httpMethod = "GET", response = Response.class, notes = "Returns a list of bindings in the following cases if the authenticated user is a member of space administrator group.")
+  @ApiOperation(value = "Gets list of binding for a space.", httpMethod = "GET", response = Response.class, notes = "Returns a list of bindings in the following cases if the authenticated user is an administrator.")
   @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
       @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 400, message = "Invalid query input") })
   public Response getBindingsBySpaceId(@Context UriInfo uriInfo,
@@ -131,7 +139,7 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("saveGroupsSpaceBindings/{spaceId}")
-  @ApiOperation(value = "Save space group bindings", httpMethod = "POST", response = Response.class, notes = "This method update bindings for a specific space if the authenticated user is a spaces super manager")
+  @ApiOperation(value = "Save space group bindings", httpMethod = "POST", response = Response.class, notes = "This method set bindings for a specific space with a list of groups if the authenticated user is an administrator.")
   @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
       @ApiResponse(code = 500, message = "Internal server error due to data encoding") })
   public Response saveGroupSpaceBindings(@Context UriInfo uriInfo,
@@ -193,6 +201,138 @@ public class GroupSpaceBindingRestResourcesV1 implements GroupSpaceBindingRestRe
       groupSpaceBindingService.createGroupSpaceBindingQueue(bindingQueue);
     }
     return Response.ok().build();
+  }
+
+  @GET
+  @RolesAllowed("administrators")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("getGroupsTree")
+  @ApiOperation(value = "Gets list of groups entities from the parent group root.", httpMethod = "GET", response = Response.class, notes = "Returns a list of group entities in the following cases if the authenticated user is an administrator.")
+  @ApiResponses(value = { @ApiResponse(code = 200, message = "Request fulfilled"),
+      @ApiResponse(code = 500, message = "Internal server error"), @ApiResponse(code = 400, message = "Invalid query input") })
+  public Response getGroupsTree(@Context UriInfo uriInfo) throws Exception {
+
+    if (!userACL.isSuperUser() && !userACL.isUserInGroup(userACL.getAdminGroups())) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    List<DataEntity> groupNodesDataEntities = buildGroupTree();
+
+    CollectionEntity collectionBinding =
+                                       new CollectionEntity(groupNodesDataEntities, EntityBuilder.ORGANIZATION_GROUP_TYPE, 0, 10);
+
+    return EntityBuilder.getResponse(collectionBinding, uriInfo, RestUtils.getJsonMediaType(), Response.Status.OK);
+  }
+
+  public List<DataEntity> buildGroupTree() throws Exception {
+    OrganizationService organizationService = CommonsUtils.getOrganizationService();
+    Collection<Group> allGroups = organizationService.getGroupHandler().getAllGroups();
+    // get rid of space groups
+    List<Group> groups = allGroups.stream().filter(group -> !group.getId().startsWith("/spaces")).collect(Collectors.toList());
+
+    // Find nodes with highest level
+    int highestLevel = 0;
+    for (Group group : groups) {
+      int level = StringUtils.countMatches(group.getId(), "/");
+      highestLevel = highestLevel > level ? highestLevel : level;
+    }
+
+    // Convert groups to group nodes.
+    List<GroupNode> allGroupNodes = new ArrayList<>();
+    groups.stream().forEach(group -> allGroupNodes.add(new GroupNode(group.getId(), group.getLabel(), group.getParentId())));
+
+    // convert to group node entities
+    List<GroupNodeEntity> allGroupNodesEntities = new ArrayList<>();
+    for (GroupNode groupNode : allGroupNodes) {
+      GroupNodeEntity groupNodeEntity = EntityBuilder.buildEntityFromGroupNode(groupNode);
+      allGroupNodesEntities.add(groupNodeEntity);
+    }
+
+    // Get root child groups. entities
+    List<GroupNodeEntity> rootChildrenEntities = allGroupNodesEntities.stream()
+                                                                      .filter(child -> child.getParentId().equals("root"))
+                                                                      .collect(Collectors.toList());
+    allGroupNodesEntities.removeAll(rootChildrenEntities);
+
+    for (int i = highestLevel; i > 1; i--) {
+
+      // Get bottom group node entities
+      List<GroupNodeEntity> bottomGroupNodesEntities = getBottomGroupEntities(allGroupNodesEntities, i);
+      List<GroupNodeEntity> bottomEntities = new ArrayList<>();
+      bottomEntities.addAll(bottomGroupNodesEntities);
+
+      // Build from children entities.
+      for (GroupNodeEntity groupNodeEntity : bottomGroupNodesEntities) {
+        if (bottomEntities.contains(groupNodeEntity)) {
+          GroupNodeEntity parentEntity = getParentEntityOf(groupNodeEntity, allGroupNodesEntities);
+          // If parent is null then its a direct child of a rootChild.
+          if (parentEntity != null) {
+            allGroupNodesEntities.remove(parentEntity);
+            List<GroupNodeEntity> childrenEntities = getChildrenEntitiesOf(parentEntity, allGroupNodesEntities);
+            parentEntity.setChildGroupNodesEntities(convertToChildrenDataEntities(childrenEntities));
+            // replaceParent
+            allGroupNodesEntities.add(parentEntity);
+            allGroupNodesEntities.removeAll(childrenEntities);
+            bottomEntities.removeAll(childrenEntities);
+          }
+        }
+      }
+    }
+
+    // Finally set rootChildren's children.
+    List<GroupNodeEntity> rootChildGroupNodesEntities = new ArrayList<>();
+    for (GroupNodeEntity rootChildEntity : rootChildrenEntities) {
+      List<GroupNodeEntity> childrenEntities = getChildrenEntitiesOf(rootChildEntity, allGroupNodesEntities);
+      rootChildEntity.setChildGroupNodesEntities(convertToChildrenDataEntities(childrenEntities));
+      rootChildGroupNodesEntities.add(rootChildEntity);
+    }
+
+    // Return list of data entities
+    List<DataEntity> groupNodesDataEntities = new ArrayList<>();
+    for (GroupNodeEntity entity : rootChildGroupNodesEntities) {
+      groupNodesDataEntities.add(entity.getDataEntity());
+    }
+
+    return groupNodesDataEntities;
+
+  }
+
+  private List<GroupNodeEntity> getBottomGroupEntities(List<GroupNodeEntity> allGroupNodesEntities, int highestLevel) {
+    List<GroupNodeEntity> bottomGroupNodesEntities = new ArrayList<>();
+    for (GroupNodeEntity groupNodeEntity : allGroupNodesEntities) {
+      if (StringUtils.countMatches(groupNodeEntity.getId(), "/") == highestLevel) {
+        bottomGroupNodesEntities.add(groupNodeEntity);
+      }
+    }
+    return bottomGroupNodesEntities;
+  }
+
+  private GroupNodeEntity getParentEntityOf(GroupNodeEntity groupNodeEntity, List<GroupNodeEntity> groupNodesEntities) {
+    GroupNodeEntity parentNodeEntity = null;
+    for (GroupNodeEntity parentEntity : groupNodesEntities) {
+      if (parentEntity.getId().equals(groupNodeEntity.getParentId())) {
+        parentNodeEntity = parentEntity;
+      }
+    }
+    return parentNodeEntity;
+  }
+
+  private List<GroupNodeEntity> getChildrenEntitiesOf(GroupNodeEntity groupNodeEntity, List<GroupNodeEntity> groupNodeEntities) {
+    List<GroupNodeEntity> childrenEntities = new ArrayList<>();
+    for (GroupNodeEntity childEntity : groupNodeEntities) {
+      if (childEntity.getParentId().equals(groupNodeEntity.getId())) {
+        childrenEntities.add(childEntity);
+      }
+    }
+    return childrenEntities;
+  }
+
+  private List<DataEntity> convertToChildrenDataEntities(List<GroupNodeEntity> childrenEntities) {
+    List<DataEntity> childrenDataEntities = new ArrayList<>();
+    for (GroupNodeEntity childGroupNodeEntity : childrenEntities) {
+      childrenDataEntities.add(childGroupNodeEntity.getDataEntity());
+    }
+    return childrenDataEntities;
   }
 
 }

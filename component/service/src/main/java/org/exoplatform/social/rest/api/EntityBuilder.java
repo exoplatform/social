@@ -17,12 +17,7 @@
 
 package org.exoplatform.social.rest.api;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,13 +27,14 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-
 import org.apache.commons.lang3.StringUtils;
+
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.rest.ApplicationContext;
 import org.exoplatform.services.rest.impl.ApplicationContextImpl;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.binding.model.GroupNode;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -51,18 +47,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.rest.entity.ActivityEntity;
-import org.exoplatform.social.rest.entity.BaseEntity;
-import org.exoplatform.social.rest.entity.CollectionEntity;
-import org.exoplatform.social.rest.entity.CommentEntity;
-import org.exoplatform.social.rest.entity.DataEntity;
-import org.exoplatform.social.rest.entity.GroupSpaceBindingEntity;
-import org.exoplatform.social.rest.entity.IdentityEntity;
-import org.exoplatform.social.rest.entity.LinkEntity;
-import org.exoplatform.social.rest.entity.ProfileEntity;
-import org.exoplatform.social.rest.entity.RelationshipEntity;
-import org.exoplatform.social.rest.entity.SpaceEntity;
-import org.exoplatform.social.rest.entity.SpaceMembershipEntity;
+import org.exoplatform.social.rest.entity.*;
 import org.exoplatform.social.service.rest.api.VersionResources;
 
 public class EntityBuilder {
@@ -99,9 +84,10 @@ public class EntityBuilder {
   private static final String LAST_ACTION             = "last";
   /** Link header name. */
   private static final String LINK                    = "Link";
-
-  /** Groupe Space Binding */
+  /** Group Space Binding */
   public static final String  GROUP_SPACE_BINDING_TYPE = "groupSpaceBindings";
+  /** Child Groups of group root */
+  public static final String  ORGANIZATION_GROUP_TYPE             = "childGroups";
 
   /**
    * Get a IdentityEntity from an identity in order to build a json object for the rest service
@@ -806,5 +792,21 @@ public class EntityBuilder {
     groupSpaceBindingEntity.setSpaceId(binding.getSpaceId());
     groupSpaceBindingEntity.setGroup(binding.getGroup());
     return groupSpaceBindingEntity;
+  }
+
+  /**
+   * Build rest group entity from groupNode object
+   *
+   * @param groupNode the groupNode object
+   * @return the groupNodeEntity rest object
+   */
+  public static GroupNodeEntity buildEntityFromGroupNode(GroupNode groupNode) {
+    GroupNodeEntity groupNodeEntity = new GroupNodeEntity();
+    groupNodeEntity.setId(groupNode.getId());
+    groupNodeEntity.setGroupName(StringUtils.capitalize(groupNode.getGroupName()));
+    String parentId = groupNode.getParentId() == null ? "root" : groupNode.getParentId();
+    groupNodeEntity.setParentId(parentId);
+    groupNodeEntity.setChildGroupNodesEntities(new ArrayList<>());
+    return groupNodeEntity;
   }
 }
