@@ -33,6 +33,7 @@
           </v-flex>
           <v-flex pt-1 class="spaceName">
             <span> {{ spaceToBind.displayName }} </span>
+          </v-flex>
           <v-flex pt-1 class="spaceName">
             <span> {{ spaceDisplayName }} </span>
           </v-flex>
