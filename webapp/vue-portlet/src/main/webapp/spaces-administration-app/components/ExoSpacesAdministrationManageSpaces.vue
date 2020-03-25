@@ -86,7 +86,7 @@
       temporary
       width="500"
       max-width="100vw">
-      <exo-group-binding-drawer :group-space-bindings="groupSpaceBindings" :space-to-bind="spaceToBind" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal" @openRemoveBindingModal="openRemoveBindingModal" />
+      <exo-group-binding-drawer :key="groupBindingDrawerKey" :group-space-bindings="groupSpaceBindings" :bound-groups-loading="bindingsLoading" :space-to-bind="spaceToBind" @close="closeGroupBindingDrawer" @openBindingModal="openBindingModal" @openRemoveBindingModal="openRemoveBindingModal" />
     </v-navigation-drawer>
     <exo-modal 
       v-show="showConfirmMessageBindingModal"
@@ -140,10 +140,12 @@ export default {
       searchText: '',
       maxVisiblePagesButtons: 3,
       maxVisibleButtons: 5,
+      groupBindingDrawerKey: 0,
       showConfirmMessageBindingModal : false,
       showConfirmMessageRemoveBindingModal: false,
       groupsToBind: [],
       groupSpaceBindings: [],
+      bindingsLoading: true,
       binding: {},
       groupPrettyName: '',
       avatar : spacesConstants.DEFAULT_SPACE_AVATAR
@@ -245,12 +247,18 @@ export default {
       this.spaceName = space.displayName;
       this.spaceToBindIndex = index;
       this.showGroupBindingForm = true;
-      spacesAdministrationServices.getGroupSpaceBindings(space.id).then(data => {
-        this.groupSpaceBindings = data.groupSpaceBindings;
-      });
+      if (space.hasBindings) {
+        spacesAdministrationServices.getGroupSpaceBindings(space.id).then(data => {
+          this.groupSpaceBindings = data.groupSpaceBindings;
+        }).finally(() => this.bindingsLoading = false);
+      } else {
+        this.bindingsLoading = false;
+      }
     },
     closeGroupBindingDrawer() {
       this.showGroupBindingForm = false;
+      this.groupSpaceBindings = [];
+      this.forceRerender();
     },
     openBindingModal(groups) {
       this.groupsToBind = groups;
@@ -281,6 +289,7 @@ export default {
       this.showGroupBindingForm = false;
       this.$emit('bindingReports');
       this.navigateTo('g/:platform:users/spacesAdministration#bindingReports');
+      this.forceRerender();
     },
     navigateTo(pagelink) {
       location.href=`${ eXo.env.portal.context }/${ pagelink }` ;
@@ -289,6 +298,9 @@ export default {
       let groupPrettyName = groupName.slice(groupName.lastIndexOf('/') + 1, groupName.length);
       groupPrettyName = groupPrettyName.charAt(0).toUpperCase() + groupPrettyName.slice(1);
       return `${groupPrettyName} (${groupName})`;
+    },
+    forceRerender() {
+      this.groupBindingDrawerKey += 1;
     }
   }
 };
