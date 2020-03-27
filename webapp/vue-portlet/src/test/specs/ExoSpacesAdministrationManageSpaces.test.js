@@ -15,12 +15,20 @@ describe('ExoSpacesAdministrationManageSpaces.test.js', () => {
       {
         'id': '1',
         'displayName': 'space1',
-        'description': 'space1 is the first space'
+        'description': 'space1 is the first space',
+        'members' : [
+          { 'id': '1' },
+          { 'id': '2' }
+        ]
       },
       {
         'id': '2',
         'displayName': 'space2',
-        'description': 'space2 is the second space'
+        'description': 'space2 is the second space',
+        'members' : [
+          { 'id': '1' },
+          { 'id': '2' }
+        ]
       }
     ],
     showConfirmMessageModal: false
@@ -82,7 +90,7 @@ describe('ExoSpacesAdministrationManageSpaces.test.js', () => {
     showIconSearch.trigger('click');
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith('portal/rest/v1/social/spaces?q=space1&sort=date&order=desc&limit=30&returnSize=true', {'credentials': 'include'});
+    expect(global.fetch).toHaveBeenCalledWith('portal/rest/v1/social/spaces?q=space1&sort=date&order=desc&limit=30&returnSize=true&expand=members', {'credentials': 'include'});
 
     global.fetch.mockClear();
   });

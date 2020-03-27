@@ -64,7 +64,17 @@ public class SpaceEntity extends BaseEntity {
     setProperty("hasBindings", hasBindings);
     return this;
   }
-
+  
+  
+  public SpaceEntity setTotalBoundUsers(long totalBoundUsers) {
+    setProperty("totalBoundUsers", totalBoundUsers);
+    return this;
+  }
+  public long getTotalBoundUsers() {
+    return (long)getProperty("totalBoundUsers");
+  }
+  
+  
   public String hasBindings() {
     return getString("hasBindings");
   }

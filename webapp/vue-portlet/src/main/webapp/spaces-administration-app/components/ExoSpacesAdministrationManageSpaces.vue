@@ -15,6 +15,17 @@
           {{ $t('social.spaces.administration.manageSpaces.description') }}
         </th>
         <th>
+          {{ $t('social.spaces.administration.manageSpaces.visibility') }}
+        </th>
+        <th>
+          {{ $t('social.spaces.administration.manageSpaces.registration') }}
+        </th>
+        <th>
+          <span v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.users.tooltip')">
+            {{ $t('social.spaces.administration.manageSpaces.users') }}
+          </span>
+        </th>
+        <th>
           {{ $t('social.spaces.administration.manageSpaces.actions') }}
         </th>
       </tr>
@@ -24,6 +35,9 @@
       <tr v-for="(space, index) in spaces" :key="space.id">
         <td><img v-if="space.avatarUrl != null" :src="space.avatarUrl" class="avatar" /> <img v-else :src="avatar" class="avatar" />  {{ space.displayName }}</td>
         <td v-html="space.description"></td>
+        <td class="center"> {{ $t('social.spaces.administration.manageSpaces.visibility.'+space.visibility) }} </td>
+        <td class="center"> {{ $t('social.spaces.administration.manageSpaces.registration.'+space.subscription) }} </td>
+        <td class="center"> {{ space.totalBoundUsers }}/{{ space.members.length }} </td>
         <td class="center actionContainer" >
           <a v-exo-tooltip.bottom.body="$t('social.spaces.administration.manageSpaces.actions.bind')" v-if="canBindGroupsAndSpaces" class="actionIcon" @click="openSpaceBindingDrawer(space, index)">
             <i :class="{'bound': space.hasBindings}" class="uiIconSpaceBinding uiIconGroup"></i>
