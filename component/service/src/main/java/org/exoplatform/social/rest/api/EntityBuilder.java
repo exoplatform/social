@@ -36,6 +36,7 @@ import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.binding.model.GroupNode;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -185,6 +186,7 @@ public class EntityBuilder {
     SpaceEntity spaceEntity = new SpaceEntity(space.getId());
     IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
     SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+    GroupSpaceBindingService groupSpaceBindingService = CommonsUtils.getService(GroupSpaceBindingService.class);
     if (ArrayUtils.contains(space.getMembers(), userId) || spaceService.isSuperManager(userId)) {
       spaceEntity.setHref(RestUtils.getRestUrl(SPACES_TYPE, space.getId(), restPath));
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), true);
@@ -197,6 +199,7 @@ public class EntityBuilder {
       spaceEntity.setIdentity(identity);
       spaceEntity.setGroupId(space.getGroupId());
       spaceEntity.setHasBindings(space.hasBindings());
+      spaceEntity.setTotalBoundUsers(groupSpaceBindingService.countBoundUsers(space.getId()));
       spaceEntity.setApplications(getSpaceApplications(space));
       LinkEntity managers, memebers;
       if(RestProperties.MANAGERS.equals(expand)) {
