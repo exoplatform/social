@@ -469,20 +469,6 @@ public class MailTemplateProvider extends TemplateProvider {
                     if (activity == null) {
                         continue;
                     }
-                    String commentId = message.getValueOwnerParameter(SocialNotificationUtils.COMMENT_ID.getKey());
-                    ExoSocialActivity parentActivity = null;
-                    if(StringUtils.isBlank(commentId)) {
-                        LOG.warn("Attempt to send a mail message with id '{}' and receiver '{}' with empty parameter 'commentId' and activityId = '{}' ",
-                                message.getId(),
-                                message.getTo(),
-                                activityId);
-                    } else {
-                        parentActivity = activity;
-                        activity = Utils.getActivityManager().getActivity(commentId);
-                        if (activity == null) {
-                            continue;
-                        }
-                    }
 
                     String poster = message.getValueOwnerParameter("poster");
                     if(message.getTo() != null && poster != null && poster.equals(message.getTo())) {
@@ -490,25 +476,9 @@ public class MailTemplateProvider extends TemplateProvider {
                     }
                     String title = SocialNotificationUtils.processImageTitle(activity.getTitle(), imagePlaceHolder);
                     Pair<String, String> userComment = new ImmutablePair<String, String>(poster, title);
-                    if (parentActivity != null && parentActivity.getStreamOwner() != null) {
-                        Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, parentActivity.getStreamOwner(), true);
-                        if (spaceIdentity == null) {
-                            if (message.getTo()!=null && !message.getTo().equals(parentActivity.getStreamOwner())) {
-                                continue;
-                            }
-                        } else if (parentActivity.getPosterId() != null) {
-                            Identity identity = Utils.getIdentityManager().getIdentity(parentActivity.getPosterId(), true);
-                            if (identity != null) {
-                                if (message.getTo() != null && !message.getTo().equals(identity.getRemoteId())) {
-                                    continue;
-                                }
-                            }
-                        }
-                    }
-                    //
-                    parentActivity = parentActivity == null ? activity : parentActivity;
-                    SocialNotificationUtils.processInforSendTo(receiverMap, parentActivity.getId(), poster);
-                    SocialNotificationUtils.processInforUserComments(activityUserComments, parentActivity.getId(), userComment);
+
+                    SocialNotificationUtils.processInforSendTo(receiverMap, activity.getId(), poster);
+                    SocialNotificationUtils.processInforUserComments(activityUserComments, activity.getId(), userComment);
                 }
                 writer.append(SocialNotificationUtils.getMessageByIds(receiverMap, activityUserComments, templateContext));
             } catch (IOException e) {
