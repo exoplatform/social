@@ -81,7 +81,18 @@ public interface UserSpaceBindingDAO extends GenericDAO<UserSpaceBindingEntity, 
    * @return a list of UserSpaceBindingEntities
    */
   List<UserSpaceBindingEntity> findBoundUsersByBindingId(long id);
-
+  
+  /**
+   * Get user space  binding by groupBindingId and username
+   *
+   * @param groupBindingId
+   * @param username
+   * @return a list of UserSpaceBindingEntities
+   */
+  UserSpaceBindingEntity findUserBindingByGroupBindingIdAndUsername(long groupBindingId, String username);
+  
+  
+  
   /**
    * Checks if user is already bound and member of the space.
    * 

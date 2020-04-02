@@ -16,6 +16,12 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.junit.Test;
+
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
@@ -26,11 +32,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.rest.impl.binding.GroupSpaceBindingRestResourcesV1;
 import org.exoplatform.social.service.test.AbstractResourceTest;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
 
@@ -62,7 +63,7 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
     spaceService = getContainer().getComponentInstanceOfType(SpaceService.class);
     userACL = getContainer().getComponentInstanceOfType(UserACL.class);
     groupSpaceBindingService = getContainer().getComponentInstanceOfType(GroupSpaceBindingService.class);
-    groupSpaceBindingRestResourcesV1 = new GroupSpaceBindingRestResourcesV1(groupSpaceBindingService, userACL);
+    groupSpaceBindingRestResourcesV1 = new GroupSpaceBindingRestResourcesV1(spaceService, groupSpaceBindingService, userACL);
     registry(groupSpaceBindingRestResourcesV1);
   }
 
@@ -73,16 +74,15 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
   }
 
   protected void deleteAllBindings() {
-    for (GroupSpaceBinding binding : groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId1)) {
-      groupSpaceBindingService.deleteGroupSpaceBinding(binding);
-    }
-    for (GroupSpaceBinding binding : groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId1)) {
-      groupSpaceBindingService.deleteGroupSpaceBinding(binding);
+    if (spaceId1 != null) {
+      for (GroupSpaceBinding binding : groupSpaceBindingService.findGroupSpaceBindingsBySpace(spaceId1)) {
+        groupSpaceBindingService.deleteGroupSpaceBinding(binding);
+      }
     }
   }
 
   @Test
-  public void testGroupspacebindings() throws Exception {
+  public void testGroupSpaceBindings() throws Exception {
 
     // Given
     startSessionAs("root");
@@ -90,61 +90,90 @@ public class GroupSpaceBindingRestServiceTest extends AbstractResourceTest {
     // Given
     List<GroupSpaceBinding> groupSpaceBindings = new LinkedList<>();
     GroupSpaceBinding binding1 = new GroupSpaceBinding();
-    binding1.setId(-1);
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId(spaceId1);
     groupSpaceBindings.add(binding1);
     tearDownbindingList.add(binding1);
 
     GroupSpaceBinding binding2 = new GroupSpaceBinding();
-    binding2.setId(-1);
     binding2.setGroup("/platform/web-contributors");
     binding2.setSpaceId(spaceId1);
     groupSpaceBindings.add(binding2);
     tearDownbindingList.add(binding2);
 
     GroupSpaceBinding binding3 = new GroupSpaceBinding();
-    binding3.setId(-1);
     binding3.setGroup("/platform/web-contributors");
     binding3.setSpaceId(spaceId1);
     groupSpaceBindings.add(binding3);
     tearDownbindingList.add(binding3);
-//    groupSpaceBindings.stream().forEach(groupSpaceBinding -> groupSpaceBindingService.saveGroupSpaceBinding(groupSpaceBinding));
+    groupSpaceBindings.stream().forEach(groupSpaceBinding -> groupSpaceBindingService.saveGroupSpaceBinding(groupSpaceBinding));
     // when
-    ContainerResponse response = service("GET",
-                                         getURLResource("groupspacebindings?spaceId=1&spaceRole=manager&limit=5&offset=0"),
-                                         "",
-                                         null,
-                                         null);
+    ContainerResponse response = service("GET", getURLResource("spaceGroupBindings/" + spaceId1), "", null, null);
     // then
-    //TODO
-//    assertEquals(200, response.getStatus());
+    assertEquals(200, response.getStatus());
 
     endSession();
   }
-
   @Test
-  public void testDeleteSpacebinding() throws Exception {
-
+  public void testGetBindingReportOperations() throws Exception {
+    
     // Given
     startSessionAs("root");
     spaceId1 = createSpace("space1", "").getId();
-
     // Given
     List<GroupSpaceBinding> groupSpaceBindings = new LinkedList<>();
     GroupSpaceBinding binding1 = new GroupSpaceBinding();
-    binding1.setId(-1);
     binding1.setGroup("/platform/administrators");
     binding1.setSpaceId(spaceId1);
     groupSpaceBindings.add(binding1);
     tearDownbindingList.add(binding1);
-//    groupSpaceBindings.stream().forEach(groupSpaceBinding -> groupSpaceBindingService.saveGroupSpaceBinding(groupSpaceBinding));
+    
+    GroupSpaceBinding binding2 = new GroupSpaceBinding();
+    binding2.setGroup("/platform/web-contributors");
+    binding2.setSpaceId(spaceId1);
+    groupSpaceBindings.add(binding2);
+    tearDownbindingList.add(binding2);
+    
+    GroupSpaceBinding binding3 = new GroupSpaceBinding();
+    binding3.setGroup("/platform/web-contributors");
+    binding3.setSpaceId(spaceId1);
+    groupSpaceBindings.add(binding3);
+    tearDownbindingList.add(binding3);
+    groupSpaceBindings.stream().forEach(groupSpaceBinding -> groupSpaceBindingService.saveGroupSpaceBinding(groupSpaceBinding));
+    // when
+    ContainerResponse response = service("GET", getURLResource("spaceGroupBindings/getBindingReportOperations"), "", null, null);
+    // then
+    assertEquals(200, response.getStatus());
+    
+    endSession();
+  }
+  
+
+  @Test
+  public void testDeleteSpaceBinding() throws Exception {
+
+    // Given
+    startSessionAs("root");
+    spaceId2 = createSpace("space2", "").getId();
+
+    // Given
+    List<GroupSpaceBinding> groupSpaceBindings = new LinkedList<>();
+    GroupSpaceBinding binding1 = new GroupSpaceBinding();
+    binding1.setGroup("/platform/administrators");
+    binding1.setSpaceId(spaceId2);
+    groupSpaceBindings.add(binding1);
+    tearDownbindingList.add(binding1);
+    GroupSpaceBinding binding = groupSpaceBindingService.saveGroupSpaceBinding(binding1);
 
     // when
-    ContainerResponse response = service("DELETE", getURLResource("groupspacebindings/" + spaceId1 + "/manager"), "", null, null);
+    ContainerResponse response = service("DELETE",
+                                         getURLResource("spaceGroupBindings/removeGroupSpaceBinding/"
+                                             + String.valueOf(binding.getId())),
+                                         "",
+                                         null,
+                                         null);
     // then
-    //TODO
-//    assertEquals(200, response.getStatus());
+    assertEquals(200, response.getStatus());
 
     endSession();
   }

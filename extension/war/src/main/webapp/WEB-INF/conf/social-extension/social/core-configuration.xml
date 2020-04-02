@@ -149,6 +149,14 @@
         <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingQueueDAO</key>
         <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingQueueDAOImpl</type>
     </component>
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingReportActionDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingReportActionDAOImpl</type>
+    </component>
+    <component>
+        <key>org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingReportUserDAO</key>
+        <type>org.exoplatform.social.core.jpa.storage.dao.jpa.GroupSpaceBindingReportUserDAOImpl</type>
+    </component>
     <!--
       Identity storage components.
     -->

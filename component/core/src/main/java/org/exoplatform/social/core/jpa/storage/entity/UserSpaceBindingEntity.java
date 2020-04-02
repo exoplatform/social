@@ -50,7 +50,11 @@ import org.exoplatform.commons.api.persistence.ExoEntity;
         + "userSpaceBinding.user) "
         + "FROM "
         + "SocUserSpaceBinding "
-        + "userSpaceBinding WHERE userSpaceBinding.groupSpaceBinding.space.id = :spaceId")})
+        + "userSpaceBinding WHERE userSpaceBinding.groupSpaceBinding.space.id = :spaceId"),
+    @NamedQuery(name="SocUserSpaceBinding.findUserBindingByGroupBindingIdAndUsername", query = "SELECT userSpaceBinding FROM SocUserSpaceBinding "
+        + "userSpaceBinding WHERE userSpaceBinding.groupSpaceBinding.id = :groupBindingId and userSpaceBinding.user = :username")
+
+})
 public class UserSpaceBindingEntity implements Serializable {
 
   private static final long       serialVersionUID = -3088537806368295223L;
