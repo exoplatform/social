@@ -17,6 +17,8 @@
 
 package org.exoplatform.social.rest.api;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,12 +32,15 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.rest.ApplicationContext;
 import org.exoplatform.services.rest.impl.ApplicationContextImpl;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.binding.model.GroupNode;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
+import org.exoplatform.social.core.binding.model.GroupSpaceBindingOperationReport;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -89,7 +94,11 @@ public class EntityBuilder {
   public static final String  GROUP_SPACE_BINDING_TYPE = "groupSpaceBindings";
   /** Child Groups of group root */
   public static final String  ORGANIZATION_GROUP_TYPE             = "childGroups";
-
+  /** Group Space Binding */
+  public static final String  GROUP_SPACE_BINDING_REPORT_OPERATIONS_TYPE = "groupSpaceBindingReportOperations";
+  
+  private static final Log LOG = ExoLogger.getLogger(EntityBuilder.class);
+  
   /**
    * Get a IdentityEntity from an identity in order to build a json object for the rest service
    * 
@@ -798,18 +807,54 @@ public class EntityBuilder {
   }
 
   /**
-   * Build rest group entity from groupNode object
+   * Build rest group entity from group object
    *
-   * @param groupNode the groupNode object
+   * @param group the group object
    * @return the groupNodeEntity rest object
    */
-  public static GroupNodeEntity buildEntityFromGroupNode(GroupNode groupNode) {
+  public static GroupNodeEntity buildEntityFromGroup(Group group) {
     GroupNodeEntity groupNodeEntity = new GroupNodeEntity();
-    groupNodeEntity.setId(groupNode.getId());
-    groupNodeEntity.setGroupName(StringUtils.capitalize(groupNode.getGroupName()));
-    String parentId = groupNode.getParentId() == null ? "root" : groupNode.getParentId();
+    groupNodeEntity.setId(group.getId());
+    String groupName = group.getLabel() != null ? group.getLabel() : group.getGroupName();
+    groupNodeEntity.setGroupName(groupName);
+    String parentId = group.getParentId() == null ? "root" : group.getParentId();
     groupNodeEntity.setParentId(parentId);
     groupNodeEntity.setChildGroupNodesEntities(new ArrayList<>());
     return groupNodeEntity;
+  }
+  
+  /**
+   * Build rest group entity from group name
+   *
+   * @param group the group name
+   * @return the groupNodeEntity rest object
+   */
+  public static GroupNodeEntity buildEntityFromGroupId(String group) {
+    GroupNodeEntity groupNodeEntity = new GroupNodeEntity();
+    groupNodeEntity.setId(group);
+    groupNodeEntity.setGroupName(group);
+    groupNodeEntity.setParentId("");
+    groupNodeEntity.setChildGroupNodesEntities(new ArrayList<>());
+    return groupNodeEntity;
+  }
+
+  /**
+   * Build rest bindingOperationReport entity from bindingOperationReport object
+   *
+   * @param bindingOperationReport the bindingOperationReport object
+   * @return the bindingOperationReport rest object
+   */
+  public static GroupSpaceBindingOperationReportEntity buildEntityFromGroupSpaceBindingOperationReport(GroupSpaceBindingOperationReport bindingOperationReport) {
+    GroupSpaceBindingOperationReportEntity operationReportEntity = new GroupSpaceBindingOperationReportEntity();
+    operationReportEntity.setOperationType(bindingOperationReport.getAction());
+    operationReportEntity.setBindingId(Long.toString(bindingOperationReport.getGroupSpaceBindingId()));
+    operationReportEntity.setAddedUsersCount(Long.toString(bindingOperationReport.getAddedUsers()));
+    operationReportEntity.setRemovedUsersCount(Long.toString(bindingOperationReport.getRemovedUsers()));
+    DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+    Date startDate = bindingOperationReport.getStartDate();
+    Date endDate = bindingOperationReport.getEndDate();
+    operationReportEntity.setStartDate(startDate != null ? dateFormat.format(startDate) : "null");
+    operationReportEntity.setEndDate(endDate != null ? dateFormat.format(endDate) : "null");
+    return operationReportEntity;
   }
 }

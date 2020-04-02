@@ -19,9 +19,7 @@ package org.exoplatform.social.core.storage.api;
 
 import java.util.List;
 
-import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
-import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
-import org.exoplatform.social.core.binding.model.UserSpaceBinding;
+import org.exoplatform.social.core.binding.model.*;
 import org.exoplatform.social.core.storage.GroupSpaceBindingStorageException;
 
 /**
@@ -82,10 +80,10 @@ public interface GroupSpaceBindingStorage {
   /**
    * Get all user bindings for a group
    *
-   * @param group the group
+   * @param binding the group binding
    * @return A list of group bindings
    */
-  List<UserSpaceBinding> findUserAllBindingsByGroup(String group) throws GroupSpaceBindingStorageException;
+  List<UserSpaceBinding> findUserAllBindingsByGroupBinding(GroupSpaceBinding binding) throws GroupSpaceBindingStorageException;
 
   /**
    * Saves a new binding.
@@ -112,12 +110,35 @@ public interface GroupSpaceBindingStorage {
   UserSpaceBinding saveUserBinding(UserSpaceBinding binding) throws GroupSpaceBindingStorageException;
 
   /**
+   * Saves a group space binding report.
+   *
+   * @param groupSpaceBindingReportAction
+   * @throws GroupSpaceBindingStorageException
+   */
+  GroupSpaceBindingReportAction saveGroupSpaceBindingReport(GroupSpaceBindingReportAction groupSpaceBindingReportAction) throws GroupSpaceBindingStorageException;
+
+  /**
    * Deletes a binding by binding id.
    *
    * @param id
    * @throws GroupSpaceBindingStorageException
    */
   void deleteGroupBinding(long id) throws GroupSpaceBindingStorageException;
+
+  /**
+   * Deletes a binding report by bindingReport id.
+   *
+   * @param id
+   * @throws GroupSpaceBindingStorageException
+   */
+  void deleteGroupBindingReport(long id) throws GroupSpaceBindingStorageException;
+  /**
+   * Deletes a binding report user by bindingReport id.
+   *
+   * @param id
+   * @throws GroupSpaceBindingStorageException
+   */
+  void deleteGroupBindingReportUser(long id) throws GroupSpaceBindingStorageException;
 
   /**
    * Deletes a binding by binding id.
@@ -195,7 +216,7 @@ public interface GroupSpaceBindingStorage {
    * @return
    */
   boolean isBoundSpace(String spaceId);
-  
+
   /**
    * Count the number of bound users in a space
    *
@@ -203,4 +224,38 @@ public interface GroupSpaceBindingStorage {
    * @return number of bound users
    */
   long countBoundUsers(String spaceId);
+
+  /**
+   * Get the binding report for generate the csv file
+   *
+   * @param spaceId
+   * @param groupSpaceBindingId
+   * @param group
+   * @param action
+   * @return
+   */
+  List<GroupSpaceBindingReportUser> findReportsForCsv(long spaceId, long groupSpaceBindingId, String group, String action);
+
+  /**
+   * Gets all the GroupSpaceBindingOperations Report.
+   * 
+   * @return
+   */
+  List<GroupSpaceBindingOperationReport> getGroupSpaceBindingReportOperations();
+  
+  void saveGroupSpaceBindingReportUser(GroupSpaceBindingReportUser groupSpaceBindingReportUser);
+
+  void updateGroupSpaceBindingReportAction(GroupSpaceBindingReportAction bindingReportAction);
+
+  GroupSpaceBindingReportAction findGroupSpaceBindingReportAction(long bindingId, String action);
+
+  List<GroupSpaceBindingQueue> getAllFromBindingQueue();
+  
+  
+  List<GroupSpaceBinding> findAllGroupSpaceBinding();
+  List<UserSpaceBinding> findAllUserSpaceBinding();
+  List<GroupSpaceBindingQueue> findAllGroupSpaceBindingQueue();
+  List<GroupSpaceBindingReportAction> findAllGroupSpaceBindingReportAction();
+  List<GroupSpaceBindingReportUser> findAllGroupSpaceBindingReportUser();
+  
 }

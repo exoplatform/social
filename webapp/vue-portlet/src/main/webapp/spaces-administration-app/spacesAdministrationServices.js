@@ -90,3 +90,10 @@ export function getGroupsTree() {
   return fetch(`${spacesConstants.SPACE_GROUP_BINDING_API}/getGroupsTree`, {credentials: 'include'}).then(resp => resp.json());
 }
 
+export function getBindingReportOperations() {
+  return fetch(`${spacesConstants.SPACE_GROUP_BINDING_API}/getBindingReportOperations`, {credentials: 'include'}).then(resp => resp.json());
+}
+
+export function getReport(spaceId, action, groupId, groupBindingId) {
+  window.open(`${spacesConstants.SPACE_GROUP_BINDING_API}/getExport?spaceId=${spaceId}&action=${action}&group=${groupId}&groupBindingId=${groupBindingId}`, '_blank');
+}

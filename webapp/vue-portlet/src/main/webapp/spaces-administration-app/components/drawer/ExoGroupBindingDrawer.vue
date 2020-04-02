@@ -157,7 +157,6 @@ export default {
         closeAfterSelect: false,
         dropdownParent: 'body',
         hideSelected: true,
-        placeholder:`@ ${this.$t('social.spaces.administration.manageSpaces.spaceBindingForm.textField.placeHolder')}`,
         renderMenuItem (item, escape) {
           return component.renderMenuItem(item, escape);
         },
