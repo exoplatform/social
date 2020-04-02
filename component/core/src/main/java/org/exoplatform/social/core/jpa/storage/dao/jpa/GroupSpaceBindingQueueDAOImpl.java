@@ -17,14 +17,15 @@
 
 package org.exoplatform.social.core.jpa.storage.dao.jpa;
 
+import java.util.List;
+
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.exoplatform.commons.persistence.impl.GenericDAOJPAImpl;
 import org.exoplatform.social.core.jpa.storage.dao.GroupSpaceBindingQueueDAO;
 import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingEntity;
 import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingQueueEntity;
-
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import java.util.List;
 
 public class GroupSpaceBindingQueueDAOImpl extends GenericDAOJPAImpl<GroupSpaceBindingQueueEntity, Long>
     implements GroupSpaceBindingQueueDAO {
@@ -48,6 +49,14 @@ public class GroupSpaceBindingQueueDAOImpl extends GenericDAOJPAImpl<GroupSpaceB
                                               getEntityManager().createNamedQuery("SocGroupSpaceBindingQueue.getGroupSpaceBindingsFromQueueByAction",
                                                                                   GroupSpaceBindingEntity.class);
     query.setParameter("action", action);
+    return query.getResultList();
+  }
+
+  @Override
+  public List<GroupSpaceBindingQueueEntity> getAllFromBindingQueue() {
+    TypedQuery<GroupSpaceBindingQueueEntity> query =
+                                                   getEntityManager().createNamedQuery("SocGroupSpaceBindingQueue.getAllFromBindingQueueOrderedById",
+                                                                                       GroupSpaceBindingQueueEntity.class);
     return query.getResultList();
   }
 }

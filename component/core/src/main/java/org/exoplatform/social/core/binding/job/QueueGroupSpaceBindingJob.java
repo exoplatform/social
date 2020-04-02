@@ -67,6 +67,9 @@ public class QueueGroupSpaceBindingJob implements Job {
         }
       } catch (Exception e) {
         LOG.error("Failed to treat GroupSpaceBinding queue", e);
+        //if the first queued job failed, stop the loop
+        //else you will continually loop on the same error
+        break;
       }
     } while (firstBindingQueue != null);
     LOG.info("End treating GroupSpaceBinding queue");

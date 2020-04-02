@@ -17,12 +17,14 @@
 
 package org.exoplatform.social.rest.api;
 
+import java.util.List;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Collection;
-import java.util.List;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * Provides REST/JSON API to manage the binding between a space and an
@@ -73,4 +75,33 @@ public interface GroupSpaceBindingRestResources extends SocialRest {
    */
   @DELETE
   Response deleteSpaceBinding(@Context UriInfo uriInfo, @PathParam("bindingId") String bindingId) throws Exception;
+
+  /**
+   * Return the groups in a tree structure of json format
+   * 
+   * @param uriInfo
+   * @return
+   * @throws Exception
+   */
+  @GET
+  Response getGroupsTree(@Context UriInfo uriInfo) throws Exception;
+
+  /**
+   * @param uriInfo
+   * @param spaceId
+   * @param action
+   * @param group
+   * @param groupBindingId
+   * @return
+   * @throws Exception
+   */
+  @GET
+  Response getReport(@Context UriInfo uriInfo,
+                     @ApiParam(value = "spaceId", required = true) @QueryParam("spaceId") String spaceId,
+                     @ApiParam(value = "action", required = true) @QueryParam("action") String action,
+                     @ApiParam(value = "group", required = true) @QueryParam("group") String group,
+                     @ApiParam(value = "groupBindingId") @QueryParam("groupBindingId") String groupBindingId) throws Exception;
+
+  @GET
+  Response getBindingReportOperations(@Context UriInfo uriInfo) throws Exception;
 }

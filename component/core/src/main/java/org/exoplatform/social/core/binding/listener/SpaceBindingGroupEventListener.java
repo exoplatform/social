@@ -28,7 +28,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupEventListener;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
-import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
 import org.exoplatform.social.core.binding.spi.GroupSpaceBindingService;
 
 public class SpaceBindingGroupEventListener extends GroupEventListener {
@@ -45,8 +44,7 @@ public class SpaceBindingGroupEventListener extends GroupEventListener {
         List<GroupSpaceBinding> groupSpaceBindings = groupSpaceBindingService.findGroupSpaceBindingsByGroup(group.getId());
         // For each binding create a binding queue with remove action.
         groupSpaceBindings.stream()
-                          .forEach(groupSpaceBinding -> groupSpaceBindingService.createGroupSpaceBindingQueue(new GroupSpaceBindingQueue(groupSpaceBinding,
-                                                                                                                                         GroupSpaceBindingQueue.ACTION_REMOVE)));
+                          .forEach(groupSpaceBinding -> groupSpaceBindingService.prepareDeleteGroupSpaceBinding(groupSpaceBinding));
 
       } catch (Exception e) {
         LOG.warn("Problem occurred when removing all bindings for removed group ({}): ", group.getGroupName(), e);

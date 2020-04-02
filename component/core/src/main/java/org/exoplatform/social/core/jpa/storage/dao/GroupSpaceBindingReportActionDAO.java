@@ -20,31 +20,25 @@ package org.exoplatform.social.core.jpa.storage.dao;
 import java.util.List;
 
 import org.exoplatform.commons.api.persistence.GenericDAO;
-import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingEntity;
-import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingQueueEntity;
+import org.exoplatform.social.core.jpa.storage.entity.GroupSpaceBindingReportActionEntity;
 
-public interface GroupSpaceBindingQueueDAO extends GenericDAO<GroupSpaceBindingQueueEntity, Long> {
+public interface GroupSpaceBindingReportActionDAO extends GenericDAO<GroupSpaceBindingReportActionEntity, Long> {
 
-  /**
-   * Gets first GroupSpaceBindingQueue in the queue.
-   * 
-   * @return
-   */
-  GroupSpaceBindingQueueEntity findFirstGroupSpaceBindingQueue();
+  
 
   /**
-   * Gets GroupSpaceBindings by action from the queue.
+   * Get binding report action by bindingId and action type
    * 
+   * @param bindingId
    * @param action
    * @return
    */
-  List<GroupSpaceBindingEntity> getGroupSpaceBindingsFromQueueByAction(String action);
+  GroupSpaceBindingReportActionEntity findGroupSpaceBindingReportAction(long bindingId, String action);
 
   /**
-   * Gets all GroupSpaceBindingQueues in a descending order for the operation
-   * report
+   * Get all binding report actions ordered by end date
    * 
    * @return
    */
-  List<GroupSpaceBindingQueueEntity> getAllFromBindingQueue();
+  List<GroupSpaceBindingReportActionEntity> getGroupSpaceBindingReportActionsOrderedByEndDate();
 }

@@ -19,9 +19,7 @@ package org.exoplatform.social.core.binding.spi;
 
 import java.util.List;
 
-import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
-import org.exoplatform.social.core.binding.model.GroupSpaceBindingQueue;
-import org.exoplatform.social.core.binding.model.UserSpaceBinding;
+import org.exoplatform.social.core.binding.model.*;
 import org.exoplatform.social.core.space.model.Space;
 
 /**
@@ -30,11 +28,14 @@ import org.exoplatform.social.core.space.model.Space;
  */
 
 public interface GroupSpaceBindingService {
-  
-  public final static String LOG_SERVICE_NAME = "group-binding";
-  public final static String LOG_NEW_OPERATION_NAME = "new-binding";
-  public final static String LOG_REMOVE_OPERATION_NAME = "remove-binding";
-  public final static String LOG_UPDATE_OPERATION_NAME = "update-binding";
+
+  String LOG_SERVICE_NAME          = "group-binding";
+
+  String LOG_NEW_OPERATION_NAME    = "new-binding";
+
+  String LOG_REMOVE_OPERATION_NAME = "remove-binding";
+
+  String LOG_UPDATE_OPERATION_NAME = "update-binding";
 
   /**
    * Get the first GroupSpaceBindingQueue to treat
@@ -86,11 +87,22 @@ public interface GroupSpaceBindingService {
   List<UserSpaceBinding> findUserBindingsByUser(String userName);
 
   /**
-   * Saves a list of user bindings
+   * Get the binding report for generate the csv file
    *
-   * @param userSpaceBindings The list of user bindings to be created
+   * @param spaceId
+   * @param groupSpaceBindingId
+   * @param group
+   * @param action
+   * @return
    */
-  void saveUserBindings(List<UserSpaceBinding> userSpaceBindings);
+  List<GroupSpaceBindingReportUser> findReportsForCsv(long spaceId, long groupSpaceBindingId, String group, String action);
+
+  /**
+   * Gets all the GroupSpaceBindingOperations Report.
+   * 
+   * @return
+   */
+  List<GroupSpaceBindingOperationReport> getGroupSpaceBindingReportOperations();
 
   /**
    * Saves a group space binding queue
@@ -106,13 +118,21 @@ public interface GroupSpaceBindingService {
    * @param groupSpaceBinding The binding to be deleted.
    */
   void deleteGroupSpaceBinding(GroupSpaceBinding groupSpaceBinding);
+  
+  /**
+   * Prepare the group binding deletion : create the reportAction, and create the GroupBindingQueue
+   *
+   * @param groupSpaceBinding The binding to be prepared.
+   */
+  void prepareDeleteGroupSpaceBinding(GroupSpaceBinding groupSpaceBinding);
 
   /**
    * Delete a user binding. When a binding is deleted
-   *
+   * 
    * @param userSpaceBinding The user binding to be deleted.
+   * @param bindingReportAction : the action which lead to the deletion (for the
    */
-  void deleteUserBindingAndSpaceMembership(UserSpaceBinding userSpaceBinding);
+  void deleteUserBinding(UserSpaceBinding userSpaceBinding, GroupSpaceBindingReportAction bindingReportAction);
 
   /**
    * Delete all group bindings for a specific space. When bindings is deleted, all
@@ -138,7 +158,7 @@ public interface GroupSpaceBindingService {
    * @return a List of UserSpaceBinding.
    */
   long countUserBindings(String spaceId, String userName);
-  
+
   /**
    * Count number of bound users for the space.
    *
@@ -146,7 +166,7 @@ public interface GroupSpaceBindingService {
    * @return number of bound users.
    */
   long countBoundUsers(String spaceId);
-  
+
   /**
    * Checks if user is already bound and member of the space.
    * 
@@ -170,6 +190,14 @@ public interface GroupSpaceBindingService {
    * @param groupSpaceBindings
    */
   void saveGroupSpaceBindings(List<GroupSpaceBinding> groupSpaceBindings);
+
+  /**
+   * Save a group space binding.
+   * 
+   * @param groupSpaceBinding
+   * @return
+   */
+  GroupSpaceBinding saveGroupSpaceBinding(GroupSpaceBinding groupSpaceBinding);
 
   /**
    * Save a UserSpaceBinding for each user of the group
@@ -207,13 +235,18 @@ public interface GroupSpaceBindingService {
    * @param userId
    * @param groupSpaceBinding
    * @param space
+   * @param bindingReportAction
    */
-  void saveUserBinding(String userId, GroupSpaceBinding groupSpaceBinding, Space space);
+  void saveUserBinding(String userId,
+                       GroupSpaceBinding groupSpaceBinding,
+                       Space space,
+                       GroupSpaceBindingReportAction bindingReportAction);
+  
+  GroupSpaceBindingReportAction saveGroupSpaceBindingReport(GroupSpaceBindingReportAction groupSpaceBindingReportAction);
 
-  /**
-   * Delete a user space binding.
-   * 
-   * @param userSpaceBinding
-   */
-  void deleteUserSpaceBinding(UserSpaceBinding userSpaceBinding);
+  GroupSpaceBindingReportAction findGroupSpaceBindingReportAction(long bindingId, String action);
+
+  void updateGroupSpaceBindingReportAction(GroupSpaceBindingReportAction groupSpaceBindingReportAction);
+
+  List<GroupSpaceBindingQueue> getAllFromBindingQueue();
 }
