@@ -129,7 +129,15 @@ public class RDBMSActivityStorageImplTest extends AbstractCoreTest {
     assertEquals(streamItemsRes.get(0).getUpdatedDate(),streamItems.get(0).getUpdatedDate());
 
     assertEquals("Title after updated", res.getTitle());
-    //
+    
+        // Update activity again
+    String titleUpdated = "Title after updated with character = that should not be encoded";
+    activityCreated.setTitle(titleUpdated);
+    activityStorage.updateActivity(activityCreated);
+
+    assertEquals(titleUpdated, activityCreated.getTitle());
+
+
     tearDownActivityList.add(activity);
   }
 
