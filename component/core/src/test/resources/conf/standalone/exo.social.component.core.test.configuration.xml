@@ -542,7 +542,13 @@
     <key>org.exoplatform.social.core.binding.spi.GroupSpaceBindingService</key>
     <type>org.exoplatform.social.core.binding.impl.GroupSpaceBindingServiceImpl</type>
   </component>
-  
+  <!--
+    GroupSpaceBinding storage components.
+   -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.GroupSpaceBindingStorage</key>
+    <type>org.exoplatform.social.core.jpa.storage.RDBMSGroupSpaceBindingStorageImpl</type>
+  </component>
   
   
   <!-- Bind datasource -->
