@@ -295,11 +295,13 @@
                  tdProfile.append(aProfile);
 
                  if (json.position) {
-                     var divPosition = $("<div/>", {
+                     var brPosition = $("<br>");
+                     var spanPosition = $("<span/>", {
                          "font-weight":"normal",
                          "text":json.position
                      });
-                     tdProfile.append(divPosition);
+                     tdProfile.append(brPosition);
+                     tdProfile.append(spanPosition);
                  }
 
                  tr.append(tdAvatar).append(tdProfile);
