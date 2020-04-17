@@ -21,7 +21,7 @@
           </v-flex>
           <v-flex class="filter" ml-2 mr-4 xs2>
             <div class="btn-group">
-              <button class="btn dropdown-toggle" data-toggle="dropdown">
+              <button class="btn dropdown-toggle ignore-vuetify-classes" data-toggle="dropdown">
                 {{ action }}
                 <i class="uiIconMiniArrowDown uiIconLightGray"></i><span/>
               </button>
