@@ -720,14 +720,15 @@ public class PeopleRestService implements ResourceContainer{
     
     PeopleInfo peopleInfo = new PeopleInfo(NO_INFO);
     Identity identity = getIdentityManager()
-        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
     Identity currentIdentity = getIdentityManager()
-        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
+        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName);
     if (identity != null) {
       // public information
       peopleInfo.setFullName(identity.getProfile().getFullName());
       peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
       peopleInfo.setDeleted(identity.isDeleted());
+      peopleInfo.setEnable(identity.isEnable());
       Profile userProfile = identity.getProfile();
       String avatarURL = userProfile.getAvatarUrl();
       if (avatarURL == null) {

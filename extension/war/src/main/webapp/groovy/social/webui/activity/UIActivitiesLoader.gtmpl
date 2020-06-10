@@ -21,6 +21,8 @@
   String cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
   String removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
   String ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
+  String disabledLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Disabled"));
+
 
   String membersLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIActivity.label.Members"));
   String leaveLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIManageAllSpaces.label.action_leave_space"));
@@ -35,7 +37,8 @@
     Confirm: '${confirmLabel}',
     CancelRequest: '${cancelRequestLabel}',
     RemoveConnection: '${removeConnectionLabel}',
-    Ignore: '${ignoreLabel}'
+    Ignore: '${ignoreLabel}',
+    Disabled: '${disabledLabel}'
   } """
 
   String spaceLabels = """ {
