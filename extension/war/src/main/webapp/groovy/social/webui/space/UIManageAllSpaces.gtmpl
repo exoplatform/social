@@ -6,6 +6,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.webui.space.UISpaceSearch;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.apache.commons.lang.StringUtils;
 
 	def uicomponentId = uicomponent.id;
 	
@@ -109,7 +110,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 		        def isPublic = false;
 		        def isClose = false;
 		        def hasEditPermission = false;
-		        
+
 		        if ("INVITED".equals(typeOfSpace.toString())) {
 		          // Action{Accept-Deny}, Icon {Clock}
 		          statusLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space");
@@ -162,14 +163,9 @@ import org.exoplatform.social.core.service.LinkProvider;
 		          </h4>
 		          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 		          <div class="content limitText" data-key="content" data-line="$maxLineDes">
-                    <p>
-                      <% if (space.description != null && !space.description.isEmpty()) { 
-                           print(space.description);
-                         } else { 
-                           print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
-                         }
-                      %>
-                    </p>
+                    <% if (StringUtils.isNotBlank(space.description)) { %>
+                      <p href="<%=spaceUrl%>" data-placement="top" rel="tooltip" data-toggle="tooltip" data-original-title="$space.description"><%=space.description%></p>
+                    <% } %>
 		          </div>
 		        </div>
 		        <div class="connectionBtn clearfix">
