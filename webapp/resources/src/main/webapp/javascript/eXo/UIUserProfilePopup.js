@@ -218,6 +218,7 @@
                  var action = null;
                  var labels = opts.labels;
                  var isDeleted = json.deleted;
+                 var isEnable = json.enable;
 
                  tiptip_content.empty();
 
@@ -286,10 +287,14 @@
                  var tdProfile = $("<td/>",{
                      "id": "profileName"
                  });
+                 var fullName = json.fullName;
+                 if (!isEnable){
+                     fullName=fullName + " (" + labels.Disabled +")";
+                 }
                  var aProfile = $("<a/>", {
                      "target":"_self",
                      "href":json.profileUrl,
-                     "text":json.fullName
+                     "text":fullName
                  });
 
                  tdProfile.append(aProfile);

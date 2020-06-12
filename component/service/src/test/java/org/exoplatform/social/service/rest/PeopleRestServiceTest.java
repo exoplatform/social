@@ -46,6 +46,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
   private Identity demoIdentity;
   private Identity maryIdentity;
   private Identity johnIdentity;
+  private Identity enableIdentity;
 
   public void setUp() throws Exception {
     super.setUp();
@@ -59,6 +60,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", true);
+    enableIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "enable", false);
 
     addResource(PeopleRestService.class, null);
   }
@@ -168,7 +170,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     space.setGroupId("/platform/users");
     space.setVisibility(Space.PUBLIC);
     space.setManagers(new String[]{rootIdentity.getRemoteId()});
-    String[] spaceMembers = new String[] {rootIdentity.getRemoteId(), demoIdentity.getRemoteId()};
+    String[] spaceMembers = new String[] { rootIdentity.getRemoteId(), demoIdentity.getRemoteId(), enableIdentity.getRemoteId() };
     space.setMembers(spaceMembers);
     spaceService.createSpace(space, rootIdentity.getRemoteId());
     MultivaluedMap<String, String> h4 = new MultivaluedMapImpl();
@@ -182,6 +184,23 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     //Then
     assertEquals(200, response.getStatus());
     assertTrue(((ArrayList) response.getEntity()).size() == 2);
+    
+    
+    enableIdentity.setEnable(false);
+    assertEquals(false, enableIdentity.isEnable());
+
+    response =
+            service("GET",
+                    "/social/people/suggest.json?nameToSearch=enable&currentUser=root&typeOfRelation=mention_activity_stream&activityId=null&spaceURL="
+                            + space.getUrl(),
+                    "",
+                    h4,
+                    null,
+                    writer);
+
+    // Then
+    assertEquals(200, response.getStatus());
+    assertTrue(((ArrayList) response.getEntity()).size() == 0);
 
     relationshipManager.delete(relationship);
     spaceService.deleteSpace(space);

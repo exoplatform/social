@@ -18,6 +18,7 @@ public class PeopleInfo {
   private String fullName;
   private String position;
   private Boolean isDeleted;
+  private Boolean isEnable;
 
   
   public PeopleInfo() {
@@ -89,5 +90,13 @@ public class PeopleInfo {
 
   public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
+  }
+
+  public Boolean getEnable() {
+    return isEnable;
+  }
+
+  public void setEnable(Boolean enable) {
+    isEnable = enable;
   }
 }
