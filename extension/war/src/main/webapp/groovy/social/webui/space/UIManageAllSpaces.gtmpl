@@ -164,7 +164,7 @@ import org.apache.commons.lang.StringUtils;
 		          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 		          <div class="content limitText" data-key="content" data-line="$maxLineDes">
                     <% if (StringUtils.isNotBlank(space.description)) { %>
-                      <p href="<%=spaceUrl%>" data-placement="top" rel="tooltip" data-toggle="tooltip" data-original-title="$space.description"><%=space.description%></p>
+                      <p data-placement="top" rel="tooltip" data-toggle="tooltip" data-original-title="$space.description"><%=space.description%></p>
                     <% } %>
 		          </div>
 		        </div>
