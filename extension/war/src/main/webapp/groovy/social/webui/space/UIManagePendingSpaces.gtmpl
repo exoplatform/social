@@ -6,6 +6,7 @@
   import org.exoplatform.social.webui.space.UIManageMySpaces
   import org.exoplatform.social.webui.space.UISpaceSearch
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.apache.commons.lang.StringUtils;
 
   def uicomponentId = uicomponent.id;
   
@@ -104,15 +105,10 @@
   			        </h4>
   			        <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
   			        <div class="content limitText" data-key="content" data-line="2" >
-                    <p>
-                      <% if (space.description != null && !space.description.isEmpty()) {
-                           print(space.description);
-                         } else { 
-                           print(_ctx.appRes("${uicomponent.id}.msg.default_space_description"));
-                         }
-                      %>
-                    <p>
-  		          </div>
+                      <% if (StringUtils.isNotBlank(space.description)) { %>
+                        <p data-placement="top" rel="tooltip" data-toggle="tooltip" data-original-title="$space.description"><%=space.description%></p>
+                      <% } %>
+  		            </div>
   			      </div>
   		        <div class="connectionBtn clearfix">
   			        <button type="button" class="btn pull-right" onclick="<%= revokeSpaceAction %>">$cancelInvitationActionLabel</button>
