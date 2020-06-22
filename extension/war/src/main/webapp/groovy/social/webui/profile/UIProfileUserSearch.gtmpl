@@ -11,6 +11,7 @@
 	String cancelRequestLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.CancelRequest"));
 	String removeConnectionLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.RemoveConnection"));
 	String ignoreLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Ignore"));
+	String disabledLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UserProfilePopup.label.Disabled"));
 
 	def labels = """ {
 	  StatusTitle: '${statusTitle}',
@@ -18,7 +19,8 @@
 	  Confirm: '${confirmLabel}',
 	  CancelRequest: '${cancelRequestLabel}',
 	  RemoveConnection: '${removeConnectionLabel}',
-	  Ignore: '${ignoreLabel}'
+	  Ignore: '${ignoreLabel}',
+	  Disabled: '${disabledLabel}'
 	} """
 
 	def params = """ {

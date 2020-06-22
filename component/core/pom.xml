@@ -451,6 +451,7 @@
         <configuration>
           <systemPropertyVariables>
             <org.jboss.byteman.contrib.bmunit.agent.port>${org.jboss.byteman.contrib.bmunit.agent.port}</org.jboss.byteman.contrib.bmunit.agent.port>
+            <exo.files.storage.dir>target/files</exo.files.storage.dir>
           </systemPropertyVariables>
           <includes>
             <include>**/InitContainerTestSuite.java</include>

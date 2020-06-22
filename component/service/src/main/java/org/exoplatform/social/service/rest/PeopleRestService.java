@@ -57,7 +57,7 @@ import javax.ws.rs.core.Response.Status;
 import java.util.*;
 
 /**
- * 
+ *
  * Provides REST Services for manipulating jobs relates to people.
  *
  * @anchor PeopleRestService
@@ -139,12 +139,12 @@ public class PeopleRestService implements ResourceContainer{
   @GET
   @Path("suggest.{format}")
   public Response suggestUsernames(@Context UriInfo uriInfo,
-                    @QueryParam("nameToSearch") String name,
-                    @QueryParam("currentUser") String currentUser,
-                    @QueryParam("typeOfRelation") String typeOfRelation,
-                    @QueryParam("activityId") String activityId,
-                    @QueryParam("spaceURL") String spaceURL,
-                    @PathParam("format") String format) throws Exception {
+                                   @QueryParam("nameToSearch") String name,
+                                   @QueryParam("currentUser") String currentUser,
+                                   @QueryParam("typeOfRelation") String typeOfRelation,
+                                   @QueryParam("activityId") String activityId,
+                                   @QueryParam("spaceURL") String spaceURL,
+                                   @PathParam("format") String format) throws Exception {
     String[] mediaTypes = new String[] { "json", "xml" };
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
 
@@ -199,7 +199,7 @@ public class PeopleRestService implements ResourceContainer{
             opt.setOrder(3);
           } else {
             Identity identity = getIdentityManager().getOrCreateIdentity(
-                                                     OrganizationIdentityProvider.NAME, item, false);
+                    OrganizationIdentityProvider.NAME, item, false);
             opt.setType("user");
             opt.setOrder(1);
             if (identity != null) {
@@ -278,7 +278,7 @@ public class PeopleRestService implements ResourceContainer{
             opt.setOrder(2);
           } else {
             Identity identity = getIdentityManager().getOrCreateIdentity(
-                OrganizationIdentityProvider.NAME, item, false);
+                    OrganizationIdentityProvider.NAME, item, false);
             opt.setType("user");
             opt.setOrder(1);
             if (identity != null) {
@@ -532,11 +532,11 @@ public class PeopleRestService implements ResourceContainer{
   }
 
   private void addSpaceOrUserToList(List<Identity> identities, IdentityNameList options,
-                                   Space space, String typeOfRelation, int order) throws SpaceException {
-    SpaceService spaceSrv = getSpaceService(); 
+                                    Space space, String typeOfRelation, int order) throws SpaceException {
+    SpaceService spaceSrv = getSpaceService();
     for (Identity identity : identities) {
       String fullName = identity.getProfile().getFullName();
-      String userName = (String) identity.getProfile().getProperty(Profile.USERNAME); 
+      String userName = (String) identity.getProfile().getProperty(Profile.USERNAME);
       Option opt = new Option();
       if (SPACE_MEMBER.equals(typeOfRelation) && spaceSrv.isMember(space, userName)) {
         opt.setType("user");
@@ -544,7 +544,7 @@ public class PeopleRestService implements ResourceContainer{
         opt.setText(fullName);
         opt.setAvatarUrl(identity.getProfile() == null ? null : identity.getProfile().getAvatarUrl());
       } else if (USER_TO_INVITE.equals(typeOfRelation) && (space == null || (!spaceSrv.isInvitedUser(space, userName)
-                 && !spaceSrv.isPendingUser(space, userName) && !spaceSrv.isMember(space, userName)))) {
+              && !spaceSrv.isPendingUser(space, userName) && !spaceSrv.isMember(space, userName)))) {
         opt.setType("user");
         opt.setValue(userName);
         opt.setText(fullName + " (" + userName + ")");
@@ -559,7 +559,7 @@ public class PeopleRestService implements ResourceContainer{
 
   /**
    * Gets users' information that matches the input string.
-   * 
+   *
    * @param uriInfo The request URI information.
    * @param query The name of the user to filter.
    * @return Users' information that matches the input string.
@@ -567,27 +567,27 @@ public class PeopleRestService implements ResourceContainer{
    * @LevelAPI Platform
    * @anchor PeopleRestService.suggestUsernames
    * @deprecated Deprecated from 4.3.x. Replaced by a new API {@link UserRestResourcesV1#getUsers(UriInfo, String, String, String, int, int, boolean, String)}
-   * 
+   *
    */
   @GET
   @Path("getprofile/data.json")
   @RolesAllowed("users")
   public Response suggestUsernames(@Context UriInfo uriInfo,
                                    @Context SecurityContext securityContext,
-                    @QueryParam("search") String query) throws Exception {
+                                   @QueryParam("search") String query) throws Exception {
     MediaType mediaType = Util.getMediaType("json", new String[]{"json"});
     ProfileFilter filter = new ProfileFilter();
-    
+
     filter.setName(query);
     List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(
-                                  OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
-    
+            OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
+
     List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>(identities.size());
     UserInfo userInfo;
     String userType = ConversationState.getCurrent().getIdentity().getUserId();
-    boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
-      || securityContext.getUserPrincipal() == null;
-    
+    boolean isAnonymous = IdentityConstants.ANONIM.equals(userType)
+            || securityContext.getUserPrincipal() == null;
+
     for (Identity identity : identities) {
       userInfo = new UserInfo();
       if (!isAnonymous) {
@@ -598,13 +598,13 @@ public class PeopleRestService implements ResourceContainer{
       userInfo.setType("contact"); //hardcode for test
       userInfos.add(userInfo);
     }
-    
+
     return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * Gets the information of people who have had connection with the current user.
-   * 
+   *
    * @param uriInfo The requested URI information.
    * @param format The format of the returned result, for example, JSON, or XML.
    * @param portalName The name of current portal.
@@ -624,60 +624,60 @@ public class PeopleRestService implements ResourceContainer{
   @RolesAllowed("users")
   public Response searchConnection(@Context UriInfo uriInfo,
                                    @Context SecurityContext securityContext,
-                    @PathParam("portalName") String portalName,
-                    @QueryParam("nameToSearch") String nameToSearch,
-                    @QueryParam("offset") int offset,
-                    @QueryParam("limit") int limit,
-                    @QueryParam("lang") String lang,
-                    @PathParam("format") String format) throws Exception {
+                                   @PathParam("portalName") String portalName,
+                                   @QueryParam("nameToSearch") String nameToSearch,
+                                   @QueryParam("offset") int offset,
+                                   @QueryParam("limit") int limit,
+                                   @QueryParam("lang") String lang,
+                                   @PathParam("format") String format) throws Exception {
     String[] supportedMediaType = { "json" };
     MediaType mediaType = Util.getMediaType(format,supportedMediaType);
 
     activityManager = Util.getActivityManager(portalName);
     relationshipManager = Util.getRelationshipManager(portalName);
     identityManager = Util.getIdentityManager(portalName);
-    
+
     Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                                   Util.getViewerId(), true);
+            Util.getViewerId(), true);
     Identity[] identities;
     List<HashMap<String, Object>> entitys = new ArrayList<HashMap<String,Object>>();
-    if (nameToSearch == null) { 
+    if (nameToSearch == null) {
       // default loading, if load more then need to re-calculate offset and limit before going here via rest URL.     
       identities = getIdentityManager().getConnectionsWithListAccess(currentUser).load(offset, limit);
-    } else { 
+    } else {
       // search
       nameToSearch = nameToSearch.trim();
-      
+
       ProfileFilter filter = new ProfileFilter();
       filter.setName(nameToSearch);
       filter.setViewerIdentity(currentUser);
       // will be getConnectionsByProfileFilter
       identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);
     }
-    
+
     String userType = ConversationState.getCurrent().getIdentity().getUserId();
-    boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
-      || securityContext.getUserPrincipal() == null;
-    
+    boolean isAnonymous = IdentityConstants.ANONIM.equals(userType)
+            || securityContext.getUserPrincipal() == null;
+
     for(Identity identity : identities){
       if (isAnonymous) {
         entitys.add(new ConnectionInfoRestOut(identity));
         continue;
       }
-      
+
       HashMap<String, Object> temp = getIdentityInfo(identity, lang);
       if(temp != null){
         entitys.add(temp);
       }
     }
-    
+
     return Util.getResponse(entitys, uriInfo, mediaType, Response.Status.OK);
   }
-  
+
   /**
    * Gets a set of information of the target user. The returned information of the user includes full name, position
    * avatar, link to profile and relationship status with the current user who sends request.
-   * 
+   *
    * @param uriInfo The requested URI information.
    * @param securityContext The security context of the system.
    * @param userId The Id of a specific user.
@@ -699,55 +699,56 @@ public class PeopleRestService implements ResourceContainer{
                                 @QueryParam("currentUserName") String currentUserName,
                                 @QueryParam("updatedType") String updatedType) throws Exception {
     //
-    
+
     if (format.indexOf('.') > 0) {
       userId = new StringBuffer(userId).append(".").append(format.substring(0, format.lastIndexOf('.'))).toString();
       format = format.substring(format.lastIndexOf('.') + 1);
     }
-    
+
     String[] mediaTypes = new String[] { "json", "xml" };
     format = ArrayUtils.contains(mediaTypes, format) ? format : mediaTypes[0];
-    
+
     if(currentUserName == null || currentUserName.trim().isEmpty()) {
       currentUserName = getUserId(securityContext, uriInfo);
     }
-    
+
     //
     MediaType mediaType = Util.getMediaType(format, mediaTypes);
-    
+
     PeopleInfo peopleInfo = new PeopleInfo(NO_INFO);
     Identity identity = getIdentityManager()
-        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+            .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
     Identity currentIdentity = getIdentityManager()
-        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
+            .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName);
     if (identity != null) {
       // public information
       peopleInfo.setFullName(identity.getProfile().getFullName());
       peopleInfo.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
       peopleInfo.setDeleted(identity.isDeleted());
+      peopleInfo.setEnable(identity.isEnable());
       Profile userProfile = identity.getProfile();
       String avatarURL = userProfile.getAvatarUrl();
       if (avatarURL == null) {
         avatarURL = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       }
       peopleInfo.setAvatarURL(avatarURL);
-      
-      
+
+
       String userType = ConversationState.getCurrent().getIdentity().getUserId();
-      boolean isAnonymous = IdentityConstants.ANONIM.equals(userType) 
-          || securityContext.getUserPrincipal() == null || !userType.equals(currentIdentity.getRemoteId());
-      
+      boolean isAnonymous = IdentityConstants.ANONIM.equals(userType)
+              || securityContext.getUserPrincipal() == null || !userType.equals(currentIdentity.getRemoteId());
+
       if (!isAnonymous) { // private information
         peopleInfo.setProfileUrl(LinkProvider.getProfileUri(identity.getRemoteId()));
-        
+
         peopleInfo.setRelationshipType(NO_ACTION);
-        
+
         String relationshipType = null;
-        
+
         if(currentUserName != null && !userId.equals(currentUserName)) {
           // Set relationship type
           Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
-          
+
           if(currentIdentity != null) {
             // Process action
             if (updatedType != null) {
@@ -767,14 +768,14 @@ public class PeopleRestService implements ResourceContainer{
                 relationship = getRelationshipManager().get(currentIdentity, identity);
               }
             }
-  
+
             relationshipType = getRelationshipType(relationship, currentIdentity);
             peopleInfo.setRelationshipType(relationshipType);
           }
         }
-        
+
         if (CONFIRMED_STATUS.equals(relationshipType)) {
-        
+
           // exposed if relationship type is confirmed (has connection with current logged in user)
           String activityTitle = getLatestActivityTitle(identity, currentIdentity);
           if (activityTitle != null) {
@@ -783,7 +784,7 @@ public class PeopleRestService implements ResourceContainer{
         }
       }
     }
-    
+
     return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -816,26 +817,26 @@ public class PeopleRestService implements ResourceContainer{
        * activity pretty posted time ( ago style )
        */
       PRETTY_POSTED_TIME("prettyPostedTime"),
-      /** 
+      /**
        * Identity's Position 
-      */
+       */
       POSITION("position");
-      
-      
-     /**
-      * String type.
-      */
+
+
+      /**
+       * String type.
+       */
       private final String fieldName;
 
-     /**
-      * private constructor.
-      *
-      * @param string string type
-      */
+      /**
+       * private constructor.
+       *
+       * @param string string type
+       */
       private Field(final String string) {
         fieldName = string;
       }
-      
+
       public String toString() {
         return fieldName;
       }
@@ -846,30 +847,30 @@ public class PeopleRestService implements ResourceContainer{
     public ConnectionInfoRestOut() {
       initialize();
     }
-    
+
     public ConnectionInfoRestOut(Identity identity) {
       this.setDisplayName(identity.getProfile().getFullName());
       this.setAvatarUrl(Util.buildAbsoluteAvatarURL(identity));
       this.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
     }
-    
+
     public ConnectionInfoRestOut(Identity identity, ExoSocialActivity lastestActivity, String lang){
       this.setDisplayName(identity.getProfile().getFullName());
       this.setAvatarUrl(Util.buildAbsoluteAvatarURL(identity));
       this.setProfileUrl(identity.getProfile().getUrl());
       this.setActivityTitle(lastestActivity.getTitle());
-      
+
       Calendar calendar = Calendar.getInstance();
       calendar.setLenient(false);
       int gmtoffset = calendar.get(Calendar.DST_OFFSET) + calendar.get(Calendar.ZONE_OFFSET);
       calendar.setTimeInMillis(lastestActivity.getPostedTime() - gmtoffset);
       this.setPrettyPostedTime(TimeConvertUtils.convertXTimeAgo(calendar.getTime(), "EEE,MMM dd,yyyy", new Locale(lang),
-                                                                TimeConvertUtils.MONTH));
-      
+              TimeConvertUtils.MONTH));
+
       this.setPosition(StringEscapeUtils.unescapeHtml(identity.getProfile().getPosition()));
       this.setActivityId(lastestActivity.getId());
     }
-    
+
     public String getDisplayName() {
       return (String) this.get(Field.DISPLAY_NAME.toString());
     }
@@ -881,7 +882,7 @@ public class PeopleRestService implements ResourceContainer{
         this.put(Field.DISPLAY_NAME.toString(), "");
       }
     }
-    
+
     public String getAvatarUrl() {
       return (String) this.get(Field.AVATAR_URL.toString());
     }
@@ -893,8 +894,8 @@ public class PeopleRestService implements ResourceContainer{
         this.put(Field.AVATAR_URL.toString(), "");
       }
     }
-    
-    
+
+
     public String getProfileUrl() {
       return (String) this.get(Field.PROFILE_URL.toString());
     }
@@ -906,7 +907,7 @@ public class PeopleRestService implements ResourceContainer{
         this.put(Field.PROFILE_URL.toString(), "");
       }
     }
-    
+
     public String getActivityTitle() {
       return (String) this.get(Field.ACTIVITY_TITLE.toString());
     }
@@ -918,7 +919,7 @@ public class PeopleRestService implements ResourceContainer{
         this.put(Field.ACTIVITY_TITLE.toString(), "");
       }
     }
-    
+
     public String getPrettyPostedTime() {
       return  (String) this.get(Field.PRETTY_POSTED_TIME);
     }
@@ -930,7 +931,7 @@ public class PeopleRestService implements ResourceContainer{
         this.put(Field.PRETTY_POSTED_TIME.toString(), new Long(0));
       }
     }
-    
+
     public String getPosition() {
       return  (String) this.get(Field.POSITION);
     }
@@ -942,7 +943,7 @@ public class PeopleRestService implements ResourceContainer{
         this.put(Field.POSITION.toString(), "");
       }
     }
-    
+
     public String getActivityId() {
       return  (String) this.get(Field.ACTIVITY_ID);
     }
@@ -953,7 +954,7 @@ public class PeopleRestService implements ResourceContainer{
       } else {
         this.put(Field.ACTIVITY_ID.toString(), "");
       }
-    }    
+    }
     private void initialize(){
       this.setActivityTitle("");
       this.setAvatarUrl("");
@@ -964,15 +965,15 @@ public class PeopleRestService implements ResourceContainer{
       this.setPrettyPostedTime("");
     }
   }
-  
+
   private String getUserId(SecurityContext securityContext, UriInfo uriInfo) {
     String userId = StringUtils.EMPTY;
     try {
       userId = ConversationState.getCurrent().getIdentity().getUserId();
     } catch (Exception e) {
-      LOG.debug("Could not get id of user from ConversationState.");  
+      LOG.debug("Could not get id of user from ConversationState.");
     }
-    
+
     if(userId == null || userId.isEmpty() || IdentityConstants.ANONIM.equals(userId)) {
       if (securityContext != null && securityContext.getUserPrincipal() != null) {
         return securityContext.getUserPrincipal().getName();
@@ -982,18 +983,18 @@ public class PeopleRestService implements ResourceContainer{
   }
 
   private HashMap<String, Object> getIdentityInfo(Identity existingIdentity, String lang){
-    RealtimeListAccess<ExoSocialActivity>  activityRealtimeListAccess = 
-                                            activityManager.getActivitiesWithListAccess(existingIdentity);
+    RealtimeListAccess<ExoSocialActivity>  activityRealtimeListAccess =
+            activityManager.getActivitiesWithListAccess(existingIdentity);
     if(activityRealtimeListAccess.getSize() == 0 ){
       return null;
     }
     ExoSocialActivity lastestActivity =  activityRealtimeListAccess.load(0, 1)[0];
     return new ConnectionInfoRestOut(existingIdentity, lastestActivity, lang);
   }
-  
+
   /**
    * Gets type of relationship appropriate to each specific relationship.
-   * 
+   *
    * @param relationship Relationship of current user and selected user.
    * @param identity Current identity
    * @return Relationship Type.
@@ -1002,7 +1003,7 @@ public class PeopleRestService implements ResourceContainer{
     if (relationship == null) return ALIEN_STATUS;
     if (relationship.getStatus() == Relationship.Type.PENDING) {
       if (relationship.getSender().equals(identity)) {
-        return WAITING_STATUS;  
+        return WAITING_STATUS;
       }
       return PENDING_STATUS;
     } else if (relationship.getStatus() == Relationship.Type.CONFIRMED) {
@@ -1010,10 +1011,10 @@ public class PeopleRestService implements ResourceContainer{
     } else if (relationship.getStatus() == Relationship.Type.IGNORED) {
       return IGNORED_STATUS;
     }
-    
+
     return ALIEN_STATUS;
   }
-  
+
   public SpaceService getSpaceService() {
     if (spaceService == null) {
       spaceService = (SpaceService) getPortalContainer().getComponentInstanceOfType(SpaceService.class);
@@ -1031,7 +1032,7 @@ public class PeopleRestService implements ResourceContainer{
     }
     return identityManager;
   }
-  
+
   /**
    * Gets activity Manager instance.
    * @return activityManager
@@ -1043,7 +1044,7 @@ public class PeopleRestService implements ResourceContainer{
     }
     return activityManager;
   }
-  
+
   /**
    * Gets identityManager
    * @return
@@ -1054,7 +1055,7 @@ public class PeopleRestService implements ResourceContainer{
     }
     return relationshipManager;
   }
-  
+
   /**
    * Gets Portal Container instance.
    * @return portalContainer
@@ -1067,7 +1068,7 @@ public class PeopleRestService implements ResourceContainer{
     }
     return exoContainer;
   }
-  
+
   static public class UserInfo {
     static private String AVATAR_URL = "/eXoSkin/skin/images/system/UserAvtDefault.png";
 
@@ -1125,33 +1126,33 @@ public class PeopleRestService implements ResourceContainer{
 
   private String getLatestActivityTitle(Identity identity, Identity currentIdentity) {
     RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
-        .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
-    
+            .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
+
     int totalActivities = activitiesListAccess.getSize();
     int loadedActivityNum = 0;
     while (true) {
       List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 20);
-      
+
       loadedActivityNum += activities.size();
-      
+
       for (ExoSocialActivity act : activities) {
-        
+
         if (getIdentityManager().getOrCreateIdentity(
-            OrganizationIdentityProvider.NAME, act.getStreamOwner(), false) != null) {
+                OrganizationIdentityProvider.NAME, act.getStreamOwner(), false) != null) {
           return act.getTitle();
         }
-        
+
         if (getIdentityManager().getOrCreateIdentity(
-            SpaceIdentityProvider.NAME, act.getStreamOwner(), false) != null) {
+                SpaceIdentityProvider.NAME, act.getStreamOwner(), false) != null) {
           Space space = getSpaceService().getSpaceByPrettyName(act.getStreamOwner());
           if (getSpaceService().isMember(space, currentIdentity.getRemoteId())) {
             return act.getTitle();
           }
         }
       }
-      
+
       if (loadedActivityNum >= totalActivities) {
-        return null;  
+        return null;
       }
     }
   }
