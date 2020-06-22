@@ -22,11 +22,11 @@
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>5.3.3</version>
+    <version>5.3.3-patched</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-webapp-vue-portlet</artifactId>
-  <version>5.3.3</version>
+  <version>5.3.3-patched</version>
   <packaging>war</packaging>
   <name>eXo PLF:: Social Vue Portlet Web App</name>
   <description>eXo Social Vue Portlet Web App</description>

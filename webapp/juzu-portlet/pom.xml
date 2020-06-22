@@ -4,7 +4,7 @@
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>5.3.3</version>
+    <version>5.3.3-patched</version>
   </parent>
   <artifactId>social-webapp-juzu-portlet</artifactId>
   <packaging>jar</packaging>
