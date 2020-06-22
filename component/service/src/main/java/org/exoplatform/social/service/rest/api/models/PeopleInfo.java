@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * PeopleInfo class
- * 
+ *
  * Contains people's information that relate to specific user.
  *
  */
@@ -18,11 +18,12 @@ public class PeopleInfo {
   private String fullName;
   private String position;
   private Boolean isDeleted;
+  private Boolean isEnable;
 
-  
+
   public PeopleInfo() {
   }
-  
+
   public PeopleInfo(String relationshipType) {
     this.relationshipType = relationshipType;
   }
@@ -38,15 +39,15 @@ public class PeopleInfo {
   public String getActivityTitle() {
     return activityTitle;
   }
-  
+
   public void setActivityTitle(String activityTitle) {
     this.activityTitle = activityTitle;
   }
-  
+
   public String getAvatarURL() {
     return avatarURL;
   }
-  
+
   public void setAvatarURL(String avatarURL) {
     this.avatarURL = avatarURL;
   }
@@ -84,10 +85,18 @@ public class PeopleInfo {
   }
 
   public Boolean getDeleted() {
-        return isDeleted;
+    return isDeleted;
   }
 
   public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+    isDeleted = deleted;
+  }
+
+  public Boolean getEnable() {
+    return isEnable;
+  }
+
+  public void setEnable(Boolean enable) {
+    isEnable = enable;
   }
 }
