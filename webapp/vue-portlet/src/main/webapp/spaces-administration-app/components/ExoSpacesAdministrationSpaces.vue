@@ -62,7 +62,7 @@ export default {
   mounted() {
     const windowLocationHash = window.location.hash;
     if (windowLocationHash === '#bindingReports') {
-      this.activeTab = 3;
+      this.activeTab = 5;
     } else if (windowLocationHash === '#permissions') {
       this.activeTab = 2;
     } else {
