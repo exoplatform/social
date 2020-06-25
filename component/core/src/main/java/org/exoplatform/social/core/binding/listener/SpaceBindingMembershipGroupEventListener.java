@@ -29,6 +29,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipEventListener;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.social.core.binding.model.GroupSpaceBinding;
 import org.exoplatform.social.core.binding.model.GroupSpaceBindingReportAction;
 import org.exoplatform.social.core.binding.model.UserSpaceBinding;
@@ -52,7 +53,7 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
     if (isNew && !isASpaceGroup(groupId)) {
       RequestLifeCycle.begin(PortalContainer.getInstance());
       try {
-        if (isUserNewMemberToGroup(userName, groupId)) {
+        if (isActive(userName) && isUserNewMemberToGroup(userName, groupId)) {
           groupSpaceBindingService = CommonsUtils.getService(GroupSpaceBindingService.class);
           spaceService = CommonsUtils.getService(SpaceService.class);
 
@@ -107,7 +108,12 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
       }
     }
   }
-
+  
+  private boolean isActive(String userName) throws Exception {
+    organizationService = CommonsUtils.getOrganizationService();
+    return organizationService.getUserHandler().findUserByName(userName, UserStatus.ENABLED) != null;
+  }
+  
   @Override
   public void postDelete(Membership m) throws Exception {
     String userName = m.getUserName();
@@ -115,7 +121,7 @@ public class SpaceBindingMembershipGroupEventListener extends MembershipEventLis
     if (!isASpaceGroup(groupId)) {
       RequestLifeCycle.begin(PortalContainer.getInstance());
       try {
-        if (isUserNoMoreMemberOfGroup(userName, groupId)) {
+        if (isActive(userName) && isUserNoMoreMemberOfGroup(userName, groupId)) {
           groupSpaceBindingService = CommonsUtils.getService(GroupSpaceBindingService.class);
           spaceService = CommonsUtils.getService(SpaceService.class);
           // Retrieve removed user's all bindings.
