@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
 public class SocialNotificationUtils {
   private static final Log LOG = ExoLogger.getLogger(SocialNotificationUtils.class);
 
-  public final static Pattern IMG_SRC_REGEX = Pattern.compile("<img[^>]+((data-plugin-name\\s*=\\s*['\"]([^'\"]+)['\"][^>]+)|(src\\s*=\\s*['\"]([^'\"]+)['\"])){2}[^>]*>");
+  public final static Pattern IMG_SRC_REGEX = Pattern.compile("<img[^>]*(?:(?:src\\s*=\\s*['\"]([^'\"]+)['\"])[^>]*(?:data-plugin-name\\s*=\\s*['\"](?:[^'\"]+)['\"]))[^>]*\\/>|<img[^>]*(?:(?:data-plugin-name\\s*=\\s*['\"](?:[^'\"]+)['\"])[^>]*(?:src\\s*=\\s*['\"]([^'\"]+)['\"]))[^>]*\\/>");
 
   public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
   public final static ArgumentLiteral<String> COMMENT_ID = new ArgumentLiteral<String>(String.class, "commentId");
@@ -368,7 +368,7 @@ public class SocialNotificationUtils {
       String imageBody = matcher.group(0);
 
       body = body.replace(imageBody, "<i> [" + placeholder + "] </i>");
-      startIdex = matcher.end(1);
+      startIdex = matcher.end(0);
     }
     return body;
   }
