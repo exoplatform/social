@@ -141,6 +141,31 @@ public class SearchTestIT extends BaseESTest {
     assertEquals(1, peopleSearchConnector.search(searchContext, "Root Root", null, 0, 10, null, null).size());
   }
 
+  
+  public void testPeoplePositionAndSkills() throws Exception {    
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+
+    // DEMO
+    Profile profile = demoIdentity.getProfile();
+    profile.setListUpdateTypes(Arrays.asList(UpdateType.ABOUT_ME));
+    profile.setProperty(Profile.POSITION, "CEO");
+    identityManager.updateProfile(profile);
+
+    reindexProfileById(demoIdentity.getId());
+
+    // JOHN
+    Profile profile1 = johnIdentity.getProfile();
+    profile1.setListUpdateTypes(Arrays.asList(UpdateType.ABOUT_ME));
+    profile1.setProperty(Profile.EXPERIENCES_SKILLS, "Leader");
+    identityManager.updateProfile(profile1);
+
+    reindexProfileById(johnIdentity.getId());
+
+    assertEquals(1, peopleSearchConnector.search(searchContext, "CEO", null, 0, 10, null, null).size());
+    assertEquals(1, peopleSearchConnector.search(searchContext, "Leader", null, 0, 10, null, null).size());
+  }
+
   public void testPeopleNameOrEmail() throws Exception {    
     reindexProfileById(rootIdentity.getId());
     reindexProfileById(johnIdentity.getId());

@@ -151,7 +151,13 @@ public class UserRestResourcesV1 implements UserRestResources {
     } else {
       ProfileFilter filter = new ProfileFilter();
       filter.setName(q == null || q.isEmpty() ? "" : q);
+<<<<<<< HEAD
       ListAccess<Identity> list = CommonsUtils.getService(IdentityManager.class).getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false);
+=======
+      filter.setPosition(q == null || q.isEmpty() ? "" : q);
+      filter.setSkills(q == null || q.isEmpty() ? "" : q);
+      ListAccess<Identity> list = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false);
+>>>>>>> ceb8a3c1d... Fix: Social-Search-People: Make sure to search people by name, position and skills. (#197)
       identities = list.load(offset, limit);
       if(returnSize) {
         totalSize = list.getSize();
