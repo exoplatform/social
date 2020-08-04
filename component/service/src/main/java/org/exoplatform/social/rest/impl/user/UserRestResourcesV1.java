@@ -151,6 +151,8 @@ public class UserRestResourcesV1 implements UserRestResources {
     } else {
       ProfileFilter filter = new ProfileFilter();
       filter.setName(q == null || q.isEmpty() ? "" : q);
+      filter.setPosition(q == null || q.isEmpty() ? "" : q);
+      filter.setSkills(q == null || q.isEmpty() ? "" : q);
       ListAccess<Identity> list = CommonsUtils.getService(IdentityManager.class).getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, false);
       identities = list.load(offset, limit);
       if(returnSize) {
