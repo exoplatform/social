@@ -390,13 +390,7 @@ public class SpaceServiceImpl implements SpaceService {
       userIds.remove(creator);
       for (String userId : userIds) {
         String[] invitedUsers = space.getInvitedUsers();
-        if (isSuperManager(userId)) {
-          members = space.getMembers();
-          if (!ArrayUtils.contains(members, userId)) {
-            members = (String[]) ArrayUtils.add(members, userId);
-            space.setMembers(members);
-          }
-        } else if (!ArrayUtils.contains(invitedUsers, userId)) {
+        if (!ArrayUtils.contains(invitedUsers, userId)) {
           invitedUsers = (String[]) ArrayUtils.add(invitedUsers, userId);
           inviteds.add(userId);
           space.setInvitedUsers(invitedUsers);
