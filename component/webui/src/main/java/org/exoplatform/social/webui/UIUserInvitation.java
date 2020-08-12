@@ -244,11 +244,6 @@ public class UIUserInvitation extends UIForm {
           for (int idx = 0; idx < invitedUsers.length; idx++) {
             name = invitedUsers[idx].trim();
             if (name.length() > 0) {
-              if (spaceService.isSuperManager(name)) {
-                spaceService.addMember(space, name);
-                continue;
-              }
-
               if (!usersForInviting.contains(name) && !spaceService.isMember(space, name)) {
                 usersForInviting.add(name);
               }
