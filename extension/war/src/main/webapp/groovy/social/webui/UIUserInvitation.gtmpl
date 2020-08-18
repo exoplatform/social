@@ -1,5 +1,6 @@
 <%
 String inviteAction = uicomponent.event("Invite") + "; return false;";
+String inviteSpaceMember = _ctx.appRes("UISpaceMember.button.invite");
 
 String restUrl = uicomponent.getRestURL();
 String value = uicomponent.getValue();
@@ -27,10 +28,10 @@ placeholder = placeholder?.replace("'", "\\'").replace("&#39;", "\\&#39;");
 
   <% uiform.begin();%>
   <div class="uiGrayLightBox">
-		<div class="pull-right"><button class="btn" type="button" onclick="$inviteAction">Invite</button></div>
 		<div class="mention-input">
 			<% uiform.renderField("user"); %>
 		</div>
+		<div class="pull-right"><button class="btn" type="button" onclick="$inviteAction">$inviteSpaceMember</button></div>
   </div>
   <% uiform.end();%>
   <%
