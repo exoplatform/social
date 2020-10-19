@@ -230,4 +230,41 @@ public class SearchTestIT extends BaseESTest {
     return space;
   }
 
+  public void testPeopleNameWithAccents() throws Exception {
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", true);
+
+    // ROOT
+    Profile profile = rootIdentity.getProfile();
+    profile.setListUpdateTypes(Arrays.asList(UpdateType.ABOUT_ME));
+    profile.setProperty(Profile.FULL_NAME, "майстерність");
+    identityManager.updateProfile(profile);
+
+    reindexProfileById(rootIdentity.getId());
+
+    assertEquals(1, peopleSearchConnector.search(searchContext, "майстерність", null, 0, 10, null, null).size());
+  }
+
+  public void testPeoplePositionAndSkillsWithAccents() throws Exception {
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+    johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+
+    // DEMO
+    Profile profile = demoIdentity.getProfile();
+    profile.setListUpdateTypes(Arrays.asList(UpdateType.ABOUT_ME));
+    profile.setProperty(Profile.POSITION, "Його");
+    identityManager.updateProfile(profile);
+
+    reindexProfileById(demoIdentity.getId());
+
+    // JOHN
+    Profile profile1 = johnIdentity.getProfile();
+    profile1.setListUpdateTypes(Arrays.asList(UpdateType.ABOUT_ME));
+    profile1.setProperty(Profile.EXPERIENCES_SKILLS, "увінчаний");
+    identityManager.updateProfile(profile1);
+
+    reindexProfileById(johnIdentity.getId());
+
+    assertEquals(1, peopleSearchConnector.search(searchContext, "Його", null, 0, 10, null, null).size());
+    assertEquals(1, peopleSearchConnector.search(searchContext, "увінчаний", null, 0, 10, null, null).size());
+  }
 }

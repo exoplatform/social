@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.jpa.search;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -216,11 +217,11 @@ import org.exoplatform.social.core.relationship.model.Relationship;
     Profile profile = identity.getProfile();
 
     Map<String, String> fields = new HashMap<String, String>();
-    fields.put("name", profile.getFullName());
-    fields.put("firstName", (String) profile.getProperty(Profile.FIRST_NAME));
-    fields.put("lastName", (String) profile.getProperty(Profile.LAST_NAME));
-    fields.put("position", profile.getPosition());
-    fields.put("skills", (String)profile.getProperty(Profile.EXPERIENCES_SKILLS));
+    fields.put("name", removeAccents(profile.getFullName()));
+    fields.put("firstName", removeAccents((String) profile.getProperty(Profile.FIRST_NAME)));
+    fields.put("lastName", removeAccents((String) profile.getProperty(Profile.LAST_NAME)));
+    fields.put("position", removeAccents(profile.getPosition()));
+    fields.put("skills", removeAccents((String) profile.getProperty(Profile.EXPERIENCES_SKILLS)));
     fields.put("avatarUrl", profile.getAvatarUrl());
     fields.put("userName", identity.getRemoteId());
     fields.put("email", profile.getEmail());
@@ -246,5 +247,13 @@ import org.exoplatform.social.core.relationship.model.Relationship;
     LOG.info("profile document generated for identity id={} remote_id={} duration_ms={}", id, identity.getRemoteId(), System.currentTimeMillis() - ts);
 
     return document;
+  }
+
+  private static String removeAccents(String string) {
+    if (StringUtils.isNotBlank(string)){
+      string = Normalizer.normalize(string, Normalizer.Form.NFD);
+      string = string.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+    }
+    return string;
   }
 }
