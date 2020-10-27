@@ -16,6 +16,21 @@
  */
 package org.exoplatform.social.service.rest;
 
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
+
+import java.net.URI;
+import java.util.Arrays;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -30,21 +45,6 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import java.net.URI;
-import java.util.Arrays;
-
-import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
-import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedUserPermission;
 
 /**
  * 
@@ -62,6 +62,7 @@ public class NotificationsRestService implements ResourceContainer {
   private SpaceService spaceService;
   
   private static String       ACTIVITY_ID_PREFIX = "activity";
+  private String JSESSION_ID_PATTERN = ";jsessionid=";
 
   public enum URL_TYPE {
     user, space, space_members, reply_activity, reply_activity_highlight_comment, reply_activity_highlight_comment_reply, view_full_activity,
@@ -255,11 +256,13 @@ public class NotificationsRestService implements ResourceContainer {
     checkAuthenticatedRequest();
 
     Space space = getSpaceService().getSpaceById(spaceId);
-    
-    if (space == null) {
+    if (userId.contains(JSESSION_ID_PATTERN)) {
+      userId = userId.substring(0, userId.indexOf(JSESSION_ID_PATTERN));
+    }
+    Identity userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId); 
+    if (userIdentity == null || space == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    
     //check user permission
     String authenticatedUser = ConversationState.getCurrent().getIdentity().getUserId();
     if (! getSpaceService().isManager(space, authenticatedUser)) {
