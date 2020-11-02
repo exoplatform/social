@@ -406,7 +406,7 @@ public class SpaceUtils {
         continue;
       }
 
-      if (!(Character.isLetterOrDigit(c) || c == '_')) {
+      if (Character.getType(c) == Character.MODIFIER_LETTER || !(Character.isLetterOrDigit(c) || c == '_')) {
         cleanedStr.deleteCharAt(i--);
         continue;
       }

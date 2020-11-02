@@ -179,6 +179,22 @@ public class SpaceRestResourcesTest extends AbstractResourceTest {
     assertEquals("social", space.getDisplayName());
   }
 
+  public void testCreateSpaceWithNonLatinName() throws Exception {
+    startSessionAs("root");
+    String input = "{\"displayName\":\"Благодійність\",\"visibility\":\"hidden\",\"subscription\":\"open\"}";
+    //root try to update demo activity
+    ContainerResponse response = getResponse("POST", getURLResource("spaces/"), input);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+
+    SpaceEntity spaceEntity = getBaseEntity(response.getEntity(), SpaceEntity.class);
+    Space space = spaceService.getSpaceById(spaceEntity.getId());
+    assertNotNull(space);
+    assertEquals("Благодійність", space.getDisplayName());
+    assertEquals("blagodijnist", space.getPrettyName());
+    assertEquals("blagodijnist", space.getUrl());
+  }
+
   public void testGetSpace() throws Exception {
     startSessionAs("root");
     String input = "{\"displayName\":\"test space\"}";
