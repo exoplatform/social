@@ -273,7 +273,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     begin();
 
     startSessionAs("john");
-    ContainerResponse response = service("GET", "/social/notifications/validateRequestToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/validateRequestToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId() + ";jsessionid=0C004882C60E5BF3AB8EDCA4FD1467F1", "", null, null);
     
     assertNotNull(response);
     assertEquals(303, response.getStatus());
