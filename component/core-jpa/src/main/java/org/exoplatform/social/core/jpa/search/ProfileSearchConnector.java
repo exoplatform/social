@@ -238,7 +238,12 @@ public class ProfileSearchConnector {
       esSubQuery.append("    \"filter\": [\n");
       esSubQuery.append("      {");
       esSubQuery.append("          \"query_string\": {\n");
-      esSubQuery.append("            \"query\": \"" + expEs + "\"\n");
+      if (filter.getName().startsWith("\"") && filter.getName().endsWith("\"")) {
+        esSubQuery.append("            \"query\": \"" + expEs + "\",\n");
+        esSubQuery.append("            \"default_operator\": \"" + "AND" + "\"\n");
+      } else {
+        esSubQuery.append("            \"query\": \"" + expEs + "\"\n");
+      }
       esSubQuery.append("          }\n");
       esSubQuery.append("      }\n");
       esSubQuery.append("    ]\n");
@@ -341,7 +346,13 @@ public class ProfileSearchConnector {
     String inputName = StringUtils.isBlank(filter.getName()) ? null : filter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
     if (StringUtils.isNotBlank(inputName)) {
      //
-      String[] keys = inputName.split(" ");
+      String newInputName = null;
+      String[] keys = new String[0];
+      if (inputName.startsWith("\"") && inputName.endsWith("\"")) {
+        newInputName = inputName.replace("\"", "");
+      } else {
+        keys = inputName.split(" ");
+      }
       if (keys.length > 1) {
         // We will not search on username because it doesn't contain a space character
         if (filter.isSearchEmail()) {
@@ -365,6 +376,12 @@ public class ProfileSearchConnector {
           }
           esExp.append(") )");
         }
+      } else if (StringUtils.isNotBlank(newInputName)) {
+        esExp.append("name:").append(removeAccents(newInputName));
+        if (filter.isSearchEmail()) {
+          esExp.append(" OR email:").append(removeAccents(newInputName));
+        }
+        esExp.append(" OR userName:").append(removeAccents(newInputName));
       } else {
         esExp.append("( name.whitespace:").append(StorageUtils.ASTERISK_STR).append(removeAccents(inputName)).append(StorageUtils.ASTERISK_STR);
         if (filter.isSearchEmail()) {
@@ -376,7 +393,9 @@ public class ProfileSearchConnector {
 
     //skills
     String skills = StringUtils.isBlank(filter.getSkills()) ? null : filter.getSkills().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
+
     if (StringUtils.isNotBlank(skills)) {
+      skills = skills.startsWith("\"") && skills.endsWith("\"")  ? skills.replace("\"", "") : skills;
       if (esExp.length() > 0) {
         esExp.append(" OR ");
       }
@@ -386,7 +405,9 @@ public class ProfileSearchConnector {
 
     //position
     String position = StringUtils.isBlank(filter.getPosition()) ? null : filter.getPosition().replace(StorageUtils.ASTERISK_STR, StorageUtils.EMPTY_STR);
+
     if (StringUtils.isNotBlank(position)) {
+      position = position.startsWith("\"") && position.endsWith("\"") ? position.replace("\"", "") : position;
       if (esExp.length() > 0) {
         esExp.append(" OR ");
       }
