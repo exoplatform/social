@@ -28,10 +28,10 @@ placeholder = placeholder?.replace("'", "\\'").replace("&#39;", "\\&#39;");
 
   <% uiform.begin();%>
   <div class="uiGrayLightBox">
-		<div class="mention-input">
+    <div class="pull-right"><button class="btn" type="button" onclick="$inviteAction">$inviteSpaceMember</button></div>
+    <div class="mention-input">
 			<% uiform.renderField("user"); %>
 		</div>
-		<div class="pull-right"><button class="btn" type="button" onclick="$inviteAction">$inviteSpaceMember</button></div>
   </div>
   <% uiform.end();%>
   <%
