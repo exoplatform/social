@@ -27,7 +27,7 @@ placeholder = placeholder?.replace("'", "\\'").replace("&#39;", "\\&#39;");
     %>
 
   <% uiform.begin();%>
-  <div class="uiGrayLightBox">
+  <div class="uiGrayLightBox uiGrayLightBox-flex">
 		<div class="mention-input">
 			<% uiform.renderField("user"); %>
 		</div>
