@@ -7,6 +7,7 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 
+import java.net.URLDecoder;
 import java.util.Locale;
 
 @ComponentConfig(
@@ -38,6 +39,15 @@ public class UIRecentActivity extends UIContainer {
       activity = i18NActivityProcessor.process(activity, userLocale);
     }
     return this.activity;
+  }
+
+  public String CleanName(String fileName) {
+    try {
+     fileName = URLDecoder.decode(fileName,"UTF-8");
+     return URLDecoder.decode(fileName,"UTF-8");
+    }catch (Exception e){
+      return fileName;
+    }
   }
 
   public void setActivity(ExoSocialActivity activity) {

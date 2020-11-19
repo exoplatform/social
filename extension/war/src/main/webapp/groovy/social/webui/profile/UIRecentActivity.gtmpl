@@ -4,6 +4,8 @@ import org.exoplatform.social.user.portlet.RecentActivitiesHelper;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import java.net.URLDecoder;
 
 def activity = uicomponent.getActivity();
 if(activity == null) {
@@ -14,6 +16,9 @@ if(activity == null) {
 
 <div id="${uicomponent.id}" class="uiRecentActivity">
 <%
+  String FILE_SPACES = "files:spaces";
+  String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
+  String NEWS = "news";
   String activityURL = LinkProvider.getBaseUri(null, null) + "/activity?id=";
   def profile = RecentActivitiesHelper.getOwnerActivityProfile(activity);
   String avatarURL = profile.getAvatarUrl();
@@ -21,6 +26,16 @@ if(activity == null) {
   String displayName = StringEscapeUtils.escapeHtml(profile.getFullName());
   String link = RecentActivitiesHelper.getLink(activity);
   String linkTitle = RecentActivitiesHelper.getLinkTitle(activity);
+  String activityTitle = "";
+  if (DEFAULT_ACTIVITY.equals(activity.getType())){
+     activityTitle = activity.getTitle();
+  }else if(NEWS.equals(activity.getType())){
+     activityTitle = _ctx.appRes("ProfileUpdatesPublisher.news.uploaded");
+  } else if (FILE_SPACES.equals(activity.getType())) {
+     String fileName = activity.getTemplateParams().get("contentName");
+     fileName = uicomponent.CleanName(fileName);
+     activityTitle = _ctx.appRes("ProfileUpdatesPublisher.file.uploaded").replace("{0}",fileName);
+  }
 %>
    <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">
      <div class="activityTimeLine pull-left">
@@ -36,14 +51,14 @@ if(activity == null) {
            if (linkTitle != null) {
        %> 
              <div class="status"><%=linkTitle%></div>
-             <div class="link"><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=activity.getTitle()%></a></div>
+             <div class="link"><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_blank');})(event)"><%=activityTitle%></a></div>
        <%
            } else {
        %>
-             <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_self');})(event)"><%=activity.getTitle()%></a></div>
+             <div><a href="javascript:void(0);" onclick="(function(evt){ evt.stopPropagation(); window.open('<%=link%>', '_self');})(event)"><%=activityTitle%></a></div>
        <%  }
          } else {%>
-             <div class="status"><span onclick="event.stopPropagation();"><%=activity.getTitle()%></span></div>
+             <div class="status"><span onclick="event.stopPropagation();"><%=activityTitle%></span></div>
        <%} %>
        </div>
      </div> <!-- #boxContainer-->
