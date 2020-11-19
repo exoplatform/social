@@ -5,7 +5,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import java.net.URLDecoder;
 
 def activity = uicomponent.getActivity();
 if(activity == null) {
@@ -33,7 +32,9 @@ if(activity == null) {
      activityTitle = _ctx.appRes("ProfileUpdatesPublisher.news.uploaded");
   } else if (FILE_SPACES.equals(activity.getType())) {
      String fileName = activity.getTemplateParams().get("contentName");
-     fileName = uicomponent.CleanName(fileName);
+     if (StringUtils.isNotBlank(fileName)){
+       fileName = uicomponent.CleanName(fileName);
+     }
      activityTitle = _ctx.appRes("ProfileUpdatesPublisher.file.uploaded").replace("{0}",fileName);
   }
 %>
