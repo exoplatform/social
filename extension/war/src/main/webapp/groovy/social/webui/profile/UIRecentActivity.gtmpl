@@ -33,9 +33,9 @@ if(activity == null) {
   } else if (FILE_SPACES.equals(activity.getType())) {
      String fileName = activity.getTemplateParams().get("contentName");
      if (StringUtils.isNotBlank(fileName)){
-       fileName = uicomponent.CleanName(fileName);
+       fileName = uicomponent.cleanName(fileName);
      }
-     activityTitle = _ctx.appRes("ProfileUpdatesPublisher.file.uploaded").replace("{0}",fileName);
+     activityTitle = _ctx.appRes("ProfileUpdatesPublisher.file.uploaded",fileName);
   }
 %>
    <div class="activityStream uiDefaultActivity clearfix" id="Activity<%=activity.id%>">

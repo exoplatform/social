@@ -41,8 +41,9 @@ public class UIRecentActivity extends UIContainer {
     return this.activity;
   }
 
-  public String CleanName(String fileName) {
+  public String cleanName(String fileName) {
     try {
+      // decode the fileName in case the fileName is already encoded
      fileName = URLDecoder.decode(fileName,"UTF-8");
      return URLDecoder.decode(fileName,"UTF-8");
     }catch (Exception e){
